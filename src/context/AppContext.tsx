@@ -6,7 +6,10 @@ import type {
   JournalArticle, 
   ReaderStory, 
   GalleryItem, 
-  Enquiry 
+  Enquiry,
+  InstagramMediaItem,
+  InstagramAuthConfig,
+  ExtractedFrame
 } from '../types';
 import { translations } from '../i18n/translations';
 import type { Translations } from '../i18n/translations';
@@ -17,6 +20,10 @@ import {
   initialGallery, 
   initialEnquiries 
 } from '../data/initialData';
+import { 
+  INITIAL_INSTAGRAM_CONFIG, 
+  SAMPLE_INSTAGRAM_POSTS 
+} from '../services/instagramService';
 
 interface AppContextType {
   lang: Language;
@@ -37,6 +44,18 @@ interface AppContextType {
   gallery: GalleryItem[];
   enquiries: Enquiry[];
   
+  // Instagram Media Library
+  instagramConfig: InstagramAuthConfig;
+  updateInstagramConfig: (cfg: Partial<InstagramAuthConfig>) => void;
+  disconnectInstagram: () => void;
+  instagramMedia: InstagramMediaItem[];
+  importInstagramMedia: (items: InstagramMediaItem[]) => { added: number; skippedDuplicates: number };
+  deleteInstagramMedia: (id: string) => void;
+  updateInstagramMedia: (id: string, updates: Partial<InstagramMediaItem>) => void;
+  togglePublishInstagramMedia: (id: string) => void;
+  addExtractedFramesToMediaLibrary: (frames: ExtractedFrame[], sourceVideo: InstagramMediaItem) => void;
+  assignMediaToTarget: (mediaUrl: string, target: 'meetup' | 'journal' | 'hero' | 'gallery', targetId?: string) => void;
+
   // Admin Auth
   isAdmin: boolean;
   loginAdmin: (password: string) => boolean;
@@ -64,7 +83,7 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-const ADMIN_PASSCODE = 'roa2026'; // Simple secure local demonstration password
+const ADMIN_PASSCODE = 'roa2026';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangState] = useState<Language>(() => {
@@ -105,6 +124,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : initialEnquiries;
   });
 
+  // Instagram integration state
+  const [instagramConfig, setInstagramConfig] = useState<InstagramAuthConfig>(() => {
+    const saved = localStorage.getItem('roa_ig_config');
+    return saved ? JSON.parse(saved) : INITIAL_INSTAGRAM_CONFIG;
+  });
+
+  const [instagramMedia, setInstagramMedia] = useState<InstagramMediaItem[]>(() => {
+    const saved = localStorage.getItem('roa_ig_media');
+    return saved ? JSON.parse(saved) : SAMPLE_INSTAGRAM_POSTS;
+  });
+
   // Keep localStorage updated
   useEffect(() => {
     localStorage.setItem('roa_lang', lang);
@@ -132,6 +162,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('roa_enquiries', JSON.stringify(enquiries));
   }, [enquiries]);
 
+  useEffect(() => {
+    localStorage.setItem('roa_ig_config', JSON.stringify(instagramConfig));
+  }, [instagramConfig]);
+
+  useEffect(() => {
+    localStorage.setItem('roa_ig_media', JSON.stringify(instagramMedia));
+  }, [instagramMedia]);
+
   const setLang = (newLang: Language) => {
     setLangState(newLang);
   };
@@ -154,6 +192,106 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sessionStorage.removeItem('roa_admin_auth');
     if (currentPage === 'admin') {
       setCurrentPage('home');
+    }
+  };
+
+  // Instagram Media Library Operations
+  const updateInstagramConfig = (cfg: Partial<InstagramAuthConfig>) => {
+    setInstagramConfig(prev => ({ ...prev, ...cfg }));
+  };
+
+  const disconnectInstagram = () => {
+    setInstagramConfig({
+      connected: false,
+      username: 'readers.of.aurangabad',
+      accountType: 'CREATOR',
+      accessToken: undefined,
+      tokenExpiry: undefined,
+      lastSyncedAt: undefined
+    });
+  };
+
+  const importInstagramMedia = (items: InstagramMediaItem[]): { added: number; skippedDuplicates: number } => {
+    let added = 0;
+    let skippedDuplicates = 0;
+
+    setInstagramMedia(prev => {
+      const existingIds = new Set(prev.map(p => p.id));
+      const newItems: InstagramMediaItem[] = [];
+
+      for (const item of items) {
+        if (existingIds.has(item.id)) {
+          skippedDuplicates++;
+        } else {
+          newItems.push({
+            ...item,
+            status: 'draft', // Draft by default as required by prompt
+          });
+          existingIds.add(item.id);
+          added++;
+        }
+      }
+
+      return [...newItems, ...prev];
+    });
+
+    return { added, skippedDuplicates };
+  };
+
+  const deleteInstagramMedia = (id: string) => {
+    setInstagramMedia(prev => prev.filter(m => m.id !== id));
+  };
+
+  const updateInstagramMedia = (id: string, updates: Partial<InstagramMediaItem>) => {
+    setInstagramMedia(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
+  };
+
+  const togglePublishInstagramMedia = (id: string) => {
+    setInstagramMedia(prev => prev.map(m => {
+      if (m.id !== id) return m;
+      const newStatus = m.status === 'published' ? 'draft' : 'published';
+      return { ...m, status: newStatus };
+    }));
+  };
+
+  // Add extracted video frames as standalone media library items
+  const addExtractedFramesToMediaLibrary = (frames: ExtractedFrame[], sourceVideo: InstagramMediaItem) => {
+    const newItems: InstagramMediaItem[] = frames.map(frame => ({
+      id: `extracted-${frame.id}`,
+      caption: `[Extracted Frame at ${frame.formattedTimestamp}] from: ${sourceVideo.caption.slice(0, 100)}...`,
+      mediaType: 'IMAGE',
+      mediaUrl: frame.dataUrl,
+      thumbnailUrl: frame.dataUrl,
+      permalink: sourceVideo.permalink,
+      timestamp: new Date().toISOString(),
+      category: sourceVideo.category,
+      status: 'draft', // Draft until approved
+      isCustomUpload: true
+    }));
+
+    setInstagramMedia(prev => [...newItems, ...prev]);
+
+    // Also update source video's extractedFrames list
+    updateInstagramMedia(sourceVideo.id, {
+      extractedFrames: [...(sourceVideo.extractedFrames || []), ...frames]
+    });
+  };
+
+  // Assign any media URL directly to a website section (Meetup, Journal, Hero, Community Gallery)
+  const assignMediaToTarget = (mediaUrl: string, target: 'meetup' | 'journal' | 'hero' | 'gallery', targetId?: string) => {
+    if (target === 'gallery') {
+      const newGal: GalleryItem = {
+        id: `gal-${Date.now()}`,
+        title: 'Community Highlight',
+        caption: 'Featured from @readers.of.aurangabad Instagram collection',
+        imageUrl: mediaUrl,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+      };
+      setGallery(prev => [newGal, ...prev]);
+    } else if (target === 'meetup' && targetId) {
+      updateMeetup(targetId, { featuredImage: mediaUrl });
+    } else if (target === 'journal' && targetId) {
+      updateArticle(targetId, { coverImage: mediaUrl });
     }
   };
 
@@ -229,11 +367,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setStories(initialReaderStories);
     setGallery(initialGallery);
     setEnquiries(initialEnquiries);
-    localStorage.removeItem('roa_meetups');
-    localStorage.removeItem('roa_articles');
-    localStorage.removeItem('roa_stories');
-    localStorage.removeItem('roa_gallery');
-    localStorage.removeItem('roa_enquiries');
+    setInstagramConfig(INITIAL_INSTAGRAM_CONFIG);
+    setInstagramMedia(SAMPLE_INSTAGRAM_POSTS);
+    localStorage.clear();
   };
 
   const exportDataJson = () => {
@@ -243,13 +379,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       stories,
       gallery,
       enquiries,
+      instagramMedia,
+      instagramConfig,
       exportedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `readers-of-aurangabad-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `readers-of-aurangabad-full-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -272,6 +410,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         stories,
         gallery,
         enquiries,
+        instagramConfig,
+        updateInstagramConfig,
+        disconnectInstagram,
+        instagramMedia,
+        importInstagramMedia,
+        deleteInstagramMedia,
+        updateInstagramMedia,
+        togglePublishInstagramMedia,
+        addExtractedFramesToMediaLibrary,
+        assignMediaToTarget,
         isAdmin,
         loginAdmin,
         logoutAdmin,

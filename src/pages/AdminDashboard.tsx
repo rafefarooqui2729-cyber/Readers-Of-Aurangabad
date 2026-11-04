@@ -18,6 +18,8 @@ import {
   FileText,
   ExternalLink
 } from 'lucide-react';
+import { InstagramIcon } from '../components/Icons';
+import { InstagramMediaLibrary } from '../components/InstagramMediaLibrary';
 
 const CATEGORIES: JournalCategory[] = [
   'Reader Stories',
@@ -45,6 +47,7 @@ export const AdminDashboard: React.FC = () => {
     enquiries, 
     updateEnquiryStatus, 
     deleteEnquiry,
+    instagramMedia,
     resetToDefaults,
     exportDataJson
   } = useApp();
@@ -54,7 +57,7 @@ export const AdminDashboard: React.FC = () => {
   const [loginError, setLoginError] = useState('');
 
   // Admin tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'meetups' | 'articles' | 'enquiries'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'meetups' | 'articles' | 'instagram' | 'enquiries'>('overview');
 
   // Meetup Creation State
   const [showMeetupModal, setShowMeetupModal] = useState(false);
@@ -291,6 +294,16 @@ export const AdminDashboard: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('instagram')}
+          className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+            activeTab === 'instagram' ? 'bg-[#1C1B1A] text-white shadow-sm' : 'text-[#595550] hover:text-[#1C1B1A]'
+          }`}
+        >
+          <InstagramIcon className="w-3.5 h-3.5" />
+          <span>Instagram Media Library ({instagramMedia.length})</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('enquiries')}
           className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
             activeTab === 'enquiries' ? 'bg-[#1C1B1A] text-white shadow-sm' : 'text-[#595550] hover:text-[#1C1B1A]'
@@ -326,8 +339,16 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="paper-card p-6 rounded-2xl bg-white border border-[#E8E2D5]">
+              <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Instagram Media</span>
+              <span className="font-serif text-3xl font-bold text-[#8D5B4C] block mt-1">{instagramMedia.length}</span>
+              <span className="text-xs text-[#455240] block mt-1">
+                {instagramMedia.filter(m => m.status === 'published').length} published on site
+              </span>
+            </div>
+
+            <div className="paper-card p-6 rounded-2xl bg-white border border-[#E8E2D5]">
               <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Pending Inquiries</span>
-              <span className="font-serif text-3xl font-bold text-[#8D5B4C] block mt-1">{newEnquiriesCount}</span>
+              <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">{newEnquiriesCount}</span>
               <span className="text-xs text-[#8C857B] block mt-1">Volunteers & Donations</span>
             </div>
 
@@ -367,6 +388,14 @@ export const AdminDashboard: React.FC = () => {
               >
                 <Plus className="w-4 h-4" />
                 <span>Write Journal Piece</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('instagram')}
+                className="inline-flex items-center gap-2 bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5] px-5 py-2.5 rounded-xl text-xs font-semibold hover:bg-white transition-colors"
+              >
+                <InstagramIcon className="w-4 h-4 text-[#8D5B4C]" />
+                <span>Instagram Media & Reels</span>
               </button>
 
               <button
@@ -544,7 +573,12 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 4: ENQUIRIES & SUBMISSIONS */}
+      {/* TAB 4: INSTAGRAM MEDIA LIBRARY */}
+      {activeTab === 'instagram' && (
+        <InstagramMediaLibrary />
+      )}
+
+      {/* TAB 5: ENQUIRIES & SUBMISSIONS */}
       {activeTab === 'enquiries' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">

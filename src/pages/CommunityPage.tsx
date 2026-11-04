@@ -8,6 +8,7 @@ import {
   X,
   ArrowRight
 } from 'lucide-react';
+import { InstagramFeedSection } from '../components/InstagramFeedSection';
 
 export const CommunityPage: React.FC = () => {
   const { stories, gallery, setCurrentPage } = useApp();
@@ -147,7 +148,10 @@ export const CommunityPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. OUR TEAM & STEWARDS */}
+      {/* 4. INSTAGRAM MEDIA — Published photos & videos from Instagram */}
+      <InstagramFeedSection />
+
+      {/* 5. OUR TEAM & STEWARDS */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">

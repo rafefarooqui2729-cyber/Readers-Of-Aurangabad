@@ -89,3 +89,56 @@ export interface GalleryItem {
   meetupId?: string;
   date: string;
 }
+
+/* --- INSTAGRAM INTEGRATION & VIDEO EXTRACTION TYPES --- */
+
+export type InstagramMediaType = 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+
+export type MediaCategory = 
+  | 'Meetups'
+  | 'Reading Sessions'
+  | 'Community Moments'
+  | 'Reels'
+  | 'Event Highlights'
+  | 'Announcements'
+  | 'Behind the Scenes'
+  | 'Other';
+
+export interface ExtractedFrame {
+  id: string;
+  sourceVideoId: string;
+  timestampSeconds: number;
+  formattedTimestamp: string;
+  dataUrl: string; // Base64 data URL or blob
+  width: number;
+  height: number;
+  savedToLibrary: boolean;
+  format: 'image/jpeg' | 'image/webp';
+}
+
+export interface InstagramMediaItem {
+  id: string;
+  caption: string;
+  mediaType: InstagramMediaType;
+  mediaUrl: string;
+  thumbnailUrl: string;
+  permalink: string;
+  timestamp: string;
+  category: MediaCategory;
+  status: 'draft' | 'published';
+  extractedFrames?: ExtractedFrame[];
+  isCustomUpload?: boolean;
+  aspectRatio?: string;
+  likesCount?: number;
+  commentsCount?: number;
+}
+
+export interface InstagramAuthConfig {
+  connected: boolean;
+  username: string;
+  accountType: 'BUSINESS' | 'CREATOR' | 'PERSONAL';
+  appId?: string;
+  accessToken?: string; // Token placeholder managed securely
+  tokenExpiry?: string;
+  lastSyncedAt?: string;
+}

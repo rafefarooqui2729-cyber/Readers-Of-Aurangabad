@@ -16,6 +16,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { InstagramFeedSection } from '../components/InstagramFeedSection';
 
 export const HomePage: React.FC = () => {
   const { 
@@ -565,6 +566,16 @@ export const HomePage: React.FC = () => {
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
+      </motion.section>
+
+      {/* 5b. INSTAGRAM FEED — Published media from @readers.of.aurangabad */}
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+      >
+        <InstagramFeedSection />
       </motion.section>
 
       {/* 6. JOURNAL PREVIEW */}
