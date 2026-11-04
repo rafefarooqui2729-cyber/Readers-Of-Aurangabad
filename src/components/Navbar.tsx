@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Language, PageRoute } from '../types';
-import { BookOpen, Menu, X, Globe, Lock, ShieldCheck } from 'lucide-react';
+import { Menu, X, Globe, Lock, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, t, isRTL, currentPage, setCurrentPage, isAdmin } = useApp();
@@ -41,40 +42,56 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Brand Logo */}
+          {/* Brand Logo with Official Enhanced Emblem */}
           <button 
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 text-left focus:outline-none group"
             aria-label="Readers of Aurangabad Home"
           >
-            <div className="w-11 h-11 rounded-full bg-[#1C1B1A] flex items-center justify-center text-[#FAF8F5] shadow-sm group-hover:scale-105 transition-transform">
-              <BookOpen className="w-5 h-5 text-[#E8E2D5]" />
-            </div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="w-12 h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center border border-[#E8E2D5] bg-[#F4EFEA]"
+            >
+              <img 
+                src="/brand/logo.png" 
+                alt="Readers of Aurangabad Official Logo"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
             <div>
-              <span className="block font-serif text-xl sm:text-2xl font-semibold tracking-tight text-[#1C1B1A] leading-tight">
+              <span className="block font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#1C1B1A] leading-tight group-hover:text-[#455240] transition-colors">
                 Readers of Aurangabad
               </span>
-              <span className="block text-[11px] font-sans font-medium tracking-widest uppercase text-[#8D5B4C]">
+              <span className="block text-[10px] font-sans font-semibold tracking-widest uppercase text-[#8D5B4C]">
                 MH20 Literary Movement
               </span>
             </div>
           </button>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7">
+          {/* Desktop Navigation Links with Animated Underline */}
+          <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => {
               const isActive = currentPage === link.key;
               return (
                 <button
                   key={link.key}
                   onClick={() => handleNavClick(link.key)}
-                  className={`text-sm font-medium tracking-wide transition-colors py-1 editorial-link ${
+                  className={`relative text-sm tracking-wide py-2 px-1 transition-colors ${
                     isActive 
-                      ? 'text-[#1C1B1A] font-semibold after:scale-x-100' 
-                      : 'text-[#595550] hover:text-[#1C1B1A]'
+                      ? 'text-[#1C1B1A] font-bold' 
+                      : 'text-[#595550] hover:text-[#1C1B1A] font-medium'
                   }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="nav-underline"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1C1B1A] rounded-full"
+                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    />
+                  )}
                 </button>
               );
             })}
@@ -98,32 +115,40 @@ export const Navbar: React.FC = () => {
                 </span>
               </button>
 
-              {langDropdownOpen && (
-                <div 
-                  className={`absolute mt-2 w-36 bg-white border border-[#E8E2D5] rounded-xl shadow-lg py-1 z-50 animate-in fade-in zoom-in-95 duration-150 ${
-                    isRTL ? 'left-0' : 'right-0'
-                  }`}
-                >
-                  {languages.map((l) => (
-                    <button
-                      key={l.code}
-                      onClick={() => handleLanguageSelect(l.code)}
-                      className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between transition-colors ${
-                        lang === l.code 
-                          ? 'bg-[#F4EFEA] text-[#1C1B1A] font-bold' 
-                          : 'text-[#595550] hover:bg-[#FAF8F5] hover:text-[#1C1B1A]'
-                      }`}
-                    >
-                      <span>{l.nativeName}</span>
-                      <span className="text-[10px] text-[#8D5B4C] uppercase">{l.code}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {langDropdownOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className={`absolute mt-2 w-36 bg-white border border-[#E8E2D5] rounded-xl shadow-lg py-1 z-50 ${
+                      isRTL ? 'left-0' : 'right-0'
+                    }`}
+                  >
+                    {languages.map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => handleLanguageSelect(l.code)}
+                        className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between transition-colors ${
+                          lang === l.code 
+                            ? 'bg-[#F4EFEA] text-[#1C1B1A] font-bold' 
+                            : 'text-[#595550] hover:bg-[#FAF8F5] hover:text-[#1C1B1A]'
+                        }`}
+                      >
+                        <span>{l.nativeName}</span>
+                        <span className="text-[10px] text-[#8D5B4C] uppercase">{l.code}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Admin Portal Quick Icon */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleNavClick('admin')}
               className={`p-2 rounded-full border transition-all ${
                 currentPage === 'admin'
@@ -136,15 +161,18 @@ export const Navbar: React.FC = () => {
               aria-label="Admin Portal"
             >
               {isAdmin ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
-            </button>
+            </motion.button>
 
             {/* Primary Action Button */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.18 }}
               onClick={() => handleNavClick('get-involved')}
-              className="bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] px-5 py-2 rounded-full text-xs font-medium tracking-wider transition-all duration-300 shadow-sm hover:shadow"
+              className="bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-colors duration-200 shadow-sm hover:shadow"
             >
               {t.nav.joinCommunity}
-            </button>
+            </motion.button>
           </div>
 
           {/* Mobile Menu & Language Toggle Button */}
@@ -186,41 +214,49 @@ export const Navbar: React.FC = () => {
           </div>
         )}
 
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#E8E2D5] py-4 space-y-1 bg-[#FAF8F5] animate-in fade-in slide-in-from-top-4 duration-200">
-            {navLinks.map((link) => (
-              <button
-                key={link.key}
-                onClick={() => handleNavClick(link.key)}
-                className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  currentPage === link.key
-                    ? 'bg-[#E8E2D5]/70 text-[#1C1B1A] font-semibold'
-                    : 'text-[#595550] hover:bg-[#E8E2D5]/30 hover:text-[#1C1B1A]'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
-            
-            <div className="pt-3 px-3 flex flex-col gap-2">
-              <button
-                onClick={() => handleNavClick('get-involved')}
-                className="w-full bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] py-2.5 rounded-full text-center text-sm font-medium tracking-wide shadow-sm"
-              >
-                {t.nav.joinCommunity}
-              </button>
+        {/* Mobile Dropdown Menu with Smooth AnimatePresence */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              className="lg:hidden border-t border-[#E8E2D5] py-4 space-y-1 bg-[#FAF8F5] overflow-hidden"
+            >
+              {navLinks.map((link) => (
+                <button
+                  key={link.key}
+                  onClick={() => handleNavClick(link.key)}
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    currentPage === link.key
+                      ? 'bg-[#E8E2D5]/70 text-[#1C1B1A] font-semibold'
+                      : 'text-[#595550] hover:bg-[#E8E2D5]/30 hover:text-[#1C1B1A]'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+              
+              <div className="pt-3 px-3 flex flex-col gap-2">
+                <button
+                  onClick={() => handleNavClick('get-involved')}
+                  className="w-full bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] py-2.5 rounded-full text-center text-sm font-medium tracking-wide shadow-sm"
+                >
+                  {t.nav.joinCommunity}
+                </button>
 
-              <button
-                onClick={() => handleNavClick('admin')}
-                className="w-full text-center py-2 text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                <span>{t.nav.admin}</span>
-              </button>
-            </div>
-          </div>
-        )}
+                <button
+                  onClick={() => handleNavClick('admin')}
+                  className="w-full text-center py-2 text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>{t.nav.admin}</span>
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import type { PageRoute } from '../types';
-import { BookOpen, MapPin, ArrowUpRight } from 'lucide-react';
+import { MapPin, ArrowUpRight } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
 export const Footer: React.FC = () => {
@@ -22,8 +22,12 @@ export const Footer: React.FC = () => {
           {/* Brand & Mission Statement (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#FAF8F5] flex items-center justify-center text-[#1C1B1A]">
-                <BookOpen className="w-5 h-5 text-[#455240]" />
+              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#363330] shadow-sm bg-[#2A2826] shrink-0">
+                <img 
+                  src="/brand/logo.png" 
+                  alt="Readers of Aurangabad" 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <span className="block font-serif text-2xl font-bold tracking-tight text-[#FAF8F5]">

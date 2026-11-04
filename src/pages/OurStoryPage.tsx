@@ -1,15 +1,23 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Compass, Heart, Feather, Users, Sparkles, MapPin, ArrowRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export const OurStoryPage: React.FC = () => {
   const { setCurrentPage } = useApp();
+  const shouldReduceMotion = useReducedMotion();
+  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   return (
-    <div className="space-y-20 pb-24 paper-grain">
+    <div className="space-y-20 pb-24 paper-grain overflow-hidden">
       
       {/* 1. HERO HEADER */}
-      <section className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <motion.section 
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: easeCurve }}
+        className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
+      >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <span className="w-2 h-2 rounded-full bg-[#455240]" />
           <span>The Origin of the Movement</span>
@@ -22,10 +30,16 @@ export const OurStoryPage: React.FC = () => {
         <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
           "In a city full of centuries-old stories, we wanted to create a space where people could discover the joy of reading together."
         </p>
-      </section>
+      </motion.section>
 
       {/* 2. THE CORE NARRATIVE (Editorial Layout) */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <div className="paper-card p-8 sm:p-14 rounded-3xl space-y-8 text-base sm:text-lg text-[#2A2826] leading-[1.85] font-serif">
           
           <p className="text-xl sm:text-2xl font-bold text-[#1C1B1A] leading-snug">
@@ -61,10 +75,16 @@ export const OurStoryPage: React.FC = () => {
           </p>
 
         </div>
-      </section>
+      </motion.section>
 
       {/* 3. MISSION, VISION & ETHOS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
           <div className="paper-card p-8 rounded-2xl space-y-4">
@@ -100,24 +120,32 @@ export const OurStoryPage: React.FC = () => {
           </div>
 
         </div>
-      </section>
+      </motion.section>
 
-      {/* 4. FOUNDER INTRODUCTION */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 4. FOUNDER INTRODUCTION WITH EMBLEM INTEGRATION */}
+      <motion.section 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <div className="paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             
-            {/* Founder Avatar / Portrait Slot */}
+            {/* Founder Avatar / Portrait Slot with Official Logo Crest */}
             <div className="md:col-span-4 flex flex-col items-center text-center space-y-3">
-              <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden border-4 border-[#FAF8F5] shadow-lg bg-[#FAF8F5] relative flex items-center justify-center">
-                {/* Clean authentic placeholder waiting for the official photograph provided by user */}
-                <div className="text-center p-4">
-                  <div className="w-16 h-16 rounded-full bg-[#1C1B1A] text-white flex items-center justify-center text-xl font-serif font-bold mx-auto mb-2">
-                    ARF
-                  </div>
-                  <span className="text-[10px] text-[#8C857B] uppercase tracking-wider block">Official Photo Slot</span>
-                </div>
-              </div>
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+                className="w-44 h-44 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#FAF8F5] relative flex items-center justify-center p-2"
+              >
+                <img
+                  src="/brand/logo.png"
+                  alt="Official Readers of Aurangabad Crest"
+                  className="w-full h-full object-contain"
+                />
+              </motion.div>
 
               <div>
                 <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
@@ -167,10 +195,16 @@ export const OurStoryPage: React.FC = () => {
 
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* 5. ORGANIZING TEAM & STEWARDSHIP */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <motion.section 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+      >
         <div className="text-center space-y-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
             Community Stewards
@@ -186,8 +220,8 @@ export const OurStoryPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="paper-card p-6 rounded-2xl text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] mx-auto text-lg font-serif font-bold">
-              AR
+            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto p-1 bg-white">
+              <img src="/brand/logo.png" alt="Abdul Rafe Farooqui" className="w-full h-full object-contain" />
             </div>
             <div>
               <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Abdul Rafe Farooqui</h4>
@@ -243,7 +277,7 @@ export const OurStoryPage: React.FC = () => {
                   setCurrentPage('get-involved');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] underline"
+                className="text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] underline cursor-pointer"
               >
                 Volunteer with Us →
               </button>
@@ -251,7 +285,7 @@ export const OurStoryPage: React.FC = () => {
           </div>
 
         </div>
-      </section>
+      </motion.section>
 
     </div>
   );
