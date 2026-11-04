@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-urdu: 'Noto Nastaliq Urdu', 'Amiri', serif;
+    --font-devanagari: 'Noto Serif Devanagari', Georgia, serif;
+
+    --color-paper-light: #FAF8F5;
+    --color-paper-warm: #F4EFEA;
+    --color-paper-border: #E8E2D5;
+    --color-charcoal: #1C1B1A;
+    --color-charcoal-muted: #595550;
+    --color-olive: #455240;
+    --color-olive-dark: #2E372B;
+    --color-olive-light: #EBF0E9;
+    --color-clay: #8D5B4C;
+    --color-clay-light: #F7EFEA;
+    --color-gold: #B88B4A;
+  }
+
+  body {
+    background-color: var(--color-paper-light);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-editorial {
+    font-family: var(--font-serif);
+    letter-spacing: -0.015em;
+  }
+
+  [dir="rtl"] {
+    font-family: var(--font-urdu), var(--font-sans);
+  }
+
+  [lang="hi"], [lang="mr"] {
+    font-family: var(--font-devanagari), var(--font-sans);
+  }
+}
+
+/* Custom Paper Texture Overlay */
+.paper-grain {
+  background-image: radial-gradient(rgba(28, 27, 26, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.paper-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-paper-border);
+  box-shadow: 0 4px 20px -2px rgba(28, 27, 26, 0.03), 0 2px 6px -1px rgba(28, 27, 26, 0.02);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.paper-card:hover {
+  transform: translateY(-2px);
+  border-color: #D3CAB8;
+  box-shadow: 0 12px 28px -4px rgba(28, 27, 26, 0.06), 0 4px 12px -2px rgba(28, 27, 26, 0.04);
+}
+
+/* Subtle line link animation */
+.editorial-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.editorial-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.editorial-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Custom scrollbar for literary feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8D2C5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #455240;
+}
