@@ -68,7 +68,7 @@ export const AdminDashboard: React.FC = () => {
   const [mVenue, setMVenue] = useState('Siddharth Garden / Historic Grounds');
   const [mAddress, setMAddress] = useState('Aurangabad, Maharashtra');
   const [mDesc, setMDesc] = useState('');
-  const [mImage, setMImage] = useState('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=1200&q=80');
+  const [mImage, setMImage] = useState('/images/processed/hero/meetup-ch14-banner.webp');
   const [mRegUrl, setMRegUrl] = useState('https://forms.gle/readers-of-aurangabad');
   const [mStatus, setMStatus] = useState<Meetup['registrationStatus']>('open');
   const [mIsUpcoming, setMIsUpcoming] = useState(true);
@@ -81,7 +81,7 @@ export const AdminDashboard: React.FC = () => {
   const [aCategory, setACategory] = useState<JournalCategory>('Literature & Culture');
   const [aLang, setALang] = useState<Language>('en');
   const [aReadTime, setAReadTime] = useState('5');
-  const [aCover, setACover] = useState('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1200&q=80');
+  const [aCover, setACover] = useState('/images/processed/journal/journal-open-skies.webp');
   const [aExcerpt, setAExcerpt] = useState('');
   const [aContent, setAContent] = useState('');
 

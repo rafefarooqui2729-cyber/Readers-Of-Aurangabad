@@ -137,6 +137,19 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Gathering Location Photography */}
+            <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
+              <img
+                src="/images/processed/community/contact-venue-lawn.webp"
+                alt="Sunday morning gatherings in Aurangabad public parks"
+                className="w-full h-48 object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+                <span className="text-white text-xs font-semibold">Historic Grounds & Garden Lawns</span>
+                <span className="text-[10px] text-[#E8E2D5]">Where our Sunday chapters assemble</span>
+              </div>
+            </div>
+
             {/* Quick Literary Quotation */}
             <div className="p-6 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] space-y-2">
               <p className="font-serif italic text-sm text-[#1C1B1A]">

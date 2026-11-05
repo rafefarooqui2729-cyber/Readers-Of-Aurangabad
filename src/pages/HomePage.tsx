@@ -93,7 +93,7 @@ export const HomePage: React.FC = () => {
               loop
               playsInline
               className="w-full h-full object-cover scale-105 filter blur-xs"
-              poster="/images/hero/roa-009-2026-11-05.jpg"
+              poster="/images/processed/hero/hero-grand-gathering-desktop.webp"
             >
               {/* Quiet sunlight through leaves / reading aesthetic video loop */}
               <source 
@@ -214,11 +214,20 @@ export const HomePage: React.FC = () => {
               
               {/* Main Photo Card */}
               <div className="rounded-2xl overflow-hidden shadow-xl border border-[#E8E2D5] bg-[#1C1B1A] relative group">
-                <img
-                  src="/images/gallery/roa-060-2026-11-05.webp"
-                  alt="Young readers of Aurangabad immersed in physical books"
-                  className="w-full h-[470px] object-cover opacity-90 group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
+                <picture>
+                  <source
+                    media="(max-width: 640px)"
+                    srcSet="/images/processed/mobile/hero-portrait-steps-mobile.webp"
+                    type="image/webp"
+                  />
+                  <img
+                    src="/images/processed/hero/hero-portrait-steps.webp"
+                    alt="Young readers of Aurangabad immersed in physical books on sunlit stone steps"
+                    className="w-full h-[470px] object-cover opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                    width={900}
+                    height={1200}
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/85 via-[#1C1B1A]/20 to-transparent" />
                 
                 {/* Official Brand Emblem Seal Overlaid Elegantly */}

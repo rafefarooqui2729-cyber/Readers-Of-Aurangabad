@@ -133,18 +133,21 @@ export const OurStoryPage: React.FC = () => {
         <div className="paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             
-            {/* Founder Avatar / Portrait Slot with Official Logo Crest */}
+            {/* Founder Avatar / Portrait Slot with Real Photo & Official Crest */}
             <div className="md:col-span-4 flex flex-col items-center text-center space-y-3">
               <motion.div 
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.2 }}
-                className="w-44 h-44 sm:w-52 sm:h-52 rounded-full overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#FAF8F5] relative flex items-center justify-center p-2"
+                className="w-48 h-56 sm:w-56 sm:h-64 rounded-2xl overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#1C1B1A] relative group"
               >
                 <img
-                  src="/brand/logo.png"
-                  alt="Official Readers of Aurangabad Crest"
-                  className="w-full h-full object-contain"
+                  src="/images/processed/community/founder-abdul-rafe.webp"
+                  alt="Abdul Rafe Farooqui — Founder, Readers of Aurangabad"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute top-2 right-2 w-12 h-12 rounded-full overflow-hidden border border-white/80 shadow-md bg-white p-0.5">
+                  <img src="/brand/logo.png" alt="Seal" className="w-full h-full object-contain" />
+                </div>
               </motion.div>
 
               <div>
@@ -193,6 +196,85 @@ export const OurStoryPage: React.FC = () => {
               </div>
             </div>
 
+          </div>
+        </div>
+      </motion.section>
+
+      {/* 4b. VISUAL MILESTONES: THE MOVEMENT IN PHOTOGRAPHS */}
+      <motion.section 
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.55, ease: easeCurve }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+      >
+        <div className="border-b border-[#E8E2D5] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
+              Photographic Chronicle
+            </span>
+            <h2 className="font-serif text-3xl font-bold text-[#1C1B1A]">
+              Moments That Define Our Movement
+            </h2>
+          </div>
+          <p className="text-xs text-[#8C857B]">
+            Authentic snapshots from park lawns and public courtyards in Aurangabad
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="paper-card rounded-2xl overflow-hidden group">
+            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+              <img
+                src="/images/processed/community/story-first-circle.webp"
+                alt="Quiet reading sanctuary in the park"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-5 space-y-1">
+              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">The Sacred Hour of Silence</h3>
+              <p className="text-xs text-[#595550] leading-relaxed">
+                60 minutes where all notifications stop and the only sound is turning paper under morning trees.
+              </p>
+            </div>
+          </div>
+
+          <div className="paper-card rounded-2xl overflow-hidden group">
+            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+              <img
+                src="/images/processed/community/story-historic-venue.webp"
+                alt="Historic Delhi Gate chapter gathering"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-5 space-y-1">
+              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">Reclaiming Public Spaces</h3>
+              <p className="text-xs text-[#595550] leading-relaxed">
+                Bringing literature into the heart of historic Aurangabad so culture belongs to everyone.
+              </p>
+            </div>
+          </div>
+
+          <div className="paper-card rounded-2xl overflow-hidden group">
+            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+              <img
+                src="/images/processed/hero/terrace-gathering-wide.webp"
+                alt="Community assembly on garden terrace"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="p-5 space-y-1">
+              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">A Growing Reading Family</h3>
+              <p className="text-xs text-[#595550] leading-relaxed">
+                Readers across Marathi, Urdu, Hindi, and English gathered side-by-side with zero pretension.
+              </p>
+            </div>
           </div>
         </div>
       </motion.section>

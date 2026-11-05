@@ -98,29 +98,56 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return sessionStorage.getItem('roa_admin_auth') === 'true';
   });
 
-  // LocalStorage-backed state with initial fallbacks
+  // LocalStorage-backed state with auto-migration to flush legacy stock/Unsplash URLs
+  const loadWithSanitization = <T,>(key: string, initial: T, isInvalid: (data: T) => boolean): T => {
+    try {
+      const saved = localStorage.getItem(key);
+      if (!saved) return initial;
+      const parsed = JSON.parse(saved);
+      if (isInvalid(parsed)) {
+        localStorage.removeItem(key);
+        return initial;
+      }
+      return parsed;
+    } catch {
+      return initial;
+    }
+  };
+
+  const hasLegacyUrls = (items: any): boolean => {
+    if (!Array.isArray(items)) return true;
+    const str = JSON.stringify(items);
+    return str.includes('unsplash.com') || str.includes('/images/hero/roa-009') || str.includes('photo-15');
+  };
+
+  // Clear legacy un-versioned keys once
+  useEffect(() => {
+    ['roa_meetups', 'roa_articles', 'roa_stories', 'roa_gallery'].forEach(k => {
+      const val = localStorage.getItem(k);
+      if (val && val.includes('unsplash.com')) {
+        localStorage.removeItem(k);
+      }
+    });
+  }, []);
+
   const [meetups, setMeetups] = useState<Meetup[]>(() => {
-    const saved = localStorage.getItem('roa_meetups');
-    return saved ? JSON.parse(saved) : initialMeetups;
+    return loadWithSanitization('roa_meetups_v3', initialMeetups, hasLegacyUrls);
   });
 
   const [articles, setArticles] = useState<JournalArticle[]>(() => {
-    const saved = localStorage.getItem('roa_articles');
-    return saved ? JSON.parse(saved) : initialArticles;
+    return loadWithSanitization('roa_articles_v3', initialArticles, hasLegacyUrls);
   });
 
   const [stories, setStories] = useState<ReaderStory[]>(() => {
-    const saved = localStorage.getItem('roa_stories');
-    return saved ? JSON.parse(saved) : initialReaderStories;
+    return loadWithSanitization('roa_stories_v3', initialReaderStories, hasLegacyUrls);
   });
 
   const [gallery, setGallery] = useState<GalleryItem[]>(() => {
-    const saved = localStorage.getItem('roa_gallery');
-    return saved ? JSON.parse(saved) : initialGallery;
+    return loadWithSanitization('roa_gallery_v3', initialGallery, (items) => !Array.isArray(items) || items.length < 12 || hasLegacyUrls(items));
   });
 
   const [enquiries, setEnquiries] = useState<Enquiry[]>(() => {
-    const saved = localStorage.getItem('roa_enquiries');
+    const saved = localStorage.getItem('roa_enquiries_v3');
     return saved ? JSON.parse(saved) : initialEnquiries;
   });
 
@@ -143,23 +170,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [lang]);
 
   useEffect(() => {
-    localStorage.setItem('roa_meetups', JSON.stringify(meetups));
+    localStorage.setItem('roa_meetups_v3', JSON.stringify(meetups));
   }, [meetups]);
 
   useEffect(() => {
-    localStorage.setItem('roa_articles', JSON.stringify(articles));
+    localStorage.setItem('roa_articles_v3', JSON.stringify(articles));
   }, [articles]);
 
   useEffect(() => {
-    localStorage.setItem('roa_stories', JSON.stringify(stories));
+    localStorage.setItem('roa_stories_v3', JSON.stringify(stories));
   }, [stories]);
 
   useEffect(() => {
-    localStorage.setItem('roa_gallery', JSON.stringify(gallery));
+    localStorage.setItem('roa_gallery_v3', JSON.stringify(gallery));
   }, [gallery]);
 
   useEffect(() => {
-    localStorage.setItem('roa_enquiries', JSON.stringify(enquiries));
+    localStorage.setItem('roa_enquiries_v3', JSON.stringify(enquiries));
   }, [enquiries]);
 
   useEffect(() => {

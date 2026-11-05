@@ -97,6 +97,19 @@ export const GetInvolvedPage: React.FC = () => {
         <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
           "A reading movement flourishes not through passive observers, but through hands that lay out mats, share books, and welcome strangers."
         </p>
+
+        <div className="relative h-64 sm:h-80 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
+          <img
+            src="/images/processed/community/get-involved-banner.webp"
+            alt="Readers of Aurangabad exchanging books and collaborating"
+            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+            <span className="text-white text-xs sm:text-sm font-medium">
+              Community book exchange and volunteer circle — Readers of MH20
+            </span>
+          </div>
+        </div>
       </section>
 
       {/* 2. FAST ACTION TILES: Join & Attend */}

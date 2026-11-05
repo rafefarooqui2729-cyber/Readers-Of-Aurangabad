@@ -159,7 +159,7 @@ export const InstagramMediaLibrary: React.FC = () => {
         caption: `[Manual Upload] ${file.name.replace(/\.[^/.]+$/, '')}`,
         mediaType: isVideo ? 'VIDEO' : 'IMAGE',
         mediaUrl: url,
-        thumbnailUrl: isVideo ? 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80' : url,
+        thumbnailUrl: isVideo ? '/images/processed/gallery/gal-03-thumb.webp' : url,
         permalink: 'https://www.instagram.com/readers.of.aurangabad/',
         timestamp: new Date().toISOString(),
         category: isVideo ? 'Reels' : 'Community Moments',
