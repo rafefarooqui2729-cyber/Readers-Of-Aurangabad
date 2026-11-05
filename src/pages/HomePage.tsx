@@ -93,7 +93,7 @@ export const HomePage: React.FC = () => {
               loop
               playsInline
               className="w-full h-full object-cover scale-105 filter blur-xs"
-              poster="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80"
+              poster="/images/hero/roa-009-2026-11-05.jpg"
             >
               {/* Quiet sunlight through leaves / reading aesthetic video loop */}
               <source 
@@ -215,8 +215,8 @@ export const HomePage: React.FC = () => {
               {/* Main Photo Card */}
               <div className="rounded-2xl overflow-hidden shadow-xl border border-[#E8E2D5] bg-[#1C1B1A] relative group">
                 <img
-                  src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1000&q=80"
-                  alt="A reader immersed in a physical book"
+                  src="/images/gallery/roa-060-2026-11-05.webp"
+                  alt="Young readers of Aurangabad immersed in physical books"
                   className="w-full h-[470px] object-cover opacity-90 group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/85 via-[#1C1B1A]/20 to-transparent" />
@@ -542,6 +542,8 @@ export const HomePage: React.FC = () => {
               <img
                 src={item.imageUrl}
                 alt={item.title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">

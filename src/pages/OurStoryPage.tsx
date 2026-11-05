@@ -220,8 +220,8 @@ export const OurStoryPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="paper-card p-6 rounded-2xl text-center space-y-3">
-            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto p-1 bg-white">
-              <img src="/brand/logo.png" alt="Abdul Rafe Farooqui" className="w-full h-full object-contain" />
+            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto bg-[#1C1B1A]">
+              <img src="/images/thumbnails/roa-061-2026-11-05.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
             </div>
             <div>
               <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Abdul Rafe Farooqui</h4>

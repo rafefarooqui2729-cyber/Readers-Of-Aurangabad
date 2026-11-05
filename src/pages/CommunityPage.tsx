@@ -135,6 +135,8 @@ export const CommunityPage: React.FC = () => {
               <img
                 src={photo.imageUrl}
                 alt={photo.title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out opacity-95 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
@@ -168,8 +170,8 @@ export const CommunityPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           <div className="paper-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
-            <div className="w-16 h-16 rounded-full bg-[#1C1B1A] text-white flex items-center justify-center font-serif font-bold text-lg shrink-0">
-              AR
+            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A] shrink-0">
+              <img src="/images/thumbnails/roa-061-2026-11-05.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
             </div>
             <div className="space-y-2">
               <h3 className="font-serif font-bold text-xl text-[#1C1B1A]">
