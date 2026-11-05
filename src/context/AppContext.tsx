@@ -120,34 +120,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return str.includes('unsplash.com') || str.includes('/images/hero/roa-009') || str.includes('photo-15');
   };
 
-  // Clear legacy un-versioned keys once
+  // Clear legacy keys once
   useEffect(() => {
-    ['roa_meetups', 'roa_articles', 'roa_stories', 'roa_gallery'].forEach(k => {
-      const val = localStorage.getItem(k);
-      if (val && val.includes('unsplash.com')) {
-        localStorage.removeItem(k);
-      }
+    [
+      'roa_meetups', 'roa_articles', 'roa_stories', 'roa_gallery',
+      'roa_meetups_v3', 'roa_articles_v3', 'roa_stories_v3', 'roa_gallery_v3'
+    ].forEach(k => {
+      localStorage.removeItem(k);
     });
   }, []);
 
   const [meetups, setMeetups] = useState<Meetup[]>(() => {
-    return loadWithSanitization('roa_meetups_v3', initialMeetups, hasLegacyUrls);
+    return loadWithSanitization('roa_meetups_v4', initialMeetups, hasLegacyUrls);
   });
 
   const [articles, setArticles] = useState<JournalArticle[]>(() => {
-    return loadWithSanitization('roa_articles_v3', initialArticles, hasLegacyUrls);
+    return loadWithSanitization('roa_articles_v4', initialArticles, hasLegacyUrls);
   });
 
   const [stories, setStories] = useState<ReaderStory[]>(() => {
-    return loadWithSanitization('roa_stories_v3', initialReaderStories, hasLegacyUrls);
+    return loadWithSanitization('roa_stories_v4', initialReaderStories, hasLegacyUrls);
   });
 
   const [gallery, setGallery] = useState<GalleryItem[]>(() => {
-    return loadWithSanitization('roa_gallery_v3', initialGallery, (items) => !Array.isArray(items) || items.length < 12 || hasLegacyUrls(items));
+    return loadWithSanitization('roa_gallery_v4', initialGallery, (items) => !Array.isArray(items) || items.length < 12 || hasLegacyUrls(items));
   });
 
   const [enquiries, setEnquiries] = useState<Enquiry[]>(() => {
-    const saved = localStorage.getItem('roa_enquiries_v3');
+    const saved = localStorage.getItem('roa_enquiries_v4');
     return saved ? JSON.parse(saved) : initialEnquiries;
   });
 
@@ -170,23 +170,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [lang]);
 
   useEffect(() => {
-    localStorage.setItem('roa_meetups_v3', JSON.stringify(meetups));
+    localStorage.setItem('roa_meetups_v4', JSON.stringify(meetups));
   }, [meetups]);
 
   useEffect(() => {
-    localStorage.setItem('roa_articles_v3', JSON.stringify(articles));
+    localStorage.setItem('roa_articles_v4', JSON.stringify(articles));
   }, [articles]);
 
   useEffect(() => {
-    localStorage.setItem('roa_stories_v3', JSON.stringify(stories));
+    localStorage.setItem('roa_stories_v4', JSON.stringify(stories));
   }, [stories]);
 
   useEffect(() => {
-    localStorage.setItem('roa_gallery_v3', JSON.stringify(gallery));
+    localStorage.setItem('roa_gallery_v4', JSON.stringify(gallery));
   }, [gallery]);
 
   useEffect(() => {
-    localStorage.setItem('roa_enquiries_v3', JSON.stringify(enquiries));
+    localStorage.setItem('roa_enquiries_v4', JSON.stringify(enquiries));
   }, [enquiries]);
 
   useEffect(() => {
@@ -239,30 +239,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const importInstagramMedia = (items: InstagramMediaItem[]): { added: number; skippedDuplicates: number } => {
-    let added = 0;
+    const existingIds = new Set(instagramMedia.map(p => p.id));
+    const newItems: InstagramMediaItem[] = [];
     let skippedDuplicates = 0;
 
-    setInstagramMedia(prev => {
-      const existingIds = new Set(prev.map(p => p.id));
-      const newItems: InstagramMediaItem[] = [];
-
-      for (const item of items) {
-        if (existingIds.has(item.id)) {
-          skippedDuplicates++;
-        } else {
-          newItems.push({
-            ...item,
-            status: 'draft', // Draft by default as required by prompt
-          });
-          existingIds.add(item.id);
-          added++;
-        }
+    for (const item of items) {
+      if (existingIds.has(item.id)) {
+        skippedDuplicates++;
+      } else {
+        newItems.push({
+          ...item,
+          status: 'draft', // Draft by default as required by prompt
+        });
+        existingIds.add(item.id);
       }
+    }
 
-      return [...newItems, ...prev];
-    });
+    if (newItems.length > 0) {
+      setInstagramMedia(prev => [...newItems, ...prev]);
+    }
 
-    return { added, skippedDuplicates };
+    return { added: newItems.length, skippedDuplicates };
   };
 
   const deleteInstagramMedia = (id: string) => {

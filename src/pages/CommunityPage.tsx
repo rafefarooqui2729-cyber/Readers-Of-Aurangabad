@@ -233,7 +233,7 @@ export const CommunityPage: React.FC = () => {
           <div className="paper-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
             <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A] shrink-0">
               <img 
-                src="/images/processed/community/founder-avatar-square.webp" 
+                src="/images/edited/community/founder-portrait.webp" 
                 alt="Abdul Rafe Farooqui" 
                 loading="lazy"
                 className="w-full h-full object-cover object-[center_15%]" 

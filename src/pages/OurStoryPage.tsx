@@ -141,7 +141,7 @@ export const OurStoryPage: React.FC = () => {
                 className="w-48 h-56 sm:w-56 sm:h-64 rounded-2xl overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#1C1B1A] relative group"
               >
                 <img
-                  src="/images/processed/community/founder-abdul-rafe.webp"
+                  src="/images/edited/community/founder-wide.webp"
                   alt="Abdul Rafe Farooqui — Founder, Readers of Aurangabad"
                   className="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -224,13 +224,13 @@ export const OurStoryPage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/processed/community/story-first-circle.webp"
+                src="/images/edited/community/community-banner.webp"
                 alt="Quiet reading sanctuary in the park"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="p-5 space-y-1">
@@ -242,13 +242,13 @@ export const OurStoryPage: React.FC = () => {
           </div>
 
           <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/processed/community/story-historic-venue.webp"
+                src="/images/edited/cards/card-1.webp"
                 alt="Historic Delhi Gate chapter gathering"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="p-5 space-y-1">
@@ -260,13 +260,13 @@ export const OurStoryPage: React.FC = () => {
           </div>
 
           <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-64 overflow-hidden bg-[#1C1B1A]">
+            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/processed/hero/terrace-gathering-wide.webp"
+                src="/images/edited/hero/hero-secondary.webp"
                 alt="Community assembly on garden terrace"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
               />
             </div>
             <div className="p-5 space-y-1">

@@ -23,9 +23,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Please carry a personal reading mat or towel, a water bottle, and the book you are currently reading.',
     photos: [
-      '/images/processed/gallery/gal-01-desktop.webp',
-      '/images/processed/gallery/gal-03-desktop.webp',
-      '/images/processed/gallery/gal-11-desktop.webp'
+      '/images/edited/gallery/gallery-01.webp',
+      '/images/edited/gallery/gallery-03.webp',
+      '/images/edited/gallery/gallery-11.webp'
     ],
     isUpcoming: true,
   },
@@ -48,9 +48,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Members brought classic Marathi novels by V.P. Kale, Urdu poetry by Wali Dakhani, and contemporary global translations.',
     photos: [
-      '/images/processed/gallery/gal-02-desktop.webp',
-      '/images/processed/gallery/gal-07-desktop.webp',
-      '/images/processed/gallery/gal-10-desktop.webp'
+      '/images/edited/gallery/gallery-02.webp',
+      '/images/edited/gallery/gallery-07.webp',
+      '/images/edited/gallery/gallery-10.webp'
     ],
     isUpcoming: false,
   },
@@ -73,9 +73,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Over 40 books circulated among attendees.',
     photos: [
-      '/images/processed/gallery/gal-05-desktop.webp',
-      '/images/processed/gallery/gal-06-desktop.webp',
-      '/images/processed/gallery/gal-09-desktop.webp'
+      '/images/edited/gallery/gallery-05.webp',
+      '/images/edited/gallery/gallery-06.webp',
+      '/images/edited/gallery/gallery-09.webp'
     ],
     isUpcoming: false,
   }

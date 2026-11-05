@@ -4,6 +4,8 @@ import type { PageRoute } from '../types';
 import { MapPin, ArrowUpRight } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
+const CURRENT_YEAR = 2026;
+
 export const Footer: React.FC = () => {
   const { t, setCurrentPage } = useApp();
 
@@ -155,7 +157,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Credits & Copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C857B] gap-4">
           <p>
-            © {new Date().getFullYear()} Readers of Aurangabad (Readers of MH20). {t.footer.rights}
+            © {CURRENT_YEAR} Readers of Aurangabad (Readers of MH20). {t.footer.rights}
           </p>
           <div className="flex items-center gap-1 text-[#8C857B]">
             <span>Crafted with devotion for readers of</span>

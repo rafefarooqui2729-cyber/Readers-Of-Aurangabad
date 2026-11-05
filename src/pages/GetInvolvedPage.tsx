@@ -100,7 +100,7 @@ export const GetInvolvedPage: React.FC = () => {
 
         <div className="relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
           <img
-            src="/images/processed/community/get-involved-banner.webp"
+            src="/images/edited/community/community-banner.webp"
             alt="Readers of Aurangabad exchanging books and collaborating"
             loading="lazy"
             decoding="async"

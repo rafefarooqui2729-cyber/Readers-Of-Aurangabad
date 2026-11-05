@@ -148,7 +148,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               <img
                 src={article.coverImage}
                 alt={article.title}
-                className="w-full h-72 sm:h-96 object-cover"
+                className="w-full h-72 sm:h-96 object-cover object-[center_20%]"
               />
             </div>
           )}

@@ -93,7 +93,7 @@ export const HomePage: React.FC = () => {
               loop
               playsInline
               className="w-full h-full object-cover scale-105 filter blur-xs"
-              poster="/images/processed/hero/hero-grand-gathering-desktop.webp"
+              poster="/images/edited/hero/hero-main-desktop.webp"
             >
               {/* Quiet sunlight through leaves / reading aesthetic video loop */}
               <source 
@@ -217,15 +217,15 @@ export const HomePage: React.FC = () => {
                 <picture>
                   <source
                     media="(max-width: 640px)"
-                    srcSet="/images/processed/mobile/hero-portrait-steps-mobile.webp"
+                    srcSet="/images/edited/hero/hero-portrait-mobile.webp"
                     type="image/webp"
                   />
                   <img
-                    src="/images/processed/hero/hero-portrait-steps.webp"
+                    src="/images/edited/hero/hero-portrait-card.webp"
                     alt="Young readers of Aurangabad immersed in physical books on sunlit stone steps"
-                    className="w-full h-[400px] sm:h-[450px] object-cover object-[center_20%] opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
-                    width={900}
-                    height={1200}
+                    className="w-full h-[400px] sm:h-[450px] object-cover object-[center_15%] opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                    width={500}
+                    height={650}
                   />
                 </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/85 via-[#1C1B1A]/20 to-transparent" />
@@ -546,14 +546,14 @@ export const HomePage: React.FC = () => {
           {gallery.slice(0, 6).map((item) => (
             <div 
               key={item.id}
-              className="group relative h-36 sm:h-40 rounded-xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]"
+              className="group relative h-40 sm:h-44 rounded-xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]"
             >
               <img
                 src={item.imageUrl}
                 alt={item.title}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover object-[center_25%] group-hover:scale-110 transition-transform duration-500 ease-out"
+                className="w-full h-full object-cover object-[center_20%] group-hover:scale-110 transition-transform duration-500 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">
                 <span className="text-[11px] font-semibold text-white leading-tight">

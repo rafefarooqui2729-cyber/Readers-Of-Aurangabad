@@ -140,7 +140,7 @@ export const ContactPage: React.FC = () => {
             {/* Gathering Location Photography */}
             <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
               <img
-                src="/images/processed/community/contact-venue-lawn.webp"
+                src="/images/edited/cards/card-2.webp"
                 alt="Sunday morning gatherings in Aurangabad public parks"
                 loading="lazy"
                 decoding="async"

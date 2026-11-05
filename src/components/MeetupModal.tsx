@@ -64,7 +64,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
           <img
             src={meetup.featuredImage}
             alt={meetup.title}
-            className="w-full h-full object-cover opacity-90"
+            className="w-full h-full object-cover object-[center_20%] opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/80 via-[#1C1B1A]/30 to-transparent" />
           
@@ -180,7 +180,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                     key={i}
                     src={photo}
                     alt={`Meetup memory ${i + 1}`}
-                    className="w-full h-24 object-cover rounded-lg border border-[#E8E2D5]"
+                    className="w-full h-24 sm:h-28 object-cover object-[center_20%] rounded-lg border border-[#E8E2D5]"
                   />
                 ))}
               </div>
