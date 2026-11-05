@@ -79,10 +79,10 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-24 sm:space-y-32 pb-24 paper-grain overflow-hidden">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain overflow-hidden">
       
       {/* 1. HERO SECTION WITH AMBIENT VIDEO & LITERARY COMPOSITION */}
-      <section className="relative pt-12 sm:pt-20 lg:pt-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-6 sm:pt-10 lg:pt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Subtle Ambient Video Atmosphere */}
         <div className="absolute inset-0 -top-20 -z-20 overflow-hidden pointer-events-none rounded-3xl opacity-20 mask-radial">
@@ -223,7 +223,7 @@ export const HomePage: React.FC = () => {
                   <img
                     src="/images/processed/hero/hero-portrait-steps.webp"
                     alt="Young readers of Aurangabad immersed in physical books on sunlit stone steps"
-                    className="w-full h-[470px] object-cover opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-[400px] sm:h-[450px] object-cover object-[center_20%] opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
                     width={900}
                     height={1200}
                   />
@@ -431,11 +431,11 @@ export const HomePage: React.FC = () => {
                 className="paper-card rounded-2xl overflow-hidden flex flex-col justify-between group"
               >
                 <div>
-                  <div className="relative h-56 overflow-hidden bg-[#1C1B1A]">
+                  <div className="relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
                     <img
                       src={meetup.featuredImage}
                       alt={meetup.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                      className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500 ease-out"
                     />
                     <div className="absolute top-4 left-4 flex gap-2">
                       {meetup.edition && (
@@ -546,14 +546,14 @@ export const HomePage: React.FC = () => {
           {gallery.slice(0, 6).map((item) => (
             <div 
               key={item.id}
-              className="group relative h-48 rounded-xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]"
+              className="group relative h-36 sm:h-40 rounded-xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]"
             >
               <img
                 src={item.imageUrl}
                 alt={item.title}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                className="w-full h-full object-cover object-[center_25%] group-hover:scale-110 transition-transform duration-500 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">
                 <span className="text-[11px] font-semibold text-white leading-tight">
@@ -632,11 +632,11 @@ export const HomePage: React.FC = () => {
               onClick={() => setSelectedArticle(featuredArticle)}
               className="lg:col-span-7 paper-card rounded-2xl overflow-hidden cursor-pointer group flex flex-col justify-between"
             >
-              <div className="relative h-72 sm:h-80 overflow-hidden bg-[#1C1B1A]">
+              <div className="relative h-64 sm:h-72 overflow-hidden bg-[#1C1B1A]">
                 <img
                   src={featuredArticle.coverImage}
                   alt={featuredArticle.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5] shadow-sm">
@@ -684,7 +684,7 @@ export const HomePage: React.FC = () => {
                   <img
                     src={article.coverImage}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover object-[center_20%]"
                   />
                 </div>
 

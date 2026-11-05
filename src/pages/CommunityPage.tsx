@@ -13,12 +13,28 @@ import { InstagramFeedSection } from '../components/InstagramFeedSection';
 export const CommunityPage: React.FC = () => {
   const { stories, gallery, setCurrentPage } = useApp();
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const [galleryFilter, setGalleryFilter] = useState<'all' | 'park' | 'circle' | 'books'>('all');
+
+  const filteredGallery = gallery.filter((photo) => {
+    if (galleryFilter === 'all') return true;
+    const lower = `${photo.title} ${photo.caption}`.toLowerCase();
+    if (galleryFilter === 'park') {
+      return lower.includes('lawn') || lower.includes('park') || lower.includes('terrace') || lower.includes('palms') || lower.includes('steps') || lower.includes('shade') || lower.includes('stone');
+    }
+    if (galleryFilter === 'circle') {
+      return lower.includes('circle') || lower.includes('assembly') || lower.includes('women') || lower.includes('speaks') || lower.includes('listening') || lower.includes('sisterhood') || lower.includes('stewards') || lower.includes('walks') || lower.includes('foundation');
+    }
+    if (galleryFilter === 'books') {
+      return lower.includes('book') || lower.includes('pages') || lower.includes('recommendations') || lower.includes('reading') || lower.includes('paragraphs');
+    }
+    return true;
+  });
 
   return (
-    <div className="space-y-20 pb-24 paper-grain">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
       
       {/* 1. HERO HEADER */}
-      <section className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <Heart className="w-3.5 h-3.5 text-[#8D5B4C]" />
           <span>The Soul of Readers of Aurangabad</span>
@@ -90,7 +106,8 @@ export const CommunityPage: React.FC = () => {
                   <img
                     src={story.avatar}
                     alt={story.name}
-                    className="w-10 h-10 rounded-full object-cover border border-[#E8E2D5]"
+                    loading="lazy"
+                    className="w-10 h-10 rounded-full object-cover object-[center_15%] border border-[#E8E2D5]"
                   />
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-[#1C1B1A] text-white flex items-center justify-center font-serif font-bold text-sm">
@@ -110,7 +127,7 @@ export const CommunityPage: React.FC = () => {
       </section>
 
       {/* 3. COMMUNITY GALLERY (Real Photographs from Meetups) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="border-b border-[#E8E2D5] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
@@ -125,19 +142,63 @@ export const CommunityPage: React.FC = () => {
           </p>
         </div>
 
+        {/* Gallery Category Filter Tabs */}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setGalleryFilter('all')}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              galleryFilter === 'all'
+                ? 'bg-[#1C1B1A] text-white shadow-sm'
+                : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
+            }`}
+          >
+            All Moments ({gallery.length})
+          </button>
+          <button
+            onClick={() => setGalleryFilter('park')}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              galleryFilter === 'park'
+                ? 'bg-[#1C1B1A] text-white shadow-sm'
+                : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
+            }`}
+          >
+            Park & Terrace Gatherings
+          </button>
+          <button
+            onClick={() => setGalleryFilter('circle')}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              galleryFilter === 'circle'
+                ? 'bg-[#1C1B1A] text-white shadow-sm'
+                : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
+            }`}
+          >
+            Reading Circles
+          </button>
+          <button
+            onClick={() => setGalleryFilter('books')}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              galleryFilter === 'books'
+                ? 'bg-[#1C1B1A] text-white shadow-sm'
+                : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
+            }`}
+          >
+            Books & Swaps
+          </button>
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {gallery.map((photo) => (
+          {filteredGallery.map((photo) => (
             <div
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
-              className="group relative h-64 rounded-xl overflow-hidden cursor-pointer border border-[#E8E2D5] bg-[#1C1B1A]"
+              className="group relative h-52 sm:h-60 rounded-xl overflow-hidden cursor-pointer border border-[#E8E2D5] bg-[#1C1B1A]"
             >
               <img
                 src={photo.imageUrl}
                 alt={photo.title}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out opacity-95 group-hover:opacity-100"
+                className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 ease-out opacity-95 group-hover:opacity-100"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
                 <span className="text-xs font-semibold text-white leading-snug">
@@ -154,7 +215,7 @@ export const CommunityPage: React.FC = () => {
       <InstagramFeedSection />
 
       {/* 5. OUR TEAM & STEWARDS */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center space-y-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
             Humble Leadership
@@ -171,7 +232,12 @@ export const CommunityPage: React.FC = () => {
           
           <div className="paper-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
             <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A] shrink-0">
-              <img src="/images/thumbnails/roa-061-2026-11-05.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
+              <img 
+                src="/images/processed/community/founder-avatar-square.webp" 
+                alt="Abdul Rafe Farooqui" 
+                loading="lazy"
+                className="w-full h-full object-cover object-[center_15%]" 
+              />
             </div>
             <div className="space-y-2">
               <h3 className="font-serif font-bold text-xl text-[#1C1B1A]">

@@ -38,10 +38,10 @@ export const JournalPage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-16 pb-24 paper-grain">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
       
       {/* 1. HERO HEADER */}
-      <section className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <Feather className="w-3.5 h-3.5 text-[#455240]" />
           <span>Independent Literary Magazine</span>
@@ -166,11 +166,13 @@ export const JournalPage: React.FC = () => {
                   className="paper-card rounded-2xl overflow-hidden cursor-pointer flex flex-col justify-between group"
                 >
                   <div>
-                    <div className="relative h-56 overflow-hidden bg-[#1C1B1A]">
+                    <div className="relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
                       <img
                         src={article.coverImage}
                         alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute top-4 left-4 flex gap-2">
                         <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5] shadow-sm">

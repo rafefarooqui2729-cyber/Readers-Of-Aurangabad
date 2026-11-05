@@ -53,10 +53,10 @@ export const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-20 pb-24 paper-grain">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
       
       {/* 1. HERO HEADER */}
-      <section className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <MessageSquare className="w-3.5 h-3.5 text-[#455240]" />
           <span>We'd Love to Hear From You</span>
@@ -73,7 +73,7 @@ export const ContactPage: React.FC = () => {
 
       {/* 2. CONTACT CONTENT GRID */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
           
           {/* Left Column: Official Contact Metadata (5 cols) */}
           <div className="lg:col-span-5 space-y-8">
@@ -142,7 +142,9 @@ export const ContactPage: React.FC = () => {
               <img
                 src="/images/processed/community/contact-venue-lawn.webp"
                 alt="Sunday morning gatherings in Aurangabad public parks"
-                className="w-full h-48 object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-48 object-cover object-[center_25%] opacity-90 group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
                 <span className="text-white text-xs font-semibold">Historic Grounds & Garden Lawns</span>

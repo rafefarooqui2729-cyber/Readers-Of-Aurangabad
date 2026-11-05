@@ -9,14 +9,14 @@ export const OurStoryPage: React.FC = () => {
   const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   return (
-    <div className="space-y-20 pb-24 paper-grain overflow-hidden">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain overflow-hidden">
       
       {/* 1. HERO HEADER */}
       <motion.section 
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: easeCurve }}
-        className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
+        className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
       >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <span className="w-2 h-2 rounded-full bg-[#455240]" />
@@ -143,7 +143,7 @@ export const OurStoryPage: React.FC = () => {
                 <img
                   src="/images/processed/community/founder-abdul-rafe.webp"
                   alt="Abdul Rafe Farooqui — Founder, Readers of Aurangabad"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-2 right-2 w-12 h-12 rounded-full overflow-hidden border border-white/80 shadow-md bg-white p-0.5">
                   <img src="/brand/logo.png" alt="Seal" className="w-full h-full object-contain" />

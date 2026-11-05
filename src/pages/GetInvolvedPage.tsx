@@ -81,10 +81,10 @@ export const GetInvolvedPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-20 pb-24 paper-grain">
+    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
       
       {/* 1. HERO HEADER */}
-      <section className="pt-12 sm:pt-16 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
           <HandHeart className="w-3.5 h-3.5 text-[#455240]" />
           <span>Participate in the Movement</span>
@@ -98,11 +98,13 @@ export const GetInvolvedPage: React.FC = () => {
           "A reading movement flourishes not through passive observers, but through hands that lay out mats, share books, and welcome strangers."
         </p>
 
-        <div className="relative h-64 sm:h-80 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
+        <div className="relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
           <img
             src="/images/processed/community/get-involved-banner.webp"
             alt="Readers of Aurangabad exchanging books and collaborating"
-            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover object-[center_25%] group-hover:scale-102 transition-transform duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
             <span className="text-white text-xs sm:text-sm font-medium">

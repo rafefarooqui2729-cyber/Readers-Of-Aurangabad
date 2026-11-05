@@ -13,11 +13,11 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#1C1B1A] text-[#FAF8F5] pt-16 pb-12 border-t border-[#363330]">
+    <footer className="bg-[#1C1B1A] text-[#FAF8F5] pt-12 pb-10 border-t border-[#363330]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-[#363330]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-8 sm:pb-10 border-b border-[#363330]">
           
           {/* Brand & Mission Statement (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
@@ -153,7 +153,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Credits & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C857B] gap-4">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C857B] gap-4">
           <p>
             © {new Date().getFullYear()} Readers of Aurangabad (Readers of MH20). {t.footer.rights}
           </p>
