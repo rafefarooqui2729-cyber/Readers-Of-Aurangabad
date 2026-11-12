@@ -210,6 +210,7 @@ export const HomePage: React.FC = () => {
             <p className="text-sm sm:text-base text-[#595550] leading-relaxed">
               {t.philosophy.subheading}
             </p>
+            <p className="mt-2 font-serif text-lg text-[#20231F] text-center">No boundaries of RELIGION | LANGUAGES | AGES</p>
           </div>
         </div>
 
@@ -412,7 +413,8 @@ export const HomePage: React.FC = () => {
               {t.community.galleryTitle}
             </h2>
             <p className="text-sm text-[#595550] max-w-xl">
-              Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky.            </p>
+  Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky.
+</p>
           </div>
           <div className="lg:col-span-4 lg:text-right">
             <button
@@ -541,8 +543,8 @@ export const HomePage: React.FC = () => {
             <div className="p-6 rounded-2xl glass-panel space-y-2">
               <h4 className="font-serif font-bold text-base text-[#20231F]">Have a story or essay to submit?</h4>
               <p className="text-xs text-[#595550] leading-relaxed">
-                We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
-              </p>
+  We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
+</p>
               <button
                 onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="text-xs font-semibold text-[#777C60] hover:text-[#20231F] pt-1 inline-flex items-center gap-1 cursor-pointer"
@@ -581,8 +583,8 @@ export const HomePage: React.FC = () => {
             </h2>
 
             <p className="text-base text-[#F2EBDD]/70 font-sans leading-relaxed">
-              No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
-            </p>
+  No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
+</p>
 
             <div className="pt-2 flex flex-wrap gap-4">
               <motion.button

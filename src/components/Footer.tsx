@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import type { PageRoute } from '../types';
-import { MapPin, ArrowUpRight } from 'lucide-react';
+import { MapPin, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
 const CURRENT_YEAR = 2026;
@@ -34,6 +34,7 @@ export const Footer: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
+
               <div>
                 <span className="block font-serif text-2xl font-bold tracking-tight text-[#FAF8F5]">
                   Readers of Aurangabad
@@ -42,7 +43,9 @@ export const Footer: React.FC = () => {
                   Readers of MH20 • Est. 2026
                 </span>
               </div>
+
             </div>
+
 
             <p className="font-serif italic text-lg text-[#E8E2D5]">
               "{t.footer.tagline}"
@@ -69,7 +72,9 @@ export const Footer: React.FC = () => {
                 <MapPin className="w-3.5 h-3.5 text-[#B88B4A]" />
                 <span>Aurangabad (MH20), Maharashtra</span>
               </div>
+
             </div>
+
           </div>
 
           {/* Navigation Links (3 cols) */}
@@ -115,7 +120,6 @@ export const Footer: React.FC = () => {
               </li>
             </ul>
           </div>
-
           {/* Philosophy Principles (4 cols) */}
           <div className="lg:col-span-4 space-y-3">
             <h4 className="font-serif text-base font-semibold text-[#FAF8F5] tracking-wide uppercase text-xs">
@@ -143,6 +147,15 @@ export const Footer: React.FC = () => {
                 <span>Every reader carries an untold story worth listening to.</span>
               </li>
             </ul>
+          <a
+            href="https://chat.whatsapp.com/DsTlkqgFef5LX5cLFdm2dO?s=cl&p=i&mlu=4&ilr=4&iam=2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#25D366] hover:bg-[#1EBEA5] text-[#FAF8F5] text-xs font-medium transition-colors border border-[#363330] mt-4"
+          >
+            <MessageCircle className="w-4 h-4" />
+            Join Our WhatsApp Community
+          </a>
 
             <div className="pt-2">
               <button
@@ -153,6 +166,7 @@ export const Footer: React.FC = () => {
                 <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
+
           </div>
 
         </div>
