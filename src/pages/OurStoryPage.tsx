@@ -1,39 +1,81 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { Compass, Heart, Feather, Users, Sparkles, MapPin, ArrowRight } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 export const OurStoryPage: React.FC = () => {
   const { setCurrentPage } = useApp();
   const shouldReduceMotion = useReducedMotion();
   const easeCurve = [0.16, 1, 0.3, 1] as const;
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', shouldReduceMotion ? '0%' : '18%']);
+
+  const revealVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeCurve } },
+  };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain overflow-hidden">
-      
-      {/* 1. HERO HEADER */}
-      <motion.section 
-        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: easeCurve }}
-        className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4"
+    <div className="pb-16 paper-grain overflow-hidden">
+
+      {/* 1. FULL-BLEED HERO with roa-006 */}
+      <section
+        ref={heroRef}
+        className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden"
+        aria-label="Our Story hero"
       >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#455240]" />
-          <span>The Origin of the Movement</span>
-        </div>
+        <motion.div style={{ y: bgY }} className="absolute inset-0 will-change-transform">
+          <img
+            src="/images/enhanced/gallery/roa-006-2026-11-05.webp"
+            alt="Readers of Aurangabad community at the terrace"
+            className="w-full h-full object-cover object-[center_20%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#20231F]/30 via-transparent to-transparent" />
+        </motion.div>
 
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#1C1B1A] leading-[1.15]">
-          Every movement begins with a simple thought.
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeCurve }}
+          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B89A65] animate-pulse" />
+            The Origin of the Movement
+          </span>
 
+          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
+            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+          >
+            Our Story
+          </h1>
+
+          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
+            "Every movement begins with a simple thought — and ours began in the city of centuries."
+          </p>
+        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
+      </section>
+
+      <div className="space-y-8 sm:space-y-10">
+      {/* Introduction subheading */}
+      <motion.div
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="pt-10 max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-4"
+      >
         <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
           "In a city full of centuries-old stories, we wanted to create a space where people could discover the joy of reading together."
         </p>
-      </motion.section>
+      </motion.div>
 
       {/* 2. THE CORE NARRATIVE (Editorial Layout) */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -41,7 +83,7 @@ export const OurStoryPage: React.FC = () => {
         className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <div className="paper-card p-8 sm:p-14 rounded-3xl space-y-8 text-base sm:text-lg text-[#2A2826] leading-[1.85] font-serif">
-          
+
           <p className="text-xl sm:text-2xl font-bold text-[#1C1B1A] leading-snug">
             Not another platform telling people which books to read. Not another community limited by genres or languages.
           </p>
@@ -78,7 +120,7 @@ export const OurStoryPage: React.FC = () => {
       </motion.section>
 
       {/* 3. MISSION, VISION & ETHOS */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -86,7 +128,7 @@ export const OurStoryPage: React.FC = () => {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
+
           <div className="paper-card p-8 rounded-2xl space-y-4">
             <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240]">
               <Compass className="w-6 h-6" />
@@ -123,7 +165,7 @@ export const OurStoryPage: React.FC = () => {
       </motion.section>
 
       {/* 4. FOUNDER INTRODUCTION WITH EMBLEM INTEGRATION */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -132,16 +174,16 @@ export const OurStoryPage: React.FC = () => {
       >
         <div className="paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            
+
             {/* Founder Avatar / Portrait Slot with Real Photo & Official Crest */}
             <div className="md:col-span-4 flex flex-col items-center text-center space-y-3">
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.2 }}
                 className="w-48 h-56 sm:w-56 sm:h-64 rounded-2xl overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#1C1B1A] relative group"
               >
                 <img
-                  src="/images/edited/community/founder-wide.webp"
+                  src="/images/enhanced/community/founder-wide.webp"
                   alt="Abdul Rafe Farooqui — Founder, Readers of Aurangabad"
                   className="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-500"
                 />
@@ -201,7 +243,7 @@ export const OurStoryPage: React.FC = () => {
       </motion.section>
 
       {/* 4b. VISUAL MILESTONES: THE MOVEMENT IN PHOTOGRAPHS */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -226,7 +268,7 @@ export const OurStoryPage: React.FC = () => {
           <div className="paper-card rounded-2xl overflow-hidden group">
             <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/edited/community/community-banner.webp"
+                src="/images/enhanced/community/community-banner-wide.webp"
                 alt="Quiet reading sanctuary in the park"
                 loading="lazy"
                 decoding="async"
@@ -244,7 +286,7 @@ export const OurStoryPage: React.FC = () => {
           <div className="paper-card rounded-2xl overflow-hidden group">
             <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/edited/cards/card-1.webp"
+                src="/images/enhanced/community/card-1.webp"
                 alt="Historic Delhi Gate chapter gathering"
                 loading="lazy"
                 decoding="async"
@@ -262,7 +304,7 @@ export const OurStoryPage: React.FC = () => {
           <div className="paper-card rounded-2xl overflow-hidden group">
             <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
-                src="/images/edited/hero/hero-secondary.webp"
+                src="/images/enhanced/hero/terrace-gathering-wide.webp"
                 alt="Community assembly on garden terrace"
                 loading="lazy"
                 decoding="async"
@@ -280,7 +322,7 @@ export const OurStoryPage: React.FC = () => {
       </motion.section>
 
       {/* 5. ORGANIZING TEAM & STEWARDSHIP */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
@@ -300,10 +342,10 @@ export const OurStoryPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          
+
           <div className="paper-card p-6 rounded-2xl text-center space-y-3">
             <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto bg-[#1C1B1A]">
-              <img src="/images/thumbnails/roa-061-2026-11-05.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
+              <img src="/images/enhanced/thumbnails/roa-061-2026-11-05-thumb.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
             </div>
             <div>
               <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Abdul Rafe Farooqui</h4>
@@ -369,6 +411,7 @@ export const OurStoryPage: React.FC = () => {
         </div>
       </motion.section>
 
+      </div>
     </div>
   );
 };

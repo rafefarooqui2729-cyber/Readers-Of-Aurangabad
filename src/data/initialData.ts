@@ -1,4 +1,4 @@
-import type { Meetup, JournalArticle, ReaderStory, GalleryItem, Enquiry } from '../types';
+import type { Meetup, JournalArticle, ReaderStory, GalleryItem, Enquiry, MeetupReel } from '../types';
 import { SITE_IMAGES, TRANSFORMED_COMMUNITY_GALLERY } from './imageMapping';
 
 export const initialMeetups: Meetup[] = [
@@ -23,9 +23,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Please carry a personal reading mat or towel, a water bottle, and the book you are currently reading.',
     photos: [
-      '/images/edited/gallery/gallery-01.webp',
-      '/images/edited/gallery/gallery-03.webp',
-      '/images/edited/gallery/gallery-11.webp'
+      '/images/enhanced/gallery/roa-009-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-060-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-061-2026-11-05.webp'
     ],
     isUpcoming: true,
   },
@@ -48,9 +48,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Members brought classic Marathi novels by V.P. Kale, Urdu poetry by Wali Dakhani, and contemporary global translations.',
     photos: [
-      '/images/edited/gallery/gallery-02.webp',
-      '/images/edited/gallery/gallery-07.webp',
-      '/images/edited/gallery/gallery-10.webp'
+      '/images/enhanced/gallery/roa-006-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-049-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-058-2026-11-05.webp'
     ],
     isUpcoming: false,
   },
@@ -73,9 +73,9 @@ export const initialMeetups: Meetup[] = [
     ],
     highlights: 'Over 40 books circulated among attendees.',
     photos: [
-      '/images/edited/gallery/gallery-05.webp',
-      '/images/edited/gallery/gallery-06.webp',
-      '/images/edited/gallery/gallery-09.webp'
+      '/images/enhanced/gallery/roa-019-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-051-2026-11-05.webp',
+      '/images/enhanced/gallery/roa-057-2026-11-05.webp'
     ],
     isUpcoming: false,
   }
@@ -223,5 +223,88 @@ export const initialEnquiries: Enquiry[] = [
     details: { count: '45 books', genre: 'Classics & Urdu Fiction' },
     createdAt: '2026-11-03T15:20:00Z',
     status: 'new'
+  }
+];
+
+export const initialReels: MeetupReel[] = [
+  {
+    id: 'reel-01',
+    title: 'Morning Silence under Deccan Palms',
+    caption: '60 minutes of uninterrupted silent reading in the heart of Aurangabad. When smartphones are set aside, words come alive.',
+    videoUrl: '/media/reels/meetup01.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-006-2026-11-05-thumb.webp',
+    order: 1,
+    published: true,
+    createdAt: '2026-10-25T09:00:00Z'
+  },
+  {
+    id: 'reel-02',
+    title: 'Assembly on Garden Terraces',
+    caption: 'Readers arriving with blankets and favorite books across Urdu, Marathi, Hindi, and English.',
+    videoUrl: '/media/reels/meetup02.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-060-2026-11-05-thumb.webp',
+    order: 2,
+    published: true,
+    createdAt: '2026-10-20T09:30:00Z'
+  },
+  {
+    id: 'reel-03',
+    title: 'Sunlight & Paperbacks on Stone Steps',
+    caption: 'The gentle sound of flipping pages under open sky.',
+    videoUrl: '/media/reels/meetup03.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-059-2026-11-05-thumb.webp',
+    order: 3,
+    published: true,
+    createdAt: '2026-10-15T09:00:00Z'
+  },
+  {
+    id: 'reel-04',
+    title: 'Quiet Sanctuary in the Shade',
+    caption: 'A peaceful collective circle where every reader belongs.',
+    videoUrl: '/media/reels/meetup04.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-019-2026-11-05-thumb.webp',
+    order: 4,
+    published: true,
+    createdAt: '2026-10-10T10:00:00Z'
+  },
+  {
+    id: 'reel-05',
+    title: 'Holding the Pages That Shape Us',
+    caption: 'Diverse paperbacks brought together on one shared mat.',
+    videoUrl: '/media/reels/meetup05.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-051-2026-11-05-thumb.webp',
+    order: 5,
+    published: true,
+    createdAt: '2026-10-05T09:15:00Z'
+  },
+  {
+    id: 'reel-06',
+    title: 'Literary Reflections from the Circle',
+    caption: 'Readers voluntarily sharing passages that altered their way of seeing the world.',
+    videoUrl: '/media/reels/meetup06.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-049-2026-11-05-thumb.webp',
+    order: 6,
+    published: true,
+    createdAt: '2026-09-28T10:30:00Z'
+  },
+  {
+    id: 'reel-07',
+    title: 'Sunday Morning Green Lawn Assembly',
+    caption: 'Community members enjoying the tranquil dawn hours with great literature.',
+    videoUrl: '/media/reels/meetup07.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-054-2026-11-05-thumb.webp',
+    order: 7,
+    published: true,
+    createdAt: '2026-09-20T09:00:00Z'
+  },
+  {
+    id: 'reel-08',
+    title: 'Chai & Recommendations Gathering',
+    caption: 'Post-reading reflections, warm conversations, and unhurried laughter.',
+    videoUrl: '/media/reels/meetup08.MP4',
+    posterUrl: '/images/enhanced/thumbnails/roa-057-2026-11-05-thumb.webp',
+    order: 8,
+    published: true,
+    createdAt: '2026-09-15T11:00:00Z'
   }
 ];

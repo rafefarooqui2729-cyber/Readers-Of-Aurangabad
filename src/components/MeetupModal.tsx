@@ -54,9 +54,9 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-      <div 
-        className="bg-[#FAF8F5] border border-[#E8E2D5] rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative"
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+      <div
+        className="glass-modal rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Image */}
@@ -67,7 +67,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
             className="w-full h-full object-cover object-[center_20%] opacity-90"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/80 via-[#1C1B1A]/30 to-transparent" />
-          
+
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors backdrop-blur-sm"
@@ -93,7 +93,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
         {/* Modal Scrollable Body */}
         <div className="p-6 sm:p-8 overflow-y-auto space-y-6">
-          
+
           {/* Key Logistical Metadata */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-[#E8E2D5]">
             <div className="flex items-center gap-3">

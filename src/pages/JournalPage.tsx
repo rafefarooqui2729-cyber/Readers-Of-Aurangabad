@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { JournalCategory } from '../types';
-import { 
-  Search, 
-  Clock, 
-  ArrowRight, 
-  Globe, 
+import {
+  Search,
+  Clock,
+  ArrowRight,
+  Globe,
   Feather
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 const CATEGORIES: JournalCategory[] = [
   'Reader Stories',
@@ -25,52 +26,76 @@ export const JournalPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const shouldReduceMotion = useReducedMotion();
+  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   const filteredArticles = articles.filter((art) => {
     const matchesCategory = selectedCategory === 'All' || art.category === selectedCategory;
     const matchesLanguage = selectedLanguage === 'all' || art.language === selectedLanguage;
-    const matchesSearch = searchQuery.trim() === '' || 
+    const matchesSearch = searchQuery.trim() === '' ||
       art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       art.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       art.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    
     return matchesCategory && matchesLanguage && matchesSearch;
   });
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
-      
-      {/* 1. HERO HEADER */}
-      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
-          <Feather className="w-3.5 h-3.5 text-[#455240]" />
-          <span>Independent Literary Magazine</span>
+    <div className="pb-16 paper-grain overflow-hidden">
+
+      {/* Full-bleed hero — roa-019 (books/pages) */}
+      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/enhanced/gallery/roa-019-2026-11-05.webp"
+            alt="Books and reading"
+            className="w-full h-full object-cover object-[center_20%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/92 via-[#20231F]/30 to-[#20231F]/10" />
         </div>
 
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#1C1B1A] leading-[1.15]">
-          The Journal
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeCurve }}
+          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
+            <Feather className="w-3 h-3 text-[#B89A65]" />
+            Independent Literary Magazine
+          </span>
 
-        <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
-          "Essays, reader memoirs, cultural reflections, and poetry from Aurangabad, the Deccan, and beyond."
-        </p>
+          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
+            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+          >
+            The Journal
+          </h1>
 
-        {/* Search Bar */}
-        <div className="max-w-md mx-auto relative">
+          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
+            "Essays, reader memoirs, cultural reflections, and poetry from Aurangabad, the Deccan, and beyond."
+          </p>
+        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
+      </section>
+
+      <div className="space-y-8 sm:space-y-10">
+      {/* Search Bar */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-8">
+        <div className="max-w-md relative">
           <Search className="w-4 h-4 text-[#8C857B] absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search articles, authors, or literary topics..."
-            className="w-full pl-11 pr-4 py-3 rounded-full bg-white border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A] placeholder-[#8C857B] transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3 rounded-full glass-input focus:border-[#777C60] focus:ring-1 focus:ring-[#777C60] outline-none text-sm text-[#20231F] placeholder-[#8C857B] transition-all"
           />
         </div>
-      </section>
+      </div>
 
       {/* 2. CATEGORY & LANGUAGE FILTER BARS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-        
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-4">
+
         {/* Categories Horizontal Scroll */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
@@ -184,14 +209,24 @@ export const JournalPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="p-6 space-y-3" dir={isUrdu ? 'rtl' : 'ltr'}>
-                      <h3 className={`font-serif font-bold text-xl sm:text-2xl text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug ${
-                        isUrdu ? 'font-urdu leading-[1.8]' : ''
+                    <div className="p-6 space-y-3" dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
+                      <h3 className={`font-bold text-xl sm:text-2xl text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug ${
+                        isUrdu
+                          ? 'font-urdu text-right text-2xl leading-[2.1]'
+                          : article.language === 'hi' || article.language === 'mr'
+                          ? 'font-hindi leading-[1.6]'
+                          : 'font-serif'
                       }`}>
                         {article.title}
                       </h3>
 
-                      <p className="text-sm text-[#595550] line-clamp-3 leading-relaxed">
+                      <p className={`text-sm text-[#595550] line-clamp-3 leading-relaxed ${
+                        isUrdu
+                          ? 'font-urdu text-right text-base leading-[2.1]'
+                          : article.language === 'hi' || article.language === 'mr'
+                          ? 'font-hindi leading-[1.7]'
+                          : ''
+                      }`}>
                         {article.excerpt}
                       </p>
                     </div>
@@ -264,6 +299,7 @@ export const JournalPage: React.FC = () => {
         </div>
       </section>
 
+      </div>
     </div>
   );
 };

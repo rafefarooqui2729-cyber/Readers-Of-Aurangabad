@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Mail, 
-  MapPin, 
-  Send, 
-  CheckCircle, 
-  ArrowUpRight, 
+import {
+  Mail,
+  MapPin,
+  Send,
+  CheckCircle,
+  ArrowUpRight,
   MessageSquare
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { InstagramIcon } from '../components/Icons';
 
 export const ContactPage: React.FC = () => {
   const { addEnquiry } = useApp();
+  const shouldReduceMotion = useReducedMotion();
+  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,7 +25,7 @@ export const ContactPage: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
@@ -31,50 +34,76 @@ export const ContactPage: React.FC = () => {
       setError('Please provide your name, valid email address, and message.');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('Please enter a valid email address.');
+      return;
+    }
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      addEnquiry({
+    try {
+      await addEnquiry({
         type: 'contact',
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),
         details: { subject: subject.trim() || 'General Inquiry' }
       });
-
       setIsSubmitting(false);
       setSuccess(true);
       setName('');
       setEmail('');
       setSubject('');
       setMessage('');
-    }, 600);
+    } catch (submissionError) {
+      setIsSubmitting(false);
+      setError(submissionError instanceof Error ? submissionError.message : 'Unable to submit your message. Please try again.');
+    }
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
-      
-      {/* 1. HERO HEADER */}
-      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
-          <MessageSquare className="w-3.5 h-3.5 text-[#455240]" />
-          <span>We'd Love to Hear From You</span>
+    <div className="pb-16 paper-grain overflow-hidden">
+
+      {/* 1. FULL-BLEED HERO */}
+      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/enhanced/gallery/roa-054-2026-11-05.webp"
+            alt="Readers of Aurangabad gathering"
+            className="w-full h-full object-cover object-[center_20%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
         </div>
 
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#1C1B1A] leading-[1.15]">
-          Get in Touch
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeCurve }}
+          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
+            <MessageSquare className="w-3.5 h-3.5 text-[#B89A65]" />
+            <span>We'd Love to Hear From You</span>
+          </span>
 
-        <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-xl mx-auto leading-relaxed">
-          "Whether you have a question about our meetups, want to suggest a book, or simply say hello."
-        </p>
+          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
+            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+          >
+            Get in Touch
+          </h1>
+
+          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-xl leading-relaxed">
+            "Whether you have a question about our meetups, want to suggest a book, or simply say hello."
+          </p>
+        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
       </section>
 
       {/* 2. CONTACT CONTENT GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
-          
+
           {/* Left Column: Official Contact Metadata (5 cols) */}
           <div className="lg:col-span-5 space-y-8">
             <div className="paper-card p-8 rounded-3xl space-y-6 bg-white border border-[#E8E2D5]">
@@ -83,7 +112,7 @@ export const ContactPage: React.FC = () => {
               </h3>
 
               <div className="space-y-5 text-sm">
-                
+
                 {/* Location */}
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0">
@@ -140,7 +169,7 @@ export const ContactPage: React.FC = () => {
             {/* Gathering Location Photography */}
             <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
               <img
-                src="/images/edited/cards/card-2.webp"
+                src="/images/enhanced/community/card-2.webp"
                 alt="Sunday morning gatherings in Aurangabad public parks"
                 loading="lazy"
                 decoding="async"

@@ -1,71 +1,87 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  ExternalLink 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  ExternalLink,
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export const GatheringsPage: React.FC = () => {
   const { meetups, setSelectedMeetup, t } = useApp();
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all');
+  const shouldReduceMotion = useReducedMotion();
+  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   const upcomingMeetups = meetups.filter(m => m.isUpcoming);
   const pastMeetups = meetups.filter(m => !m.isUpcoming);
 
-  const displayedMeetups = filter === 'all' 
-    ? meetups 
-    : filter === 'upcoming' 
-    ? upcomingMeetups 
+  const displayedMeetups = filter === 'all'
+    ? meetups
+    : filter === 'upcoming'
+    ? upcomingMeetups
     : pastMeetups;
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
-      
-      {/* 1. HERO HEADER */}
-      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#455240]" />
-          <span>Sunday Mornings in Aurangabad</span>
+    <div className="pb-16 paper-grain overflow-hidden">
+
+      {/* Full-bleed hero — roa-051 */}
+      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/enhanced/gallery/roa-051-2026-11-05.webp"
+            alt="Readers of Aurangabad gathering"
+            className="w-full h-full object-cover object-[center_20%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
         </div>
 
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#1C1B1A] leading-[1.15]">
-          The Gatherings Archive
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeCurve }}
+          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#B89A65] animate-pulse" />
+            Sunday Mornings in Aurangabad
+          </span>
 
-        <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
-          "A quiet sanctuary under open skies where strangers arrive with paperbacks and leave as friends."
-        </p>
+          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
+            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+          >
+            The Gatherings<br />Archive
+          </h1>
 
-        {/* Filter Tabs */}
-        <div className="inline-flex p-1.5 rounded-full bg-[#E8E2D5]/50 border border-[#E8E2D5] text-xs font-medium">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-1.5 rounded-full transition-all ${
-              filter === 'all' ? 'bg-[#1C1B1A] text-white shadow-sm' : 'text-[#595550] hover:text-[#1C1B1A]'
-            }`}
-          >
-            All Gatherings ({meetups.length})
-          </button>
-          <button
-            onClick={() => setFilter('upcoming')}
-            className={`px-4 py-1.5 rounded-full transition-all ${
-              filter === 'upcoming' ? 'bg-[#1C1B1A] text-white shadow-sm' : 'text-[#595550] hover:text-[#1C1B1A]'
-            }`}
-          >
-            Upcoming ({upcomingMeetups.length})
-          </button>
-          <button
-            onClick={() => setFilter('past')}
-            className={`px-4 py-1.5 rounded-full transition-all ${
-              filter === 'past' ? 'bg-[#1C1B1A] text-white shadow-sm' : 'text-[#595550] hover:text-[#1C1B1A]'
-            }`}
-          >
-            Past Archive ({pastMeetups.length})
-          </button>
-        </div>
+          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
+            "A quiet sanctuary under open skies where strangers arrive with paperbacks and leave as friends."
+          </p>
+
+          {/* Filter Pills — moved into hero bottom */}
+          <div className="flex flex-wrap gap-2 pt-2">
+            {(['all', 'upcoming', 'past'] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all border cursor-pointer ${
+                  filter === f
+                    ? 'bg-[#F2EBDD] text-[#20231F] border-[#F2EBDD]'
+                    : 'glass-dark border-white/20 text-[#F2EBDD]/80 hover:text-[#F2EBDD]'
+                }`}
+              >
+                {f === 'all' ? `All Gatherings (${meetups.length})`
+                 : f === 'upcoming' ? `Upcoming (${upcomingMeetups.length})`
+                 : `Past Archive (${pastMeetups.length})`}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
       </section>
+
+      <div className="space-y-8 sm:space-y-10">
 
       {/* 2. THE MEETUP EXPERIENCE EXPLANATION (Required by prompt) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,7 +99,7 @@ export const GatheringsPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            
+
             <div className="p-5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] space-y-2">
               <span className="text-xl font-serif font-bold text-[#455240]">01</span>
               <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Silent Reading Session</h4>
@@ -122,11 +138,11 @@ export const GatheringsPage: React.FC = () => {
 
       {/* 3. MEETUP ARCHIVE GRID */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
+
         {displayedMeetups.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayedMeetups.map((meetup) => (
-              <div 
+              <div
                 key={meetup.id}
                 className="paper-card rounded-2xl overflow-hidden flex flex-col justify-between group"
               >
@@ -139,7 +155,7 @@ export const GatheringsPage: React.FC = () => {
                       decoding="async"
                       className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500"
                     />
-                    
+
                     <div className="absolute top-4 left-4 flex gap-2">
                       {meetup.edition && (
                         <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#1C1B1A] text-white">
@@ -147,7 +163,7 @@ export const GatheringsPage: React.FC = () => {
                         </span>
                       )}
                       <span className={`px-3 py-1 rounded-full text-[11px] font-semibold ${
-                        meetup.isUpcoming 
+                        meetup.isUpcoming
                           ? 'bg-[#EBF0E9] text-[#2E372B] border border-[#455240]/20'
                           : 'bg-[#FAF8F5] text-[#595550] border border-[#E8E2D5]'
                       }`}>
@@ -234,6 +250,7 @@ export const GatheringsPage: React.FC = () => {
 
       </section>
 
+      </div>
     </div>
   );
 };

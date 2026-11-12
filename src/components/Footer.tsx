@@ -15,19 +15,22 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#1C1B1A] text-[#FAF8F5] pt-12 pb-10 border-t border-[#363330]">
+    <footer className="glass-dark text-[#FAF8F5] pt-10 pb-8 border-t border-white/10 mt-6 relative overflow-hidden">
+      {/* Ambient footer glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 rounded-full bg-[#455240]/20 blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 rounded-full bg-[#8D5B4C]/20 blur-[140px] pointer-events-none -z-10" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Main Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 pb-8 sm:pb-10 border-b border-[#363330]">
-          
+
           {/* Brand & Mission Statement (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full overflow-hidden border border-[#363330] shadow-sm bg-[#2A2826] shrink-0">
-                <img 
-                  src="/brand/logo.png" 
-                  alt="Readers of Aurangabad" 
+                <img
+                  src="/brand/logo.png"
+                  alt="Readers of Aurangabad"
                   className="w-full h-full object-cover"
                 />
               </div>

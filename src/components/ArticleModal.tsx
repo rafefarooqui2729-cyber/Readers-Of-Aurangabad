@@ -9,8 +9,8 @@ interface ArticleModalProps {
   onSelectArticle: (article: JournalArticle) => void;
 }
 
-export const ArticleModal: React.FC<ArticleModalProps> = ({ 
-  article, 
+export const ArticleModal: React.FC<ArticleModalProps> = ({
+  article,
   onClose,
   onSelectArticle
 }) => {
@@ -21,6 +21,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   if (!article) return null;
 
   const isUrdu = article.language === 'ur';
+  const isHindi = article.language === 'hi' || article.language === 'mr';
 
   const relatedArticles = articles
     .filter(a => a.id !== article.id && (a.category === article.category || a.language === article.language))
@@ -43,13 +44,13 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200">
-      <div 
-        className="bg-[#FAF8F5] border border-[#E8E2D5] rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative"
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200">
+      <div
+        className="glass-modal rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar */}
-        <div className="px-6 py-4 border-b border-[#E8E2D5] bg-[#FAF8F5]/90 backdrop-blur-sm flex items-center justify-between sticky top-0 z-20">
+        <div className="px-6 py-4 border-b border-white/40 glass-nav flex items-center justify-between sticky top-0 z-20">
           <button
             onClick={onClose}
             className="flex items-center gap-1.5 text-xs font-semibold text-[#595550] hover:text-[#1C1B1A] transition-colors"
@@ -62,8 +63,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             <button
               onClick={() => setBookmarked(!bookmarked)}
               className={`p-2 rounded-lg border transition-colors ${
-                bookmarked 
-                  ? 'bg-[#EBF0E9] text-[#455240] border-[#455240]/30' 
+                bookmarked
+                  ? 'bg-[#EBF0E9] text-[#455240] border-[#455240]/30'
                   : 'text-[#595550] border-[#E8E2D5] hover:bg-white'
               }`}
               title="Bookmark for later"
@@ -91,7 +92,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         </div>
 
         {/* Article Scroll Body */}
-        <div 
+        <div
           className="p-6 sm:p-10 overflow-y-auto"
           dir={isUrdu ? 'rtl' : 'ltr'}
         >
@@ -106,13 +107,23 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               </span>
             </div>
 
-            <h1 className={`font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1B1A] leading-[1.2] ${
-              isUrdu ? 'font-urdu leading-[1.8] text-right' : ''
+            <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1B1A] leading-[1.2] ${
+              isUrdu
+                ? 'font-urdu leading-[2.1] text-right'
+                : isHindi
+                ? 'font-hindi leading-[1.45]'
+                : 'font-serif'
             }`}>
               {article.title}
             </h1>
 
-            <p className="text-base sm:text-lg text-[#595550] italic font-serif leading-relaxed">
+            <p className={`text-base sm:text-lg text-[#595550] leading-relaxed ${
+              isUrdu
+                ? 'font-urdu text-right text-lg leading-[2.1]'
+                : isHindi
+                ? 'font-hindi leading-[1.7]'
+                : 'italic font-serif'
+            }`}>
               "{article.excerpt}"
             </p>
 
@@ -155,10 +166,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
           {/* Article Full Body Typography */}
           <div className={`prose max-w-none text-[#2A2826] text-base sm:text-lg leading-[1.85] space-y-6 ${
-            isUrdu ? 'text-right font-urdu text-xl leading-[2.2]' : 'font-serif'
+            isUrdu
+              ? 'text-right font-urdu text-xl leading-[2.2]'
+              : isHindi
+              ? 'font-hindi text-base sm:text-lg leading-[1.85]'
+              : 'font-serif'
           }`}>
             {article.content.split('\n\n').map((paragraph, index) => (
-              <p key={index} className="text-justify sm:text-left">
+              <p key={index} className={isUrdu ? 'text-right' : 'text-justify sm:text-left'}>
                 {paragraph}
               </p>
             ))}
@@ -168,7 +183,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           {article.tags && article.tags.length > 0 && (
             <div className="mt-10 pt-6 border-t border-[#E8E2D5] flex flex-wrap gap-2">
               {article.tags.map((tag, i) => (
-                <span 
+                <span
                   key={i}
                   className="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-[#595550] border border-[#E8E2D5]"
                 >
@@ -214,7 +229,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             <BookOpen className="w-4 h-4 text-[#455240]" />
             <span>Readers of Aurangabad Journal</span>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="text-[#1C1B1A] font-semibold hover:underline"
           >

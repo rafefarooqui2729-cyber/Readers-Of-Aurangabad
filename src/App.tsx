@@ -25,16 +25,23 @@ const PageLoader: React.FC = () => (
 );
 
 const AppContent: React.FC = () => {
-  const { 
-    currentPage, 
-    selectedMeetup, 
-    setSelectedMeetup, 
-    selectedArticle, 
-    setSelectedArticle 
+  const {
+    currentPage,
+    selectedMeetup,
+    setSelectedMeetup,
+    selectedArticle,
+    setSelectedArticle
   } = useApp();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#1C1B1A]">
+    <div className="min-h-screen flex flex-col bg-[#FAF8F5] text-[#1C1B1A] relative selection:bg-[#455240]/15 selection:text-[#1C1B1A]">
+      {/* Ambient Glass Glow Background */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#455240]/7 blur-[120px]" />
+        <div className="absolute top-1/3 -right-36 w-[28rem] h-[28rem] rounded-full bg-[#8D5B4C]/6 blur-[140px]" />
+        <div className="absolute bottom-1/4 -left-28 w-80 h-80 rounded-full bg-[#B88B4A]/6 blur-[130px]" />
+      </div>
+
       {/* Top Navbar */}
       <Navbar />
 

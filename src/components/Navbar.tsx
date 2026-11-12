@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Language, PageRoute } from '../types';
 import { Menu, X, Globe, Lock, ShieldCheck } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, t, isRTL, currentPage, setCurrentPage, isAdmin } = useApp();
+  const shouldReduceMotion = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
@@ -38,24 +39,29 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E8E2D5] transition-colors duration-200">
+    <motion.header
+      initial={{ y: shouldReduceMotion ? 0 : -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="sticky top-0 z-40 glass-nav transition-colors duration-200"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Brand Logo with Official Enhanced Emblem */}
-          <button 
+          <button
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-3 text-left focus:outline-none group"
             aria-label="Readers of Aurangabad Home"
           >
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
               className="w-12 h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center border border-[#E8E2D5] bg-[#F4EFEA]"
             >
-              <img 
-                src="/brand/logo.png" 
+              <img
+                src="/brand/logo.png"
                 alt="Readers of Aurangabad Official Logo"
                 className="w-full h-full object-cover"
               />
@@ -71,7 +77,7 @@ export const Navbar: React.FC = () => {
           </button>
 
           {/* Desktop Navigation Links with Animated Underline */}
-          <nav className="hidden lg:flex items-center gap-6">
+          <nav className="hidden xl:flex items-center gap-5">
             {navLinks.map((link) => {
               const isActive = currentPage === link.key;
               return (
@@ -79,8 +85,8 @@ export const Navbar: React.FC = () => {
                   key={link.key}
                   onClick={() => handleNavClick(link.key)}
                   className={`relative text-sm tracking-wide py-2 px-1 transition-colors ${
-                    isActive 
-                      ? 'text-[#1C1B1A] font-bold' 
+                    isActive
+                      ? 'text-[#1C1B1A] font-bold'
                       : 'text-[#595550] hover:text-[#1C1B1A] font-medium'
                   }`}
                 >
@@ -98,13 +104,13 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Right Action Cluster: Language Switcher, Admin Button, CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            
+          <div className="hidden xl:flex items-center gap-3">
+
             {/* Language Switcher */}
             <div className="relative">
               <button
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#1C1B1A] hover:bg-[#E8E2D5]/60 transition-colors border border-[#E8E2D5]"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#1C1B1A] glass-pill transition-colors cursor-pointer"
                 title="Change Language"
                 aria-label="Select language"
               >
@@ -117,12 +123,12 @@ export const Navbar: React.FC = () => {
 
               <AnimatePresence>
                 {langDropdownOpen && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: -8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className={`absolute mt-2 w-36 bg-white border border-[#E8E2D5] rounded-xl shadow-lg py-1 z-50 ${
+                    className={`absolute mt-2 w-36 glass-panel rounded-2xl shadow-xl py-1 z-50 ${
                       isRTL ? 'left-0' : 'right-0'
                     }`}
                   >
@@ -130,14 +136,14 @@ export const Navbar: React.FC = () => {
                       <button
                         key={l.code}
                         onClick={() => handleLanguageSelect(l.code)}
-                        className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between transition-colors ${
-                          lang === l.code 
-                            ? 'bg-[#F4EFEA] text-[#1C1B1A] font-bold' 
-                            : 'text-[#595550] hover:bg-[#FAF8F5] hover:text-[#1C1B1A]'
+                        className={`w-full text-left px-4 py-2 text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                          lang === l.code
+                            ? 'bg-[#455240]/10 text-[#1C1B1A] font-bold'
+                            : 'text-[#595550] hover:bg-white/80 hover:text-[#1C1B1A]'
                         }`}
                       >
                         <span>{l.nativeName}</span>
-                        <span className="text-[10px] text-[#8D5B4C] uppercase">{l.code}</span>
+                        <span className="text-[10px] text-[#8D5B4C] uppercase font-mono">{l.code}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -150,12 +156,12 @@ export const Navbar: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleNavClick('admin')}
-              className={`p-2 rounded-full border transition-all ${
+              className={`p-2 rounded-full border transition-all cursor-pointer ${
                 currentPage === 'admin'
-                  ? 'bg-[#1C1B1A] text-white border-[#1C1B1A]'
+                  ? 'glass-button'
                   : isAdmin
-                  ? 'bg-[#EBF0E9] text-[#455240] border-[#455240]/30 hover:bg-[#455240] hover:text-white'
-                  : 'text-[#595550] border-transparent hover:border-[#E8E2D5] hover:text-[#1C1B1A]'
+                  ? 'glass-pill text-[#455240] border-[#455240]/30 hover:bg-[#455240] hover:text-white'
+                  : 'glass-pill text-[#595550] border-transparent hover:border-[#E8E2D5] hover:text-[#1C1B1A]'
               }`}
               title={isAdmin ? "Admin Portal (Authenticated)" : "Admin Portal"}
               aria-label="Admin Portal"
@@ -169,14 +175,14 @@ export const Navbar: React.FC = () => {
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.18 }}
               onClick={() => handleNavClick('get-involved')}
-              className="bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-colors duration-200 shadow-sm hover:shadow"
+              className="glass-button px-5 py-2 rounded-full text-xs font-semibold tracking-wider cursor-pointer"
             >
               {t.nav.joinCommunity}
             </motion.button>
           </div>
 
           {/* Mobile Menu & Language Toggle Button */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex xl:hidden items-center gap-2">
             <button
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
               className="px-2.5 py-1 rounded-full text-xs font-semibold text-[#1C1B1A] border border-[#E8E2D5] flex items-center gap-1"
@@ -189,6 +195,8 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-[#1C1B1A] rounded-lg hover:bg-[#E8E2D5]/50 transition-colors"
               aria-label="Toggle navigation menu"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -197,7 +205,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Language Selector Dropdown */}
         {langDropdownOpen && (
-          <div className="md:hidden py-2 px-3 border-t border-[#E8E2D5] bg-[#FAF8F5] grid grid-cols-4 gap-1.5">
+          <div className="xl:hidden py-2 px-3 border-t border-[#E8E2D5] bg-[#FAF8F5] grid grid-cols-4 gap-1.5">
             {languages.map((l) => (
               <button
                 key={l.code}
@@ -217,12 +225,13 @@ export const Navbar: React.FC = () => {
         {/* Mobile Dropdown Menu with Smooth AnimatePresence */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div 
+            <motion.div
+              id="mobile-navigation"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="lg:hidden border-t border-[#E8E2D5] py-4 space-y-1 bg-[#FAF8F5] overflow-hidden"
+              className="xl:hidden border-t border-[#E8E2D5] py-4 space-y-1 bg-[#FAF8F5] overflow-hidden"
             >
               {navLinks.map((link) => (
                 <button
@@ -237,7 +246,7 @@ export const Navbar: React.FC = () => {
                   {link.label}
                 </button>
               ))}
-              
+
               <div className="pt-3 px-3 flex flex-col gap-2">
                 <button
                   onClick={() => handleNavClick('get-involved')}
@@ -258,6 +267,6 @@ export const Navbar: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 };

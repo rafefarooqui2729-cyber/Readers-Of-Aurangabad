@@ -1,13 +1,13 @@
 export type Language = 'en' | 'hi' | 'ur' | 'mr';
 
-export type PageRoute = 
-  | 'home' 
-  | 'story' 
-  | 'gatherings' 
-  | 'journal' 
-  | 'community' 
-  | 'get-involved' 
-  | 'contact' 
+export type PageRoute =
+  | 'home'
+  | 'story'
+  | 'gatherings'
+  | 'journal'
+  | 'community'
+  | 'get-involved'
+  | 'contact'
   | 'admin';
 
 export interface Meetup {
@@ -21,22 +21,24 @@ export interface Meetup {
   description: string;
   featuredImage: string;
   registrationUrl: string; // Google Form link
+  rsvpLink?: string;
   registrationStatus: 'open' | 'closed' | 'announced' | 'past';
   capacity?: string;
   activities: string[];
+  schedule?: { time: string; activity: string }[];
   highlights?: string;
   photos?: string[];
   isUpcoming: boolean;
 }
 
-export type JournalCategory = 
-  | 'Reader Stories' 
-  | 'Personal Essays' 
-  | 'Book Reflections' 
-  | 'Literature & Culture' 
-  | 'Poetry' 
-  | 'Opinions' 
-  | 'Creative Writing' 
+export type JournalCategory =
+  | 'Reader Stories'
+  | 'Personal Essays'
+  | 'Book Reflections'
+  | 'Literature & Culture'
+  | 'Poetry'
+  | 'Opinions'
+  | 'Creative Writing'
   | 'Community Experiences';
 
 export interface JournalArticle {
@@ -94,7 +96,7 @@ export interface GalleryItem {
 
 export type InstagramMediaType = 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
 
-export type MediaCategory = 
+export type MediaCategory =
   | 'Meetups'
   | 'Reading Sessions'
   | 'Community Moments'
@@ -141,4 +143,55 @@ export interface InstagramAuthConfig {
   accessToken?: string; // Token placeholder managed securely
   tokenExpiry?: string;
   lastSyncedAt?: string;
+}
+
+/* --- REEL MANAGEMENT & SEQUENTIAL PLAYLIST TYPES --- */
+
+export interface MeetupReel {
+  id: string;
+  title: string;
+  caption?: string;
+  videoUrl: string; // File path (e.g. /media/reels/meetup01.MP4) or blob URL
+  posterUrl?: string;
+  order: number;
+  published: boolean;
+  isPublished?: boolean;
+  createdAt: string;
+  durationSeconds?: number;
+  isCustomUpload?: boolean;
+}
+
+export interface Registration {
+  id: string;
+  meetupId: string;
+  meetupTitle?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  message?: string;
+  consent: boolean;
+  status: 'new' | 'contacted' | 'resolved';
+  details?: Record<string, any>;
+  createdAt: string;
+}
+
+export interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  actionUrl?: string;
+  isPublished: boolean;
+  publishedAt: string;
+  expiresAt?: string;
+  createdAt: string;
+}
+
+export interface StaffProfile {
+  id: string;
+  email: string;
+  fullName?: string;
+  role: 'admin' | 'editor' | null;
+  designation?: string;
+  createdAt: string;
+  updatedAt: string;
 }

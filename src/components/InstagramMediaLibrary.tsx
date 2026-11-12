@@ -1,52 +1,50 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
-import type { 
-  InstagramMediaItem, 
+import type {
+  InstagramMediaItem,
   MediaCategory
 } from '../types';
-import { 
-  RefreshCw, 
-  ExternalLink, 
-  Trash2, 
-  Check, 
-  Plus, 
-  Eye, 
-  EyeOff, 
-  Camera, 
-  Play, 
-  Layers, 
-  Upload, 
-  CheckCircle, 
-  Key, 
+import {
+  RefreshCw,
+  ExternalLink,
+  Trash2,
+  Check,
+  Plus,
+  Eye,
+  EyeOff,
+  Camera,
+  Play,
+  Layers,
+  Upload,
+  CheckCircle,
+  Key,
   ShieldCheck
 } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 import { VideoFrameExtractorModal } from './VideoFrameExtractorModal';
-import { 
-  fetchFromInstagramGraphAPI, 
+import {
+  fetchFromInstagramGraphAPI,
   SAMPLE_INSTAGRAM_POSTS
 } from '../services/instagramService';
 
 const CATEGORIES: MediaCategory[] = [
   'Meetups',
-  'Reading Sessions',
   'Community Moments',
   'Reels',
-  'Event Highlights',
   'Announcements',
   'Behind the Scenes',
   'Other'
 ];
 
 export const InstagramMediaLibrary: React.FC = () => {
-  const { 
-    instagramConfig, 
-    updateInstagramConfig, 
+  const {
+    instagramConfig,
+    updateInstagramConfig,
     disconnectInstagram,
-    instagramMedia, 
-    importInstagramMedia, 
-    deleteInstagramMedia, 
-    updateInstagramMedia, 
+    instagramMedia,
+    importInstagramMedia,
+    deleteInstagramMedia,
+    updateInstagramMedia,
     togglePublishInstagramMedia,
     assignMediaToTarget,
     meetups,
@@ -98,7 +96,7 @@ export const InstagramMediaLibrary: React.FC = () => {
       }
 
       const { added, skippedDuplicates } = importInstagramMedia(incomingPosts);
-      
+
       updateInstagramConfig({
         lastSyncedAt: new Date().toISOString()
       });
@@ -159,7 +157,7 @@ export const InstagramMediaLibrary: React.FC = () => {
         caption: `[Manual Upload] ${file.name.replace(/\.[^/.]+$/, '')}`,
         mediaType: isVideo ? 'VIDEO' : 'IMAGE',
         mediaUrl: url,
-        thumbnailUrl: isVideo ? '/images/edited/gallery/gallery-03-thumb.webp' : url,
+        thumbnailUrl: isVideo ? '/images/enhanced/thumbnails/roa-060-2026-11-05-thumb.webp' : url,
         permalink: 'https://www.instagram.com/readers.of.aurangabad/',
         timestamp: new Date().toISOString(),
         category: isVideo ? 'Reels' : 'Community Moments',
@@ -199,10 +197,10 @@ export const InstagramMediaLibrary: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      
+
       {/* Top Banner: Connection Status & Global Actions */}
       <div className="paper-card p-6 rounded-3xl bg-white border border-[#E8E2D5] flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-sm">
-        
+
         {/* Left: Account Connection Badge */}
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0 p-2 shadow-xs">
@@ -215,8 +213,8 @@ export const InstagramMediaLibrary: React.FC = () => {
                 Instagram Media Library
               </h3>
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                instagramConfig.connected 
-                  ? 'bg-green-100 text-green-800 border border-green-200' 
+                instagramConfig.connected
+                  ? 'bg-green-100 text-green-800 border border-green-200'
                   : 'bg-gray-100 text-gray-700 border border-gray-200'
               }`}>
                 {instagramConfig.connected ? 'Authorized' : 'Not Connected'}
@@ -238,7 +236,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
         {/* Right: Actions (Sync, Connect/Disconnect, Manual Upload) */}
         <div className="flex flex-wrap items-center gap-2.5">
-          
+
           <button
             onClick={handleSyncInstagram}
             disabled={isSyncing}
@@ -290,8 +288,8 @@ export const InstagramMediaLibrary: React.FC = () => {
       {/* Status Alert Banner */}
       {statusMsg && (
         <div className={`p-4 rounded-2xl text-xs flex items-center justify-between gap-3 ${
-          statusMsg.type === 'success' 
-            ? 'bg-green-50 text-green-900 border border-green-200' 
+          statusMsg.type === 'success'
+            ? 'bg-green-50 text-green-900 border border-green-200'
             : 'bg-red-50 text-red-900 border border-red-200'
         }`}>
           <div className="flex items-center gap-2">
@@ -306,7 +304,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
       {/* Filter Toolbar & Category Tabs */}
       <div className="space-y-3 bg-white p-4 rounded-2xl border border-[#E8E2D5]">
-        
+
         {/* Categories Carousel */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <button
@@ -339,7 +337,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
         {/* Second Filter Row: Media Type & Publication Status & Bulk Actions */}
         <div className="pt-2 border-t border-[#F4EFEA] flex flex-wrap items-center justify-between gap-3 text-xs text-[#595550]">
-          
+
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <span>Type:</span>
@@ -447,8 +445,8 @@ export const InstagramMediaLibrary: React.FC = () => {
 
                     <div className="absolute top-3 right-3">
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        item.status === 'published' 
-                          ? 'bg-green-100 text-green-900 border border-green-200' 
+                        item.status === 'published'
+                          ? 'bg-green-100 text-green-900 border border-green-200'
                           : 'bg-amber-100 text-amber-900 border border-amber-200'
                       }`}>
                         {item.status.toUpperCase()}
@@ -471,7 +469,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
                   {/* Card Info Area */}
                   <div className="p-5 space-y-3">
-                    
+
                     {/* Category Selector */}
                     <div className="flex items-center justify-between text-xs">
                       <select
@@ -511,13 +509,13 @@ export const InstagramMediaLibrary: React.FC = () => {
 
                 {/* Footer Action Strip */}
                 <div className="p-4 bg-white border-t border-[#F4EFEA] flex items-center justify-between gap-2">
-                  
+
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => togglePublishInstagramMedia(item.id)}
                       className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                        item.status === 'published' 
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100' 
+                        item.status === 'published'
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
                           : 'bg-green-50 text-green-800 border border-green-200 hover:bg-green-100'
                       }`}
                     >

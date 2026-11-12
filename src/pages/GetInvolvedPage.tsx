@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { EnquiryType } from '../types';
-import { 
-  BookOpen, 
-  HandHeart, 
-  Send, 
-  CheckCircle, 
-  MessageCircle, 
+import {
+  BookOpen,
+  HandHeart,
+  Send,
+  CheckCircle,
+  MessageCircle,
   ArrowRight,
   ExternalLink
 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { InstagramIcon } from '../components/Icons';
 
 export const GetInvolvedPage: React.FC = () => {
   const { addEnquiry, meetups, setCurrentPage } = useApp();
   const [activeTab, setActiveTab] = useState<EnquiryType>('volunteer');
-  
+  const shouldReduceMotion = useReducedMotion();
+  const easeCurve = [0.16, 1, 0.3, 1] as const;
+
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
-  
+
   // Specific dynamic fields
   const [volunteerSkills, setVolunteerSkills] = useState('');
   const [bookDetails, setBookDetails] = useState('');
@@ -34,7 +37,7 @@ export const GetInvolvedPage: React.FC = () => {
 
   const upcomingMeetup = meetups.find(m => m.isUpcoming);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
     setSuccessMessage('');
@@ -56,8 +59,8 @@ export const GetInvolvedPage: React.FC = () => {
       details.collaborationType = collabType;
     }
 
-    setTimeout(() => {
-      addEnquiry({
+    try {
+      await addEnquiry({
         type: activeTab,
         name: name.trim(),
         email: email.trim(),
@@ -65,10 +68,9 @@ export const GetInvolvedPage: React.FC = () => {
         message: message.trim(),
         details
       });
-
       setIsSubmitting(false);
       setSuccessMessage('Your expression of interest has been safely recorded. Our team will reach out to you shortly.');
-      
+
       // Reset form
       setName('');
       setEmail('');
@@ -77,30 +79,56 @@ export const GetInvolvedPage: React.FC = () => {
       setVolunteerSkills('');
       setBookDetails('');
       setCollabOrg('');
-    }, 600);
+    } catch (submissionError) {
+      setIsSubmitting(false);
+      setErrorMessage(submissionError instanceof Error ? submissionError.message : 'Unable to submit your form. Please try again.');
+    }
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain">
-      
-      {/* 1. HERO HEADER */}
-      <section className="pt-6 sm:pt-10 max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold">
-          <HandHeart className="w-3.5 h-3.5 text-[#455240]" />
-          <span>Participate in the Movement</span>
+    <div className="pb-16 paper-grain overflow-hidden">
+
+      {/* 1. FULL-BLEED HERO */}
+      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/enhanced/gallery/roa-060-2026-11-05.webp"
+            alt="Reading session in Aurangabad"
+            className="w-full h-full object-cover object-[center_20%]"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
         </div>
 
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#1C1B1A] leading-[1.15]">
-          Get Involved
-        </h1>
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: easeCurve }}
+          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+        >
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
+            <HandHeart className="w-3.5 h-3.5 text-[#B89A65]" />
+            <span>Participate in the Movement</span>
+          </span>
 
-        <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
-          "A reading movement flourishes not through passive observers, but through hands that lay out mats, share books, and welcome strangers."
-        </p>
+          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
+            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+          >
+            Get Involved
+          </h1>
+
+          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
+            "A reading movement flourishes not through passive observers, but through hands that lay out mats, share books, and welcome strangers."
+          </p>
+        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
+      </section>
+
+      <div className="space-y-8 sm:space-y-10 pt-6">
 
         <div className="relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
           <img
-            src="/images/edited/community/community-banner.webp"
+            src="/images/enhanced/community/community-banner-wide.webp"
             alt="Readers of Aurangabad exchanging books and collaborating"
             loading="lazy"
             decoding="async"
@@ -112,12 +140,11 @@ export const GetInvolvedPage: React.FC = () => {
             </span>
           </div>
         </div>
-      </section>
 
       {/* 2. FAST ACTION TILES: Join & Attend */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
+
           {/* Tile A: Join Community Online */}
           <div className="paper-card p-8 rounded-3xl space-y-5 bg-white border border-[#E8E2D5] flex flex-col justify-between">
             <div className="space-y-3">
@@ -199,7 +226,7 @@ export const GetInvolvedPage: React.FC = () => {
       {/* 3. MULTI-PURPOSE ENQUIRY FORM (Volunteer, Donate Books, Collaborate) */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="paper-card p-8 sm:p-12 rounded-3xl bg-white border border-[#E8E2D5] shadow-lg">
-          
+
           <div className="text-center space-y-2 mb-8">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
               Direct Inquiry
@@ -222,8 +249,8 @@ export const GetInvolvedPage: React.FC = () => {
                 setErrorMessage('');
               }}
               className={`py-2.5 rounded-xl transition-all ${
-                activeTab === 'volunteer' 
-                  ? 'bg-[#1C1B1A] text-white shadow' 
+                activeTab === 'volunteer'
+                  ? 'bg-[#1C1B1A] text-white shadow'
                   : 'text-[#595550] hover:text-[#1C1B1A]'
               }`}
             >
@@ -238,8 +265,8 @@ export const GetInvolvedPage: React.FC = () => {
                 setErrorMessage('');
               }}
               className={`py-2.5 rounded-xl transition-all ${
-                activeTab === 'book_donation' 
-                  ? 'bg-[#1C1B1A] text-white shadow' 
+                activeTab === 'book_donation'
+                  ? 'bg-[#1C1B1A] text-white shadow'
                   : 'text-[#595550] hover:text-[#1C1B1A]'
               }`}
             >
@@ -254,8 +281,8 @@ export const GetInvolvedPage: React.FC = () => {
                 setErrorMessage('');
               }}
               className={`py-2.5 rounded-xl transition-all ${
-                activeTab === 'collaboration' 
-                  ? 'bg-[#1C1B1A] text-white shadow' 
+                activeTab === 'collaboration'
+                  ? 'bg-[#1C1B1A] text-white shadow'
                   : 'text-[#595550] hover:text-[#1C1B1A]'
               }`}
             >
@@ -450,6 +477,7 @@ export const GetInvolvedPage: React.FC = () => {
         </p>
       </section>
 
+      </div>
     </div>
   );
 };

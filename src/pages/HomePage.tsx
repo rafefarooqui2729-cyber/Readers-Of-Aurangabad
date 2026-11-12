@@ -1,420 +1,292 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  ArrowRight, 
-  Calendar, 
-  MapPin, 
-  Clock, 
-  Compass, 
-  Coffee, 
-  Users, 
+import {
+  ArrowRight,
+  Calendar,
+  MapPin,
+  Clock,
+  Compass,
+  Coffee,
+  Users,
   Feather,
   ChevronRight,
-  ExternalLink,
-  Play,
-  Pause,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { InstagramFeedSection } from '../components/InstagramFeedSection';
+import { FeaturedAnnouncementReel } from '../components/FeaturedAnnouncementReel';
+import { ReelCollectionSection } from '../components/ReelCollectionSection';
+import { CommunityGallery } from '../components/CommunityGallery';
 
 export const HomePage: React.FC = () => {
-  const { 
-    t, 
-    setCurrentPage, 
-    meetups, 
-    articles, 
-    gallery, 
-    setSelectedArticle, 
-    setSelectedMeetup 
-  } = useApp();
+  const { t, setCurrentPage, meetups, articles, setSelectedArticle, setSelectedMeetup } = useApp();
 
-  const [isPlayingVideo, setIsPlayingVideo] = useState(true);
   const shouldReduceMotion = useReducedMotion();
-
   const upcomingMeetups = meetups.filter(m => m.isUpcoming);
   const featuredArticle = articles.find(a => a.featured) || articles[0];
   const recentArticles = articles.slice(0, 3);
 
-  // Easing curve as mandated: 200–600ms natural cubic-bezier
   const easeCurve = [0.16, 1, 0.3, 1] as const;
 
-  const heroContainerVariants = {
+  const revealVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeCurve } },
+  };
+
+  const stagger = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.12,
-        delayChildren: shouldReduceMotion ? 0 : 0.05
-      }
-    }
+    visible: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.1 } },
   };
 
-  const heroItemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: easeCurve }
-    }
-  };
-
-  const cardStaggerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.1,
-      }
-    }
-  };
-
-  const cardItemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.45, ease: easeCurve }
-    }
+  const staggerItem = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 18 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeCurve } },
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16 paper-grain overflow-hidden">
-      
-      {/* 1. HERO SECTION WITH AMBIENT VIDEO & LITERARY COMPOSITION */}
-      <section className="relative pt-6 sm:pt-10 lg:pt-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Subtle Ambient Video Atmosphere */}
-        <div className="absolute inset-0 -top-20 -z-20 overflow-hidden pointer-events-none rounded-3xl opacity-20 mask-radial">
-          {isPlayingVideo && (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover scale-105 filter blur-xs"
-              poster="/images/edited/hero/hero-main-desktop.webp"
-            >
-              {/* Quiet sunlight through leaves / reading aesthetic video loop */}
-              <source 
-                src="https://assets.mixkit.co/videos/preview/mixkit-sunlight-through-the-leaves-of-a-tree-4243-large.mp4" 
-                type="video/mp4" 
-              />
-            </video>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#FAF8F5]/60 via-[#FAF8F5]/90 to-[#FAF8F5]" />
-        </div>
+    <div className="paper-grain overflow-hidden">
 
-        <motion.div 
-          variants={heroContainerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center"
-        >
-          {/* Left Content (7 cols) */}
-          <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-            
-            {/* Movement Tag / Location Pill & Ambient Toggle */}
-            <motion.div variants={heroItemVariants} className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EBF0E9] border border-[#455240]/20 text-[#2E372B] text-xs font-semibold tracking-wide">
-                <span className="w-2 h-2 rounded-full bg-[#455240] animate-pulse" />
-                <span>{t.hero.tag}</span>
-              </div>
+      {/* 1. HERO — Authentic group photograph with title over image & unobstructed faces */}
+      <section
+        className="relative isolate min-h-[420px] sm:min-h-[500px] lg:min-h-[580px] overflow-hidden"
+        aria-label="Readers of Aurangabad community hero"
+      >
+        <picture className="absolute inset-0 block h-full w-full">          <source media="(max-width: 640px)" srcSet="/images/enhanced/mobile/roa-hero-mobile.webp" />
+          <source media="(min-width: 1441px)" srcSet="/images/enhanced/hero/roa-hero-4k-master.webp" />
+          <source media="(min-width: 641px)" srcSet="/images/enhanced/hero/roa-group-hero-clean.webp" />
+          <img
+            src="/images/enhanced/hero/roa-group-hero-clean.webp"
+            alt="Readers of Aurangabad community gathered outdoors"
+            className="w-full h-full object-cover object-[48%_50%] sm:object-[50%_50%] lg:object-[50%_48%]"
+            width={2560}
+            height={1260}
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
 
-              {/* Ambient Motion Toggle */}
-              <button
-                onClick={() => setIsPlayingVideo(!isPlayingVideo)}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-white/80 border border-[#E8E2D5] text-[#595550] hover:text-[#1C1B1A] transition-colors"
-                title="Toggle ambient background video"
-              >
-                {isPlayingVideo ? <Pause className="w-3 h-3 text-[#455240]" /> : <Play className="w-3 h-3 text-[#8D5B4C]" />}
-                <span>{isPlayingVideo ? 'Ambient Video' : 'Paused'}</span>
-              </button>
+        {/* Subtle, non-destructive gradient strictly on the lower foreground lawn for crisp text legibility without obscuring faces */}
+        <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-black/90 via-black/35 to-transparent pointer-events-none" />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 w-full h-full min-h-[420px] sm:min-h-[500px] lg:min-h-[580px] flex flex-col justify-end pb-5 sm:pb-8 lg:pb-10">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="max-w-2xl text-white"
+          >
+            <motion.div variants={staggerItem} className="mb-1.5 sm:mb-2.5 inline-flex items-center gap-2">
+              <span className="glass-pill px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#F2EBDD] bg-black/40 border-white/20 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B89A65] inline-block mr-1.5" />
+                Aurangabad reading movement
+              </span>
             </motion.div>
 
-            {/* Editorial Main Headline Entrance */}
-            <motion.h1 
-              variants={heroItemVariants}
-              className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#1C1B1A] leading-[1.08]"
+            <motion.h1
+              variants={staggerItem}
+              className="font-serif font-bold tracking-tight leading-[0.95] text-2xl sm:text-4xl lg:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]"
             >
-              {t.hero.headline}
+              READERS OF<br />AURANGABAD
             </motion.h1>
 
-            {/* Supporting Prose */}
-            <motion.p 
-              variants={heroItemVariants}
-              className="text-lg sm:text-xl text-[#595550] font-sans leading-relaxed max-w-2xl"
+            <motion.p
+              variants={staggerItem}
+              className="mt-1.5 sm:mt-2.5 font-serif italic text-xs sm:text-base lg:text-lg text-[#F2EBDD]/95 max-w-xl drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
             >
-              {t.hero.supporting}
+              Making reading a part of everyday life again.
             </motion.p>
 
-            {/* Actions */}
-            <motion.div variants={heroItemVariants} className="pt-2 flex flex-wrap items-center gap-4">
+            <motion.div variants={staggerItem} className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.18 }}
-                onClick={() => {
-                  setCurrentPage('get-involved');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="bg-[#1C1B1A] hover:bg-[#455240] text-[#FAF8F5] px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-colors shadow-md hover:shadow-lg flex items-center gap-2 group cursor-pointer"
+                type="button"
+                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                onClick={() => { setCurrentPage('get-involved'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="bg-[#F2EBDD] hover:bg-white text-[#20231F] px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-lg transition-colors"
               >
                 <span>{t.hero.ctaPrimary}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </motion.button>
-
               <motion.button
-                whileHover={{ scale: 1.02 }}
+                type="button"
+                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
                 whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.18 }}
-                onClick={() => {
-                  setCurrentPage('story');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide text-[#1C1B1A] bg-white border border-[#E8E2D5] hover:bg-[#FAF8F5] hover:border-[#1C1B1A] transition-all shadow-sm cursor-pointer"
+                onClick={() => { setCurrentPage('story'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="glass-pill text-[#F2EBDD] hover:text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold border-white/25 cursor-pointer bg-black/25 backdrop-blur-md hover:bg-black/40 transition-colors"
               >
                 {t.hero.ctaSecondary}
               </motion.button>
             </motion.div>
-
-            {/* Key Community Highlights / Badges */}
-            <motion.div variants={heroItemVariants} className="pt-6 border-t border-[#E8E2D5] grid grid-cols-3 gap-4 text-left">
-              <div>
-                <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#1C1B1A]">
-                  MH20
-                </span>
-                <span className="text-xs text-[#8C857B] font-medium">Aurangabad Roots</span>
-              </div>
-              <div>
-                <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#455240]">
-                  4+
-                </span>
-                <span className="text-xs text-[#8C857B] font-medium">Languages Embraced</span>
-              </div>
-              <div>
-                <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#8D5B4C]">
-                  Free
-                </span>
-                <span className="text-xs text-[#8C857B] font-medium">Open to Every Reader</span>
-              </div>
-            </motion.div>
-
-          </div>
-
-          {/* Right Cinematic Editorial Composition (5 cols) with Official Emblem Integration */}
-          <motion.div 
-            variants={heroItemVariants}
-            className="lg:col-span-5 relative"
-          >
-            <div className="relative mx-auto max-w-md lg:max-w-none">
-              
-              {/* Outer Decorative Literary Frame */}
-              <div className="absolute -inset-3 rounded-3xl bg-[#E8E2D5]/60 rotate-1 -z-10" />
-              
-              {/* Main Photo Card */}
-              <div className="rounded-2xl overflow-hidden shadow-xl border border-[#E8E2D5] bg-[#1C1B1A] relative group">
-                <picture>
-                  <source
-                    media="(max-width: 640px)"
-                    srcSet="/images/edited/hero/hero-portrait-mobile.webp"
-                    type="image/webp"
-                  />
-                  <img
-                    src="/images/edited/hero/hero-portrait-card.webp"
-                    alt="Young readers of Aurangabad immersed in physical books on sunlit stone steps"
-                    className="w-full h-[400px] sm:h-[450px] object-cover object-[center_15%] opacity-95 group-hover:scale-105 transition-transform duration-700 ease-out"
-                    width={500}
-                    height={650}
-                  />
-                </picture>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/85 via-[#1C1B1A]/20 to-transparent" />
-                
-                {/* Official Brand Emblem Seal Overlaid Elegantly */}
-                <motion.div 
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                  className="absolute top-4 right-4 w-20 h-20 rounded-full shadow-2xl border-2 border-[#E8E2D5] overflow-hidden bg-[#FAF8F5]/90 backdrop-blur-md p-1"
-                  title="Official Seal — Readers of Aurangabad"
-                >
-                  <img
-                    src="/brand/logo.png"
-                    alt="Readers of Aurangabad Seal"
-                    className="w-full h-full object-contain"
-                  />
-                </motion.div>
-
-                {/* Floating Quote Stamp */}
-                <div className="absolute bottom-6 left-6 right-6 p-5 rounded-xl bg-[#FAF8F5]/95 backdrop-blur-md border border-[#E8E2D5] shadow-lg">
-                  <p className="font-serif italic text-sm text-[#1C1B1A] leading-relaxed">
-                    "A reader lives a thousand lives before he dies. The man who never reads lives only one."
-                  </p>
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#E8E2D5]">
-                    <span className="text-[10px] font-sans font-semibold text-[#8D5B4C] uppercase tracking-wider">
-                      — Readers of Aurangabad
-                    </span>
-                    <span className="text-[10px] text-[#455240] font-semibold">MH20 Movement</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
           </motion.div>
-
-        </motion.div>
+        </div>
       </section>
 
-      {/* 2. INTRODUCTION SECTION WITH SCROLL-TRIGGERED REVEAL */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
+      {/* 2. THE AURANGABAD READING MOVEMENT — Editorial Storytelling Section on Warm Paper */}
+      <motion.section
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6"
+        viewport={{ once: true, margin: '-40px', amount: 0.2 }}
+        transition={{ duration: shouldReduceMotion ? 0.2 : 0.75, ease: easeCurve }}
+        className="relative bg-[#F3ECDD] px-5 sm:px-8 lg:px-12 py-8 sm:py-10"
+        aria-label="The Aurangabad Reading Movement"
       >
-        <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] shadow-sm mx-auto bg-white p-1">
-          <img src="/brand/logo.png" alt="Emblem" className="w-full h-full object-contain" />
-        </div>
-        
-        <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#1C1B1A]">
-          {t.intro.heading}
-        </h2>
-        
-        <p className="text-sm sm:text-base font-semibold uppercase tracking-widest text-[#8D5B4C]">
-          {t.intro.subheading}
-        </p>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12 items-center">
 
-        <p className="text-lg sm:text-xl text-[#595550] font-serif leading-relaxed italic max-w-3xl mx-auto">
-          "{t.intro.body}"
-        </p>
+          {/* Left Column: Heading & Label (5 cols) */}
+          <div className="lg:col-span-5 space-y-2.5">
+            <div className="inline-flex items-center gap-2">
+              <span className="w-6 h-0.5 bg-[#B89A65]" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#777C60]">
+                The Aurangabad Reading Movement
+              </span>
+            </div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: shouldReduceMotion ? 0.2 : 0.72, ease: easeCurve }}
+              className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#20231F] tracking-tight leading-[1.08]"
+            >
+              {t.intro.heading}
+            </motion.h2>
+          </div>
+
+          {/* Right Column: Carefully typeset quotation with decorative mark (7 cols) */}
+          <div className="lg:col-span-7 relative pl-0 lg:pl-8 lg:border-l lg:border-[#E8E2D5]">
+            <span
+              className="font-serif text-5xl sm:text-6xl text-[#B89A65]/40 leading-none select-none block -mb-4"
+              aria-hidden="true"
+            >
+              “
+            </span>
+
+            <motion.blockquote
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: shouldReduceMotion ? 0.2 : 0.72, delay: shouldReduceMotion ? 0 : 0.12, ease: easeCurve }}
+              className="font-serif italic text-lg sm:text-xl lg:text-2xl text-[#20231F]/90 leading-relaxed"
+            >
+              {t.intro.body}
+            </motion.blockquote>
+          </div>
+
+        </div>
       </motion.section>
 
-      {/* 3. OUR PHILOSOPHY (4 Editorial Cards with Staggered Entrance) */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12"
+      {/* ══════════════════════════════════════════════════════════════
+          4. FEATURED ANNOUNCEMENT REEL
+          ════════════════════════════════════════════════════════════ */}
+      <FeaturedAnnouncementReel />
+
+      {/* ══════════════════════════════════════════════════════════════
+          5. REEL COLLECTION
+          ════════════════════════════════════════════════════════════ */}
+      <ReelCollectionSection />
+
+      {/* ══════════════════════════════════════════════════════════════
+          6. OUR PHILOSOPHY — Editorial Offset Cards
+          ════════════════════════════════════════════════════════════ */}
+      <motion.section
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
       >
-        <div className="text-center space-y-3">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1B1A]">
-            {t.philosophy.heading}
-          </h2>
-          <p className="text-base text-[#595550] max-w-2xl mx-auto">
-            {t.philosophy.subheading}
-          </p>
+        {/* Section Header */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8 border-b border-[#E5DFD4]">
+          <div className="lg:col-span-7 space-y-3">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block">
+              02 — Why We Gather
+            </span>
+            <h2 className="font-serif font-bold text-[#20231F] leading-tight"
+              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}
+            >
+              {t.philosophy.heading}
+            </h2>
+          </div>
+          <div className="lg:col-span-5">
+            <p className="text-sm sm:text-base text-[#595550] leading-relaxed">
+              {t.philosophy.subheading}
+            </p>
+          </div>
         </div>
 
-        <motion.div 
-          variants={cardStaggerVariants}
+        {/* 2×2 Editorial Offset Grid */}
+        <motion.div
+          variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          viewport={{ once: true, margin: '-40px' }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Card 1 */}
-          <motion.div variants={cardItemVariants} className="paper-card p-8 rounded-2xl flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] group-hover:scale-105 transition-transform">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors">
-                {t.philosophy.p1Title}
-              </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                {t.philosophy.p1Desc}
-              </p>
-            </div>
-            <div className="pt-6 mt-6 border-t border-[#F4EFEA] text-[11px] font-semibold text-[#8D5B4C] uppercase tracking-wider">
-              01 • Shared Experience
-            </div>
-          </motion.div>
+          {[
+            { icon: <Users className="w-6 h-6" />, title: t.philosophy.p1Title, desc: t.philosophy.p1Desc, num: '01', label: 'Shared Experience', accent: '#777C60', offset: false },
+            { icon: <Compass className="w-6 h-6" />, title: t.philosophy.p2Title, desc: t.philosophy.p2Desc, num: '02', label: 'Open Intellect', accent: '#A65F46', offset: true },
+            { icon: <Feather className="w-6 h-6" />, title: t.philosophy.p3Title, desc: t.philosophy.p3Desc, num: '03', label: 'Empathy & Voice', accent: '#B89A65', offset: true },
+            { icon: <Coffee className="w-6 h-6" />, title: t.philosophy.p4Title, desc: t.philosophy.p4Desc, num: '04', label: 'Real Bonds', accent: '#777C60', offset: false },
+          ].map((card) => (
+            <motion.div
+              key={card.num}
+              variants={staggerItem}
+              className="glass-card p-6 rounded-2xl flex flex-col justify-between group"
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="space-y-5">
+                <div className="flex items-start justify-between">
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
+                    style={{ background: `${card.accent}18`, color: card.accent }}
+                  >
+                    {card.icon}
+                  </div>
+                  <span className="font-serif font-bold text-5xl leading-none select-none"
+                    style={{ color: `${card.accent}18` }}
+                  >{card.num}</span>
+                </div>
 
-          {/* Card 2 */}
-          <motion.div variants={cardItemVariants} className="paper-card p-8 rounded-2xl flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] group-hover:scale-105 transition-transform">
-                <Compass className="w-6 h-6" />
+                <h3 className="font-serif text-2xl font-bold text-[#20231F] group-hover:text-[#777C60] transition-colors">
+                  {card.title}
+                </h3>
+                <p className="text-sm text-[#595550] leading-relaxed">{card.desc}</p>
               </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors">
-                {t.philosophy.p2Title}
-              </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                {t.philosophy.p2Desc}
-              </p>
-            </div>
-            <div className="pt-6 mt-6 border-t border-[#F4EFEA] text-[11px] font-semibold text-[#8D5B4C] uppercase tracking-wider">
-              02 • Open Intellect
-            </div>
-          </motion.div>
 
-          {/* Card 3 */}
-          <motion.div variants={cardItemVariants} className="paper-card p-8 rounded-2xl flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] group-hover:scale-105 transition-transform">
-                <Feather className="w-6 h-6" />
+              <div className="pt-6 mt-6 border-t border-[#E5DFD4]/60 flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ background: card.accent }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: card.accent }}>
+                  {card.label}
+                </span>
               </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors">
-                {t.philosophy.p3Title}
-              </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                {t.philosophy.p3Desc}
-              </p>
-            </div>
-            <div className="pt-6 mt-6 border-t border-[#F4EFEA] text-[11px] font-semibold text-[#8D5B4C] uppercase tracking-wider">
-              03 • Empathy & Voice
-            </div>
-          </motion.div>
-
-          {/* Card 4 */}
-          <motion.div variants={cardItemVariants} className="paper-card p-8 rounded-2xl flex flex-col justify-between group">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] group-hover:scale-105 transition-transform">
-                <Coffee className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors">
-                {t.philosophy.p4Title}
-              </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                {t.philosophy.p4Desc}
-              </p>
-            </div>
-            <div className="pt-6 mt-6 border-t border-[#F4EFEA] text-[11px] font-semibold text-[#8D5B4C] uppercase tracking-wider">
-              04 • Real Bonds
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </motion.div>
       </motion.section>
 
-      {/* 4. UPCOMING GATHERINGS */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10"
+      {/* ══════════════════════════════════════════════════════════════
+          7. UPCOMING GATHERINGS
+          ════════════════════════════════════════════════════════════ */}
+      <motion.section
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
       >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E8E2D5] pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E5DFD4] pb-6">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
-              Events in Aurangabad
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block mb-2">
+              03 — Events in Aurangabad
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1B1A]">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#20231F]">
               {t.gatherings.upcomingHeading}
             </h2>
-            <p className="text-sm text-[#595550] mt-1">
-              {t.gatherings.upcomingSub}
-            </p>
+            <p className="text-sm text-[#595550] mt-1">{t.gatherings.upcomingSub}</p>
           </div>
-
           <button
-            onClick={() => {
-              setCurrentPage('gatherings');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+            onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className="text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <span>{t.gatherings.viewAllGatherings}</span>
             <ChevronRight className="w-4 h-4" />
@@ -422,200 +294,163 @@ export const HomePage: React.FC = () => {
         </div>
 
         {upcomingMeetups.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {upcomingMeetups.map((meetup) => (
-              <motion.div 
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {upcomingMeetups.slice(0, 3).map((meetup) => (
+              <motion.div
                 key={meetup.id}
-                whileHover={{ y: -3 }}
-                transition={{ duration: 0.2 }}
-                className="paper-card rounded-2xl overflow-hidden flex flex-col justify-between group"
+                variants={staggerItem}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="glass-card rounded-2xl overflow-hidden flex flex-col cursor-pointer group"
+                onClick={() => setSelectedMeetup(meetup)}
+                role="button"
+                tabIndex={0}
+                aria-label={`View details for ${meetup.title}`}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setSelectedMeetup(meetup);
+                  }
+                }}
               >
-                <div>
-                  <div className="relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
+                {/* Cover */}
+                {meetup.featuredImage && (
+                  <div className="relative h-48 overflow-hidden bg-[#20231F]">
                     <img
                       src={meetup.featuredImage}
                       alt={meetup.title}
-                      className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500 ease-out"
+                      loading="lazy"
+                      className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 ease-out"
                     />
-                    <div className="absolute top-4 left-4 flex gap-2">
-                      {meetup.edition && (
-                        <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#1C1B1A] text-white">
-                          {meetup.edition}
-                        </span>
-                      )}
-                      <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#EBF0E9] text-[#2E372B] border border-[#455240]/20">
-                        {meetup.registrationStatus === 'open' ? 'Open for RSVP' : 'Announced'}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/60 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span className="glass-pill px-2.5 py-1 rounded-full text-[10px] font-semibold text-[#F2EBDD] uppercase tracking-wider border-white/20">
+                        {meetup.edition || 'Meetup'}
                       </span>
                     </div>
                   </div>
+                )}
 
-                  <div className="p-6 sm:p-8 space-y-4">
-                    <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug">
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="font-serif text-xl font-bold text-[#20231F] group-hover:text-[#777C60] transition-colors leading-snug">
                       {meetup.title}
                     </h3>
-
-                    <p className="text-sm text-[#595550] line-clamp-2 leading-relaxed">
-                      {meetup.description}
-                    </p>
-
-                    <div className="pt-2 space-y-2 text-xs text-[#8C857B] border-t border-[#F4EFEA]">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-[#455240]" />
-                        <span className="font-medium text-[#1C1B1A]">{meetup.date}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-[#455240]" />
-                        <span>{meetup.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-[#8D5B4C]" />
-                        <span>{meetup.venue}</span>
-                      </div>
+                    <div className="flex flex-col gap-1.5 text-xs text-[#595550]">
+                      <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{meetup.date}</span>
+                      <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{meetup.time}</span>
+                      <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{meetup.venue}</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="p-6 pt-0 flex items-center justify-between gap-3 border-t border-[#F4EFEA]">
-                  <button
-                    onClick={() => setSelectedMeetup(meetup)}
-                    className="text-xs font-semibold text-[#595550] hover:text-[#1C1B1A] transition-colors cursor-pointer"
-                  >
-                    View Schedule & Details
-                  </button>
-
-                  <a
-                    href={meetup.registrationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm"
-                  >
-                    <span>{t.gatherings.registerNow}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="pt-4 border-t border-[#E5DFD4]/60 flex items-center justify-between gap-3">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setSelectedMeetup(meetup); }}
+                      className="text-xs font-semibold text-[#595550] hover:text-[#20231F] transition-colors cursor-pointer"
+                    >
+                      View Details
+                    </button>
+                    <a
+                      href={meetup.registrationUrl || meetup.rsvpLink || 'https://forms.gle/readers-of-aurangabad'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="glass-button px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>RSVP Free</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
-          <div className="bg-white border border-[#E8E2D5] rounded-2xl p-12 text-center max-w-2xl mx-auto space-y-4">
-            <div className="w-12 h-12 rounded-full bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] mx-auto">
+          <div className="glass-panel rounded-2xl p-12 text-center max-w-2xl mx-auto space-y-4">
+            <div className="w-12 h-12 rounded-full bg-white/80 border border-[#E5DFD4] flex items-center justify-center text-[#A65F46] mx-auto">
               <Sparkles className="w-5 h-5" />
             </div>
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-              Next Chapter in the Making
-            </h3>
-            <p className="text-base text-[#595550] font-serif italic">
-              "{t.gatherings.emptyUpcoming}"
-            </p>
-            <div className="pt-2">
-              <a
-                href="https://instagram.com/readers.of.aurangabad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1C1B1A] text-white text-xs font-semibold hover:bg-[#455240] transition-colors"
-              >
-                <span>Follow on Instagram for Announcement</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
+            <h3 className="font-serif text-2xl font-bold text-[#20231F]">Next Chapter in the Making</h3>
+            <p className="text-base text-[#595550] font-serif italic">"{t.gatherings.emptyUpcoming}"</p>
+            <a
+              href="https://instagram.com/readers.of.aurangabad"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-button text-xs font-semibold mt-2"
+            >
+              <span>Follow on Instagram for Announcements</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         )}
       </motion.section>
 
-      {/* 5. COMMUNITY MOMENTS (Editorial Image Gallery Grid with Hover Interactions) */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
-      >
-        <div className="text-center space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
-            Real Photographs & Authentic Moments
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1B1A]">
-            {t.community.galleryTitle}
-          </h2>
-          <p className="text-sm text-[#595550] max-w-xl mx-auto">
-            Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {gallery.slice(0, 6).map((item) => (
-            <div 
-              key={item.id}
-              className="group relative h-40 sm:h-44 rounded-xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]"
-            >
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-[center_20%] group-hover:scale-110 transition-transform duration-500 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 flex flex-col justify-end">
-                <span className="text-[11px] font-semibold text-white leading-tight">
-                  {item.title}
-                </span>
-                <span className="text-[9px] text-[#E8E2D5]">{item.date}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-center pt-2">
-          <button
-            onClick={() => {
-              setCurrentPage('community');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] editorial-link py-1 cursor-pointer"
-          >
-            <span>Explore full community archive</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </motion.section>
-
-      {/* 5b. INSTAGRAM FEED — Published media from @readers.of.aurangabad */}
+      {/* ══════════════════════════════════════════════════════════════
+          8. COMMUNITY GALLERY — Full Editorial Masonry
+          ════════════════════════════════════════════════════════════ */}
       <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
       >
-        <InstagramFeedSection />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8 border-b border-[#E5DFD4]">
+          <div className="lg:col-span-8 space-y-3">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block">
+              04 — Real Photographs & Authentic Moments
+            </span>
+            <h2 className="font-serif font-bold text-[#20231F] leading-tight"
+              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}
+            >
+              {t.community.galleryTitle}
+            </h2>
+            <p className="text-sm text-[#595550] max-w-xl">
+              Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky.            </p>
+          </div>
+          <div className="lg:col-span-4 lg:text-right">
+            <button
+              onClick={() => { setCurrentPage('community'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#20231F] hover:text-[#777C60] transition-colors cursor-pointer"
+            >
+              <span>Explore full archive</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <CommunityGallery compact={true} />
       </motion.section>
 
-      {/* 6. JOURNAL PREVIEW */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10"
+      {/* ══════════════════════════════════════════════════════════════
+          9. JOURNAL PREVIEW
+          ════════════════════════════════════════════════════════════ */}
+      <motion.section
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
       >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E8E2D5] pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E5DFD4] pb-6">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
-              Words & Reflections
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block mb-2">
+              05 — Words & Reflections
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1B1A]">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#20231F]">
               {t.journal.heading}
             </h2>
-            <p className="text-sm text-[#595550] mt-1">
-              {t.journal.subheading}
-            </p>
+            <p className="text-sm text-[#595550] mt-1">{t.journal.subheading}</p>
           </div>
-
           <button
-            onClick={() => {
-              setCurrentPage('journal');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] flex items-center gap-1.5 transition-colors cursor-pointer"
+            onClick={() => { setCurrentPage('journal'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className="text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <span>Browse All Articles</span>
             <ChevronRight className="w-4 h-4" />
@@ -623,23 +458,22 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Main Feature (7 cols) */}
+          {/* Featured article */}
           {featuredArticle && (
-            <motion.div 
-              whileHover={{ y: -3 }}
-              transition={{ duration: 0.2 }}
+            <motion.div
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.25 }}
               onClick={() => setSelectedArticle(featuredArticle)}
-              className="lg:col-span-7 paper-card rounded-2xl overflow-hidden cursor-pointer group flex flex-col justify-between"
+              className="lg:col-span-7 glass-card rounded-2xl overflow-hidden cursor-pointer group flex flex-col"
             >
-              <div className="relative h-64 sm:h-72 overflow-hidden bg-[#1C1B1A]">
+              <div className="relative h-64 sm:h-72 overflow-hidden bg-[#20231F]">
                 <img
                   src={featuredArticle.coverImage}
                   alt={featuredArticle.title}
                   className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5] shadow-sm">
+                  <span className="glass-pill px-3 py-1 rounded-full text-xs font-semibold text-[#20231F] border-white/60">
                     Featured Reflection
                   </span>
                 </div>
@@ -647,22 +481,17 @@ export const HomePage: React.FC = () => {
 
               <div className="p-6 sm:p-8 space-y-4">
                 <div className="flex items-center gap-2 text-xs text-[#8C857B]">
-                  <span className="text-[#8D5B4C] font-semibold uppercase">{featuredArticle.category}</span>
-                  <span>•</span>
+                  <span className="text-[#A65F46] font-semibold uppercase">{featuredArticle.category}</span>
+                  <span>·</span>
                   <span>{featuredArticle.readingTime} {t.journal.readTime}</span>
                 </div>
-
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug">
+                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#20231F] group-hover:text-[#777C60] transition-colors leading-snug">
                   {featuredArticle.title}
                 </h3>
-
-                <p className="text-sm sm:text-base text-[#595550] leading-relaxed">
-                  {featuredArticle.excerpt}
-                </p>
-
-                <div className="pt-3 border-t border-[#F4EFEA] flex items-center justify-between text-xs text-[#8C857B]">
+                <p className="text-sm sm:text-base text-[#595550] leading-relaxed">{featuredArticle.excerpt}</p>
+                <div className="pt-3 border-t border-[#E5DFD4]/60 flex items-center justify-between text-xs text-[#8C857B]">
                   <span>By {featuredArticle.author}</span>
-                  <span className="font-semibold text-[#1C1B1A] group-hover:text-[#455240] flex items-center gap-1">
+                  <span className="font-semibold text-[#20231F] group-hover:text-[#777C60] flex items-center gap-1">
                     {t.journal.readArticle} <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -670,7 +499,7 @@ export const HomePage: React.FC = () => {
             </motion.div>
           )}
 
-          {/* List of Other Articles (5 cols) */}
+          {/* Side articles */}
           <div className="lg:col-span-5 space-y-4">
             {recentArticles.filter(a => a.id !== featuredArticle?.id).map((article) => (
               <motion.div
@@ -678,80 +507,80 @@ export const HomePage: React.FC = () => {
                 whileHover={{ x: 4 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setSelectedArticle(article)}
-                className="paper-card p-6 rounded-xl cursor-pointer group flex gap-4 items-start"
+                className="glass-card p-5 rounded-2xl cursor-pointer group flex gap-4 items-start"
               >
-                <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#1C1B1A]">
+                <div className="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-[#20231F]">
                   <img
                     src={article.coverImage}
                     alt={article.title}
                     className="w-full h-full object-cover object-[center_20%]"
                   />
                 </div>
-
-                <div className="space-y-1.5 flex-1 min-w-0">
-                  <span className="text-[10px] font-semibold text-[#8D5B4C] uppercase tracking-wider block">
-                    {article.category} • {article.language.toUpperCase()}
+                <div className="space-y-1.5 flex-1 min-w-0" dir={article.language === 'ur' ? 'rtl' : 'ltr'} lang={article.language}>
+                  <span className={`text-[10px] font-semibold text-[#A65F46] uppercase tracking-wider block ${article.language === 'ur' ? 'text-right' : ''}`}>
+                    {article.category} · {article.language.toUpperCase()}
                   </span>
-                  
-                  <h4 className="font-serif font-bold text-base text-[#1C1B1A] group-hover:text-[#455240] transition-colors line-clamp-2 leading-snug">
+                  <h4 className={`font-bold text-base text-[#20231F] group-hover:text-[#777C60] transition-colors line-clamp-2 leading-snug ${
+                    article.language === 'ur'
+                      ? 'font-urdu text-right text-lg leading-[2.0]'
+                      : article.language === 'hi' || article.language === 'mr'
+                      ? 'font-hindi leading-[1.6]'
+                      : 'font-serif'
+                  }`}>
                     {article.title}
                   </h4>
-
-                  <div className="flex items-center gap-2 text-[11px] text-[#8C857B] pt-1">
+                  <div className={`flex items-center gap-2 text-[11px] text-[#8C857B] pt-1 ${article.language === 'ur' ? 'justify-end' : ''}`}>
                     <span>{article.author}</span>
-                    <span>•</span>
+                    <span>·</span>
                     <span>{article.readingTime} min</span>
                   </div>
                 </div>
               </motion.div>
             ))}
 
-            <div className="p-6 rounded-xl bg-[#F4EFEA] border border-[#E8E2D5] space-y-2">
-              <h4 className="font-serif font-bold text-base text-[#1C1B1A]">
-                Have a story or essay to submit?
-              </h4>
+            <div className="p-6 rounded-2xl glass-panel space-y-2">
+              <h4 className="font-serif font-bold text-base text-[#20231F]">Have a story or essay to submit?</h4>
               <p className="text-xs text-[#595550] leading-relaxed">
                 We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
               </p>
               <button
-                onClick={() => {
-                  setCurrentPage('contact');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="text-xs font-semibold text-[#455240] hover:text-[#1C1B1A] pt-1 inline-flex items-center gap-1 cursor-pointer"
+                onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="text-xs font-semibold text-[#777C60] hover:text-[#20231F] pt-1 inline-flex items-center gap-1 cursor-pointer"
               >
                 <span>Submit to Journal</span>
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
-
         </div>
       </motion.section>
 
-      {/* 7. COMMUNITY CTA BANNER */}
-      <motion.section 
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      {/* ══════════════════════════════════════════════════════════════
+          10. COMMUNITY CTA BANNER
+          ════════════════════════════════════════════════════════════ */}
+      <motion.section
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-60px' }}
+        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-6 sm:py-10"
       >
-        <div className="relative rounded-3xl bg-[#1C1B1A] text-white p-8 sm:p-14 lg:p-16 overflow-hidden shadow-2xl">
-          {/* Subtle background glow */}
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-[#455240]/40 blur-3xl" />
-          <div className="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-[#8D5B4C]/30 blur-3xl" />
+        <div className="relative rounded-3xl glass-dark p-10 sm:p-16 overflow-hidden shadow-2xl border-white/15">
+          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-[#777C60]/30 blur-3xl pointer-events-none" />
+          <div className="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-[#A65F46]/20 blur-3xl pointer-events-none" />
 
           <div className="relative max-w-2xl space-y-6">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#2A2826] text-[#B88B4A] border border-[#363330] inline-block uppercase tracking-wider">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#B89A65] block">
               Every Reader Deserves a Place
             </span>
 
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight">
+            <h2 className="font-serif font-bold text-[#F2EBDD] leading-tight"
+              style={{ fontSize: 'clamp(1.8rem, 4vw, 3.2rem)' }}
+            >
               Whether you read every day or are just beginning, there is a place for you here.
             </h2>
 
-            <p className="text-base sm:text-lg text-[#B4ADA2] font-sans leading-relaxed">
+            <p className="text-base text-[#F2EBDD]/70 font-sans leading-relaxed">
               No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
             </p>
 
@@ -759,22 +588,18 @@ export const HomePage: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  setCurrentPage('get-involved');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="bg-[#FAF8F5] hover:bg-[#E8E2D5] text-[#1C1B1A] px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all shadow-md cursor-pointer"
+                onClick={() => { setCurrentPage('get-involved'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className="bg-[#F2EBDD] hover:bg-white text-[#20231F] px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all shadow-md cursor-pointer"
               >
                 Become a Part of Us
               </motion.button>
-
               <a
                 href="https://instagram.com/readers.of.aurangabad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-full text-sm font-semibold tracking-wide text-white border border-[#363330] hover:bg-[#2A2826] transition-all"
+                className="glass-pill px-6 py-3.5 rounded-full text-sm font-semibold text-[#F2EBDD] border-white/20 hover:bg-white/10 transition-all inline-block"
               >
-                Instagram: @readers.of.aurangabad
+                @readers.of.aurangabad
               </a>
             </div>
           </div>
