@@ -9,6 +9,7 @@ import {
   Feather
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { scrollToTop } from '../utils/scroll';
 
 const CATEGORIES: JournalCategory[] = [
   'Reader Stories',
@@ -40,10 +41,10 @@ export const JournalPage: React.FC = () => {
   });
 
   return (
-    <div className="pb-16 paper-grain overflow-hidden">
+    <div className="p2-page p2-journal pb-16 paper-grain overflow-hidden">
 
       {/* Full-bleed hero — roa-019 (books/pages) */}
-      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+      <section className="p2-hero p2-hero--journal relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/enhanced/gallery/roa-019-2026-11-05.webp"
@@ -58,7 +59,7 @@ export const JournalPage: React.FC = () => {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeCurve }}
-          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
             <Feather className="w-3 h-3 text-[#B89A65]" />
@@ -80,7 +81,7 @@ export const JournalPage: React.FC = () => {
 
       <div className="space-y-8 sm:space-y-10">
       {/* Search Bar */}
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-8">
+      <div className="p2-journal-search max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-8">
         <div className="max-w-md relative">
           <Search className="w-4 h-4 text-[#8C857B] absolute left-4 top-1/2 -translate-y-1/2" />
           <input
@@ -94,11 +95,12 @@ export const JournalPage: React.FC = () => {
       </div>
 
       {/* 2. CATEGORY & LANGUAGE FILTER BARS */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-4">
+      <section className="p2-journal-filters max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-4">
 
         {/* Categories Horizontal Scroll */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        <div className="p2-category-bar flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button
+            data-active={selectedCategory === 'All'}
             onClick={() => setSelectedCategory('All')}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
               selectedCategory === 'All'
@@ -113,6 +115,7 @@ export const JournalPage: React.FC = () => {
             return (
               <button
                 key={cat}
+                data-active={selectedCategory === cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
                   selectedCategory === cat
@@ -127,11 +130,12 @@ export const JournalPage: React.FC = () => {
         </div>
 
         {/* Language Filter Tags */}
-        <div className="flex items-center justify-between text-xs text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
-          <div className="flex items-center gap-2">
+        <div className="p2-language-bar flex flex-wrap items-center justify-between gap-y-2 text-xs text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
+          <div className="flex flex-wrap items-center gap-2 gap-y-1">
             <Globe className="w-3.5 h-3.5 text-[#455240]" />
             <span className="font-semibold text-[#1C1B1A]">Language:</span>
             <button
+              data-active={selectedLanguage === 'all'}
               onClick={() => setSelectedLanguage('all')}
               className={`px-2.5 py-1 rounded-md transition-colors ${
                 selectedLanguage === 'all' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
@@ -140,6 +144,7 @@ export const JournalPage: React.FC = () => {
               All
             </button>
             <button
+              data-active={selectedLanguage === 'en'}
               onClick={() => setSelectedLanguage('en')}
               className={`px-2.5 py-1 rounded-md transition-colors ${
                 selectedLanguage === 'en' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
@@ -148,6 +153,7 @@ export const JournalPage: React.FC = () => {
               English
             </button>
             <button
+              data-active={selectedLanguage === 'hi'}
               onClick={() => setSelectedLanguage('hi')}
               className={`px-2.5 py-1 rounded-md transition-colors ${
                 selectedLanguage === 'hi' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
@@ -156,6 +162,7 @@ export const JournalPage: React.FC = () => {
               हिन्दी
             </button>
             <button
+              data-active={selectedLanguage === 'ur'}
               onClick={() => setSelectedLanguage('ur')}
               className={`px-2.5 py-1 rounded-md transition-colors ${
                 selectedLanguage === 'ur' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
@@ -164,6 +171,7 @@ export const JournalPage: React.FC = () => {
               اردو
             </button>
             <button
+              data-active={selectedLanguage === 'mr'}
               onClick={() => setSelectedLanguage('mr')}
               className={`px-2.5 py-1 rounded-md transition-colors ${
                 selectedLanguage === 'mr' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
@@ -179,19 +187,27 @@ export const JournalPage: React.FC = () => {
       </section>
 
       {/* 3. ARTICLES MAGAZINE GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="p2-journal-articles max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {filteredArticles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={{ hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.06 } } }}
+            className="p2-article-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {filteredArticles.map((article) => {
               const isUrdu = article.language === 'ur';
               return (
-                <div
+                <motion.div
                   key={article.id}
+                  variants={{ hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: easeCurve } } }}
+                  whileHover={shouldReduceMotion ? undefined : { y: -4 }}
                   onClick={() => setSelectedArticle(article)}
-                  className="paper-card rounded-2xl overflow-hidden cursor-pointer flex flex-col justify-between group"
+                  className="p2-article-card paper-card rounded-2xl overflow-hidden cursor-pointer flex flex-col justify-between group transition-shadow"
                 >
                   <div>
-                    <div className="relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
+                    <div className="p2-article-image relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
                       <img
                         src={article.coverImage}
                         alt={article.title}
@@ -209,7 +225,7 @@ export const JournalPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="p-6 space-y-3" dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
+                    <div className="p2-article-body p-5 space-y-3" dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
                       <h3 className={`font-bold text-xl sm:text-2xl text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug ${
                         isUrdu
                           ? 'font-urdu text-right text-2xl leading-[2.1]'
@@ -233,7 +249,7 @@ export const JournalPage: React.FC = () => {
                   </div>
 
                   <div className="p-6 pt-0 space-y-3">
-                    <div className="pt-3 border-t border-[#F4EFEA] flex items-center justify-between text-xs text-[#8C857B]">
+                    <div className="p2-article-footer pt-3 border-t border-[#F4EFEA] flex items-center justify-between text-xs text-[#8C857B]">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-[#1C1B1A]">{article.author}</span>
                       </div>
@@ -251,12 +267,12 @@ export const JournalPage: React.FC = () => {
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         ) : (
-          <div className="bg-white border border-[#E8E2D5] rounded-2xl p-12 text-center max-w-md mx-auto space-y-3">
+          <div className="p2-empty-state bg-white border border-[#E8E2D5] rounded-2xl p-12 text-center max-w-md mx-auto space-y-3">
             <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">No articles found</h3>
             <p className="text-sm text-[#595550]">
               Try resetting your category or language filters.
@@ -276,7 +292,7 @@ export const JournalPage: React.FC = () => {
       </section>
 
       {/* 4. CALL FOR WRITERS BANNER */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6">
+      <section className="p2-journal-submit max-w-4xl mx-auto px-4 sm:px-6">
         <div className="paper-card p-8 sm:p-10 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center sm:text-left">
             <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
@@ -290,7 +306,7 @@ export const JournalPage: React.FC = () => {
           <button
             onClick={() => {
               setCurrentPage('contact');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              scrollToTop();
             }}
             className="shrink-0 bg-[#1C1B1A] hover:bg-[#455240] text-white px-6 py-3 rounded-full text-xs font-semibold transition-all shadow-sm"
           >

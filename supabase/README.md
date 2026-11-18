@@ -8,7 +8,7 @@ The system designates two distinct authorized administrative tiers:
 
 | Account | Email | Designation | System Role | Permissions Summary |
 | :--- | :--- | :--- | :--- | :--- |
-| **Founder** | `imadwahedfarooqui@gmail.com` | `Founder` | `admin` | Full administrative access: content, attendee registrations (PII), contact enquiries (PII), user/role management, and storage. |
+| **Founder** | `bibliogeek27@gmail.com` | `Founder` | `admin` | Full administrative access: content, attendee registrations (PII), contact enquiries (PII), user/role management, and storage. |
 | **Community Lead** | `aribahmad673@gmail.com` | `Community Lead` | `editor` | Content management: meetups, reels, gallery, announcements, articles. **Strictly denied access to attendee registrations, enquiries, or role assignment.** |
 
 ---
@@ -30,7 +30,7 @@ Public registration will **never** grant an administrative or editor role. In ac
 #### Step 3: Invite Team Members (Private Password Setup)
 1. Go to **Authentication > Users**.
 2. Click **Invite user**:
-   - Invite 1: `imadwahedfarooqui@gmail.com`
+   - Invite 1: `bibliogeek27@gmail.com`
    - Invite 2: `aribahmad673@gmail.com`
 3. Supabase Auth emails an official invitation token to each recipient.
 4. Each person clicks their private link and establishes their own password privately.
@@ -41,7 +41,7 @@ Public registration will **never** grant an administrative or editor role. In ac
    `supabase/provision_authorized_accounts.sql`
 2. This script executes under the trusted `postgres` superuser context as an all-or-nothing transaction. If either account is missing, it rolls back immediately.
 3. Successfully assigns:
-   - `imadwahedfarooqui@gmail.com` -> `role = 'admin'`, `designation = 'Founder'`.
+   - `bibliogeek27@gmail.com` -> `role = 'admin'`, `designation = 'Founder'`.
    - `aribahmad673@gmail.com` -> `role = 'editor'`, `designation = 'Community Lead'`.
 
 #### Step 5: Post-Deployment Behavioral Verification
@@ -76,16 +76,21 @@ Choose either option based on your environment:
 
 ---
 
-### 4. Storage Architecture & Reel Delivery
+### 4. Storage Architecture & Media Delivery
 
-The migration configures 3 distinct buckets in `storage.buckets`:
+The migration configures 3 distinct private buckets in `storage.buckets` (F-01 remediation):
 
-1. **`roa-gallery` (Public, 20MB limit):** Original community photographs. Direct CDN delivery (`/storage/v1/object/public/roa-gallery/...`). Upload and modification restricted to Staff.
-2. **`roa-thumbnails` (Public, 10MB limit):** Optimized thumbnails. Direct CDN delivery. Upload and modification restricted to Staff.
+1. **`roa-gallery` (Private, 20MB limit):** Original community photographs.
+   - Private bucket prevents unauthorized mass scraping or hotlinking of unpublished/draft photos.
+   - Storage RLS policy `Public read published gallery objects` permits public reads of photographs referenced by published records in `public.gallery_images` using exact path matching.
+   - Upload and modification strictly restricted to Staff (`can_manage_content()`).
+2. **`roa-thumbnails` (Private, 10MB limit):** Optimized WebP thumbnails.
+   - Private bucket with RLS policy permitting reads only for thumbnails referenced by published `public.gallery_images` records.
+   - Upload and modification strictly restricted to Staff.
 3. **`roa-reels` (Private, 500MB limit):** High-definition community video reels (`mp4`, `webm`, `quicktime`).
    - Private bucket prevents unauthorized mass scraping or hotlinking of draft media.
-   - Storage RLS policy `Public read published reel objects` selectively permits public streaming of media matching published records in `public.reels` using **exact path matching**.
-   - Supports HTML5 video Range requests (`HTTP 206 Partial Content`) for fluid playback and timeline scrubbing.
+   - Storage RLS policy `Public read published reel objects` selectively permits public streaming of media matching published records in `public.reels` using `reels/` path prefix and exact path matching.
+   - Supports HTML5 video Range requests (`HTTP 206 Partial Content`) for fluid playback and timeline scrubbing via signed URLs.
    - Unpublished video assets remain strictly invisible to anonymous visitors.
 
 ---

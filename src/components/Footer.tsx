@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import type { PageRoute } from '../types';
 import { MapPin, ArrowUpRight, MessageCircle } from 'lucide-react';
 import { InstagramIcon } from './Icons';
+import { scrollToTop } from '../utils/scroll';
 
 const CURRENT_YEAR = 2026;
 
@@ -11,11 +12,11 @@ export const Footer: React.FC = () => {
 
   const handleNav = (page: PageRoute) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   return (
-    <footer className="glass-dark text-[#FAF8F5] pt-10 pb-8 border-t border-white/10 mt-6 relative overflow-hidden">
+    <footer className="p3-footer glass-dark text-[#FAF8F5] pt-10 pb-8 border-t border-white/10 mt-6 relative overflow-hidden">
       {/* Ambient footer glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 rounded-full bg-[#455240]/20 blur-[130px] pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 rounded-full bg-[#8D5B4C]/20 blur-[140px] pointer-events-none -z-10" />
@@ -27,7 +28,7 @@ export const Footer: React.FC = () => {
           {/* Brand & Mission Statement (5 cols) */}
           <div className="lg:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#363330] shadow-sm bg-[#2A2826] shrink-0">
+              <div className="p3-footer-mark w-12 h-12 rounded-full overflow-hidden border border-[#363330] shadow-sm bg-[#2A2826] shrink-0">
                 <img
                   src="/brand/logo.png"
                   alt="Readers of Aurangabad"
@@ -35,7 +36,7 @@ export const Footer: React.FC = () => {
                 />
               </div>
 
-              <div>
+              <div className="p3-footer-brand">
                 <span className="block font-serif text-2xl font-bold tracking-tight text-[#FAF8F5]">
                   Readers of Aurangabad
                 </span>
@@ -47,11 +48,11 @@ export const Footer: React.FC = () => {
             </div>
 
 
-            <p className="font-serif italic text-lg text-[#E8E2D5]">
+            <p className="p3-footer-tagline font-serif italic text-lg text-[#E8E2D5]">
               "{t.footer.tagline}"
             </p>
 
-            <p className="text-sm text-[#B4ADA2] leading-relaxed max-w-md">
+            <p className="p3-footer-mission text-sm text-[#B4ADA2] leading-relaxed max-w-md">
               {t.footer.mission}
             </p>
 
@@ -61,14 +62,14 @@ export const Footer: React.FC = () => {
                 href="https://instagram.com/readers.of.aurangabad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2A2826] hover:bg-[#8D5B4C] text-[#FAF8F5] text-xs font-medium transition-colors border border-[#363330]"
+                className="p3-footer-social inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2A2826] hover:bg-[#8D5B4C] text-[#FAF8F5] text-xs font-medium transition-colors border border-[#363330]"
               >
                 <InstagramIcon className="w-3.5 h-3.5 text-[#E8E2D5]" />
                 <span>@readers.of.aurangabad</span>
                 <ArrowUpRight className="w-3 h-3 text-[#B4ADA2]" />
               </a>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2A2826] text-[#B4ADA2] text-xs border border-[#363330]">
+              <div className="p3-footer-location inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2A2826] text-[#B4ADA2] text-xs border border-[#363330]">
                 <MapPin className="w-3.5 h-3.5 text-[#B88B4A]" />
                 <span>Aurangabad (MH20), Maharashtra</span>
               </div>
@@ -79,10 +80,10 @@ export const Footer: React.FC = () => {
 
           {/* Navigation Links (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-serif text-base font-semibold text-[#FAF8F5] tracking-wide uppercase text-xs">
+            <h4 className="p3-footer-heading font-serif text-base font-semibold text-[#FAF8F5] tracking-wide uppercase text-xs">
               Explore Movement
             </h4>
-            <ul className="space-y-2 text-sm text-[#B4ADA2]">
+            <ul className="p3-footer-nav space-y-2 text-sm text-[#B4ADA2]">
               <li>
                 <button onClick={() => handleNav('home')} className="hover:text-white transition-colors">
                   {t.nav.home}
@@ -122,10 +123,10 @@ export const Footer: React.FC = () => {
           </div>
           {/* Philosophy Principles (4 cols) */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="font-serif text-base font-semibold text-[#FAF8F5] tracking-wide uppercase text-xs">
+            <h4 className="p3-footer-heading font-serif text-base font-semibold text-[#FAF8F5] tracking-wide uppercase text-xs">
               Our Core Creed
             </h4>
-            <ul className="space-y-2 text-xs text-[#B4ADA2] leading-relaxed">
+            <ul className="p3-footer-creed space-y-2 text-xs text-[#B4ADA2] leading-relaxed">
               <li className="flex items-start gap-2">
                 <span className="text-[#B88B4A] font-serif">•</span>
                 <span>Reading has no boundaries of language or mother tongue.</span>
@@ -151,7 +152,7 @@ export const Footer: React.FC = () => {
             href="https://chat.whatsapp.com/DsTlkqgFef5LX5cLFdm2dO?s=cl&p=i&mlu=4&ilr=4&iam=2"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#25D366] hover:bg-[#1EBEA5] text-[#FAF8F5] text-xs font-medium transition-colors border border-[#363330] mt-4"
+            className="p3-footer-whatsapp inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#25D366] hover:bg-[#1EBEA5] text-[#FAF8F5] text-xs font-medium transition-colors border border-[#363330] mt-4"
           >
             <MessageCircle className="w-4 h-4" />
             Join Our WhatsApp Community
@@ -160,7 +161,7 @@ export const Footer: React.FC = () => {
             <div className="pt-2">
               <button
                 onClick={() => handleNav('admin')}
-                className="text-xs text-[#8D5B4C] hover:text-[#B88B4A] flex items-center gap-1 transition-colors"
+                className="p3-footer-admin text-xs text-[#8D5B4C] hover:text-[#B88B4A] flex items-center gap-1 transition-colors"
               >
                 <span>Admin Login & Content Portal</span>
                 <ArrowUpRight className="w-3 h-3" />
@@ -172,7 +173,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Credits & Copyright */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C857B] gap-4">
+        <div className="p3-footer-bottom pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8C857B] gap-4">
           <p>
             © {CURRENT_YEAR} Readers of Aurangabad (Readers of MH20). {t.footer.rights}
           </p>

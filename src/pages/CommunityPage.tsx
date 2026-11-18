@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Users, Heart, ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { CommunityGallery } from '../components/CommunityGallery';
+import { scrollToTop } from '../utils/scroll';
 
 export const CommunityPage: React.FC = () => {
   const { stories, setCurrentPage } = useApp();
@@ -15,10 +16,10 @@ export const CommunityPage: React.FC = () => {
   };
 
   return (
-    <div className="pb-16 paper-grain overflow-hidden">
+    <div className="p2-page p2-community pb-16 paper-grain overflow-hidden">
 
       {/* ── HERO with roa-049 background ───────────────────────────────── */}
-      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+      <section className="p2-hero p2-hero--community relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/enhanced/gallery/roa-049-2026-11-05.webp"
@@ -33,7 +34,7 @@ export const CommunityPage: React.FC = () => {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeCurve }}
-          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
             <Heart className="w-3 h-3 text-[#A65F46]" />
@@ -53,7 +54,7 @@ export const CommunityPage: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
       </section>
 
-      <div className="space-y-10 sm:space-y-12">
+      <div className="space-y-8 sm:space-y-10">
 
         {/* ── READER STORIES ─────────────────────────────────────────────── */}
         <motion.section
@@ -61,9 +62,9 @@ export const CommunityPage: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-10 sm:pt-12 space-y-6"
+          className="p2-voices max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-10 sm:pt-12 space-y-6"
         >
-          <div className="border-b border-[#E5DFD4] pb-6">
+          <div className="p2-chapter-heading border-b border-[#E5DFD4] pb-6">
             <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block mb-2">
               01 — Testimonials of Stillness
             </span>
@@ -75,13 +76,13 @@ export const CommunityPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p2-voice-grid grid grid-cols-1 md:grid-cols-3 gap-8">
             {stories.map((story) => (
               <motion.div
                 key={story.id}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="glass-card p-8 rounded-2xl flex flex-col justify-between space-y-6 relative overflow-hidden"
+                className="p2-voice-card glass-card p-6 rounded-2xl flex flex-col justify-between space-y-6 relative overflow-hidden"
               >
                 {/* Large decorative quote mark */}
                 <span className="absolute top-4 right-5 font-serif font-bold text-6xl text-[#E5DFD4] select-none leading-none">
@@ -142,9 +143,9 @@ export const CommunityPage: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-10"
+          className="p2-gallery-chapter max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-10"
         >
-          <div className="border-b border-[#E5DFD4] pb-6">
+          <div className="p2-chapter-heading border-b border-[#E5DFD4] pb-6">
             <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block mb-2">
               02 — The Complete Archive
             </span>
@@ -156,7 +157,9 @@ export const CommunityPage: React.FC = () => {
             </p>
           </div>
 
-          <CommunityGallery compact={false} />
+          <div className="p2-gallery-frame">
+            <CommunityGallery compact={false} />
+          </div>
         </motion.section>
 
         {/* ── STEWARDSHIP ───────────────────────────────────────────────── */}
@@ -165,7 +168,7 @@ export const CommunityPage: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12 space-y-8"
+          className="p2-stewards max-w-5xl mx-auto px-5 sm:px-8 lg:px-12 space-y-8"
         >
           <div className="text-center space-y-2">
             <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#A65F46] block">
@@ -179,8 +182,8 @@ export const CommunityPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="glass-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
+          <div className="p2-steward-grid grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p2-steward-card glass-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
               <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E5DFD4] bg-[#20231F] shrink-0">
                 <img
                   src="/images/enhanced/community/founder-portrait.webp"
@@ -201,7 +204,7 @@ export const CommunityPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
+            <div className="p2-steward-card glass-card p-6 sm:p-8 rounded-2xl flex items-start gap-5">
               <div className="w-16 h-16 rounded-full bg-[#E8ECE0] text-[#777C60] flex items-center justify-center shrink-0 border border-[#777C60]/20">
                 <Users className="w-7 h-7" />
               </div>
@@ -222,7 +225,7 @@ export const CommunityPage: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
-          className="max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-5"
+          className="p2-community-invite max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-5"
         >
           <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#20231F]">
             Share Your Reading Journey
@@ -233,7 +236,7 @@ export const CommunityPage: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => { setCurrentPage('get-involved'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
             className="inline-flex items-center gap-2 glass-button px-7 py-3 rounded-full text-sm font-semibold cursor-pointer"
           >
             <span>Share Your Story or Volunteer</span>

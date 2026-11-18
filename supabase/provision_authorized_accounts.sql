@@ -1,62 +1,55 @@
 -- ==============================================================================
--- READERS OF AURANGABAD — AUTHORIZED STAFF PROVISIONING SCRIPT
+-- READERS OF AURANGABAD — AUTHORIZED STAFF PROVISIONING SCRIPT (TEMPLATE)
 -- File: supabase/provision_authorized_accounts.sql
--- Revision: 5.2 (Configurable Identities, Discrepancy Audit & Fail-Safe Verification)
--- Date: 2026-11-10
+-- Revision: 6.1 (Fail-Closed Template, Immutable UUID Identity Pinning)
+-- Date: 2026-11-17
 -- Purpose: Atomic server-side role and designation assignment for authorized staff.
 --
--- IDENTITY AUDIT & CONFIGURATION NOTE:
--- Previous drafts referenced Founder full name 'Abdul Rafe Farooqui', while the
--- authorized email address is 'imadwahedfarooqui@gmail.com'.
--- To prevent silent identity alteration or unintended overrides, staff identities
--- are declared as configurable variables below. Confirm these values before execution.
+-- IMPORTANT:
+-- - This file is the reusable FAIL-CLOSED TEMPLATE. It must not contain configured operator UUIDs.
+-- - If you have a locally configured operational copy for a specific environment, keep/use it separately
+--   (e.g. supabase/provision_authorized_accounts.configured.sql) and do not commit secrets or operator-specific data.
 --
--- AUTHORIZED ACCOUNTS CONFIGURATION:
--- 1. Founder:
---    - Target Email: imadwahedfarooqui@gmail.com
---    - System Role: admin (Full administrative control)
---    - Designation: Founder
+-- SECURITY & IDENTITY ARCHITECTURE:
+-- Role promotion MUST NOT rely on email-only identity matching.
+-- This script enforces strict two-factor identity proof:
+-- 1. Immutable Primary Key: Verified Auth User UUID from Supabase Authentication.
+-- 2. Email Verification: Confirmed email matching the approved operator email.
+-- 3. Account Status: Account must be explicitly confirmed (email_confirmed_at /
+--    confirmed_at) or invited (invited_at) by an administrator.
+-- 4. Active Status: Account must not be suspended (banned_until is null or past).
 --
--- 2. Community Lead:
---    - Target Email: aribahmad673@gmail.com
---    - System Role: editor (Content curation only)
---    - Designation: Community Lead
---
--- EXECUTION REQUIREMENTS:
--- 1. In Supabase Dashboard, navigate to Authentication > Users.
--- 2. Invite BOTH accounts before running this script:
---    - Account 1: imadwahedfarooqui@gmail.com (Founder)
---    - Account 2: aribahmad673@gmail.com (Community Lead)
--- 3. Run this script strictly in the Supabase Dashboard SQL Editor (executing under postgres superuser).
--- 4. If EITHER account is missing from auth.users, the script will immediately throw an
---    exception and ROLL BACK the entire transaction. Zero accounts will be partially provisioned.
--- 5. Execution guard: This script refuses to run if invoked through an unverified client context.
+-- FAIL-CLOSED TEMPLATE INSTRUCTIONS:
+-- 1. Project Owner navigates to Supabase Dashboard > Authentication > Users.
+-- 2. Locate the verified accounts for Founder and Community Lead.
+-- 3. Copy each account's exact User UID (UUID) and set expected emails below.
+-- 4. Replace NULL UUID values in v_founder_auth_uuid and v_lead_auth_uuid.
+-- 5. If left as NULL, the script immediately aborts with zero changes.
+-- 6. Execute strictly in Supabase Dashboard SQL Editor (postgres superuser).
 -- ==============================================================================
 
 do $$
 declare
   -- ============================================================================
-  -- CONFIGURABLE STAFF IDENTITIES (AUDIT & CONFIRM BEFORE RUNNING)
+  -- OPERATOR-CONTROLLED IDENTITY MAPPING (MUST BE CONFIGURED BEFORE RUNNING)
   -- ============================================================================
-  v_founder_email text := 'imadwahedfarooqui@gmail.com';
-  -- Flagging identity: If the Founder's preferred display name is 'Imad Wahed Farooqui',
-  -- or 'Abdul Rafe Farooqui', set it explicitly here. The script defaults to any
-  -- full_name provided during Auth signup/invite, falling back to this variable.
-  v_founder_fallback_name text := 'Imad Wahed Farooqui';
+  -- REQUIRED: Paste verified Auth User UUIDs from Dashboard > Authentication > Users
+  v_founder_auth_uuid uuid := null;
+  v_founder_expected_email text := 'REPLACE_WITH_VERIFIED_FOUNDER_EMAIL';
+  v_founder_fallback_name text := 'Founder';
 
-  v_lead_email text := 'aribahmad673@gmail.com';
-  v_lead_fallback_name text := 'Arib Ahmad';
+  v_lead_auth_uuid uuid := null;
+  v_lead_expected_email text := 'REPLACE_WITH_VERIFIED_COMMUNITY_LEAD_EMAIL';
+  v_lead_fallback_name text := 'Community Lead';
 
   -- Internal state variables
-  v_founder_auth_id uuid;
-  v_founder_auth_meta jsonb;
-  v_lead_auth_id uuid;
-  v_lead_auth_meta jsonb;
+  v_founder_auth_record record;
+  v_lead_auth_record record;
   v_founder_profile record;
   v_lead_profile record;
   v_jwt_role text := public.get_jwt_role();
 begin
-  -- 1. Trust boundary guard: Ensure this script is executing in direct database administration context
+  -- 1. Trust boundary guard: Ensure this script executes in direct DB admin context
   if v_jwt_role is not null then
     raise exception 'SECURITY VIOLATION: Provisioning script cannot be executed through PostgREST client context (detected JWT role: %). Must be executed in Supabase SQL Editor.', v_jwt_role;
   end if;
@@ -65,69 +58,120 @@ begin
     raise exception 'SECURITY VIOLATION: Provisioning script must be executed by trusted database administrator (current session_user: %).', session_user;
   end if;
 
-  -- 2. Query auth.users for Founder
-  select id, raw_user_meta_data into v_founder_auth_id, v_founder_auth_meta
-  from auth.users
-  where lower(trim(email)) = lower(trim(v_founder_email));
-
-  -- 3. Query auth.users for Community Lead
-  select id, raw_user_meta_data into v_lead_auth_id, v_lead_auth_meta
-  from auth.users
-  where lower(trim(email)) = lower(trim(v_lead_email));
-
-  -- 4. Fail-safe atomic validation: BOTH accounts MUST exist
-  if v_founder_auth_id is null and v_lead_auth_id is null then
-    raise exception 'ATOMIC PROVISIONING ABORTED: Neither Founder (%) nor Community Lead (%) exists in auth.users. Please invite both accounts under Authentication > Users before running this script. Transaction rolled back with 0 changes.', v_founder_email, v_lead_email;
+  -- 2. Fail-closed configuration check: verified UUIDs must be supplied
+  if v_founder_auth_uuid is null or v_lead_auth_uuid is null then
+    raise exception 'FAIL-CLOSED: Unconfigured operator identity mapping. Before executing this script in the Supabase SQL Editor, the project owner MUST privately supply the verified Auth User UUIDs for both Founder and Community Lead from Authentication > Users.'
+      using errcode = '22023';
   end if;
 
-  if v_founder_auth_id is null then
-    raise exception 'ATOMIC PROVISIONING ABORTED: Founder account (%) is missing from auth.users. Please invite this account under Authentication > Users first. Transaction rolled back with 0 changes.', v_founder_email;
+  -- 3. Query auth.users by immutable UUID primary key
+  select
+    u.id,
+    u.email,
+    u.raw_user_meta_data,
+    u.email_confirmed_at,
+    u.confirmed_at,
+    u.invited_at,
+    u.banned_until
+  into v_founder_auth_record
+  from auth.users u
+  where u.id = v_founder_auth_uuid;
+
+  select
+    u.id,
+    u.email,
+    u.raw_user_meta_data,
+    u.email_confirmed_at,
+    u.confirmed_at,
+    u.invited_at,
+    u.banned_until
+  into v_lead_auth_record
+  from auth.users u
+  where u.id = v_lead_auth_uuid;
+
+  -- 4. Fail-safe validation: Accounts must exist
+  if v_founder_auth_record.id is null and v_lead_auth_record.id is null then
+    raise exception 'ATOMIC PROVISIONING ABORTED: Neither Founder UUID (%) nor Community Lead UUID (%) exists in auth.users. Transaction rolled back with 0 changes.', v_founder_auth_uuid, v_lead_auth_uuid;
   end if;
 
-  if v_lead_auth_id is null then
-    raise exception 'ATOMIC PROVISIONING ABORTED: Community Lead account (%) is missing from auth.users. Please invite this account under Authentication > Users first. Transaction rolled back with 0 changes.', v_lead_email;
+  if v_founder_auth_record.id is null then
+    raise exception 'ATOMIC PROVISIONING ABORTED: Founder account with UUID % does not exist in auth.users. Please invite/create this account first. Transaction rolled back with 0 changes.', v_founder_auth_uuid;
   end if;
 
-  -- 5. Atomic upsert Founder profile
+  if v_lead_auth_record.id is null then
+    raise exception 'ATOMIC PROVISIONING ABORTED: Community Lead account with UUID % does not exist in auth.users. Please invite/create this account first. Transaction rolled back with 0 changes.', v_lead_auth_uuid;
+  end if;
+
+  -- 5. Two-factor identity proof: UUID must match expected operator email
+  if lower(trim(v_founder_auth_record.email)) is distinct from lower(trim(v_founder_expected_email)) then
+    raise exception 'IDENTITY MISMATCH: Founder UUID (%) belongs to an unexpected email address. Provisioning aborted with 0 changes.', v_founder_auth_uuid;
+  end if;
+
+  if lower(trim(v_lead_auth_record.email)) is distinct from lower(trim(v_lead_expected_email)) then
+    raise exception 'IDENTITY MISMATCH: Community Lead UUID (%) belongs to an unexpected email address. Provisioning aborted with 0 changes.', v_lead_auth_uuid;
+  end if;
+
+  -- 6. Account confirmation/invitation status check
+  if v_founder_auth_record.email_confirmed_at is null
+     and v_founder_auth_record.confirmed_at is null
+     and v_founder_auth_record.invited_at is null then
+    raise exception 'UNVERIFIED ACCOUNT: Founder account (UUID %) is unconfirmed and has not been invited. Confirm the account before provisioning.', v_founder_auth_uuid;
+  end if;
+
+  if v_lead_auth_record.email_confirmed_at is null
+     and v_lead_auth_record.confirmed_at is null
+     and v_lead_auth_record.invited_at is null then
+    raise exception 'UNVERIFIED ACCOUNT: Community Lead account (UUID %) is unconfirmed and has not been invited. Confirm the account before provisioning.', v_lead_auth_uuid;
+  end if;
+
+  -- 7. Account active status check (not banned)
+  if v_founder_auth_record.banned_until is not null and v_founder_auth_record.banned_until > now() then
+    raise exception 'SUSPENDED ACCOUNT: Founder account (UUID %) is currently banned/suspended.', v_founder_auth_uuid;
+  end if;
+
+  if v_lead_auth_record.banned_until is not null and v_lead_auth_record.banned_until > now() then
+    raise exception 'SUSPENDED ACCOUNT: Community Lead account (UUID %) is currently banned/suspended.', v_lead_auth_uuid;
+  end if;
+
+  -- 8. Atomic upsert Founder profile
+  -- Email is sourced strictly from auth.users (the authoritative store).
   insert into public.profiles (id, email, full_name, designation, role)
   values (
-    v_founder_auth_id,
-    lower(trim(v_founder_email)),
-    coalesce(nullif(trim(v_founder_auth_meta ->> 'full_name'), ''), v_founder_fallback_name),
+    v_founder_auth_uuid,
+    v_founder_auth_record.email,
+    coalesce(nullif(trim(v_founder_auth_record.raw_user_meta_data ->> 'full_name'), ''), v_founder_fallback_name),
     'Founder',
     'admin'::public.admin_role
   )
   on conflict (id) do update set
-    email = excluded.email,
     role = 'admin'::public.admin_role,
     designation = 'Founder',
     full_name = coalesce(public.profiles.full_name, excluded.full_name),
     updated_at = now();
 
-  -- 6. Atomic upsert Community Lead profile
+  -- 9. Atomic upsert Community Lead profile
   insert into public.profiles (id, email, full_name, designation, role)
   values (
-    v_lead_auth_id,
-    lower(trim(v_lead_email)),
-    coalesce(nullif(trim(v_lead_auth_meta ->> 'full_name'), ''), v_lead_fallback_name),
+    v_lead_auth_uuid,
+    v_lead_auth_record.email,
+    coalesce(nullif(trim(v_lead_auth_record.raw_user_meta_data ->> 'full_name'), ''), v_lead_fallback_name),
     'Community Lead',
     'editor'::public.admin_role
   )
   on conflict (id) do update set
-    email = excluded.email,
     role = 'editor'::public.admin_role,
     designation = 'Community Lead',
     full_name = coalesce(public.profiles.full_name, excluded.full_name),
     updated_at = now();
 
-  -- 7. Strict post-provisioning verification
+  -- 10. Strict post-provisioning verification
   select id, email, designation, role into v_founder_profile
   from public.profiles
-  where id = v_founder_auth_id;
+  where id = v_founder_auth_uuid;
 
   select id, email, designation, role into v_lead_profile
   from public.profiles
-  where id = v_lead_auth_id;
+  where id = v_lead_auth_uuid;
 
   if v_founder_profile.role is distinct from 'admin' or v_founder_profile.designation is distinct from 'Founder' then
     raise exception 'POST-PROVISIONING VERIFICATION FAILED: Founder profile was not correctly updated to admin / Founder. Transaction aborted.';
@@ -139,23 +183,23 @@ begin
 
   raise notice '============================================================';
   raise notice 'SUCCESS: BOTH ACCOUNTS PROVISIONED AND VERIFIED ATOMICALLY';
-  raise notice 'Founder: imadwahedfarooqui@gmail.com -> role: admin, designation: Founder';
-  raise notice 'Community Lead: aribahmad673@gmail.com -> role: editor, designation: Community Lead';
+  raise notice 'Founder UUID: % -> role: admin, designation: Founder', v_founder_auth_uuid;
+  raise notice 'Community Lead UUID: % -> role: editor, designation: Community Lead', v_lead_auth_uuid;
   raise notice '============================================================';
 end $$;
 
--- 8. AUDIT & VERIFICATION QUERY (CONFIRMS DATABASE STATE)
+-- 11. AUDIT & VERIFICATION QUERY (CONFIRMS DATABASE STATE WITH MASKED PII)
 select
   p.id as profile_uuid,
-  p.email,
+  substr(p.email, 1, 2) || '***@' || split_part(p.email, '@', 2) as masked_email,
   p.full_name,
   p.designation,
   p.role,
-  u.email_confirmed_at,
+  case when u.email_confirmed_at is not null then true else false end as is_email_confirmed,
   u.last_sign_in_at,
   p.created_at,
   p.updated_at
 from public.profiles p
 left join auth.users u on u.id = p.id
-where lower(trim(p.email)) in ('imadwahedfarooqui@gmail.com', 'aribahmad673@gmail.com')
+where p.role in ('admin', 'editor')
 order by p.role asc;

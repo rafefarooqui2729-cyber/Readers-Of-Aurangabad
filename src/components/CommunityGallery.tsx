@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { PROCESSED_IMAGES, type ProcessedImage } from '../data/imageManifest';
+import { useApp } from '../context/AppContext';
+import { useModalEscapeDismiss } from '../utils/modalAccessibility';
+import type { GalleryItem } from '../types';
 
 // ─── Editorial Category System ────────────────────────────────────────────────
 type GalleryCategory = 'all' | 'reading-together' | 'meetup-moments' | 'community-portraits' | 'behind-the-scenes';
@@ -40,6 +43,8 @@ interface EnrichedImage extends ProcessedImage {
   editorialCategory: GalleryCategory;
   /** Grid sizing hint for masonry feel */
   gridClass: string;
+  /** Accessible description / database title */
+  alt: string;
 }
 
 // Assign grid span classes to create visual rhythm
@@ -55,7 +60,56 @@ const enriched: EnrichedImage[] = PROCESSED_IMAGES.map((img, idx) => ({
   ...img,
   editorialCategory: getEditorialCategory(img),
   gridClass: assignGridClass(img, idx),
+  alt: `ROA ${img.category} photograph`,
 }));
+
+// Paths already covered by the static manifest. The seeded gallery rows use
+// these same local assets, so they must not be rendered twice.
+const MANIFEST_IMAGE_PATHS = new Set<string>();
+
+function normalizeImagePath(path: string): string {
+  return path.trim().split(/[?#]/)[0];
+}
+
+for (const img of PROCESSED_IMAGES) {
+  for (const candidate of [img.web, img.gallery, img.thumbnail, img.enhanced, img.mobile, img.hero, img.journal]) {
+    if (typeof candidate === 'string' && candidate.trim() !== '') {
+      MANIFEST_IMAGE_PATHS.add(normalizeImagePath(candidate));
+    }
+  }
+}
+
+function isManifestImagePath(path: string): boolean {
+  return MANIFEST_IMAGE_PATHS.has(normalizeImagePath(path));
+}
+
+/** Converts a database/localStorage gallery row into the editorial gallery shape. */
+function toGalleryEnrichedImage(
+  item: GalleryItem,
+  resolved: { imageUrl: string; thumbnailUrl: string },
+  index: number
+): EnrichedImage {
+  const title = item.title?.trim() || 'Community photograph';
+
+  return {
+    id: item.id,
+    originalFilename: item.imageUrl,
+    category: 'Community Uploads',
+    orientation: 'square',
+    width: 0,
+    height: 0,
+    enhanced: resolved.imageUrl,
+    web: resolved.imageUrl,
+    thumbnail: resolved.thumbnailUrl || resolved.imageUrl,
+    gallery: resolved.imageUrl,
+    mobile: null,
+    hero: null,
+    journal: null,
+    editorialCategory: 'community-portraits',
+    gridClass: index % 7 === 0 ? 'col-span-2 row-span-2' : 'col-span-1 row-span-1',
+    alt: title
+  };
+}
 
 // ─── Lightbox ─────────────────────────────────────────────────────────────────
 interface LightboxProps {
@@ -68,16 +122,17 @@ interface LightboxProps {
 
 const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, onPrev }) => {
   const img = images[current];
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const dismiss = useModalEscapeDismiss(true, onClose, surfaceRef);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowRight') onNext();
       if (e.key === 'ArrowLeft') onPrev();
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [onClose, onNext, onPrev]);
+  }, [onNext, onPrev]);
 
   // Touch swipe
   const touchStart = useRef<number | null>(null);
@@ -97,38 +152,43 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
 
   return (
     <motion.div
+      ref={surfaceRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Gallery lightbox"
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center"
+      className="p3-modal-overlay p3-lightbox fixed inset-0 z-[200] flex items-center justify-center"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-[#20231F]/92 backdrop-blur-md"
-        onClick={onClose}
+        className="p3-modal-backdrop absolute inset-0 bg-[#20231F]/92 backdrop-blur-md"
+        onClick={dismiss}
       />
 
       {/* Close */}
       <button
-        onClick={onClose}
-        className="absolute top-5 right-5 z-10 w-10 h-10 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        onClick={dismiss}
+        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
         aria-label="Close lightbox"
       >
         <X className="w-5 h-5" />
       </button>
 
       {/* Counter */}
-      <div className="absolute top-5 left-5 z-10 glass-pill px-3 py-1 text-xs font-semibold text-[#F2EBDD]">
+      <div className="p3-lightbox-counter absolute top-5 left-5 z-10 glass-pill px-3 py-1 text-xs font-semibold text-[#F2EBDD]">
         {current + 1} / {images.length}
       </div>
 
       {/* Nav Left */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="absolute left-4 z-10 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
         aria-label="Previous"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -137,7 +197,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       {/* Nav Right */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="absolute right-4 z-10 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
         aria-label="Next"
       >
         <ChevronRight className="w-5 h-5" />
@@ -151,16 +211,16 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.3 }}
-          className="relative z-10 max-w-5xl max-h-[85vh] w-full px-16"
+          className="p3-lightbox-frame relative z-10 max-w-5xl max-h-[85vh] w-full px-16"
         >
           <img
             src={img.gallery || img.web}
-            alt={`ROA community photo ${img.id}`}
+            alt={img.alt}
             className="w-full h-full object-contain max-h-[80vh] rounded-xl shadow-2xl"
           />
           {/* Category chip */}
           <div className="mt-3 flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#B89A65]">
+            <span className="p3-lightbox-caption text-xs font-semibold uppercase tracking-widest text-[#B89A65]">
               {CATEGORY_LABELS[img.editorialCategory]}
             </span>
           </div>
@@ -182,14 +242,76 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
   compact = false,
   initialCategory = 'all',
 }) => {
+  const { gallery, getSignedGalleryUrl } = useApp();
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>(initialCategory);
   const [visibleCount, setVisibleCount] = useState(compact ? 18 : 24);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [databaseImages, setDatabaseImages] = useState<EnrichedImage[]>([]);
   const shouldReduceMotion = useReducedMotion();
 
+  // Resolve database-backed gallery rows. Private Storage paths become temporary
+  // signed URLs; local paths and external HTTPS URLs pass through unchanged.
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadDatabaseImages = async () => {
+      const candidates = gallery.filter(item =>
+        item.imageUrl &&
+        item.imageUrl.trim() !== '' &&
+        !isManifestImagePath(item.imageUrl)
+      );
+
+      if (candidates.length === 0) {
+        if (!cancelled) setDatabaseImages([]);
+        return;
+      }
+
+      const resolved = await Promise.all(
+        candidates.map(async (item) => {
+          try {
+            const imageUrl = await getSignedGalleryUrl(item.imageUrl, 'original');
+            if (!imageUrl) return null;
+
+            let thumbnailUrl = imageUrl;
+            if (item.thumbnailUrl) {
+              try {
+                thumbnailUrl = await getSignedGalleryUrl(item.thumbnailUrl, 'thumbnail') || imageUrl;
+              } catch (thumbnailError) {
+                console.error(`Unable to resolve gallery thumbnail ${item.id}:`, thumbnailError);
+              }
+            }
+
+            return { item, imageUrl, thumbnailUrl };
+          } catch (error) {
+            console.error(`Unable to resolve gallery image ${item.id}:`, error);
+            return null;
+          }
+        })
+      );
+
+      if (cancelled) return;
+
+      const nextImages: EnrichedImage[] = [];
+      resolved.forEach((entry, index) => {
+        if (entry) {
+          nextImages.push(toGalleryEnrichedImage(entry.item, entry, index));
+        }
+      });
+
+      setDatabaseImages(nextImages);
+    };
+
+    void loadDatabaseImages();
+    return () => { cancelled = true; };
+  }, [gallery, getSignedGalleryUrl]);
+
+  const allImages = databaseImages.length > 0
+    ? [...databaseImages, ...enriched]
+    : enriched;
+
   const filtered = activeCategory === 'all'
-    ? enriched
-    : enriched.filter(img => img.editorialCategory === activeCategory);
+    ? allImages
+    : allImages.filter(img => img.editorialCategory === activeCategory);
 
   const visible = filtered.slice(0, visibleCount);
 
@@ -283,14 +405,14 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
               {/* Image */}
               <img
                 src={img.thumbnail || img.web}
-                alt={`ROA ${img.editorialCategory} photograph`}
+                alt={img.alt}
                 loading="lazy"
                 decoding="async"
-                className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                className={`w-full h-auto object-cover object-center ${shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}`}
               />
 
               {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/80 via-[#20231F]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-350 flex flex-col justify-end p-4">
+              <div className={`absolute inset-0 bg-gradient-to-t from-[#20231F]/80 via-[#20231F]/20 to-transparent opacity-0 group-hover:opacity-100 ${shouldReduceMotion ? '' : 'transition-opacity duration-350'} flex flex-col justify-end p-4`}>
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-[#B89A65] mb-1">
                   {CATEGORY_LABELS[img.editorialCategory]}
                 </span>

@@ -1,0 +1,23 @@
+﻿# Local credentials and environment files
+.env*
+!.env.example
+
+# Local dependencies and Vercel metadata
+node_modules/
+.vercel/
+.git/
+
+# Raw source media (deployed assets remain in public/)
+img/
+
+# Local reports and audit outputs
+reports/
+*.log
+build-result.txt
+lint-result.txt
+
+# Database backups and local exports
+*.sql
+*.dump
+*.bak
+*.zip

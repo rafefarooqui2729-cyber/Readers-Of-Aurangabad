@@ -17,12 +17,12 @@ export const OurStoryPage: React.FC = () => {
   };
 
   return (
-    <div className="pb-16 paper-grain overflow-hidden">
+    <div className="p2-page p2-story pb-16 paper-grain overflow-hidden">
 
       {/* 1. FULL-BLEED HERO with roa-006 */}
       <section
         ref={heroRef}
-        className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden"
+        className="p2-hero p2-hero--story relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden"
         aria-label="Our Story hero"
       >
         <motion.div style={{ y: bgY }} className="absolute inset-0 will-change-transform">
@@ -40,10 +40,10 @@ export const OurStoryPage: React.FC = () => {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeCurve }}
-          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#B89A65] animate-pulse" />
+            <span className={`w-1.5 h-1.5 rounded-full bg-[#B89A65] ${shouldReduceMotion ? '' : 'animate-pulse'}`} />
             The Origin of the Movement
           </span>
 
@@ -60,14 +60,14 @@ export const OurStoryPage: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
       </section>
 
-      <div className="space-y-8 sm:space-y-10">
+      <div className="space-y-6 sm:space-y-8">
       {/* Introduction subheading */}
       <motion.div
         variants={revealVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: '-60px' }}
-        className="pt-10 max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-4"
+        className="p2-story-intro pt-10 max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-4"
       >
         <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
           "In a city full of centuries-old stories, we wanted to create a space where people could discover the joy of reading together."
@@ -80,9 +80,9 @@ export const OurStoryPage: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="p2-story-narrative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="paper-card p-8 sm:p-14 rounded-3xl space-y-8 text-base sm:text-lg text-[#2A2826] leading-[1.85] font-serif">
+        <div className="p2-manuscript paper-card p-6 sm:p-10 rounded-3xl space-y-8 text-base sm:text-lg text-[#2A2826] leading-[1.85] font-serif">
 
           <p className="text-xl sm:text-2xl font-bold text-[#1C1B1A] leading-snug">
             Not another platform telling people which books to read. Not another community limited by genres or languages.
@@ -93,14 +93,14 @@ export const OurStoryPage: React.FC = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8 not-prose font-sans">
-            <div className="p-6 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5]">
+            <div className="p2-marginalia p-6 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5]">
               <span className="text-xs font-bold text-[#8D5B4C] uppercase tracking-wider block mb-2">The Reality We Saw</span>
               <p className="text-sm text-[#595550] leading-relaxed">
                 Screens had colonized our free time. Bookshops were thinning, and solitary readers had nowhere to share their joy without commercial pressure or academic judgment.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#EBF0E9]/60 border border-[#455240]/20">
+            <div className="p2-marginalia p-6 rounded-2xl bg-[#EBF0E9]/60 border border-[#455240]/20">
               <span className="text-xs font-bold text-[#455240] uppercase tracking-wider block mb-2">The Sanctuary We Built</span>
               <p className="text-sm text-[#2E372B] leading-relaxed">
                 An open sanctuary under trees and across friendly spaces where anyone could bring whatever they were reading, sit quietly for an hour, and make authentic human connections.
@@ -125,9 +125,9 @@ export const OurStoryPage: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="p2-story-tenets max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="p2-tenet-grid grid grid-cols-1 md:grid-cols-3 gap-8">
 
           <div className="paper-card p-8 rounded-2xl space-y-4">
             <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240]">
@@ -170,9 +170,9 @@ export const OurStoryPage: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="p2-story-founder max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
+        <div className="p2-founder-card paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
 
             {/* Founder Avatar / Portrait Slot with Real Photo & Official Crest */}
@@ -207,7 +207,7 @@ export const OurStoryPage: React.FC = () => {
             </div>
 
             {/* Founder Words */}
-            <div className="md:col-span-8 space-y-4 text-sm sm:text-base text-[#595550] leading-relaxed font-serif">
+            <div className="p2-founder-words md:col-span-8 space-y-4 text-sm sm:text-base text-[#595550] leading-relaxed font-serif">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5]">
                 <Feather className="w-3.5 h-3.5 text-[#8D5B4C]" />
                 <span>Founder’s Note</span>
@@ -248,9 +248,9 @@ export const OurStoryPage: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        className="p2-story-chronicle max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
       >
-        <div className="border-b border-[#E8E2D5] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div className="p2-chapter-heading border-b border-[#E8E2D5] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
               Photographic Chronicle
@@ -264,7 +264,7 @@ export const OurStoryPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p2-chronicle-grid grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="paper-card rounded-2xl overflow-hidden group">
             <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
               <img
@@ -327,7 +327,7 @@ export const OurStoryPage: React.FC = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.55, ease: easeCurve }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+        className="p2-story-stewards max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
       >
         <div className="text-center space-y-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
@@ -341,11 +341,11 @@ export const OurStoryPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="p2-steward-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
           <div className="paper-card p-6 rounded-2xl text-center space-y-3">
             <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto bg-[#1C1B1A]">
-              <img src="/images/enhanced/thumbnails/roa-061-2026-11-05-thumb.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover" />
+              <img src="/images/enhanced/thumbnails/roa-061-2026-11-05-thumb.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover object-[center_20%]" />
             </div>
             <div>
               <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Abdul Rafe Farooqui</h4>

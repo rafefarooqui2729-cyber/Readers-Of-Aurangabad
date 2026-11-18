@@ -17,6 +17,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
   subtitle = 'A message to our growing circle of readers.',
   description = 'Listen in as we share updates, upcoming gatherings, and our vision for reading spaces across Aurangabad, Chhatrapati Sambhajinagar.'
 }) => {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(true);
@@ -25,6 +26,81 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isEnded, setIsEnded] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+
+  // Viewport-aware lazy loading & playback
+  const [isNearViewport, setIsNearViewport] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && !('IntersectionObserver' in window);
+  });
+  const [isInView, setIsInView] = useState<boolean>(() => {
+    return typeof window !== 'undefined' && !('IntersectionObserver' in window);
+  });
+  const userPausedRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    const target = sectionRef.current;
+    if (!target) return;
+
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      return;
+    }
+
+    // Preload observer: 450px rootMargin triggers video load before entering view
+    const preloadObserver = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
+          setIsNearViewport(true);
+          preloadObserver.disconnect();
+        }
+      },
+      { rootMargin: '450px 0px', threshold: 0 }
+    );
+    preloadObserver.observe(target);
+
+    // Playback observer: 0.5 threshold ensures video plays when section is prominently in view
+    const playbackObserver = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry) {
+          setIsInView(entry.isIntersecting);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    playbackObserver.observe(target);
+
+    return () => {
+      preloadObserver.disconnect();
+      playbackObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isNearViewport) return;
+
+    if (isInView) {
+      if (!userPausedRef.current && !isEnded) {
+        const playPromise = video.play();
+        if (playPromise) {
+          playPromise
+            .then(() => setIsPlaying(true))
+            .catch(() => {
+              video.muted = true;
+              setIsMuted(true);
+              video.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => setIsPlaying(false));
+            });
+        }
+      }
+    } else {
+      if (!video.paused) {
+        video.pause();
+        setIsPlaying(false);
+      }
+    }
+  }, [isInView, isNearViewport, isEnded]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -55,7 +131,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [isNearViewport]);
 
   useEffect(() => {
     const handleOtherReelAudio = (event: Event) => {
@@ -73,14 +149,22 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
     const video = videoRef.current;
     if (!video) return;
 
+    if (!isNearViewport) {
+      setIsNearViewport(true);
+      userPausedRef.current = false;
+      return;
+    }
+
     if (isEnded) {
       video.currentTime = 0;
       setIsEnded(false);
     }
 
     if (video.paused) {
+      userPausedRef.current = false;
       video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     } else {
+      userPausedRef.current = true;
       video.pause();
       setIsPlaying(false);
     }
@@ -111,7 +195,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
   };
 
   return (
-    <section className="relative py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section ref={sectionRef} className="cine-scene relative py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Decorative glass glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-80 bg-[#455240]/10 rounded-full blur-[100px] pointer-events-none -z-10" />
 
@@ -121,29 +205,59 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-panel rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl"
+        className="cine-scene glass-panel rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-2xl"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Announcement reel player */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden glass-dark border border-white/20 shadow-2xl group select-none">
+            <div className="cine-layer cine-layer--floating relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden glass-dark border border-white/20 shadow-2xl group select-none">
 
               {/* Native Video Element with object-contain to ensure the full frame is visible */}
               <video
                 ref={videoRef}
-                src={videoSrc}
+                src={isNearViewport ? videoSrc : undefined}
                 poster={posterSrc}
                 playsInline
                 muted={isMuted}
-                autoPlay
                 loop
-                preload="metadata"
+                preload={isNearViewport ? 'metadata' : 'none'}
                 className="w-full h-full object-contain bg-black/95 transition-transform duration-500"
                 onClick={togglePlay}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onError={() => setHasError(true)}
               />
+
+              {/* Accessible Placeholder when video is not yet near viewport and no poster image exists */}
+              {!isNearViewport && !posterSrc && (
+                <div
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center cursor-pointer bg-gradient-to-b from-[#1c1f1a] via-[#151714] to-[#0e100d] select-none"
+                  onClick={togglePlay}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Load and play community announcement"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      togglePlay();
+                    }
+                  }}
+                >
+                  <div className="w-16 h-16 rounded-full glass-dark-control flex items-center justify-center text-white shadow-xl mb-4 group-hover:scale-110 active:scale-95 transition-transform">
+                    <Play className="w-7 h-7 translate-x-0.5 text-emerald-400" />
+                  </div>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 mb-1">
+                    Readers of Aurangabad
+                  </span>
+                  <p className="text-base font-editorial text-white/90">
+                    Community Announcement
+                  </p>
+                  <p className="text-xs text-white/50 mt-1">
+                    Click to watch announcement
+                  </p>
+                </div>
+              )}
+
               {hasError && (
                 <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#211F1C] px-6 text-center text-[#E8E2D5]">
                   <p className="font-semibold">Announcement reel unavailable</p>
@@ -166,8 +280,8 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                 )}
               </div>
 
-              {/* Big Center Play Overlay (visible when paused) */}
-              {!isPlaying && (
+              {/* Big Center Play Overlay (visible when paused and video is active or has poster) */}
+              {(isNearViewport || posterSrc) && !isPlaying && (
                 <div
                   onClick={togglePlay}
                   className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer transition-opacity z-10"

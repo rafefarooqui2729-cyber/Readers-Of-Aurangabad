@@ -1,5 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
+import { isStoragePath } from '../utils/galleryStorage';
+import { validateGalleryImageFile } from '../utils/galleryImageUtils';
+import { validateReelVideoFile } from '../utils/reelStorage';
+import { downloadCsvFile } from '../utils/csvUtils';
 import type {
   Meetup,
   JournalCategory,
@@ -46,6 +50,57 @@ const CATEGORIES: JournalCategory[] = [
   'Community Experiences'
 ];
 
+/**
+ * Explicit allowlist for gallery image sources that may be rendered without
+ * going through signed URL resolution.
+ *
+ * Allowed:
+ * - Root-relative local assets (`/images/...`), but never protocol-relative paths.
+ * - HTTPS URLs.
+ * - Base64 image data URLs produced by the existing frame-extraction workflow.
+ * - Blob URLs produced by the existing manual Instagram upload workflow.
+ */
+function isSafeGalleryImageSource(value: string | null | undefined): boolean {
+  if (!value) return false;
+
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+
+  // Reject protocol-relative and backslash-smuggled URL forms.
+  if (trimmed.startsWith('//') || trimmed.startsWith('/\\')) return false;
+
+  // Root-relative local path.
+  if (trimmed.startsWith('/')) {
+    // eslint-disable-next-line no-control-regex -- Rejects control characters and backslashes in local redirect paths.
+return !/[\\\u0000-\u001F\u007F]/.test(trimmed);
+  }
+
+  // External images must be HTTPS.
+  if (/^https:\/\//i.test(trimmed)) {
+    try {
+      return new URL(trimmed).protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  // Existing extracted Instagram frames are base64 image data URLs.
+  if (/^data:image\/(?:jpeg|jpg|png|webp);base64,/i.test(trimmed)) {
+    return true;
+  }
+
+  // Existing manual Instagram image uploads use session-scoped blob URLs.
+  if (/^blob:/i.test(trimmed)) {
+    try {
+      return new URL(trimmed).protocol === 'blob:';
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
+}
+
 type AdminTab =
   | 'overview'
   | 'meetups'
@@ -75,13 +130,15 @@ export const AdminDashboard: React.FC = () => {
     refreshData,
     meetups,
     addMeetup,
+    updateMeetup,
     deleteMeetup,
     articles,
     addArticle,
     deleteArticle,
     gallery,
-    addGalleryItem,
+    uploadGalleryItem,
     deleteGalleryItem,
+    getSignedGalleryUrl,
     enquiries,
     updateEnquiryStatus,
     deleteEnquiry,
@@ -133,6 +190,9 @@ export const AdminDashboard: React.FC = () => {
   const [mStatus, setMStatus] = useState<Meetup['registrationStatus']>('open');
   const [mCapacity, setMCapacity] = useState('40');
   const [mIsUpcoming, setMIsUpcoming] = useState(true);
+  const [mIsPublished, setMIsPublished] = useState(true);
+
+  const [adminFeedback, setAdminFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Article Creation State
   const [showArticleModal, setShowArticleModal] = useState(false);
@@ -146,11 +206,64 @@ export const AdminDashboard: React.FC = () => {
   const [aExcerpt, setAExcerpt] = useState('');
   const [aContent, setAContent] = useState('');
 
-  // Gallery Creation State
+  // Gallery Upload State
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [gTitle, setGTitle] = useState('');
   const [gCaption, setGCaption] = useState('');
-  const [gImageUrl, setGImageUrl] = useState('/images/enhanced/gallery/roa-006-2026-11-05.webp');
+  const [gFile, setGFile] = useState<File | null>(null);
+  const [gPreviewUrl, setGPreviewUrl] = useState('');
+  const [gError, setGError] = useState('');
+  const [gIsValidating, setGIsValidating] = useState(false);
+  const [gIsUploading, setGIsUploading] = useState(false);
+  const [signedGalleryUrls, setSignedGalleryUrls] = useState<Record<string, { imageUrl: string; thumbnailUrl: string }>>({});
+  const galleryPreviewUrlRef = useRef('');
+  const gallerySubmitInFlightRef = useRef(false);
+  const gallerySelectionTokenRef = useRef(0);
+
+  // Release the local preview object URL when the dashboard unmounts.
+  useEffect(() => {
+    return () => {
+      if (galleryPreviewUrlRef.current) {
+        URL.revokeObjectURL(galleryPreviewUrlRef.current);
+        galleryPreviewUrlRef.current = '';
+      }
+    };
+  }, []);
+
+  // Resolve private Storage paths into temporary signed URLs for admin previews.
+  // Local static paths and external HTTPS URLs are returned unchanged by the helper.
+  useEffect(() => {
+    let cancelled = false;
+
+    const resolveGalleryUrls = async () => {
+      const next: Record<string, { imageUrl: string; thumbnailUrl: string }> = {};
+
+      await Promise.all(gallery.map(async (item) => {
+        try {
+          const imageUrl = await getSignedGalleryUrl(item.imageUrl, 'original');
+          let thumbnailUrl = imageUrl;
+
+          if (item.thumbnailUrl) {
+            try {
+              thumbnailUrl = await getSignedGalleryUrl(item.thumbnailUrl, 'thumbnail') || imageUrl;
+            } catch (thumbnailError) {
+              console.error(`Unable to resolve gallery thumbnail ${item.id}:`, thumbnailError);
+            }
+          }
+
+          next[item.id] = { imageUrl, thumbnailUrl };
+        } catch (error) {
+          console.error(`Unable to resolve gallery image ${item.id}:`, error);
+          next[item.id] = { imageUrl: '', thumbnailUrl: '' };
+        }
+      }));
+
+      if (!cancelled) setSignedGalleryUrls(next);
+    };
+
+    void resolveGalleryUrls();
+    return () => { cancelled = true; };
+  }, [gallery, getSignedGalleryUrl]);
 
   // Announcement Creation State
   const [showAnnModal, setShowAnnModal] = useState(false);
@@ -166,6 +279,18 @@ export const AdminDashboard: React.FC = () => {
   const [reelCaption, setReelCaption] = useState('');
   const [isUploadingReel, setIsUploadingReel] = useState(false);
   const [reelUploadProgress, setReelUploadProgress] = useState(0);
+  const reelSelectionTokenRef = useRef(0);
+  const reelPreviewUrlRef = useRef('');
+
+  useEffect(() => {
+    return () => {
+      reelSelectionTokenRef.current += 1;
+      if (reelPreviewUrlRef.current) {
+        URL.revokeObjectURL(reelPreviewUrlRef.current);
+        reelPreviewUrlRef.current = '';
+      }
+    };
+  }, []);
 
   // Handle Login
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -190,41 +315,57 @@ export const AdminDashboard: React.FC = () => {
     }
     const result = await resetAdminPassword(email);
     setResetMessage(result.ok
-      ? 'Password reset instructions have been sent to your email.'
+      ? 'If an account exists for this email, password reset instructions have been sent.'
       : result.error || 'Unable to send password reset instructions.');
   };
 
   // Create Meetup
-  const handleCreateMeetup = (e: React.FormEvent) => {
+  const handleCreateMeetup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!mTitle.trim()) return;
+    setAdminFeedback(null);
 
-    void addMeetup({
-      edition: mEdition.trim(),
-      title: mTitle.trim(),
-      date: mDate.trim(),
-      time: mTime.trim(),
-      venue: mVenue.trim(),
-      address: mAddress.trim(),
-      description: mDesc.trim(),
-      featuredImage: mImage.trim(),
-      registrationUrl: mRegUrl.trim(),
-      rsvpLink: mRegUrl.trim(),
-      capacity: mCapacity.trim() || undefined,
-      activities: ['Silent Reading', 'Passage Discussion', 'Book Swap'],
-      isUpcoming: mIsUpcoming,
-      registrationStatus: mStatus,
-      schedule: [
-        { time: '8:30 AM', activity: 'Arrival & Welcome under the trees' },
-        { time: '8:45 AM', activity: 'Quiet, uninterrupted personal reading' },
-        { time: '10:15 AM', activity: 'Gentle book discussion & passages sharing' },
-        { time: '11:00 AM', activity: 'Closing circle & group photograph' }
-      ]
-    });
+    try {
+      await addMeetup({
+        edition: mEdition.trim(),
+        title: mTitle.trim(),
+        date: mDate.trim(),
+        time: mTime.trim(),
+        venue: mVenue.trim(),
+        address: mAddress.trim(),
+        description: mDesc.trim(),
+        featuredImage: mImage.trim(),
+        registrationUrl: mRegUrl.trim(),
+        rsvpLink: mRegUrl.trim(),
+        capacity: mCapacity.trim() || undefined,
+        activities: ['Silent Reading', 'Passage Discussion', 'Book Swap'],
+        isUpcoming: mIsUpcoming,
+        isPublished: mIsPublished,
+        isCompleted: mStatus === 'past',
+        registrationStatus: mStatus,
+        schedule: [
+          { time: '8:30 AM', activity: 'Arrival & Welcome under the trees' },
+          { time: '8:45 AM', activity: 'Quiet, uninterrupted personal reading' },
+          { time: '10:15 AM', activity: 'Gentle book discussion & passages sharing' },
+          { time: '11:00 AM', activity: 'Closing circle & group photograph' }
+        ]
+      });
 
-    setShowMeetupModal(false);
-    setMTitle('');
-    setMDesc('');
+      setShowMeetupModal(false);
+      setMTitle('');
+      setMDesc('');
+      setAdminFeedback({
+        type: 'success',
+        message: mIsPublished
+          ? 'Meetup saved and published. Member notifications are generated automatically by the database for qualifying publish/change events.'
+          : 'Meetup saved as draft. No member notification was generated.',
+      });
+    } catch (error) {
+      setAdminFeedback({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Failed to save meetup.',
+      });
+    }
   };
 
   // Create Article
@@ -253,70 +394,191 @@ export const AdminDashboard: React.FC = () => {
     setAContent('');
   };
 
-  // Create Gallery
-  const handleCreateGallery = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!gTitle.trim() || !gImageUrl.trim()) return;
+  /** Revoke the local preview URL and reset all gallery upload state. */
+  const resetGalleryForm = () => {
+    gallerySelectionTokenRef.current += 1;
 
-    void addGalleryItem({
-      title: gTitle.trim(),
-      caption: gCaption.trim(),
-      imageUrl: gImageUrl.trim(),
-      date: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-    });
+    if (galleryPreviewUrlRef.current) {
+      URL.revokeObjectURL(galleryPreviewUrlRef.current);
+      galleryPreviewUrlRef.current = '';
+    }
 
-    setShowGalleryModal(false);
+    setGFile(null);
+    setGPreviewUrl('');
     setGTitle('');
     setGCaption('');
+    setGError('');
+    setGIsValidating(false);
+    setGIsUploading(false);
+    gallerySubmitInFlightRef.current = false;
+  };
+
+  const closeGalleryModal = () => {
+    if (gIsUploading) return;
+    setShowGalleryModal(false);
+    resetGalleryForm();
+  };
+
+  // Validate the selected image locally and show an immediate preview.
+  const handleGalleryFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    const selectionToken = gallerySelectionTokenRef.current + 1;
+    gallerySelectionTokenRef.current = selectionToken;
+
+    setGError('');
+    setGFile(null);
+
+    if (galleryPreviewUrlRef.current) {
+      URL.revokeObjectURL(galleryPreviewUrlRef.current);
+      galleryPreviewUrlRef.current = '';
+    }
+    setGPreviewUrl('');
+
+    if (!file) return;
+
+    const objectUrl = URL.createObjectURL(file);
+    galleryPreviewUrlRef.current = objectUrl;
+    setGPreviewUrl(objectUrl);
+    setGIsValidating(true);
+
+    const validation = await validateGalleryImageFile(file);
+
+    // The modal was reset or a newer file selection superseded this request.
+    if (gallerySelectionTokenRef.current !== selectionToken || input.files?.[0] !== file) return;
+
+    setGIsValidating(false);
+
+    if (!validation.valid) {
+      setGError(validation.error || 'The selected file does not meet gallery requirements.');
+      return;
+    }
+
+    setGFile(file);
+  };
+
+  // Upload through the existing context pipeline. Close/reset only on success.
+  const handleCreateGallery = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (gallerySubmitInFlightRef.current) return;
+
+    if (!gFile) {
+      setGError('Please choose a JPEG, PNG or WebP image to upload.');
+      return;
+    }
+
+    const title = gTitle.trim();
+    if (!title) {
+      setGError('Please enter a title for the photograph.');
+      return;
+    }
+
+    gallerySubmitInFlightRef.current = true;
+    setGIsUploading(true);
+    setGError('');
+
+    try {
+      const result = await uploadGalleryItem(gFile, title, gCaption.trim());
+
+      if (result.ok) {
+        // Both Storage upload and database insert succeeded.
+        setShowGalleryModal(false);
+        resetGalleryForm();
+        return;
+      }
+
+      setGError(result.error || 'The photograph could not be uploaded. Please try again.');
+    } catch (error: any) {
+      setGError(`Upload failed: ${error?.message || error}`);
+    } finally {
+      setGIsUploading(false);
+      gallerySubmitInFlightRef.current = false;
+    }
   };
 
   // Create Announcement
-  const handleCreateAnnouncement = (e: React.FormEvent) => {
+  const [annIsPublished, setAnnIsPublished] = useState(true);
+  const handleCreateAnnouncement = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!annTitle.trim() || !annContent.trim()) return;
+    setAdminFeedback(null);
 
-    void addAnnouncement({
+    const res = await addAnnouncement({
       title: annTitle.trim(),
       content: annContent.trim(),
       actionUrl: annUrl.trim() || undefined,
-      isPublished: true,
+      isPublished: annIsPublished,
       publishedAt: new Date().toISOString()
     });
+
+    if (!res.ok) {
+      setAdminFeedback({ type: 'error', message: res.error || 'Failed to save announcement.' });
+      return;
+    }
 
     setShowAnnModal(false);
     setAnnTitle('');
     setAnnContent('');
     setAnnUrl('');
+    setAdminFeedback({
+      type: 'success',
+      message: annIsPublished
+        ? 'Announcement published. Member notifications will be generated for eligible published updates.'
+        : 'Announcement saved as draft. No member notification was generated.',
+    });
   };
 
-  // Reel file selection with validation
-  const handleReelFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /** Clear the selected reel and revoke its preview URL. */
+  const clearReelVideoSelection = () => {
+    reelSelectionTokenRef.current += 1;
+
+    if (reelPreviewUrlRef.current) {
+      URL.revokeObjectURL(reelPreviewUrlRef.current);
+      reelPreviewUrlRef.current = '';
+    }
+
+    setReelVideoFile(null);
+    setReelVideoPreviewUrl('');
+  };
+
+  // Validate each selected file before creating its preview.
+  const handleReelFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 100 * 1024 * 1024) {
-      alert('Selected video file exceeds 100MB limit. Please compress or select a smaller video.');
+    // Allow the same file to be selected again after an invalid attempt.
+    e.target.value = '';
+
+    const selectionToken = ++reelSelectionTokenRef.current;
+
+    if (reelPreviewUrlRef.current) {
+      URL.revokeObjectURL(reelPreviewUrlRef.current);
+      reelPreviewUrlRef.current = '';
+    }
+
+    setReelVideoFile(null);
+    setReelVideoPreviewUrl('');
+
+    const validation = await validateReelVideoFile(file);
+
+    // Ignore an older validation if another selection/reset happened meanwhile.
+    if (selectionToken !== reelSelectionTokenRef.current) return;
+
+    if (!validation.valid) {
+      alert(validation.error || 'Please select a valid MP4 or WebM video.');
       return;
     }
 
-    // Revoke previous preview URL to avoid memory leak before creating a new one
-    setReelVideoPreviewUrl(prev => {
-      if (prev) URL.revokeObjectURL(prev);
-      return '';
-    });
-
-    setReelVideoFile(file);
     const objectUrl = URL.createObjectURL(file);
+    reelPreviewUrlRef.current = objectUrl;
+    setReelVideoFile(file);
     setReelVideoPreviewUrl(objectUrl);
   };
 
-  /** Revoke the preview object URL and reset all reel upload state. */
+  /** Reset all reel upload state and invalidate pending file validation. */
   const resetReelUploadState = () => {
-    setReelVideoFile(null);
-    setReelVideoPreviewUrl(prev => {
-      if (prev) URL.revokeObjectURL(prev);
-      return '';
-    });
+    clearReelVideoSelection();
     setReelTitle('');
     setReelCaption('');
     setReelUploadProgress(0);
@@ -326,12 +588,33 @@ export const AdminDashboard: React.FC = () => {
   // Upload new reel
   const handleUploadReel = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reelVideoFile) {
-      alert('Please choose an MP4 video file to upload.');
+
+    const fileToUpload = reelVideoFile;
+    const selectionToken = reelSelectionTokenRef.current;
+
+    if (!fileToUpload) {
+      alert('Please choose an MP4 or WebM video file to upload.');
       return;
     }
+
     if (!reelTitle.trim()) {
       alert('Please enter a title for the reel.');
+      return;
+    }
+
+    // Revalidate immediately before any upload/progress work begins.
+    const validation = await validateReelVideoFile(fileToUpload);
+
+    if (
+      selectionToken !== reelSelectionTokenRef.current ||
+      reelVideoFile !== fileToUpload
+    ) {
+      return;
+    }
+
+    if (!validation.valid) {
+      clearReelVideoSelection();
+      alert(validation.error || 'Please select a valid MP4 or WebM video.');
       return;
     }
 
@@ -357,7 +640,7 @@ export const AdminDashboard: React.FC = () => {
         published: true,
         isPublished: true,
         isCustomUpload: true
-      }, reelVideoFile);
+      }, fileToUpload);
 
       clearInterval(progressTimer);
       setReelUploadProgress(100);
@@ -373,7 +656,6 @@ export const AdminDashboard: React.FC = () => {
       alert('Could not save reel. Please try again.');
     }
   };
-
   // Reorder reels
   const handleMoveReel = (currentIndex: number, direction: 'up' | 'down') => {
     const sorted = [...reels].sort((a, b) => a.order - b.order);
@@ -386,8 +668,12 @@ export const AdminDashboard: React.FC = () => {
     void reorderReels(sorted);
   };
 
-  // Export registrations CSV
+  // Export registrations CSV with formula-injection protection and automatic resource cleanup
   const handleExportRegistrationsCSV = () => {
+    if (adminRole !== 'admin') {
+      alert('Access restricted: Only administrators can export attendee registrations.');
+      return;
+    }
     if (registrations.length === 0) {
       alert('No registrations available to export.');
       return;
@@ -396,22 +682,15 @@ export const AdminDashboard: React.FC = () => {
     const rows = registrations.map(r => [
       r.id,
       r.meetupTitle || r.meetupId,
-      `"${r.name.replace(/"/g, '""')}"`,
+      r.name,
       r.email,
       r.phone || '',
       r.status,
       new Date(r.createdAt).toLocaleDateString(),
-      `"${(r.message || '').replace(/"/g, '""')}"`
+      r.message || ''
     ]);
-    const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `readers-of-aurangabad-registrations-${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const filename = `readers-of-aurangabad-registrations-${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadCsvFile(filename, headers, rows);
   };
 
   // Filtered Meetups
@@ -598,14 +877,19 @@ export const AdminDashboard: React.FC = () => {
           <button
             onClick={exportDataJson}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-button-secondary text-xs font-semibold cursor-pointer"
-            title="Export full JSON backup"
+            title={adminRole === 'admin' ? 'Export full administrative JSON backup (includes registrations & enquiries)' : 'Export public content JSON backup (meetups, articles, gallery)'}
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Backup JSON</span>
+            <span>{adminRole === 'admin' ? 'Backup JSON' : 'Backup Content'}</span>
           </button>
 
           <button
-            onClick={() => void logoutAdmin()}
+            onClick={async () => {
+              const res = await logoutAdmin();
+              if (res && !res.ok && res.error) {
+                alert(res.error);
+              }
+            }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl glass-button text-xs font-semibold cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
@@ -653,7 +937,7 @@ export const AdminDashboard: React.FC = () => {
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
-          <span>Registrations ({registrations.length})</span>
+          <span>{adminRole === 'admin' ? `Registrations (${registrations.length})` : 'Registrations'}</span>
           {newRegistrationsCount > 0 && adminRole === 'admin' && (
             <span className="w-4 h-4 rounded-full bg-[#8D5B4C] text-white text-[10px] flex items-center justify-center">
               {newRegistrationsCount}
@@ -729,7 +1013,7 @@ export const AdminDashboard: React.FC = () => {
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <Inbox className="w-3.5 h-3.5" />}
-          <span>Inquiries ({enquiries.length})</span>
+          <span>{adminRole === 'admin' ? `Inquiries (${enquiries.length})` : 'Inquiries'}</span>
           {newEnquiriesCount > 0 && adminRole === 'admin' && (
             <span className="w-4 h-4 rounded-full bg-[#8D5B4C] text-white text-[10px] flex items-center justify-center">
               {newEnquiriesCount}
@@ -829,6 +1113,11 @@ export const AdminDashboard: React.FC = () => {
       {/* --- TAB 2: MEETUPS MANAGEMENT --- */}
       {activeTab === 'meetups' && (
         <div className="space-y-6">
+          {adminFeedback && (
+            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+              {adminFeedback.message}
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
               <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#8C857B]" />
@@ -841,7 +1130,7 @@ export const AdminDashboard: React.FC = () => {
               />
             </div>
             <button
-              onClick={() => setShowMeetupModal(true)}
+              onClick={() => { setAdminFeedback(null); setShowMeetupModal(true); }}
               className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
@@ -854,7 +1143,7 @@ export const AdminDashboard: React.FC = () => {
               <div key={m.id} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border-white/60">
                 <div className="relative h-40 bg-[#1C1B1A]">
                   <img src={m.featuredImage} alt={m.title} className="w-full h-full object-cover opacity-85" />
-                  <div className="absolute top-3 left-3 flex gap-1.5">
+                  <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
                     {m.edition && (
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#8D5B4C] text-white uppercase">
                         {m.edition}
@@ -862,6 +1151,9 @@ export const AdminDashboard: React.FC = () => {
                     )}
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/90 text-[#1C1B1A] uppercase">
                       {m.registrationStatus}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${m.isPublished === false ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                      {m.isPublished === false ? 'Draft' : 'Published'}
                     </span>
                   </div>
                 </div>
@@ -876,21 +1168,79 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 border-t border-[#E8E2D5]">
-                    <span className="text-[11px] font-semibold text-[#455240]">
-                      Capacity: {m.capacity || 'Unlimited'}
-                    </span>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Delete meetup "${m.title}"?`)) {
-                          void deleteMeetup(m.id);
-                        }
-                      }}
-                      className="p-1.5 rounded-lg text-red-700 hover:bg-red-50 transition-colors"
-                      title="Delete meetup"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  <div className="space-y-3 pt-3 border-t border-[#E8E2D5]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-[#455240]">
+                        Capacity: {m.capacity || 'Unlimited'}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete meetup "${m.title}"?`)) {
+                            void deleteMeetup(m.id);
+                          }
+                        }}
+                        className="p-1.5 rounded-lg text-red-700 hover:bg-red-50 transition-colors"
+                        title="Delete meetup"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          setAdminFeedback(null);
+                          try {
+                            await updateMeetup(m.id, { isPublished: m.isPublished === false });
+                            setAdminFeedback({
+                              type: 'success',
+                              message: m.isPublished === false
+                                ? `Published "${m.title}". Notification generation is handled automatically for qualifying publish events.`
+                                : `Saved "${m.title}" as draft.`,
+                            });
+                          } catch (error) {
+                            setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to update meetup.' });
+                          }
+                        }}
+                        className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold glass-button-secondary cursor-pointer"
+                      >
+                        {m.isPublished === false ? 'Publish' : 'Unpublish'}
+                      </button>
+                      {m.registrationStatus === 'cancelled' ? (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setAdminFeedback(null);
+                            try {
+                              await updateMeetup(m.id, { registrationStatus: 'open' });
+                              setAdminFeedback({ type: 'success', message: `Reopened "${m.title}" as open.` });
+                            } catch (error) {
+                              setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to update meetup.' });
+                            }
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold glass-button-secondary cursor-pointer"
+                        >
+                          Reopen
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (!confirm(`Cancel "${m.title}"? This will generate a cancellation notification for members if eligible.`)) return;
+                            setAdminFeedback(null);
+                            try {
+                              await updateMeetup(m.id, { registrationStatus: 'cancelled' });
+                              setAdminFeedback({ type: 'success', message: `Cancelled "${m.title}". Cancellation notification generation is handled automatically.` });
+                            } catch (error) {
+                              setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to cancel meetup.' });
+                            }
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-red-700 border border-red-200 bg-red-50/70 cursor-pointer"
+                        >
+                          Cancel event
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1025,26 +1375,39 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {gallery.map(item => (
-              <div key={item.id} className="glass-card rounded-2xl overflow-hidden group relative">
-                <div className="aspect-square bg-[#1C1B1A]">
-                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            {gallery.map(item => {
+              const resolved = signedGalleryUrls[item.id];
+              const resolvedSrc = resolved?.thumbnailUrl || resolved?.imageUrl || '';
+              const fallbackSrc = isSafeGalleryImageSource(item.imageUrl) ? item.imageUrl.trim() : '';
+              const imageSrc = isSafeGalleryImageSource(resolvedSrc) ? resolvedSrc : fallbackSrc;
+
+              return (
+                <div key={item.id} className="glass-card rounded-2xl overflow-hidden group relative">
+                  <div className="aspect-square bg-[#1C1B1A] flex items-center justify-center">
+                    {imageSrc ? (
+                      <img src={imageSrc} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <span className="px-3 text-center text-[11px] text-[#C9C2B6]">
+                        {isStoragePath(item.imageUrl) ? 'Secure preview unavailable' : 'No preview available'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-3 flex items-center justify-between text-xs">
+                    <span className="font-semibold text-[#1C1B1A] truncate">{item.title}</span>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete photograph "${item.title}"?`)) {
+                          void deleteGalleryItem(item.id);
+                        }
+                      }}
+                      className="p-1 rounded text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="p-3 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#1C1B1A] truncate">{item.title}</span>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete photograph "${item.title}"?`)) {
-                        void deleteGalleryItem(item.id);
-                      }
-                    }}
-                    className="p-1 rounded text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -1127,12 +1490,17 @@ export const AdminDashboard: React.FC = () => {
       {/* --- TAB 6: ANNOUNCEMENTS --- */}
       {activeTab === 'announcements' && (
         <div className="space-y-6">
+          {adminFeedback && (
+            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+              {adminFeedback.message}
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
               Live Notices & Announcements ({announcements.length})
             </h3>
             <button
-              onClick={() => setShowAnnModal(true)}
+              onClick={() => { setAdminFeedback(null); setShowAnnModal(true); }}
               className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
@@ -1525,6 +1893,7 @@ export const AdminDashboard: React.FC = () => {
                     <option value="open">Open (Accepting RSVPs)</option>
                     <option value="announced">Announced (Upcoming)</option>
                     <option value="closed">Closed (Fully Booked)</option>
+                    <option value="cancelled">Cancelled</option>
                     <option value="past">Past Gathering</option>
                   </select>
                 </div>
@@ -1563,17 +1932,31 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="mIsUpcoming"
-                  checked={mIsUpcoming}
-                  onChange={(e) => setMIsUpcoming(e.target.checked)}
-                  className="rounded text-[#455240] focus:ring-[#455240]"
-                />
-                <label htmlFor="mIsUpcoming" className="font-semibold text-[#1C1B1A] cursor-pointer">
-                  Mark as Upcoming Meetup (displays prominently on home page)
-                </label>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="mIsPublished"
+                    checked={mIsPublished}
+                    onChange={(e) => setMIsPublished(e.target.checked)}
+                    className="rounded text-[#455240] focus:ring-[#455240]"
+                  />
+                  <label htmlFor="mIsPublished" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                    Publish meetup (visible to public and eligible for member notifications)
+                  </label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="mIsUpcoming"
+                    checked={mIsUpcoming}
+                    onChange={(e) => setMIsUpcoming(e.target.checked)}
+                    className="rounded text-[#455240] focus:ring-[#455240]"
+                  />
+                  <label htmlFor="mIsUpcoming" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                    Mark as upcoming highlight (derived automatically from date, publish, and cancellation state)
+                  </label>
+                </div>
               </div>
 
               <div>
@@ -1748,43 +2131,116 @@ export const AdminDashboard: React.FC = () => {
       {/* --- MODAL 3: ADD GALLERY ITEM --- */}
       {showGalleryModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">Add Community Photograph</h3>
-            <form onSubmit={handleCreateGallery} className="space-y-4 text-xs">
+          <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div>
+              <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">Add Community Photograph</h3>
+              <p className="mt-1 text-[11px] text-[#595550] leading-relaxed">
+                Upload a JPEG, PNG or WebP image. The original and an optimized thumbnail are stored privately.
+              </p>
+            </div>
+
+            <form onSubmit={handleCreateGallery} className="space-y-4 text-xs" aria-busy={gIsUploading}>
+              <div>
+                <label htmlFor="gallery-image-file" className="block font-semibold mb-1">
+                  Image File
+                </label>
+                <input
+                  id="gallery-image-file"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                  onChange={(e) => void handleGalleryFileChange(e)}
+                  disabled={gIsUploading || gIsValidating}
+                  className="w-full text-xs file:mr-3 file:rounded-xl file:border-0 file:bg-[#455240] file:px-3 file:py-2 file:text-white file:text-xs file:font-semibold hover:file:bg-[#384332] disabled:opacity-60 disabled:cursor-not-allowed"
+                />
+                <p className="mt-1.5 text-[11px] text-[#8C857B]">
+                  JPEG, PNG or WebP · maximum 20 MB · one image per upload
+                </p>
+              </div>
+
+              {gPreviewUrl && (
+                <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]">
+                  <img
+                    src={gPreviewUrl}
+                    alt="Selected photograph preview"
+                    className="w-full max-h-64 object-contain mx-auto"
+                  />
+                </div>
+              )}
+
+              {gFile && (
+                <p className="text-[11px] text-[#455240] break-all">
+                  <span className="font-semibold">{gFile.name}</span>
+                  <span className="text-[#8C857B]"> · {(gFile.size / (1024 * 1024)).toFixed(2)} MB</span>
+                </p>
+              )}
+
+              {gIsValidating && (
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-white/70 border border-[#E8E2D5] text-[#595550]">
+                  <div className="w-3.5 h-3.5 border-2 border-[#455240] border-t-transparent rounded-full animate-spin" />
+                  <span>Validating image…</span>
+                </div>
+              )}
+
+              {gError && (
+                <div role="alert" className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>{gError}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block font-semibold mb-1">Title</label>
                 <input
                   type="text"
                   required
+                  maxLength={200}
                   value={gTitle}
                   onChange={(e) => setGTitle(e.target.value)}
                   placeholder="e.g. Readers gathered under the trees"
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  disabled={gIsUploading}
+                  className="w-full px-3 py-2 rounded-xl glass-input disabled:opacity-60"
                 />
               </div>
+
               <div>
-                <label className="block font-semibold mb-1">Caption / Venue Details</label>
-                <input
-                  type="text"
+                <label className="block font-semibold mb-1">Caption / Venue Details (Optional)</label>
+                <textarea
+                  rows={2}
+                  maxLength={1000}
                   value={gCaption}
                   onChange={(e) => setGCaption(e.target.value)}
                   placeholder="e.g. Siddharth Garden reading session"
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  disabled={gIsUploading}
+                  className="w-full px-3 py-2 rounded-xl glass-input disabled:opacity-60"
                 />
               </div>
-              <div>
-                <label className="block font-semibold mb-1">Image URL or Local Web Path</label>
-                <input
-                  type="text"
-                  required
-                  value={gImageUrl}
-                  onChange={(e) => setGImageUrl(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl glass-input"
-                />
-              </div>
+
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
-                <button type="button" onClick={() => setShowGalleryModal(false)} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
-                <button type="submit" className="glass-button px-4 py-2 rounded-xl">Save Photograph</button>
+                <button
+                  type="button"
+                  onClick={closeGalleryModal}
+                  disabled={gIsUploading}
+                  className="glass-button-secondary px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={gIsUploading || gIsValidating}
+                  className="glass-button px-4 py-2 rounded-xl flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {gIsUploading ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Uploading…</span>
+                    </>
+                  ) : (
+                    <>
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>Upload Photograph</span>
+                    </>
+                  )}
+                </button>
               </div>
             </form>
           </div>
@@ -1829,9 +2285,21 @@ export const AdminDashboard: React.FC = () => {
                   className="w-full px-3 py-2 rounded-xl glass-input"
                 />
               </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="annIsPublishedModal"
+                  checked={annIsPublished}
+                  onChange={(e) => setAnnIsPublished(e.target.checked)}
+                  className="rounded text-[#455240] focus:ring-[#455240]"
+                />
+                <label htmlFor="annIsPublishedModal" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                  Publish now (eligible for automatic member notification on publish)
+                </label>
+              </div>
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
                 <button type="button" onClick={() => setShowAnnModal(false)} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
-                <button type="submit" className="glass-button px-4 py-2 rounded-xl">Publish Announcement</button>
+                <button type="submit" className="glass-button px-4 py-2 rounded-xl">{annIsPublished ? 'Publish Announcement' : 'Save Draft'}</button>
               </div>
             </form>
           </div>

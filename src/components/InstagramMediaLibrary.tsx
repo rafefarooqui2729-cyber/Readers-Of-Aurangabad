@@ -17,13 +17,10 @@ import {
   Layers,
   Upload,
   CheckCircle,
-  Key,
-  ShieldCheck
 } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 import { VideoFrameExtractorModal } from './VideoFrameExtractorModal';
 import {
-  fetchFromInstagramGraphAPI,
   SAMPLE_INSTAGRAM_POSTS
 } from '../services/instagramService';
 
@@ -39,8 +36,6 @@ const CATEGORIES: MediaCategory[] = [
 export const InstagramMediaLibrary: React.FC = () => {
   const {
     instagramConfig,
-    updateInstagramConfig,
-    disconnectInstagram,
     instagramMedia,
     importInstagramMedia,
     deleteInstagramMedia,
@@ -59,12 +54,8 @@ export const InstagramMediaLibrary: React.FC = () => {
 
   // Modals & Tools
   const [activeExtractorMedia, setActiveExtractorMedia] = useState<InstagramMediaItem | null>(null);
-  const [showConnectModal, setShowConnectModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState<InstagramMediaItem | null>(null);
 
-  // Connect form inputs
-  const [inputToken, setInputToken] = useState('');
-  const [inputUserId, setInputUserId] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
@@ -79,68 +70,26 @@ export const InstagramMediaLibrary: React.FC = () => {
     return matchesCat && matchesType && matchesStatus;
   });
 
-  // Handle Sync
-  const handleSyncInstagram = async () => {
+  // Load bundled sample content. Live Instagram sync requires a trusted server integration.
+  const handleLoadSampleMedia = async () => {
     setIsSyncing(true);
     setStatusMsg(null);
 
     try {
-      let incomingPosts: InstagramMediaItem[] = [];
-
-      if (instagramConfig.connected && instagramConfig.accessToken) {
-        // Fetch from live Meta Instagram Graph API
-        incomingPosts = await fetchFromInstagramGraphAPI(instagramConfig.accessToken, inputUserId || 'me');
-      } else {
-        // Use verified @readers.of.aurangabad collection
-        incomingPosts = SAMPLE_INSTAGRAM_POSTS;
-      }
-
-      const { added, skippedDuplicates } = importInstagramMedia(incomingPosts);
-
-      updateInstagramConfig({
-        lastSyncedAt: new Date().toISOString()
-      });
+      const { added, skippedDuplicates } = importInstagramMedia(SAMPLE_INSTAGRAM_POSTS);
 
       setStatusMsg({
-        text: `Sync complete! Discovered ${added} new posts (skipped ${skippedDuplicates} already in library).`,
+        text: `Sample media loaded: ${added} added, ${skippedDuplicates} already in the library. Live Instagram sync is unavailable.`,
         type: 'success'
       });
     } catch (err: any) {
       setStatusMsg({
-        text: `Sync error: ${err.message || 'Could not connect to Instagram Graph API. Please verify token.'}`,
+        text: `Could not load sample media: ${err.message || 'Please try again.'}`,
         type: 'error'
       });
     } finally {
       setIsSyncing(false);
     }
-  };
-
-  // Handle Connect Token
-  const handleSaveConnection = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputToken.trim()) {
-      // Connect in sandbox mode
-      updateInstagramConfig({
-        connected: true,
-        username: 'readers.of.aurangabad',
-        accountType: 'CREATOR',
-        lastSyncedAt: new Date().toISOString()
-      });
-      setShowConnectModal(false);
-      setStatusMsg({ text: 'Connected to @readers.of.aurangabad (Sandbox mode). You can now sync content!', type: 'success' });
-      return;
-    }
-
-    updateInstagramConfig({
-      connected: true,
-      username: 'readers.of.aurangabad',
-      accountType: 'CREATOR',
-      accessToken: inputToken.trim(),
-      lastSyncedAt: new Date().toISOString()
-    });
-
-    setShowConnectModal(false);
-    setStatusMsg({ text: 'Meta Graph API token configured successfully!', type: 'success' });
   };
 
   // Handle Manual File Upload
@@ -212,24 +161,17 @@ export const InstagramMediaLibrary: React.FC = () => {
               <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">
                 Instagram Media Library
               </h3>
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                instagramConfig.connected
-                  ? 'bg-green-100 text-green-800 border border-green-200'
-                  : 'bg-gray-100 text-gray-700 border border-gray-200'
-              }`}>
-                {instagramConfig.connected ? 'Authorized' : 'Not Connected'}
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200">
+                Live sync unavailable
               </span>
             </div>
 
             <p className="text-xs text-[#595550]">
               Account: <strong className="text-[#1C1B1A]">@{instagramConfig.username}</strong> • Type: {instagramConfig.accountType}
-              {instagramConfig.lastSyncedAt && (
-                <span> • Last Synced: {new Date(instagramConfig.lastSyncedAt).toLocaleDateString()}</span>
-              )}
             </p>
 
             <span className="text-[11px] text-[#8C857B] block">
-              Official Meta Graph API Integration • Passwords are never requested or stored.
+              Live Instagram sync requires a trusted server-side integration. Sample media and manual imports are available.
             </span>
           </div>
         </div>
@@ -238,30 +180,13 @@ export const InstagramMediaLibrary: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2.5">
 
           <button
-            onClick={handleSyncInstagram}
+            onClick={handleLoadSampleMedia}
             disabled={isSyncing}
             className="inline-flex items-center gap-1.5 bg-[#1C1B1A] hover:bg-[#455240] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Syncing...' : 'Sync Instagram'}</span>
+            <span>{isSyncing ? 'Loading...' : 'Load Sample Media'}</span>
           </button>
-
-          {instagramConfig.connected ? (
-            <button
-              onClick={disconnectInstagram}
-              className="px-3.5 py-2.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-xs font-medium transition-colors"
-            >
-              Disconnect
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowConnectModal(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] text-xs font-semibold text-[#1C1B1A] hover:bg-white transition-colors"
-            >
-              <Key className="w-3.5 h-3.5 text-[#8D5B4C]" />
-              <span>Connect Meta Token</span>
-            </button>
-          )}
 
           {/* Manual Upload Trigger */}
           <input
@@ -567,16 +492,19 @@ export const InstagramMediaLibrary: React.FC = () => {
           <InstagramIcon className="w-10 h-10 text-[#8C857B] mx-auto opacity-50" />
           <h4 className="font-serif text-xl font-bold text-[#1C1B1A]">No media in this category</h4>
           <p className="text-xs text-[#595550]">
-            Click <strong>"Sync Instagram"</strong> above to retrieve recent posts, or <strong>"Upload Manually"</strong> to add photographs or reels.
+            Load bundled sample media or <strong>"Upload Manually"</strong> to add photographs or reels. Live Instagram sync is unavailable.
           </p>
         </div>
       )}
 
       {/* Video-to-Image Frame Extraction Modal */}
-      <VideoFrameExtractorModal
-        mediaItem={activeExtractorMedia}
-        onClose={() => setActiveExtractorMedia(null)}
-      />
+      {activeExtractorMedia && (
+  <VideoFrameExtractorModal
+    key={activeExtractorMedia.id}
+    mediaItem={activeExtractorMedia}
+    onClose={() => setActiveExtractorMedia(null)}
+  />
+)}
 
       {/* Assign Media to Site Section Modal */}
       {showAssignModal && (
@@ -658,83 +586,6 @@ export const InstagramMediaLibrary: React.FC = () => {
                 Cancel
               </button>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Meta Token Configuration Modal */}
-      {showConnectModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="paper-card max-w-lg w-full p-6 sm:p-8 rounded-3xl bg-white border border-[#E8E2D5] space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C]">
-                <Key className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">
-                  Connect Meta Instagram Graph API
-                </h3>
-                <span className="text-xs text-[#8C857B]">
-                  Official Authorization for @readers.of.aurangabad
-                </span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] text-xs text-[#595550] space-y-2">
-              <div className="flex items-center gap-1.5 font-semibold text-[#1C1B1A]">
-                <ShieldCheck className="w-4 h-4 text-[#455240]" />
-                <span>Meta API Security Standards:</span>
-              </div>
-              <ul className="list-disc list-inside space-y-1 text-[11px] leading-relaxed">
-                <li>Meta allows content access via long-lived <strong>User Access Tokens</strong>.</li>
-                <li>Your Instagram password is never requested, stored, or processed.</li>
-                <li>Leave the token empty to test in <strong>Verified Sandbox Mode</strong> with actual @readers.of.aurangabad posts immediately!</li>
-              </ul>
-            </div>
-
-            <form onSubmit={handleSaveConnection} className="space-y-4 text-xs">
-              <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">
-                  Meta Graph API User Token (Optional)
-                </label>
-                <input
-                  type="password"
-                  value={inputToken}
-                  onChange={(e) => setInputToken(e.target.value)}
-                  placeholder="EAA... (or leave blank to enable sandbox mode)"
-                  className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:outline-none focus:border-[#455240]"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">
-                  Instagram Professional Account ID (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={inputUserId}
-                  onChange={(e) => setInputUserId(e.target.value)}
-                  placeholder="Defaults to 'me'"
-                  className="w-full px-3 py-2 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:outline-none focus:border-[#455240]"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowConnectModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-[#595550]"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#1C1B1A] text-white hover:bg-[#455240]"
-                >
-                  Save & Authorize
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

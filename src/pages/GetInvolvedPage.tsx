@@ -13,6 +13,8 @@ import {
 import { motion, useReducedMotion } from 'framer-motion';
 import { InstagramIcon } from '../components/Icons';
 
+type InvolvedErrorField = 'name' | 'email' | 'message' | 'consent' | 'form';
+
 export const GetInvolvedPage: React.FC = () => {
   const { addEnquiry, meetups, setCurrentPage } = useApp();
   const [activeTab, setActiveTab] = useState<EnquiryType>('volunteer');
@@ -24,6 +26,7 @@ export const GetInvolvedPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [consent, setConsent] = useState(false);
 
   // Specific dynamic fields
   const [volunteerSkills, setVolunteerSkills] = useState('');
@@ -34,16 +37,24 @@ export const GetInvolvedPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [errorField, setErrorField] = useState<InvolvedErrorField | null>(null);
 
   const upcomingMeetup = meetups.find(m => m.isUpcoming);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+    setErrorField(null);
     setSuccessMessage('');
 
     if (!name.trim() || !email.trim() || !message.trim()) {
+      setErrorField(!name.trim() ? 'name' : !email.trim() ? 'email' : 'message');
       setErrorMessage('Please fill in your name, email address, and a short message.');
+      return;
+    }
+    if (!consent) {
+      setErrorMessage('Please agree that Readers of Aurangabad may use your information to respond before submitting.');
+      setErrorField('consent');
       return;
     }
 
@@ -66,6 +77,7 @@ export const GetInvolvedPage: React.FC = () => {
         email: email.trim(),
         phone: phone.trim(),
         message: message.trim(),
+        consent,
         details
       });
       setIsSubmitting(false);
@@ -79,17 +91,19 @@ export const GetInvolvedPage: React.FC = () => {
       setVolunteerSkills('');
       setBookDetails('');
       setCollabOrg('');
+      setConsent(false);
     } catch (submissionError) {
       setIsSubmitting(false);
+      setErrorField('form');
       setErrorMessage(submissionError instanceof Error ? submissionError.message : 'Unable to submit your form. Please try again.');
     }
   };
 
   return (
-    <div className="pb-16 paper-grain overflow-hidden">
+    <div className="p2-page p2-involved pb-16 paper-grain overflow-hidden">
 
       {/* 1. FULL-BLEED HERO */}
-      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+      <section className="p2-hero p2-hero--involved relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/enhanced/gallery/roa-060-2026-11-05.webp"
@@ -104,7 +118,7 @@ export const GetInvolvedPage: React.FC = () => {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeCurve }}
-          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
             <HandHeart className="w-3.5 h-3.5 text-[#B89A65]" />
@@ -126,7 +140,7 @@ export const GetInvolvedPage: React.FC = () => {
 
       <div className="space-y-8 sm:space-y-10 pt-6">
 
-        <div className="relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
+        <div className="p2-involved-banner relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
           <img
             src="/images/enhanced/community/community-banner-wide.webp"
             alt="Readers of Aurangabad exchanging books and collaborating"
@@ -142,11 +156,11 @@ export const GetInvolvedPage: React.FC = () => {
         </div>
 
       {/* 2. FAST ACTION TILES: Join & Attend */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <section className="p2-action-path max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p2-action-grid grid grid-cols-1 md:grid-cols-2 gap-8">
 
           {/* Tile A: Join Community Online */}
-          <div className="paper-card p-8 rounded-3xl space-y-5 bg-white border border-[#E8E2D5] flex flex-col justify-between">
+          <div className="p2-action-card paper-card p-6 rounded-3xl space-y-5 bg-white border border-[#E8E2D5] flex flex-col justify-between">
             <div className="space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C]">
                 <InstagramIcon className="w-6 h-6" />
@@ -184,7 +198,7 @@ export const GetInvolvedPage: React.FC = () => {
           </div>
 
           {/* Tile B: Attend a Meetup */}
-          <div className="paper-card p-8 rounded-3xl space-y-5 bg-[#FAF8F5] border border-[#E8E2D5] flex flex-col justify-between">
+          <div className="p2-action-card paper-card p-6 rounded-3xl space-y-5 bg-[#FAF8F5] border border-[#E8E2D5] flex flex-col justify-between">
             <div className="space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8E2D5] flex items-center justify-center text-[#455240]">
                 <BookOpen className="w-6 h-6" />
@@ -224,10 +238,10 @@ export const GetInvolvedPage: React.FC = () => {
       </section>
 
       {/* 3. MULTI-PURPOSE ENQUIRY FORM (Volunteer, Donate Books, Collaborate) */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="paper-card p-8 sm:p-12 rounded-3xl bg-white border border-[#E8E2D5] shadow-lg">
+      <section className="p2-participation max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p3-form-card p2-participation-card paper-card p-8 sm:p-12 rounded-3xl bg-white border border-[#E8E2D5] shadow-lg">
 
-          <div className="text-center space-y-2 mb-8">
+          <div className="p2-participation-heading text-center space-y-2 mb-8">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
               Direct Inquiry
             </span>
@@ -240,18 +254,20 @@ export const GetInvolvedPage: React.FC = () => {
           </div>
 
           {/* Tab Selector */}
-          <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] mb-8 text-xs font-semibold">
+          <div className="p2-participation-tabs grid grid-cols-1 sm:grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] mb-8 text-xs font-semibold">
             <button
               type="button"
+              data-active={activeTab === 'volunteer'}
               onClick={() => {
                 setActiveTab('volunteer');
                 setSuccessMessage('');
                 setErrorMessage('');
+                setErrorField(null);
               }}
-              className={`py-2.5 rounded-xl transition-all ${
+              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
                 activeTab === 'volunteer'
                   ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A]'
+                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
               }`}
             >
               Become a Volunteer
@@ -259,15 +275,17 @@ export const GetInvolvedPage: React.FC = () => {
 
             <button
               type="button"
+              data-active={activeTab === 'book_donation'}
               onClick={() => {
                 setActiveTab('book_donation');
                 setSuccessMessage('');
                 setErrorMessage('');
+                setErrorField(null);
               }}
-              className={`py-2.5 rounded-xl transition-all ${
+              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
                 activeTab === 'book_donation'
                   ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A]'
+                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
               }`}
             >
               Donate Physical Books
@@ -275,15 +293,17 @@ export const GetInvolvedPage: React.FC = () => {
 
             <button
               type="button"
+              data-active={activeTab === 'collaboration'}
               onClick={() => {
                 setActiveTab('collaboration');
                 setSuccessMessage('');
                 setErrorMessage('');
+                setErrorField(null);
               }}
-              className={`py-2.5 rounded-xl transition-all ${
+              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
                 activeTab === 'collaboration'
                   ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A]'
+                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
               }`}
             >
               Collaborate / Venue
@@ -291,7 +311,7 @@ export const GetInvolvedPage: React.FC = () => {
           </div>
 
           {/* Dynamic Explanatory Callout */}
-          <div className="mb-6 p-4 rounded-xl text-xs bg-[#FAF8F5] border border-[#E8E2D5] text-[#595550]">
+          <div className="p3-form-callout p2-participation-callout mb-6 p-4 rounded-xl text-xs bg-[#FAF8F5] border border-[#E8E2D5] text-[#595550]">
             {activeTab === 'volunteer' && (
               <p>
                 <strong>Volunteering:</strong> Help with Sunday morning setup, taking photographs of real meetup moments, or managing social media announcements.
@@ -310,47 +330,54 @@ export const GetInvolvedPage: React.FC = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="p3-form p2-participation-form space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                <label htmlFor="involved-name" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="involved-name"
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Farhan Shaikh"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                  aria-invalid={errorField === 'name' || undefined}
+                  aria-describedby={errorField === 'name' ? 'involved-form-error' : undefined}
+                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                <label htmlFor="involved-email" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="involved-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                  aria-invalid={errorField === 'email' || undefined}
+                  aria-describedby={errorField === 'email' ? 'involved-form-error' : undefined}
+                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+              <label htmlFor="involved-phone" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                 WhatsApp / Phone Number (Optional)
               </label>
               <input
+                id="involved-phone"
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98XXX XXXXX"
-                className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
               />
             </div>
 
@@ -365,7 +392,7 @@ export const GetInvolvedPage: React.FC = () => {
                   value={volunteerSkills}
                   onChange={(e) => setVolunteerSkills(e.target.value)}
                   placeholder="e.g. Event photography, park coordination, poster design"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                 />
               </div>
             )}
@@ -380,7 +407,7 @@ export const GetInvolvedPage: React.FC = () => {
                   value={bookDetails}
                   onChange={(e) => setBookDetails(e.target.value)}
                   placeholder="e.g. 15 Marathi novels and 10 English paperbacks"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                 />
               </div>
             )}
@@ -396,7 +423,7 @@ export const GetInvolvedPage: React.FC = () => {
                     value={collabOrg}
                     onChange={(e) => setCollabOrg(e.target.value)}
                     placeholder="e.g. Old City Bookhouse / Deccan Roasters"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                   />
                 </div>
 
@@ -407,7 +434,7 @@ export const GetInvolvedPage: React.FC = () => {
                   <select
                     value={collabType}
                     onChange={(e) => setCollabType(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                   >
                     <option value="Café / Venue Partner">Café / Venue Partner</option>
                     <option value="Bookstore / Publisher">Bookstore / Publisher</option>
@@ -419,27 +446,55 @@ export const GetInvolvedPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+              <label htmlFor="involved-message" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                 Your Message / Note <span className="text-red-500">*</span>
               </label>
               <textarea
+                id="involved-message"
                 rows={4}
                 required
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tell us a little bit about yourself and why you'd like to be involved..."
-                className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                aria-invalid={errorField === 'message' || undefined}
+                aria-describedby={errorField === 'message' ? 'involved-form-error' : undefined}
+                className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
               />
             </div>
 
+            <div className="flex items-start gap-3 pt-1">
+              <input
+                id="get-involved-consent"
+                type="checkbox"
+                required
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                aria-invalid={errorField === 'consent' || undefined}
+                aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
+                className="p3-checkbox mt-0.5 w-4 h-4 rounded text-[#455240] focus:ring-[#455240] border-[#E8E2D5] bg-[#FAF8F5] cursor-pointer"
+              />
+              <label htmlFor="get-involved-consent" className="text-xs text-[#595550] leading-relaxed cursor-pointer select-none">
+                I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry. <span className="text-red-500">*</span>
+              </label>
+            </div>
+
             {errorMessage && (
-              <p className="text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+              <p
+                id="involved-form-error"
+                role="alert"
+                aria-live="assertive"
+                className="p3-form-error text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200"
+              >
                 {errorMessage}
               </p>
             )}
 
             {successMessage && (
-              <div className="flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200">
+              <div
+                role="status"
+                aria-live="polite"
+                className="p3-form-success flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200"
+              >
                 <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
                 <span>{successMessage}</span>
               </div>
@@ -448,7 +503,7 @@ export const GetInvolvedPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+              className="p3-form-submit w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span>Submitting your note...</span>
@@ -465,7 +520,7 @@ export const GetInvolvedPage: React.FC = () => {
       </section>
 
       {/* 4. FUTURE EXPANSION NOTE (Honoring Budget = ₹0, No Paid Gateways) */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-3">
+      <section className="p2-future-horizon max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-3">
         <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
           The Future Horizon
         </span>

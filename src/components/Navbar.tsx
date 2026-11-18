@@ -1,14 +1,27 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { Language, PageRoute } from '../types';
-import { Menu, X, Globe, Lock, ShieldCheck } from 'lucide-react';
+import { Menu, X, Globe, Lock, ShieldCheck, LogOut, User } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { scrollToTop } from '../utils/scroll';
+import { MemberNotificationCenter } from './MemberNotificationCenter';
+import { MemberSignInModal } from './MemberSignInModal';
 
 export const Navbar: React.FC = () => {
-  const { lang, setLang, t, isRTL, currentPage, setCurrentPage, isAdmin } = useApp();
+  const {
+    lang, setLang, t, isRTL, currentPage, setCurrentPage,
+    isAdmin, isMember, currentUserId, currentUserEmail,
+    navigateToAnnouncement,
+    memberNotifications, unreadNotificationCount, notificationsLoading,
+    loginMember, requestMemberMagicLink, logoutMember, logoutAdmin,
+    requestPasswordReset,
+    markNotificationRead, markAllNotificationsRead,
+  } = useApp();
   const shouldReduceMotion = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [memberSignInOpen, setMemberSignInOpen] = useState(false);
+  const isAuthenticated = Boolean(currentUserId);
 
   const navLinks: { key: PageRoute; label: string }[] = [
     { key: 'home', label: t.nav.home },
@@ -30,7 +43,7 @@ export const Navbar: React.FC = () => {
   const handleNavClick = (page: PageRoute) => {
     setCurrentPage(page);
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const handleLanguageSelect = (code: Language) => {
@@ -55,7 +68,7 @@ export const Navbar: React.FC = () => {
             aria-label="Readers of Aurangabad Home"
           >
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: shouldReduceMotion ? 1 : 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
               className="w-12 h-12 rounded-full overflow-hidden shadow-sm flex items-center justify-center border border-[#E8E2D5] bg-[#F4EFEA]"
@@ -103,7 +116,7 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Action Cluster: Language Switcher, Admin Button, CTA */}
+          {/* Right Action Cluster: Language Switcher, Notifications, Auth, Admin Button, CTA */}
           <div className="hidden xl:flex items-center gap-3">
 
             {/* Language Switcher */}
@@ -151,9 +164,45 @@ export const Navbar: React.FC = () => {
               </AnimatePresence>
             </div>
 
+            <MemberNotificationCenter
+              isMember={isMember}
+              isAuthenticated={isAuthenticated}
+              notifications={memberNotifications}
+              unreadCount={unreadNotificationCount}
+              loading={notificationsLoading}
+              onMarkRead={markNotificationRead}
+              onMarkAllRead={markAllNotificationsRead}
+              onNavigateToAnnouncement={navigateToAnnouncement}
+              onNavigate={(url) => {
+                if (url === '/gatherings') handleNavClick('gatherings');
+                else if (url === '/') handleNavClick('home');
+                else if (url.startsWith('/')) handleNavClick('home');
+              }}
+              onOpenSignIn={() => setMemberSignInOpen(true)}
+            />
+
+            {isAuthenticated ? (
+              <button
+                onClick={() => { void (isAdmin ? logoutAdmin() : logoutMember()); }}
+                className="glass-pill px-3 py-1.5 rounded-full text-xs font-semibold text-[#1C1B1A] flex items-center gap-1.5 cursor-pointer"
+                title={currentUserEmail || 'Signed in'}
+              >
+                <LogOut className="w-3.5 h-3.5 text-[#455240]" />
+                <span>{isAdmin ? 'Sign out' : 'Sign out'}</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => setMemberSignInOpen(true)}
+                className="glass-pill px-3 py-1.5 rounded-full text-xs font-semibold text-[#1C1B1A] flex items-center gap-1.5 cursor-pointer"
+              >
+                <User className="w-3.5 h-3.5 text-[#455240]" />
+                <span>Member sign in</span>
+              </button>
+            )}
+
             {/* Admin Portal Quick Icon */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: shouldReduceMotion ? 1 : 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleNavClick('admin')}
               className={`p-2 rounded-full border transition-all cursor-pointer ${
@@ -171,7 +220,7 @@ export const Navbar: React.FC = () => {
 
             {/* Primary Action Button */}
             <motion.button
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: shouldReduceMotion ? 1 : 1.03 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.18 }}
               onClick={() => handleNavClick('get-involved')}
@@ -186,10 +235,27 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
               className="px-2.5 py-1 rounded-full text-xs font-semibold text-[#1C1B1A] border border-[#E8E2D5] flex items-center gap-1"
+              aria-label="Select language"
             >
               <Globe className="w-3 h-3 text-[#455240]" />
               <span className="uppercase">{lang}</span>
             </button>
+
+            <MemberNotificationCenter
+              isMember={isMember}
+              isAuthenticated={isAuthenticated}
+              notifications={memberNotifications}
+              unreadCount={unreadNotificationCount}
+              loading={notificationsLoading}
+              onMarkRead={markNotificationRead}
+              onMarkAllRead={markAllNotificationsRead}
+              onNavigateToAnnouncement={navigateToAnnouncement}
+              onNavigate={(url) => {
+                if (url === '/gatherings') handleNavClick('gatherings');
+                else handleNavClick('home');
+              }}
+              onOpenSignIn={() => setMemberSignInOpen(true)}
+            />
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -255,6 +321,31 @@ export const Navbar: React.FC = () => {
                   {t.nav.joinCommunity}
                 </button>
 
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      if (isAdmin) void logoutAdmin();
+                      else void logoutMember();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-center py-2 text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>{isAdmin ? 'Sign out (admin)' : 'Sign out'}</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setMemberSignInOpen(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-center py-2 text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5"
+                  >
+                    <User className="w-3.5 h-3.5" />
+                    <span>Member sign in</span>
+                  </button>
+                )}
+
                 <button
                   onClick={() => handleNavClick('admin')}
                   className="w-full text-center py-2 text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5"
@@ -267,6 +358,14 @@ export const Navbar: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
+
+      <MemberSignInModal
+        open={memberSignInOpen}
+        onClose={() => setMemberSignInOpen(false)}
+        onPasswordSignIn={loginMember}
+        onMagicLink={requestMemberMagicLink}
+        onForgotPassword={requestPasswordReset}
+      />
     </motion.header>
   );
 };

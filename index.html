@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/brand/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- Primary Meta Tags -->
     <title>Readers of Aurangabad | Building a Reading Community in MH20</title>
     <meta name="title" content="Readers of Aurangabad | Building a Reading Community in MH20" />
     <meta name="description" content="Discover Readers of Aurangabad, a community bringing people together through books, reading meetups, conversations, and stories. Join the reading movement in MH20." />
-    <meta name="keywords" content="Readers of Aurangabad, Book club in Aurangabad, Reading community Aurangabad, Readers of MH20, Book meetups in Aurangabad, Reading culture in Maharashtra, Literary events Aurangabad, Book discussions Aurangabad" />
+    <meta name="keywords" content="Readers of Aurangabad, Book club in Aurangabad, Reading community Aurangabad, Readers of MH20, Book meetups in Aurangabad, Reading culture in Maharashtra, Literary events in Aurangabad, Book discussions Aurangabad" />
     <meta name="author" content="Abdul Rafe Farooqui" />
     <link rel="canonical" href="https://readersofaurangabad.com/" />
-    
+
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://readersofaurangabad.com/" />
@@ -31,8 +31,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <meta name="theme-color" content="#FAF8F5" />
+
+    <meta name="theme-color" content="#0A0B09" />
 
     <!-- Structured Data (JSON-LD) for Local Community & Literary Organization -->
     <script type="application/ld+json">
@@ -61,9 +61,349 @@
       ]
     }
     </script>
+
+    <style>
+/* Initial Full-Screen Novel Loader */
+#initial-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FAF8F5;
+  color: #1C1B1A;
+  transition: opacity 0.45s ease;
+}
+
+.init-book-stage {
+  width: 360px;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1500px;
+  perspective-origin: 50% 45%;
+}
+
+.init-book-cover {
+  position: relative;
+  width: 330px;
+  height: 215px;
+  background: #2E251B;
+  border-radius: 5px;
+  transform-style: preserve-3d;
+  transform: rotateX(10deg);
+  box-shadow:
+    0 16px 36px -6px rgba(28, 27, 26, 0.28),
+    0 6px 14px -2px rgba(28, 27, 26, 0.18),
+    inset 0 0 0 1px rgba(184, 139, 74, 0.35);
+}
+
+.init-page-edge {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 154px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.init-page-edge-left {
+  left: 6px;
+  border-radius: 4px 1px 1px 4px;
+  background: repeating-linear-gradient(to bottom, #E5D9C4 0px, #FAF4E7 1.5px, #DFD1BA 3px);
+  box-shadow: inset -3px 0 6px 0 rgba(69, 82, 64, 0.1), -2px 0 0 0 #D5C5AC, -4px 0 0 0 #C4B296;
+}
+
+.init-page-edge-right {
+  right: 6px;
+  border-radius: 1px 4px 4px 1px;
+  background: repeating-linear-gradient(to bottom, #E5D9C4 0px, #FAF4E7 1.5px, #DFD1BA 3px);
+  box-shadow: inset 3px 0 6px 0 rgba(69, 82, 64, 0.1), 2px 0 0 0 #D5C5AC, 4px 0 0 0 #C4B296;
+}
+
+.init-page-static {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 152px;
+  background: linear-gradient(135deg, #FFFDF8 0%, #FAF5EA 60%, #F5EDE0 100%);
+  border: 1px solid #E4DAC7;
+  overflow: hidden;
+  z-index: 2;
+  padding: 10px 11px 8px 11px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  box-sizing: border-box;
+}
+
+.init-page-static-left {
+  left: 8px;
+  border-radius: 3px 1px 1px 3px;
+  box-shadow: inset -10px 0 16px 0 rgba(70, 55, 35, 0.08);
+}
+
+.init-page-static-right {
+  right: 8px;
+  border-radius: 1px 3px 3px 1px;
+  box-shadow: inset 10px 0 16px 0 rgba(70, 55, 35, 0.08);
+}
+
+.init-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 5.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #B88B4A;
+  text-transform: uppercase;
+  border-bottom: 0.5px solid rgba(184, 139, 74, 0.3);
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+}
+
+.init-prose {
+  font-size: 7.2px;
+  line-height: 1.45;
+  color: #2D2721;
+  margin-bottom: 4px;
+  text-align: justify;
+}
+
+.init-turning-leaf {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 152px;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  animation: initPageTurn 3.3s cubic-bezier(0.38, 0.04, 0.22, 1) infinite;
+}
+
+.init-leaf-1 { animation-delay: 0s; z-index: 13; }
+.init-leaf-2 { animation-delay: 1.1s; z-index: 12; }
+.init-leaf-3 { animation-delay: 2.2s; z-index: 11; }
+
+.init-leaf-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid #DFD5C2;
+  padding: 10px 11px 8px 11px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  box-sizing: border-box;
+}
+
+.init-leaf-front {
+  border-radius: 1px 4px 4px 1px;
+  background: linear-gradient(140deg, #FFFEFA 0%, #FAF5EA 65%, #F4ECE0 100%);
+  box-shadow: 2px 0 6px 0 rgba(50, 40, 25, 0.12), inset -6px 0 12px 0 rgba(70, 55, 35, 0.05);
+}
+
+.init-leaf-back {
+  transform: rotateY(180deg);
+  border-radius: 4px 1px 1px 4px;
+  background: linear-gradient(220deg, #FAF4E8 0%, #F5ECE0 65%, #EFE4D2 100%);
+  box-shadow: -2px 0 6px 0 rgba(50, 40, 25, 0.1), inset 6px 0 12px 0 rgba(70, 55, 35, 0.06);
+}
+
+.init-book-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 8px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #3A2C1D 0%, #7A5E3A 25%, #B88B4A 50%, #7A5E3A 75%, #3A2C1D 100%);
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
+  z-index: 30;
+}
+
+.init-branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 24px;
+  user-select: none;
+}
+
+.init-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #1C1B1A;
+  margin: 0;
+}
+
+.init-subtitle {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #77736D;
+  margin: 0;
+}
+
+@keyframes initPageTurn {
+  0%, 6% {
+    transform: rotateY(0deg) skewY(0deg) scaleY(1) translateZ(0px);
+    box-shadow: 2px 1px 6px rgba(45, 35, 20, 0.1);
+  }
+  15% {
+    transform: rotateY(-18deg) skewY(2deg) scaleY(0.985) translateZ(5px);
+    box-shadow: 6px 3px 12px rgba(45, 35, 20, 0.16);
+  }
+  32% {
+    transform: rotateY(-62deg) skewY(4deg) scaleY(0.965) translateZ(15px);
+    box-shadow: 10px 8px 22px rgba(40, 30, 15, 0.22);
+  }
+  50% {
+    transform: rotateY(-95deg) skewY(1deg) scaleY(0.96) translateZ(18px);
+    box-shadow: 4px 10px 24px rgba(40, 30, 15, 0.2);
+  }
+  68% {
+    transform: rotateY(-136deg) skewY(-3.5deg) scaleY(0.975) translateZ(12px);
+    box-shadow: -6px 6px 16px rgba(40, 30, 15, 0.16);
+  }
+  82% {
+    transform: rotateY(-172deg) skewY(-0.8deg) scaleY(0.992) translateZ(3px);
+    box-shadow: -3px 2px 8px rgba(40, 30, 15, 0.1);
+  }
+  90%, 100% {
+    transform: rotateY(-180deg) skewY(0deg) scaleY(1) translateZ(0px);
+    box-shadow: -1px 1px 4px rgba(40, 30, 15, 0.08);
+  }
+}
+
+@media (max-width: 480px) {
+  .init-book-stage {
+    transform: scale(0.82);
+    margin-bottom: -15px;
+  }
+  .init-title { font-size: 22px; }
+  .init-subtitle { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .init-turning-leaf {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+/* Cinematic loader skin — paper pages remain light against a charcoal stage. */
+#initial-loader {
+  background: #0A0B09;
+  color: #F4EFE5;
+}
+
+.init-book-cover {
+  background: #141511;
+  border: 1px solid rgba(201, 167, 97, 0.35);
+  box-shadow:
+    0 24px 60px -12px rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(201, 167, 97, 0.18);
+}
+
+.init-book-spine {
+  background: linear-gradient(90deg, #1C150E 0%, #7A5A2E 25%, #C9A761 50%, #7A5A2E 75%, #1C150E 100%);
+}
+
+.init-page-header {
+  color: #8A6A34;
+  border-bottom-color: rgba(201, 167, 97, 0.35);
+}
+
+.init-title {
+  color: #F4EFE5;
+}
+
+.init-subtitle {
+  color: #9C9587;
+}
+    </style>
   </head>
-  <body class="bg-[#FAF8F5] text-[#1C1B1A] antialiased selection:bg-[#455240]/20 selection:text-[#1C1B1A]">
+  <body class="bg-[#0A0B09] text-[#F4EFE5] antialiased selection:bg-[#C9A761]/30 selection:text-[#F4EFE5]">
+    <!-- Initial Loading Screen (Visible immediately before JS execution) -->
+    <div id="initial-loader" role="status" aria-live="polite" aria-label="Loading Readers of Aurangabad">
+      <div class="init-book-stage" aria-hidden="true">
+        <div class="init-book-cover">
+          <div class="init-page-edge init-page-edge-left"></div>
+          <div class="init-page-edge init-page-edge-right"></div>
+
+          <div class="init-page-static init-page-static-left">
+            <div class="init-page-header">
+              <span>CHAPTER III</span>
+              <span>42</span>
+            </div>
+            <p class="init-prose">The morning light filtered through the ancient windowpanes, casting long amber shapes across the worn wooden floor. She opened the volume with gentle care, as if every printed sentence were an invitation to a quieter, more thoughtful world.</p>
+          </div>
+
+          <div class="init-page-static init-page-static-right">
+            <div class="init-page-header">
+              <span>43</span>
+              <span>READERS OF MH20</span>
+            </div>
+            <p class="init-prose">"Every honest book is an open doorway," he said, turning to the window where the morning breeze stirred the banyan leaves. "You need only the quiet courage to cross the threshold and let another mind speak to your own."</p>
+          </div>
+
+          <!-- Turning Sheets -->
+          <div class="init-turning-leaf init-leaf-1">
+            <div class="init-leaf-face init-leaf-front">
+              <div class="init-page-header"><span>45</span><span>READERS OF AURANGABAD</span></div>
+              <p class="init-prose">Between the lines lived truths too delicate for noisy conversation, wrapped in cadence and rhythm like raw silk around glass.</p>
+            </div>
+            <div class="init-leaf-face init-leaf-back">
+              <div class="init-page-header"><span>COMMUNITY</span><span>44</span></div>
+              <p class="init-prose">He walked slowly between the tall shelves, trailing a finger along cracked leather bindings. Each volume whispered of journeys postponed.</p>
+            </div>
+          </div>
+
+          <div class="init-turning-leaf init-leaf-2">
+            <div class="init-leaf-face init-leaf-front">
+              <div class="init-page-header"><span>47</span><span>GATHERINGS</span></div>
+              <p class="init-prose">The circle of readers sat together in companionable silence, strangers united by the simple joy of an open book under the garden trees.</p>
+            </div>
+            <div class="init-leaf-face init-leaf-back">
+              <div class="init-page-header"><span>OUR STORY</span><span>46</span></div>
+              <p class="init-prose">Twilight softened the city skyline, painting the horizon in shades of warm amber. One by one, the books gently closed.</p>
+            </div>
+          </div>
+
+          <div class="init-turning-leaf init-leaf-3">
+            <div class="init-leaf-face init-leaf-front">
+              <div class="init-page-header"><span>49</span><span>THE JOURNAL</span></div>
+              <p class="init-prose">Ink pressed into paper carries more than mere words; it preserves the heartbeat of a community striving for understanding.</p>
+            </div>
+            <div class="init-leaf-face init-leaf-back">
+              <div class="init-page-header"><span>REFLECTIONS</span><span>48</span></div>
+              <p class="init-prose">She placed the volume gently back on the table. The world had not shifted on its axis, but she had changed.</p>
+            </div>
+          </div>
+
+          <div class="init-book-spine"></div>
+        </div>
+      </div>
+      <div class="init-branding">
+        <h2 class="init-title">Readers of Aurangabad</h2>
+        <p class="init-subtitle">A space for readers.</p>
+      </div>
+    </div>
+
+    <!-- React Application Mount Point -->
     <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

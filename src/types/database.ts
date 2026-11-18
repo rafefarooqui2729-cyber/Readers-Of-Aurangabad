@@ -7,9 +7,16 @@ export type Json =
   | Json[];
 
 export type AdminRole = 'admin' | 'editor';
-export type RegistrationStatus = 'open' | 'closed' | 'announced' | 'past';
+export type RegistrationStatus = 'open' | 'closed' | 'announced' | 'past' | 'cancelled';
 export type ActivityStatus = 'new' | 'contacted' | 'resolved';
 export type EnquiryType = 'contact' | 'volunteer' | 'book_donation' | 'collaboration';
+export type NotificationType =
+  | 'meetup_published'
+  | 'meetup_schedule_updated'
+  | 'meetup_venue_updated'
+  | 'meetup_cancelled'
+  | 'announcement_published'
+  | 'community_update_published';
 
 export interface Database {
   public: {
@@ -364,6 +371,61 @@ export interface Database {
           consent?: boolean;
           status?: ActivityStatus;
           created_at?: string;
+        };
+      };
+      notifications: {
+        Row: {
+          id: string;
+          type: NotificationType;
+          title: string;
+          message: string;
+          meetup_id: string | null;
+          announcement_id: string | null;
+          action_url: string | null;
+          dedupe_key: string;
+          created_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          type: NotificationType;
+          title: string;
+          message: string;
+          meetup_id?: string | null;
+          announcement_id?: string | null;
+          action_url?: string | null;
+          dedupe_key: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          type?: NotificationType;
+          title?: string;
+          message?: string;
+          meetup_id?: string | null;
+          announcement_id?: string | null;
+          action_url?: string | null;
+          dedupe_key?: string;
+          created_by?: string | null;
+          created_at?: string;
+        };
+      };
+      notification_receipts: {
+        Row: {
+          notification_id: string;
+          member_id: string;
+          read_at: string;
+        };
+        Insert: {
+          notification_id: string;
+          member_id: string;
+          read_at?: string;
+        };
+        Update: {
+          notification_id?: string;
+          member_id?: string;
+          read_at?: string;
         };
       };
     };

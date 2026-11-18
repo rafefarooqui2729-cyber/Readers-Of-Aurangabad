@@ -1,0 +1,65 @@
+
+> readers-of-aurangabad@0.0.0 build
+> tsc -b && vite build
+
+fatal error: runtime: cannot allocate memory
+
+runtime stack:
+runtime.throw({0x7ff663a174f9?, 0x0?})
+	runtime/panic.go:1229 +0x4d fp=0x7b2e3ff848 sp=0x7b2e3ff818 pc=0x7ff662eb4fad
+runtime.persistentalloc1(0x800, 0x0?, 0x7ff664576640)
+	runtime/malloc.go:2379 +0x265 fp=0x7b2e3ff8a0 sp=0x7b2e3ff848 pc=0x7ff662e4fc65
+runtime.persistentalloc.func1()
+	runtime/malloc.go:2332 +0x28 fp=0x7b2e3ff8d0 sp=0x7b2e3ff8a0 pc=0x7ff662e4f9e8
+runtime.persistentalloc(0x0?, 0x0?, 0x0?)
+	runtime/malloc.go:2331 +0x45 fp=0x7b2e3ff918 sp=0x7b2e3ff8d0 pc=0x7ff662e4f985
+runtime.(*spanSet).push(0x7ff664548690, 0x19c1305ae50)
+	runtime/mspanset.go:113 +0xcf fp=0x7b2e3ff980 sp=0x7b2e3ff918 pc=0x7ff662e76e2f
+runtime.(*mcentral).uncacheSpan(0x0?, 0x0?)
+	runtime/mcentral.go:245 +0x9e fp=0x7b2e3ff9a8 sp=0x7b2e3ff980 pc=0x7ff662e5299e
+runtime.(*mcache).refill(0x19c13050108, 0x43)
+	runtime/mcache.go:182 +0xbf fp=0x7b2e3ff9e8 sp=0x7b2e3ff9a8 pc=0x7ff662e51ddf
+runtime.(*mcache).nextFree(0x19c13050108, 0x43)
+	runtime/malloc.go:1006 +0x7e fp=0x7b2e3ffa20 sp=0x7b2e3ff9e8 pc=0x7ff662e4e35e
+runtime.mallocgcSmallNoscan(0x7ff662e92acb?, 0x7ff6637ebba0?, 0xb0?)
+	runtime/malloc.go:1397 +0x185 fp=0x7b2e3ffa78 sp=0x7b2e3ffa20 pc=0x7ff662e4e945
+runtime.mallocgc(0x438, 0x7ff663768fc0, 0x1)
+	runtime/malloc.go:1143 +0xcc fp=0x7b2e3ffaa8 sp=0x7b2e3ffa78 pc=0x7ff662eb2f2c
+runtime.makeslice(0x25ceed37008?, 0x4c?, 0x7b2e3ffb08?)
+	runtime/slice.go:117 +0x49 fp=0x7b2e3ffad0 sp=0x7b2e3ffaa8 pc=0x7ff662eb68c9
+runtime.makeProfStackFP(...)
+	runtime/proc.go:1063
+runtime.mProfStackInit(...)
+	runtime/proc.go:1050
+runtime.mcommoninit(0x25ceed37008, 0x3)
+	runtime/proc.go:1036 +0x213 fp=0x7b2e3ffb18 sp=0x7b2e3ffad0 pc=0x7ff662e82c73
+runtime.allocm(0x25ceed28008, 0x7ff663b83df8, 0x3)
+	runtime/proc.go:2326 +0xc5 fp=0x7b2e3ffb70 sp=0x7b2e3ffb18 pc=0x7ff662e85465
+runtime.newm(0x300000002?, 0x25ceed28008, 0x6452033e8f28?)
+	runtime/proc.go:2870 +0x35 fp=0x7b2e3ffba0 sp=0x7b2e3ffb70 pc=0x7ff662e85ed5
+runtime.startm(0x25ceed28008?, 0x1, 0x0)
+	runtime/proc.go:3096 +0x130 fp=0x7b2e3ffbe8 sp=0x7b2e3ffba0 pc=0x7ff662e86570
+runtime.wakep()
+	runtime/proc.go:3243 +0xec fp=0x7b2e3ffc18 sp=0x7b2e3ffbe8 pc=0x7ff662eb526c
+runtime.goschedImpl(0x25ceed2c000, 0x1)
+	runtime/proc.go:4342 +0x1dd fp=0x7b2e3ffc70 sp=0x7b2e3ffc18 pc=0x7ff662e8971d
+runtime.gopreempt_m(...)
+	runtime/proc.go:4362
+runtime.newstack()
+	runtime/stack.go:1145 +0x41a fp=0x7b2e3ffda0 sp=0x7b2e3ffc70 pc=0x7ff662e9a35a
+runtime.morestack()
+	runtime/asm_amd64.s:681 +0x7c fp=0x7b2e3ffda8 sp=0x7b2e3ffda0 pc=0x7ff662ebab3c
+
+goroutine 1 gp=0x25ceed2c000 m=nil [runnable, locked to thread]:
+runtime.funcMaxSPDelta({0x7ff66414f4a8?, 0x7ff6644ae7a0?})
+	runtime/symtab.go:1220 +0x115 fp=0x25ceed33e00 sp=0x25ceed33df8 pc=0x7ff662e9e935
+runtime.init.5()
+	runtime/preempt.go:356 +0x55 fp=0x25ceed33e28 sp=0x25ceed33e00 pc=0x7ff662e80115
+runtime.doInit1(0x7ff6644b11e0)
+	runtime/proc.go:8103 +0xda fp=0x25ceed33f48 sp=0x25ceed33e28 pc=0x7ff662e9111a
+runtime.doInit(...)
+	runtime/proc.go:8070
+runtime.main()
+	runtime/proc.go:203 +0x131 fp=0x25ceed33fe0 sp=0x25ceed33f48 pc=0x7ff662e81671
+runtime.goexit({})
+	runtime/asm_amd64.s:1771 +0x1 fp=0x25ceed33fe8 sp=0x25ceed33fe0 pc=0x7ff662ebc6a1

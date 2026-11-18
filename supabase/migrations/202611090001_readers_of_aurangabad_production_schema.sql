@@ -235,27 +235,27 @@ create index if not exists idx_enquiries_type on public.enquiries (type);
 -- =============================================================================
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values
-  (
-    'roa-reels',
-    'roa-reels',
-    false, -- Private bucket for video streams
-    524288000, -- 500 MB
-    array['video/mp4', 'video/webm', 'video/quicktime', 'image/webp', 'image/jpeg', 'image/png']
-  ),
-  (
-    'roa-gallery',
-    'roa-gallery',
-    true, -- Public CDN delivery for photo gallery
-    20971520, -- 20 MB
-    array['image/webp', 'image/jpeg', 'image/png']
-  ),
-  (
-    'roa-thumbnails',
-    'roa-thumbnails',
-    true, -- Public CDN delivery for thumbnails
-    10485760, -- 10 MB
-    array['image/webp', 'image/jpeg', 'image/png']
-  )
+ (
+  'roa-reels',
+  'roa-reels',
+  false, -- Private bucket for video streams
+  524288000, -- 500 MB
+  array['video/mp4', 'video/webm', 'video/quicktime', 'image/webp', 'image/jpeg', 'image/png']
+),
+(
+  'roa-gallery',
+  'roa-gallery',
+  false, -- Private bucket; published images are accessible through Storage policies
+  20971520, -- 20 MB
+  array['image/webp', 'image/jpeg', 'image/png']
+),
+(
+  'roa-thumbnails',
+  'roa-thumbnails',
+  false, -- Private bucket; published thumbnails are accessible through Storage policies
+  10485760, -- 10 MB
+  array['image/webp', 'image/jpeg', 'image/png']
+)
 on conflict (id) do update set
   public = excluded.public,
   file_size_limit = excluded.file_size_limit,
@@ -278,7 +278,6 @@ declare
   v_claim_role text;
   v_raw_claims text;
   v_json_role text;
-  v_session_role text;
 begin
   -- 1. Check legacy GUC setting
   v_claim_role := nullif(current_setting('request.jwt.claim.role', true), '');
@@ -299,13 +298,12 @@ begin
     end;
   end if;
 
-  -- 3. Check PostgREST session role setting as fallback
-  v_session_role := current_setting('role', true);
-  if v_session_role in ('anon', 'authenticated') then
-    return v_session_role;
-  end if;
-
-  -- 4. NULL indicates direct database engine connection (outside PostgREST)
+  -- 3. Direct database connection (no PostgREST JWT context).
+  --    The former current_setting('role') fallback is intentionally omitted:
+  --    a direct DB session that has SET ROLE cannot be distinguished from a
+  --    PostgREST injection by this function alone. RLS policies independently
+  --    enforce auth.uid(), so no privilege escalation is possible through this
+  --    path. NULL correctly signals a direct engine connection to all callers.
   return null;
 end;
 $$;
@@ -463,7 +461,13 @@ begin
     null
   )
   on conflict (id) do update set email = excluded.email;
-
+  return new;
+exception when others then
+  -- Do not propagate profile-creation failures to the auth.users INSERT.
+  -- A missing profile is detected at first login (resolveAdminSession).
+  -- Blocking the auth row would leave the user unable to sign in at all.
+  raise warning 'handle_new_auth_user: profile creation failed for user %: [%] %',
+    new.id, sqlstate, sqlerrm;
   return new;
 end;
 $$;
@@ -528,7 +532,9 @@ begin
     end if;
   end if;
 
-  -- Count existing registrations under row lock
+  -- Count existing registrations. The meetup row lock (above) serializes all
+  -- concurrent inserts for this meetup, so this count is accurate for capacity
+  -- enforcement even without locking the registrations rows directly.
   select count(*)
   into v_registration_count
   from public.registrations r
@@ -605,11 +611,11 @@ $$;
 revoke all on function public.guard_enquiry_insert() from PUBLIC, anon, authenticated;
 
 
--- 6.9 AUTOMATED UPDATED_AT TRIGGER FUNCTION
+-- 6.10 AUTOMATED UPDATED_AT TRIGGER FUNCTION
 create or replace function public.touch_updated_at()
 returns trigger
 language plpgsql
-security definer
+security invoker
 set search_path = pg_catalog, pg_temp
 as $$
 begin
@@ -732,10 +738,12 @@ grant select, insert, update, delete on table public.enquiries to authenticated;
 -- =============================================================================
 
 -- 9.1 PROFILES POLICIES
+drop policy if exists "Profiles are readable by owner or admin" on public.profiles;
 create policy "Profiles are readable by owner or admin"
   on public.profiles for select to authenticated
   using (id = auth.uid() or public.is_admin());
 
+drop policy if exists "Profiles update by owner or admin" on public.profiles;
 create policy "Profiles update by owner or admin"
   on public.profiles for update to authenticated
   using (id = auth.uid() or public.is_admin())
@@ -745,24 +753,29 @@ create policy "Profiles update by owner or admin"
 -- through the Supabase Auth Admin API (auth.users deletion), cascading to public.profiles.
 
 -- 9.2 MEETUPS POLICIES
+drop policy if exists "Meetups are public when published" on public.meetups;
 create policy "Meetups are public when published"
   on public.meetups for select to anon, authenticated
   using (is_published = true or public.can_manage_content());
 
+drop policy if exists "Staff insert meetups" on public.meetups;
 create policy "Staff insert meetups"
   on public.meetups for insert to authenticated
   with check (public.can_manage_content());
 
+drop policy if exists "Staff update meetups" on public.meetups;
 create policy "Staff update meetups"
   on public.meetups for update to authenticated
   using (public.can_manage_content())
   with check (public.can_manage_content());
 
+drop policy if exists "Staff delete meetups" on public.meetups;
 create policy "Staff delete meetups"
   on public.meetups for delete to authenticated
   using (public.can_manage_content());
 
 -- 9.3 REGISTRATIONS POLICIES (ATTENDEE PII STRICTLY ADMIN-ONLY)
+drop policy if exists "Public registration submission" on public.registrations;
 create policy "Public registration submission"
   on public.registrations for insert to anon, authenticated
   with check (
@@ -775,56 +788,68 @@ create policy "Public registration submission"
     or public.is_admin()
   );
 
+drop policy if exists "Admins read registrations" on public.registrations;
 create policy "Admins read registrations"
   on public.registrations for select to authenticated
   using (public.is_admin());
 
+drop policy if exists "Admins update registrations" on public.registrations;
 create policy "Admins update registrations"
   on public.registrations for update to authenticated
   using (public.is_admin())
   with check (public.is_admin());
 
+drop policy if exists "Admins delete registrations" on public.registrations;
 create policy "Admins delete registrations"
   on public.registrations for delete to authenticated
   using (public.is_admin());
 
 -- 9.4 GALLERY IMAGES POLICIES
+drop policy if exists "Gallery is public when published" on public.gallery_images;
 create policy "Gallery is public when published"
   on public.gallery_images for select to anon, authenticated
   using (is_published = true or public.can_manage_content());
 
+drop policy if exists "Staff insert gallery" on public.gallery_images;
 create policy "Staff insert gallery"
   on public.gallery_images for insert to authenticated
   with check (public.can_manage_content());
 
+drop policy if exists "Staff update gallery" on public.gallery_images;
 create policy "Staff update gallery"
   on public.gallery_images for update to authenticated
   using (public.can_manage_content())
   with check (public.can_manage_content());
 
+drop policy if exists "Staff delete gallery" on public.gallery_images;
 create policy "Staff delete gallery"
   on public.gallery_images for delete to authenticated
   using (public.can_manage_content());
 
 -- 9.5 REELS POLICIES
+drop policy if exists "Reels are public when published" on public.reels;
 create policy "Reels are public when published"
   on public.reels for select to anon, authenticated
   using (is_published = true or public.can_manage_content());
 
+drop policy if exists "Staff insert reels" on public.reels;
 create policy "Staff insert reels"
   on public.reels for insert to authenticated
   with check (public.can_manage_content());
 
+drop policy if exists "Staff update reels" on public.reels;
 create policy "Staff update reels"
   on public.reels for update to authenticated
   using (public.can_manage_content())
   with check (public.can_manage_content());
 
+drop policy if exists "Staff delete reels" on public.reels;
 create policy "Staff delete reels"
   on public.reels for delete to authenticated
   using (public.can_manage_content());
 
 -- 9.6 ANNOUNCEMENTS POLICIES
+drop policy if exists "Announcements are public when published and active" on public.announcements;
 create policy "Announcements are public when published and active"
   on public.announcements for select to anon, authenticated
   using (
@@ -836,51 +861,62 @@ create policy "Announcements are public when published and active"
     or public.can_manage_content()
   );
 
+drop policy if exists "Staff insert announcements" on public.announcements;
 create policy "Staff insert announcements"
   on public.announcements for insert to authenticated
   with check (public.can_manage_content());
 
+drop policy if exists "Staff update announcements" on public.announcements;
 create policy "Staff update announcements"
   on public.announcements for update to authenticated
   using (public.can_manage_content())
   with check (public.can_manage_content());
 
+drop policy if exists "Staff delete announcements" on public.announcements;
 create policy "Staff delete announcements"
   on public.announcements for delete to authenticated
   using (public.can_manage_content());
 
 -- 9.7 ARTICLES POLICIES
+drop policy if exists "Articles are public when published" on public.articles;
 create policy "Articles are public when published"
   on public.articles for select to anon, authenticated
   using (is_published = true or public.can_manage_content());
 
+drop policy if exists "Staff insert articles" on public.articles;
 create policy "Staff insert articles"
   on public.articles for insert to authenticated
   with check (public.can_manage_content());
 
+drop policy if exists "Staff update articles" on public.articles;
 create policy "Staff update articles"
   on public.articles for update to authenticated
   using (public.can_manage_content())
   with check (public.can_manage_content());
 
+drop policy if exists "Staff delete articles" on public.articles;
 create policy "Staff delete articles"
   on public.articles for delete to authenticated
   using (public.can_manage_content());
 
 -- 9.8 ENQUIRIES POLICIES (CONTACT PII STRICTLY ADMIN-ONLY)
+drop policy if exists "Public enquiry submission" on public.enquiries;
 create policy "Public enquiry submission"
   on public.enquiries for insert to anon, authenticated
   with check (true);
 
+drop policy if exists "Admins read enquiries" on public.enquiries;
 create policy "Admins read enquiries"
   on public.enquiries for select to authenticated
   using (public.is_admin());
 
+drop policy if exists "Admins update enquiries" on public.enquiries;
 create policy "Admins update enquiries"
   on public.enquiries for update to authenticated
   using (public.is_admin())
   with check (public.is_admin());
 
+drop policy if exists "Admins delete enquiries" on public.enquiries;
 create policy "Admins delete enquiries"
   on public.enquiries for delete to authenticated
   using (public.is_admin());
@@ -891,14 +927,22 @@ create policy "Admins delete enquiries"
 -- =============================================================================
 
 -- 10.1 ROA-REELS POLICIES (EXACT OBJECT PATH MATCHING ON PUBLISHED REELS)
+drop policy if exists "Staff read all reel objects" on storage.objects;
 create policy "Staff read all reel objects"
   on storage.objects for select to authenticated
   using (bucket_id = 'roa-reels' and public.can_manage_content());
 
+-- F-01 fix: added `name ~ '^reels/'` to enforce the expected path prefix before
+-- the exists() subquery runs. This prevents an object stored at a path that
+-- coincidentally matches a published reel record from being granted public access.
+-- Convention: reels.video_path and reels.poster_path MUST be stored without a
+-- leading slash (e.g. 'reels/video.mp4'), matching storage.objects.name exactly.
+drop policy if exists "Public read published reel objects" on storage.objects;
 create policy "Public read published reel objects"
   on storage.objects for select to anon, authenticated
   using (
     bucket_id = 'roa-reels'
+    and name ~ '^reels/'
     and exists (
       select 1 from public.reels
       where reels.is_published = true
@@ -909,35 +953,90 @@ create policy "Public read published reel objects"
     )
   );
 
+drop policy if exists "Staff upload reel objects" on storage.objects;
 create policy "Staff upload reel objects"
   on storage.objects for insert to authenticated
   with check (bucket_id = 'roa-reels' and public.can_manage_content());
 
+drop policy if exists "Staff update reel objects" on storage.objects;
 create policy "Staff update reel objects"
   on storage.objects for update to authenticated
   using (bucket_id = 'roa-reels' and public.can_manage_content())
   with check (bucket_id = 'roa-reels' and public.can_manage_content());
 
+drop policy if exists "Staff delete reel objects" on storage.objects;
 create policy "Staff delete reel objects"
   on storage.objects for delete to authenticated
   using (bucket_id = 'roa-reels' and public.can_manage_content());
 
 -- 10.2 ROA-GALLERY POLICIES
-create policy "Public gallery thumbnails select"
-  on storage.objects for select to anon, authenticated
-  using (bucket_id in ('roa-gallery', 'roa-thumbnails'));
+-- Private buckets with exact-path access for published gallery records.
 
+-- Staff can read all gallery objects, including unpublished photographs.
+drop policy if exists "Staff read all gallery objects" on storage.objects;
+create policy "Staff read all gallery objects"
+  on storage.objects for select to authenticated
+  using (
+    bucket_id in ('roa-gallery', 'roa-thumbnails')
+    and public.can_manage_content()
+  );
+
+-- Public users can read only objects referenced by published gallery records.
+-- Signed URL generation is subject to this SELECT policy.
+drop policy if exists "Public read published gallery objects" on storage.objects;
+create policy "Public read published gallery objects"
+  on storage.objects for select to anon, authenticated
+  using (
+    (
+      bucket_id = 'roa-gallery'
+      and exists (
+        select 1
+        from public.gallery_images gi
+        where gi.image_path = storage.objects.name
+          and gi.is_published = true
+      )
+    )
+    or
+    (
+      bucket_id = 'roa-thumbnails'
+      and exists (
+        select 1
+        from public.gallery_images gi
+        where gi.thumbnail_path = storage.objects.name
+          and gi.is_published = true
+      )
+    )
+  );
+
+-- Only authorized staff can upload gallery objects.
+drop policy if exists "Staff upload gallery objects" on storage.objects;
 create policy "Staff upload gallery objects"
   on storage.objects for insert to authenticated
-  with check (bucket_id in ('roa-gallery', 'roa-thumbnails') and public.can_manage_content());
+  with check (
+    bucket_id in ('roa-gallery', 'roa-thumbnails')
+    and public.can_manage_content()
+  );
 
+-- Only authorized staff can update gallery objects.
+drop policy if exists "Staff update gallery objects" on storage.objects;
 create policy "Staff update gallery objects"
   on storage.objects for update to authenticated
-  using (bucket_id in ('roa-gallery', 'roa-thumbnails') and public.can_manage_content())
-  with check (bucket_id in ('roa-gallery', 'roa-thumbnails') and public.can_manage_content());
+  using (
+    bucket_id in ('roa-gallery', 'roa-thumbnails')
+    and public.can_manage_content()
+  )
+  with check (
+    bucket_id in ('roa-gallery', 'roa-thumbnails')
+    and public.can_manage_content()
+  );
 
+-- Only authorized staff can delete gallery objects.
+drop policy if exists "Staff delete gallery objects" on storage.objects;
 create policy "Staff delete gallery objects"
   on storage.objects for delete to authenticated
-  using (bucket_id in ('roa-gallery', 'roa-thumbnails') and public.can_manage_content());
+  using (
+    bucket_id in ('roa-gallery', 'roa-thumbnails')
+    and public.can_manage_content()
+  );
 
 commit;

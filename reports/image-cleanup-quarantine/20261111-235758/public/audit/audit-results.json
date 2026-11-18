@@ -1,0 +1,221 @@
+{
+  "viewports": {
+    "desktop-1440": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 1434,
+      "clientWidth": 1434,
+      "overflowCount": 0,
+      "overflowSamples": [],
+      "heroH1Rect": {
+        "top": 434,
+        "bottom": 525,
+        "height": 91
+      },
+      "movementRect": {
+        "top": 661,
+        "height": 241
+      }
+    },
+    "laptop-1024": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 1018,
+      "clientWidth": 1018,
+      "overflowCount": 0,
+      "overflowSamples": [],
+      "heroH1Rect": {
+        "top": 434,
+        "bottom": 525,
+        "height": 91
+      },
+      "movementRect": {
+        "top": 661,
+        "height": 280
+      }
+    },
+    "tablet-768": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 762,
+      "clientWidth": 762,
+      "overflowCount": 0,
+      "overflowSamples": [],
+      "heroH1Rect": {
+        "top": 389,
+        "bottom": 457,
+        "height": 68
+      },
+      "movementRect": {
+        "top": 581,
+        "height": 285
+      }
+    },
+    "mobile-390": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowCount": 0,
+      "overflowSamples": [],
+      "heroH1Rect": {
+        "top": 367,
+        "bottom": 413,
+        "height": 46
+      },
+      "movementRect": {
+        "top": 501,
+        "height": 302
+      }
+    },
+    "mobile-360": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 360,
+      "clientWidth": 360,
+      "overflowCount": 0,
+      "overflowSamples": [],
+      "heroH1Rect": {
+        "top": 367,
+        "bottom": 413,
+        "height": 46
+      },
+      "movementRect": {
+        "top": 501,
+        "height": 312
+      }
+    }
+  },
+  "consoleLogs": [],
+  "networkErrors": [],
+  "domAudit": {
+    "headings": [
+      {
+        "tag": "H1",
+        "text": "READERS OFAURANGABAD",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "More than a reading club.",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Community Announcement",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Reel collection",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Morning Silence under Deccan Palms",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Our Guiding Philosophy",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Read Together",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Think Freely",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Share Stories",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Build Community",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Upcoming Gatherings",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "The Sunday Open Chapter: Silence, Sunlight & Stories",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Community Moments",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "The Literary Journal",
+        "visible": true
+      },
+      {
+        "tag": "H3",
+        "text": "Why Physical Books and Open Skies Still Matter in MH20",
+        "visible": true
+      },
+      {
+        "tag": "H4",
+        "text": "औरंगाबाद की सुबह और किताबों का सुकून",
+        "visible": true
+      },
+      {
+        "tag": "H4",
+        "text": "دکن کی خاک، مطالعے کا ذوق اور نئی نسل",
+        "visible": true
+      },
+      {
+        "tag": "H4",
+        "text": "Have a story or essay to submit?",
+        "visible": true
+      },
+      {
+        "tag": "H2",
+        "text": "Whether you read every day or are just beginning, there is a",
+        "visible": true
+      },
+      {
+        "tag": "H4",
+        "text": "Explore Movement",
+        "visible": true
+      },
+      {
+        "tag": "H4",
+        "text": "Our Core Creed",
+        "visible": true
+      }
+    ],
+    "images": {
+      "total": 25,
+      "missingAlt": 0,
+      "broken": []
+    },
+    "buttons": {
+      "total": 43,
+      "missingAria": 0
+    },
+    "videos": {
+      "total": 2,
+      "list": [
+        {
+          "src": "http://localhost:5173/media/announcement/announcement.mp4",
+          "paused": true,
+          "muted": true,
+          "readyState": 4
+        },
+        {
+          "src": "http://localhost:5173/media/reels/meetup01.MP4",
+          "paused": false,
+          "muted": true,
+          "readyState": 4
+        }
+      ]
+    }
+  }
+}

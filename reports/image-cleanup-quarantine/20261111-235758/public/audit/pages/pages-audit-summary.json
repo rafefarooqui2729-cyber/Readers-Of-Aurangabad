@@ -1,0 +1,50 @@
+{
+  "story": {
+    "name": "Our Story",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  },
+  "gatherings": {
+    "name": "Gatherings",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  },
+  "journal": {
+    "name": "The Journal",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  },
+  "community": {
+    "name": "Community",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  },
+  "get-involved": {
+    "name": "Get Involved",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  },
+  "contact": {
+    "name": "Contact",
+    "overflow": {
+      "hasHorizontalOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  }
+}

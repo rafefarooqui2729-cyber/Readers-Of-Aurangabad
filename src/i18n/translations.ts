@@ -48,6 +48,19 @@ export interface Translations {
     experienceHeading: string;
     experienceSub: string;
     viewAllGatherings: string;
+    philosophyEyebrow: string;
+    philosophyHeading: string;
+    philosophyIntro: string;
+    philosophyP1Title: string;
+    philosophyP1Desc: string;
+    philosophyP2Title: string;
+    philosophyP2Desc: string;
+    philosophyP3Title: string;
+    philosophyP3Desc: string;
+    philosophyP4Title: string;
+    philosophyP4Desc: string;
+    coreBeliefLabel: string;
+    coreBeliefQuote: string;
   };
   journal: {
     heading: string;
@@ -140,6 +153,19 @@ export const translations: Record<Language, Translations> = {
       experienceHeading: 'The Meetup Experience',
       experienceSub: 'What happens when readers meet in Aurangabad?',
       viewAllGatherings: 'View Full Gatherings Archive',
+      philosophyEyebrow: 'How We Gather',
+      philosophyHeading: 'Our Meetup & Community Engagement Philosophy',
+      philosophyIntro: 'We believe in building a meaningful reading community, not in organising events simply to keep a schedule. Here is what guides every gathering we host — and every conversation we keep alive between them.',
+      philosophyP1Title: 'Flexible Scheduling',
+      philosophyP1Desc: 'Meetups are organised around genuine community interest, team availability, and suitable arrangements — never a rigid monthly calendar.',
+      philosophyP2Title: 'Quality Over Frequency',
+      philosophyP2Desc: 'Every meetup should feel engaging, comfortable, and worth attending. We value meaningful interactions and memorable reading experiences over the number of events.',
+      philosophyP3Title: 'Consistent Community Engagement',
+      philosophyP3Desc: 'The community stays active between physical meetups through reading discussions, polls, book conversations, and interactive WhatsApp activities.',
+      philosophyP4Title: 'Transparency & Authenticity',
+      philosophyP4Desc: 'Our website and social platforms reflect our actual activities. Completed meetups are displayed as they happen, while upcoming events are announced only after confirmation.',
+      coreBeliefLabel: 'Our Core Belief',
+      coreBeliefQuote: 'We are not here merely to organise meetups. We are here to build a culture of reading, meaningful conversations, and lasting connections among readers in Aurangabad.',
     },
     journal: {
       heading: 'The Literary Journal',
@@ -230,6 +256,19 @@ export const translations: Record<Language, Translations> = {
       experienceHeading: 'बैठक का अनुभव',
       experienceSub: 'जब औरंगाबाद में पाठक मिलते हैं, तो क्या होता है?',
       viewAllGatherings: 'सभी बैठकों का संग्रह देखें',
+      philosophyEyebrow: 'हम कैसे एकत्र होते हैं',
+      philosophyHeading: 'हमारी बैठक एवं सामुदायिक सहभागिता का दर्शन',
+      philosophyIntro: 'हमारा मानना है कि एक सार्थक पाठक समुदाय बनाना चाहिए, केवल कार्यक्रमों का कैलेंडर भरना नहीं। यही हमारी हर बैठक का मार्गदर्शन करता है — और उनके बीच चलने वाली हर बातचीत का भी।',
+      philosophyP1Title: 'लचीली समय-सारणी',
+      philosophyP1Desc: 'बैठकें वास्तविक सामुदायिक रुचि, टीम की उपलब्धता और उपयुक्त व्यवस्था के अनुसार आयोजित की जाती हैं — किसी कठोर मासिक कैलेंडर के अनुसार नहीं।',
+      philosophyP2Title: 'संख्या से अधिक गुणवत्ता',
+      philosophyP2Desc: 'हर बैठक रोचक, सहज और उपस्थित होने योग्य होनी चाहिए। हम कार्यक्रमों की संख्या से अधिक सार्थक संवाद और यादगार पढ़ने के अनुभवों को महत्व देते हैं।',
+      philosophyP3Title: 'निरंतर सामुदायिक सहभागिता',
+      philosophyP3Desc: 'भौतिक बैठकों के बीच भी समुदाय पठन-चर्चा, पोल, किताबों पर संवाद और व्हाट्सएप की इंटरैक्टिव गतिविधियों से सक्रिय रहता है।',
+      philosophyP4Title: 'पारदर्शिता एवं प्रामाणिकता',
+      philosophyP4Desc: 'हमारी वेबसाइट और सोशल प्लेटफ़ॉर्म हमारी वास्तविक गतिविधियों को दर्शाते हैं। पूरी हो चुकी बैठकें उनके होते ही प्रदर्शित की जाती हैं, और आगामी कार्यक्रमों की घोषणा पुष्टि के बाद ही की जाती है।',
+      coreBeliefLabel: 'हमारा मूल विश्वास',
+      coreBeliefQuote: 'हम यहाँ केवल बैठकों का आयोजन करने नहीं आए हैं। हम औरंगाबाद के पाठकों के बीच पढ़ने की संस्कृति, सार्थक संवाद और स्थायी रिश्ते बनाने आए हैं।',
     },
     journal: {
       heading: 'साहित्यिक पत्रिका',
@@ -320,6 +359,19 @@ export const translations: Record<Language, Translations> = {
       experienceHeading: 'نشست کا احوال و تجربہ',
       experienceSub: 'جب اورنگ آباد کے قارئین مل بیٹھتے ہیں تو کیا ہوتا ہے؟',
       viewAllGatherings: 'تمام نشستوں کا آرکائیو دیکھیں',
+      philosophyEyebrow: 'ہم کیسے جمع ہوتے ہیں',
+      philosophyHeading: 'ہماری نشست اور کمیونٹی شرکت کا فلسفہ',
+      philosophyIntro: 'ہم ایک بامعنی قارئین کی کمیونٹی تعمیر کرنے پر یقین رکھتے ہیں، محض شیڈول برقرار رکھنے کے لیے تقریبات منعقد کرنے پر نہیں۔ یہی ہر نشست کی رہنمائی کرتا ہے — اور ان کے درمیان جاری ہر گفتگو کی بھی۔',
+      philosophyP1Title: 'لچکدار شیڈول',
+      philosophyP1Desc: 'نشستیں حقیقی کمیونٹی دلچسپی، ٹیم کی دستیابی اور مناسب انتظامات کے مطابق منعقد کی جاتی ہیں — کسی سخت ماہانہ کیلنڈر کے مطابق نہیں۔',
+      philosophyP2Title: 'تعداد پر معیار',
+      philosophyP2Desc: 'ہر نشست دلچسپ، پرسکون اور شرکت کے قابل ہونی چاہیے۔ ہم تقریبات کی تعداد کے بجائے بامعنی مکالمے اور یادگار مطالعے کے تجربات کو اہمیت دیتے ہیں۔',
+      philosophyP3Title: 'مسلسل کمیونٹی شرکت',
+      philosophyP3Desc: 'جسمانی نشستوں کے درمیان بھی کمیونٹی مطالعے کی گفتگو، پولز، کتابوں پر مباحثے اور واٹس ایپ کی دلچسپ سرگرمیوں کے ذریعے فعال رہتی ہے۔',
+      philosophyP4Title: 'شفافیت اور اصلیت',
+      philosophyP4Desc: 'ہماری ویب سائٹ اور سوشل پلیٹ فارمز ہماری حقیقی سرگرمیوں کی عکاسی کرتے ہیں۔ مکمل ہونے والی نشستیں وقت پر دکھائی جاتی ہیں، جبکہ آئندہ تقریبات کا اعلان تصدیق کے بعد ہی کیا جاتا ہے۔',
+      coreBeliefLabel: 'ہمارا بنیادی یقین',
+      coreBeliefQuote: 'ہم یہاں صرف نشستیں منعقد کرنے نہیں آئے۔ ہم اورنگ آباد کے قارئین کے درمیان مطالعے کی ثقافت، بامعنی گفتگو اور دیرپا رشتے تعمیر کرنے آئے ہیں۔',
     },
     journal: {
       heading: 'ادبی جریدہ',
@@ -410,6 +462,19 @@ export const translations: Record<Language, Translations> = {
       experienceHeading: 'बैठकीचा अनुभव',
       experienceSub: 'जेव्हा औरंगाबादचे वाचक एकत्र येतात, तेव्हा काय घडते?',
       viewAllGatherings: 'सर्व बैठकांचा संग्रह पहा',
+      philosophyEyebrow: 'आम्ही कसे एकत्र येतो',
+      philosophyHeading: 'आमची बैठक आणि सामुदायिक सहभागाचे तत्त्वज्ञान',
+      philosophyIntro: 'आमचा विश्वास आहे की केवळ वेळापत्रक राखण्यासाठी कार्यक्रम करण्यापेक्षा अर्थपूर्ण वाचक समुदाय घडवणे महत्त्वाचे आहे. प्रत्येक बैठक आणि त्या दरम्यान सुरू राहणारा प्रत्येक संवाद याच विचाराने घडतो.',
+      philosophyP1Title: 'लवचिक नियोजन',
+      philosophyP1Desc: 'बैठका प्रत्यक्ष सामुदायिक रुची, टीमची उपलब्धता आणि योग्य व्यवस्थेनुसार आयोजित केल्या जातात — कठोर मासिक वेळापत्रकानुसार नाहीत.',
+      philosophyP2Title: 'वारंवारतेपेक्षा गुणवत्ता',
+      philosophyP2Desc: 'प्रत्येक बैठक आकर्षक, आरामदायी आणि उपस्थित राहण्यासारखी असावी. कार्यक्रमांच्या संख्येपेक्षा आम्ही अर्थपूर्ण संवाद आणि लक्षात राहणाऱ्या वाचन अनुभवांना महत्त्व देतो.',
+      philosophyP3Title: 'सातत्यपूर्ण सामुदायिक सहभाग',
+      philosophyP3Desc: 'प्रत्यक्ष बैठकांच्या दरम्यानही समुदाय वाचनचर्चा, मतदान, पुस्तकांविषयी संवाद आणि व्हॉट्सअॅपवरील परस्परसंवादी उपक्रमांमधून सक्रिय राहतो.',
+      philosophyP4Title: 'पारदर्शकता व प्रामाणिकपणा',
+      philosophyP4Desc: 'आमची वेबसाइट आणि सोशल मीडिया आमच्या प्रत्यक्ष कृतिशीलतेचे प्रतिबिंब आहेत. पूर्ण झालेल्या बैठका वेळोवेळी दाखवल्या जातात आणि आगामी कार्यक्रमांची घोषणा केवळ पुष्टीनंतरच केली जाते.',
+      coreBeliefLabel: 'आमचा मूळ विश्वास',
+      coreBeliefQuote: 'आम्ही केवळ बैठका आयोजित करण्यासाठी येथे नाही आलो. औरंगाबादच्या वाचकांमध्ये वाचनसंस्कृती, अर्थपूर्ण संवाद आणि टिकाऊ नाती घडवण्यासाठी आलो आहोत.',
     },
     journal: {
       heading: 'साहित्यिक मासिक',

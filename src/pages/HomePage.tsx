@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import {
   ArrowRight,
@@ -16,12 +16,103 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { FeaturedAnnouncementReel } from '../components/FeaturedAnnouncementReel';
 import { ReelCollectionSection } from '../components/ReelCollectionSection';
 import { CommunityGallery } from '../components/CommunityGallery';
+import { UpcomingEventSpotlight } from '../components/UpcomingEventSpotlight';
+import { scrollToTop } from '../utils/scroll';
+import { useModalEscapeDismiss } from '../utils/modalAccessibility';
+import {
+  findActiveAnnouncementById,
+  getAnnouncementNavigationId,
+  scrollToAnnouncement,
+} from '../utils/announcementNavigation';
 
 export const HomePage: React.FC = () => {
-  const { t, setCurrentPage, meetups, articles, setSelectedArticle, setSelectedMeetup } = useApp();
+  const {
+    t,
+    setCurrentPage,
+    meetups,
+    articles,
+    announcements,
+    setSelectedArticle,
+    setSelectedMeetup,
+    announcementNavigationId,
+    clearAnnouncementNavigation,
+    dbLoading,
+    isPageLoading,
+  } = useApp();
 
   const shouldReduceMotion = useReducedMotion();
-  const upcomingMeetups = meetups.filter(m => m.isUpcoming);
+  const [fullAnnouncementId, setFullAnnouncementId] = React.useState<string | null>(null);
+  const [announcementsNow] = React.useState(() => Date.now());
+  const upcomingMeetups = useMemo(() => {
+    return meetups
+      .filter(m => m.isUpcoming && m.isPublished !== false)
+      .sort((a, b) => new Date(a.startsAt || a.date).getTime() - new Date(b.startsAt || b.date).getTime());
+  }, [meetups]);
+  const nearestUpcomingMeetup = upcomingMeetups[0] || null;
+  const latestAnnouncement = useMemo(() => {
+    return [...announcements]
+      .filter(a => a.isPublished && (!a.expiresAt || new Date(a.expiresAt).getTime() >= announcementsNow))
+      .sort((a, b) => new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())[0] || null;
+  }, [announcements, announcementsNow]);
+  const announcementTargetId = announcementNavigationId || (
+    typeof window === 'undefined' ? null : getAnnouncementNavigationId(window.location.search)
+  );
+  const announcementToShow = (
+    announcementTargetId
+      ? findActiveAnnouncementById(announcements, announcementTargetId, announcementsNow)
+      : null
+  ) || latestAnnouncement;
+
+  const fullAnnouncement = fullAnnouncementId
+    ? announcements.find((announcement) => announcement.id === fullAnnouncementId) || null
+    : null;
+  const fullAnnouncementSurfaceRef = useRef<HTMLDivElement>(null);
+  const dismissFullAnnouncement = useModalEscapeDismiss(
+    Boolean(fullAnnouncement),
+    () => setFullAnnouncementId(null),
+    fullAnnouncementSurfaceRef
+  );
+
+  React.useEffect(() => {
+    if (!announcementNavigationId || dbLoading || isPageLoading) return;
+
+    const target = findActiveAnnouncementById(
+      announcements,
+      announcementNavigationId,
+      announcementsNow
+    );
+    if (!target) {
+      clearAnnouncementNavigation(announcementNavigationId);
+      return;
+    }
+
+    let frameId = 0;
+    let attempts = 0;
+    const scrollWhenReady = () => {
+      if (scrollToAnnouncement(target.id, Boolean(shouldReduceMotion))) {
+        clearAnnouncementNavigation(target.id);
+        return;
+      }
+
+      attempts += 1;
+      if (attempts >= 120) {
+        clearAnnouncementNavigation(target.id);
+        return;
+      }
+      frameId = window.requestAnimationFrame(scrollWhenReady);
+    };
+
+    frameId = window.requestAnimationFrame(scrollWhenReady);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [
+    announcementNavigationId,
+    announcements,
+    announcementsNow,
+    clearAnnouncementNavigation,
+    dbLoading,
+    isPageLoading,
+    shouldReduceMotion,
+  ]);
   const featuredArticle = articles.find(a => a.featured) || articles[0];
   const recentArticles = articles.slice(0, 3);
 
@@ -100,7 +191,7 @@ export const HomePage: React.FC = () => {
                 type="button"
                 whileHover={shouldReduceMotion ? undefined : { x: 3 }}
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                onClick={() => { setCurrentPage('get-involved'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
                 className="bg-[#F2EBDD] hover:bg-white text-[#20231F] px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-lg transition-colors"
               >
                 <span>{t.hero.ctaPrimary}</span>
@@ -110,7 +201,7 @@ export const HomePage: React.FC = () => {
                 type="button"
                 whileHover={shouldReduceMotion ? undefined : { x: 3 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => { setCurrentPage('story'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => { setCurrentPage('story'); scrollToTop(); }}
                 className="glass-pill text-[#F2EBDD] hover:text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold border-white/25 cursor-pointer bg-black/25 backdrop-blur-md hover:bg-black/40 transition-colors"
               >
                 {t.hero.ctaSecondary}
@@ -177,6 +268,23 @@ export const HomePage: React.FC = () => {
       {/* ══════════════════════════════════════════════════════════════
           4. FEATURED ANNOUNCEMENT REEL
           ════════════════════════════════════════════════════════════ */}
+      {/* Upcoming event countdown + latest announcement */}
+      <section className="relative py-6 sm:py-8">
+        <UpcomingEventSpotlight
+          key={nearestUpcomingMeetup?.id ?? nearestUpcomingMeetup?.startsAt ?? 'no-upcoming-meetup'}
+          meetup={nearestUpcomingMeetup}
+          announcement={announcementToShow}
+          onViewEvent={(meetup) => setSelectedMeetup(meetup)}
+          onViewAnnouncement={() => {
+            if (announcementToShow) setFullAnnouncementId(announcementToShow.id);
+          }}
+          onViewGatherings={() => {
+            setCurrentPage('gatherings');
+            scrollToTop();
+          }}
+        />
+      </section>
+
       <FeaturedAnnouncementReel />
 
       {/* ══════════════════════════════════════════════════════════════
@@ -286,8 +394,8 @@ export const HomePage: React.FC = () => {
             <p className="text-sm text-[#595550] mt-1">{t.gatherings.upcomingSub}</p>
           </div>
           <button
-            onClick={() => { setCurrentPage('gatherings'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+            onClick={() => { setCurrentPage('gatherings'); scrollToTop(); }}
+            className="p4-touch-target text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <span>{t.gatherings.viewAllGatherings}</span>
             <ChevronRight className="w-4 h-4" />
@@ -418,7 +526,7 @@ export const HomePage: React.FC = () => {
           </div>
           <div className="lg:col-span-4 lg:text-right">
             <button
-              onClick={() => { setCurrentPage('community'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              onClick={() => { setCurrentPage('community'); scrollToTop(); }}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#20231F] hover:text-[#777C60] transition-colors cursor-pointer"
             >
               <span>Explore full archive</span>
@@ -451,7 +559,7 @@ export const HomePage: React.FC = () => {
             <p className="text-sm text-[#595550] mt-1">{t.journal.subheading}</p>
           </div>
           <button
-            onClick={() => { setCurrentPage('journal'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={() => { setCurrentPage('journal'); scrollToTop(); }}
             className="text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <span>Browse All Articles</span>
@@ -522,12 +630,12 @@ export const HomePage: React.FC = () => {
                   <span className={`text-[10px] font-semibold text-[#A65F46] uppercase tracking-wider block ${article.language === 'ur' ? 'text-right' : ''}`}>
                     {article.category} · {article.language.toUpperCase()}
                   </span>
-                  <h4 className={`font-bold text-base text-[#20231F] group-hover:text-[#777C60] transition-colors line-clamp-2 leading-snug ${
+                  <h4 className={`font-bold text-base text-[#20231F] group-hover:text-[#777C60] transition-colors line-clamp-2 ${
                     article.language === 'ur'
-                      ? 'font-urdu text-right text-lg leading-[2.0]'
+                      ? 'p4-urdu-card-heading font-urdu text-right text-lg leading-[2.3]'
                       : article.language === 'hi' || article.language === 'mr'
                       ? 'font-hindi leading-[1.6]'
-                      : 'font-serif'
+                      : 'font-serif leading-snug'
                   }`}>
                     {article.title}
                   </h4>
@@ -546,7 +654,7 @@ export const HomePage: React.FC = () => {
   We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
 </p>
               <button
-                onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => { setCurrentPage('contact'); scrollToTop(); }}
                 className="text-xs font-semibold text-[#777C60] hover:text-[#20231F] pt-1 inline-flex items-center gap-1 cursor-pointer"
               >
                 <span>Submit to Journal</span>
@@ -590,7 +698,7 @@ export const HomePage: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => { setCurrentPage('get-involved'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
                 className="bg-[#F2EBDD] hover:bg-white text-[#20231F] px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all shadow-md cursor-pointer"
               >
                 Become a Part of Us
@@ -607,6 +715,65 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </motion.section>
+
+
+      {fullAnnouncement && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/65 backdrop-blur-md p-3 sm:p-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={dismissFullAnnouncement}
+        >
+          <motion.div
+            ref={fullAnnouncementSurfaceRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="full-announcement-title"
+            tabIndex={-1}
+            className="relative my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/60 bg-[#FAF8F5] p-6 shadow-2xl sm:p-9"
+            initial={{ opacity: 0, y: 14, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10 }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={dismissFullAnnouncement}
+              aria-label="Close announcement"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E2D5] text-2xl text-[#595550] transition-colors hover:bg-white"
+            >
+              <span aria-hidden="true">?</span>
+            </button>
+
+            <div className="mb-6 pr-10">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#777C60]">
+                Latest Community Announcement
+              </p>
+              <p className="mt-2 text-sm text-[#8C857B]">
+                Published {new Date(
+                  fullAnnouncement.publishedAt || fullAnnouncement.createdAt
+                ).toLocaleDateString('en-IN', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
+            </div>
+
+            <h2
+              id="full-announcement-title"
+              className="mb-5 font-serif text-2xl font-bold leading-tight text-[#20231F] sm:text-3xl"
+            >
+              {fullAnnouncement.title}
+            </h2>
+
+            <div className="whitespace-pre-wrap break-words text-base leading-8 text-[#595550]">
+              {fullAnnouncement.content}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
     </div>
   );

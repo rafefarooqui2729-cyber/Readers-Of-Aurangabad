@@ -11,6 +11,8 @@ import {
 import { motion, useReducedMotion } from 'framer-motion';
 import { InstagramIcon } from '../components/Icons';
 
+type ContactErrorField = 'name' | 'email' | 'message' | 'consent' | 'form';
+
 export const ContactPage: React.FC = () => {
   const { addEnquiry } = useApp();
   const shouldReduceMotion = useReducedMotion();
@@ -20,22 +22,32 @@ export const ContactPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [consent, setConsent] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [errorField, setErrorField] = useState<ContactErrorField | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setErrorField(null);
     setSuccess(false);
 
     if (!name.trim() || !email.trim() || !message.trim()) {
+      setErrorField(!name.trim() ? 'name' : !email.trim() ? 'email' : 'message');
       setError('Please provide your name, valid email address, and message.');
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setErrorField('email');
       setError('Please enter a valid email address.');
+      return;
+    }
+    if (!consent) {
+      setError('Please agree that Readers of Aurangabad may use your information to respond before submitting.');
+      setErrorField('consent');
       return;
     }
 
@@ -47,6 +59,7 @@ export const ContactPage: React.FC = () => {
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),
+        consent,
         details: { subject: subject.trim() || 'General Inquiry' }
       });
       setIsSubmitting(false);
@@ -55,17 +68,19 @@ export const ContactPage: React.FC = () => {
       setEmail('');
       setSubject('');
       setMessage('');
+      setConsent(false);
     } catch (submissionError) {
       setIsSubmitting(false);
+      setErrorField('form');
       setError(submissionError instanceof Error ? submissionError.message : 'Unable to submit your message. Please try again.');
     }
   };
 
   return (
-    <div className="pb-16 paper-grain overflow-hidden">
+    <div className="p2-page p2-contact pb-16 paper-grain overflow-hidden">
 
       {/* 1. FULL-BLEED HERO */}
-      <section className="relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
+      <section className="p2-hero p2-hero--contact relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/enhanced/gallery/roa-054-2026-11-05.webp"
@@ -80,7 +95,7 @@ export const ContactPage: React.FC = () => {
           initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: easeCurve }}
-          className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
+          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
             <MessageSquare className="w-3.5 h-3.5 text-[#B89A65]" />
@@ -101,12 +116,12 @@ export const ContactPage: React.FC = () => {
       </section>
 
       {/* 2. CONTACT CONTENT GRID */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
+      <section className="p2-contact-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
+        <div className="p2-contact-grid grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
 
           {/* Left Column: Official Contact Metadata (5 cols) */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="paper-card p-8 rounded-3xl space-y-6 bg-white border border-[#E8E2D5]">
+          <div className="p2-contact-details lg:col-span-5 space-y-8">
+            <div className="p2-contact-card paper-card p-8 rounded-3xl space-y-6 bg-white border border-[#E8E2D5]">
               <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
                 The Community Headquarters
               </h3>
@@ -114,7 +129,7 @@ export const ContactPage: React.FC = () => {
               <div className="space-y-5 text-sm">
 
                 {/* Location */}
-                <div className="flex items-start gap-4">
+                <div className="p2-contact-method flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0">
                     <MapPin className="w-5 h-5" />
                   </div>
@@ -126,11 +141,11 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 {/* Email */}
-                <div className="flex items-start gap-4">
+                <div className="p2-contact-method flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <div>
+                  <div className="min-w-0 break-words">
                     <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Official Inquiries</span>
                     <p className="font-medium text-[#1C1B1A]">contact@readersofaurangabad.com</p>
                     <p className="text-xs text-[#595550]">readersofaurangabad@gmail.com</p>
@@ -138,7 +153,7 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 {/* Instagram */}
-                <div className="flex items-start gap-4">
+                <div className="p2-contact-method flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0">
                     <InstagramIcon className="w-5 h-5" />
                   </div>
@@ -167,7 +182,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             {/* Gathering Location Photography */}
-            <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
+            <div className="p2-contact-photo rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
               <img
                 src="/images/enhanced/community/card-2.webp"
                 alt="Sunday morning gatherings in Aurangabad public parks"
@@ -182,7 +197,7 @@ export const ContactPage: React.FC = () => {
             </div>
 
             {/* Quick Literary Quotation */}
-            <div className="p-6 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] space-y-2">
+            <div className="p2-contact-quote p-6 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] space-y-2">
               <p className="font-serif italic text-sm text-[#1C1B1A]">
                 "In a quiet circle, every voice has weight, and every silence is understood."
               </p>
@@ -193,8 +208,8 @@ export const ContactPage: React.FC = () => {
           </div>
 
           {/* Right Column: Interactive Contact Form (7 cols) */}
-          <div className="lg:col-span-7">
-            <div className="paper-card p-8 sm:p-10 rounded-3xl bg-white border border-[#E8E2D5]">
+          <div className="p2-contact-form-column lg:col-span-7">
+            <div className="p3-form-card p2-contact-form-card paper-card p-8 sm:p-10 rounded-3xl bg-white border border-[#E8E2D5]">
               <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] mb-2">
                 Send Us a Note
               </h3>
@@ -202,72 +217,107 @@ export const ContactPage: React.FC = () => {
                 Fill in the form below and a member of the organizing circle will get back to you.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="p3-form p2-contact-form space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                       Your Name <span className="text-red-500">*</span>
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Ayesha Siddiqui"
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                      aria-invalid={errorField === 'name' || undefined}
+                      aria-describedby={errorField === 'name' ? 'contact-form-error' : undefined}
+                      className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                       Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                      aria-invalid={errorField === 'email' || undefined}
+                      aria-describedby={errorField === 'email' ? 'contact-form-error' : undefined}
+                      className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                  <label htmlFor="contact-subject" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                     Subject / Topic
                   </label>
                   <input
+                    id="contact-subject"
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="e.g. Venue Suggestion / Literary Journal Submission"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
+                  <label htmlFor="contact-message" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
                     Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
+                    id="contact-message"
                     rows={5}
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Write your message here..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    aria-invalid={errorField === 'message' || undefined}
+                    aria-describedby={errorField === 'message' ? 'contact-form-error' : undefined}
+                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
                   />
                 </div>
 
+                <div className="flex items-start gap-3 pt-1">
+                  <input
+                    id="contact-consent"
+                    type="checkbox"
+                    required
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                    aria-invalid={errorField === 'consent' || undefined}
+                    aria-describedby={errorField === 'consent' ? 'contact-form-error' : undefined}
+                    className="p3-checkbox mt-0.5 w-4 h-4 rounded text-[#455240] focus:ring-[#455240] border-[#E8E2D5] bg-[#FAF8F5] cursor-pointer"
+                  />
+                  <label htmlFor="contact-consent" className="text-xs text-[#595550] leading-relaxed cursor-pointer select-none">
+                    I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry. <span className="text-red-500">*</span>
+                  </label>
+                </div>
+
                 {error && (
-                  <p className="text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+                  <p
+                    id="contact-form-error"
+                    role="alert"
+                    aria-live="assertive"
+                    className="p3-form-error text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200"
+                  >
                     {error}
                   </p>
                 )}
 
                 {success && (
-                  <div className="flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200">
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    className="p3-form-success flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200"
+                  >
                     <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
                     <span>Your message has been received! We will reply via email shortly.</span>
                   </div>
@@ -276,7 +326,7 @@ export const ContactPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="p3-form-submit w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Sending your note...</span>

@@ -209,6 +209,7 @@ export const initialEnquiries: Enquiry[] = [
     email: 'sameer.kulkarni@example.com',
     phone: '+91 98220 12345',
     message: 'I would love to help coordinate venue arrangements and manage registrations on Sunday mornings.',
+    consent: true,
     details: { skills: ['Event Logistics', 'Photography'], availability: 'Weekends' },
     createdAt: '2026-11-01T10:30:00Z',
     status: 'new'
@@ -220,6 +221,7 @@ export const initialEnquiries: Enquiry[] = [
     email: 'fatima.khan@example.com',
     phone: '+91 94230 67890',
     message: 'I have around 45 English classics and Urdu fiction paperbacks in excellent condition to contribute to the community library shelf.',
+    consent: true,
     details: { count: '45 books', genre: 'Classics & Urdu Fiction' },
     createdAt: '2026-11-03T15:20:00Z',
     status: 'new'

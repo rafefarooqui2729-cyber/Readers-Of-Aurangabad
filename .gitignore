@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 .env
 .env.local
+
+# Staging environment (keep secrets local; commit only .env.staging.example)
+.env.staging
+.env.staging.local
+.env.staging.development
+.env.staging.production
+.vercel
+.env*

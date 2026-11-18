@@ -14,7 +14,7 @@ Before deploying the database schema, confirm each item:
 - [ ] You are signed in as the project administrator.
 - [ ] You have verified that no production data exists in the project (verified empty during audit).
 - [ ] You have access to both authorized team email accounts:
-  - Founder: `imadwahedfarooqui@gmail.com`
+  - Founder: `bibliogeek27@gmail.com`
   - Community Lead: `aribahmad673@gmail.com`
 
 ---
@@ -49,7 +49,7 @@ Before deploying the database schema, confirm each item:
 ### STEP 3: Invite Team Members (Zero Password Exposure)
 1. In the Supabase Dashboard, navigate to **Authentication > Users**.
 2. Click **Invite user** and invite the Founder:
-   - Email: `imadwahedfarooqui@gmail.com`
+   - Email: `bibliogeek27@gmail.com`
 3. Click **Invite user** again and invite the Community Lead:
    - Email: `aribahmad673@gmail.com`
 4. Both recipients will receive an official invitation email containing a secure token.
@@ -63,9 +63,9 @@ Before deploying the database schema, confirm each item:
 2. Open [`supabase/provision_authorized_accounts.sql`](file:///d:/projects/Readers%20of%20Aurangabad/readers-of-aurangabad/supabase/provision_authorized_accounts.sql).
 3. Paste into the SQL Editor and click **Run**.
 4. The script executes an atomic transaction under `postgres`:
-   - It verifies that BOTH `imadwahedfarooqui@gmail.com` and `aribahmad673@gmail.com` exist in `auth.users`.
+   - It verifies that BOTH `bibliogeek27@gmail.com` and `aribahmad673@gmail.com` exist in `auth.users`.
    - If either account is missing, it **aborts and rolls back immediately**.
-   - It assigns `admin` / `Founder` to `imadwahedfarooqui@gmail.com`.
+   - It assigns `admin` / `Founder` to `bibliogeek27@gmail.com`.
    - It assigns `editor` / `Community Lead` to `aribahmad673@gmail.com`.
    - It verifies the applied roles and outputs a success confirmation notice.
 
@@ -110,7 +110,7 @@ select
   u.email_confirmed_at
 from public.profiles p
 join auth.users u on u.id = p.id
-where p.email in ('imadwahedfarooqui@gmail.com', 'aribahmad673@gmail.com')
+where p.email in ('bibliogeek27@gmail.com', 'aribahmad673@gmail.com')
 order by p.role asc;
 ```
 

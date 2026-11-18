@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import type { Meetup } from '../types';
 import { X, Calendar, Clock, MapPin, ExternalLink, CheckCircle, AlertCircle, Share2 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 
 interface MeetupModalProps {
   meetup: Meetup | null;
@@ -8,6 +10,10 @@ interface MeetupModalProps {
 }
 
 export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => {
+  const shouldReduceMotion = useReducedMotion();
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const dismiss = useModalEscapeDismiss(Boolean(meetup), onClose, surfaceRef);
+
   if (!meetup) return null;
 
   const handleShare = () => {
@@ -28,7 +34,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
       case 'open':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#EBF0E9] text-[#2E372B] border border-[#455240]/20">
-            <span className="w-2 h-2 rounded-full bg-[#455240] animate-pulse"></span>
+            <span className={`w-2 h-2 rounded-full bg-[#455240] ${shouldReduceMotion ? '' : 'animate-pulse'}`}></span>
             Registrations Open
           </span>
         );
@@ -44,6 +50,12 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
             Announced
           </span>
         );
+      case 'cancelled':
+        return (
+          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-800 border border-red-200">
+            Event Cancelled
+          </span>
+        );
       case 'past':
         return (
           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#595550] border border-[#E8E2D5]">
@@ -54,13 +66,28 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-      <div
-        className="glass-modal rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
+    <motion.div
+      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: shouldReduceMotion ? 0.01 : 0.2 }}
+    >
+      <motion.div
+        ref={surfaceRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={meetup.title}
+        tabIndex={-1}
+        className="p3-modal-surface p3-meetup-modal glass-modal rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16, scale: shouldReduceMotion ? 1 : 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 10, scale: shouldReduceMotion ? 1 : 0.985 }}
+        transition={{ duration: shouldReduceMotion ? 0.01 : 0.28, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Image */}
-        <div className="relative h-60 w-full overflow-hidden bg-[#1C1B1A]">
+        <div className="p3-modal-header relative h-60 w-full shrink-0 overflow-hidden bg-[#1C1B1A]">
           <img
             src={meetup.featuredImage}
             alt={meetup.title}
@@ -69,8 +96,8 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1B1A]/80 via-[#1C1B1A]/30 to-transparent" />
 
           <button
-            onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors backdrop-blur-sm"
+            onClick={dismiss}
+            className="p3-icon-button p3-modal-close absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors backdrop-blur-sm"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -92,10 +119,10 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto space-y-6">
+        <div className="p3-modal-body p-6 sm:p-8 overflow-y-auto space-y-6">
 
           {/* Key Logistical Metadata */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-[#E8E2D5]">
+          <div className="p3-modal-meta grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-[#E8E2D5]">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-[#FAF8F5] flex items-center justify-center text-[#455240] border border-[#E8E2D5]">
                 <Calendar className="w-4 h-4" />
@@ -180,6 +207,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                     key={i}
                     src={photo}
                     alt={`Meetup memory ${i + 1}`}
+                    loading="lazy"
                     className="w-full h-24 sm:h-28 object-cover object-[center_20%] rounded-lg border border-[#E8E2D5]"
                   />
                 ))}
@@ -189,10 +217,10 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
         </div>
 
         {/* Modal Action Footer */}
-        <div className="p-4 sm:p-6 bg-white border-t border-[#E8E2D5] flex items-center justify-between gap-3">
+        <div className="p3-modal-actions p-4 sm:p-6 bg-white border-t border-[#E8E2D5] flex items-center justify-between gap-3">
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#595550] hover:bg-[#FAF8F5] transition-colors border border-[#E8E2D5]"
+            className="p3-secondary-action flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#595550] hover:bg-[#FAF8F5] transition-colors border border-[#E8E2D5]"
           >
             <Share2 className="w-4 h-4" />
             <span>Share</span>
@@ -200,8 +228,8 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
           <div className="flex items-center gap-2">
             <button
-              onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-[#595550] hover:bg-[#FAF8F5] transition-colors"
+              onClick={dismiss}
+              className="p3-text-action px-4 py-2 rounded-xl text-xs font-medium text-[#595550] hover:bg-[#FAF8F5] transition-colors"
             >
               Close
             </button>
@@ -211,20 +239,24 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                 href={meetup.registrationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm"
+                className="p3-primary-action inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm"
               >
                 <span>Register via Google Form</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             ) : (
-              <span className="px-4 py-2 text-xs font-medium text-[#8C857B] bg-gray-100 rounded-xl">
-                {meetup.registrationStatus === 'past' ? 'Past Event' : 'Registrations Closed'}
+              <span className="p3-status-chip px-4 py-2 text-xs font-medium text-[#8C857B] bg-gray-100 rounded-xl">
+                {meetup.registrationStatus === 'past'
+                  ? 'Past Event'
+                  : meetup.registrationStatus === 'cancelled'
+                  ? 'Event Cancelled'
+                  : 'Registrations Closed'}
               </span>
             )}
           </div>
         </div>
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

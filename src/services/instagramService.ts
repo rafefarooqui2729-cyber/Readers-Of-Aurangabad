@@ -1,11 +1,5 @@
 import type { InstagramMediaItem, InstagramAuthConfig, MediaCategory } from '../types';
 
-/**
- * Meta Instagram Graph API Endpoint
- * For Creator / Business Instagram accounts:
- * https://graph.facebook.com/v21.0/{user_id}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp
- */
-
 export const INITIAL_INSTAGRAM_CONFIG: InstagramAuthConfig = {
   connected: false,
   username: 'readers.of.aurangabad',
@@ -111,39 +105,3 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     commentsCount: 15
   }
 ];
-
-/**
- * Fetch Instagram Media from Official Meta Graph API
- */
-export async function fetchFromInstagramGraphAPI(
-  accessToken: string,
-  userId: string = 'me'
-): Promise<InstagramMediaItem[]> {
-  try {
-    const url = `https://graph.facebook.com/v21.0/${userId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count&access_token=${accessToken}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err?.error?.message || `Instagram API error: ${response.statusText}`);
-    }
-    const data = await response.json();
-    if (!data.data) return [];
-
-    return data.data.map((item: any) => ({
-      id: item.id,
-      caption: item.caption || '',
-      mediaType: item.media_type as InstagramMediaItem['mediaType'],
-      mediaUrl: item.media_url || item.thumbnail_url,
-      thumbnailUrl: item.thumbnail_url || item.media_url,
-      permalink: item.permalink || 'https://www.instagram.com/readers.of.aurangabad/',
-      timestamp: item.timestamp,
-      category: categorizeInstagramCaption(item.caption || ''),
-      status: 'draft', // All imported items default to draft until approved
-      likesCount: item.like_count,
-      commentsCount: item.comments_count
-    }));
-  } catch (err: any) {
-    console.error('Instagram fetch error:', err);
-    throw err;
-  }
-}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import type {
   Language,
   PageRoute,
@@ -7,13 +7,15 @@ import type {
   ReaderStory,
   GalleryItem,
   Enquiry,
+  EnquiryType,
   InstagramMediaItem,
   InstagramAuthConfig,
   ExtractedFrame,
   MeetupReel,
   Registration,
   Announcement,
-  StaffProfile
+  StaffProfile,
+  MemberNotification
 } from '../types';
 import { translations } from '../i18n/translations';
 import type { Translations } from '../i18n/translations';
@@ -22,7 +24,6 @@ import {
   initialArticles,
   initialReaderStories,
   initialGallery,
-  initialEnquiries,
   initialReels
 } from '../data/initialData';
 import {
@@ -31,6 +32,31 @@ import {
 } from '../services/instagramService';
 import { saveVideoBlob, getVideoObjectUrl, deleteVideoBlob } from '../utils/videoStorage';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { validateGalleryImageFile, prepareGalleryImage } from '../utils/galleryImageUtils';
+import {
+  uploadGalleryImages,
+  deleteUploadedGalleryStorageObjects,
+  getSignedGalleryUrl,
+  isStoragePath
+} from '../utils/galleryStorage';
+import {
+  resolveReelMediaUrls,
+  executeCreateReel,
+  clearReelUrlCache,
+} from '../utils/reelStorage';
+import {
+  evaluateAuthStateChange,
+  canApplySensitiveRefresh,
+  buildBackupExport,
+  AuthCoordinator,
+  type AuthCoordinatorCallbacks,
+} from '../utils/authSecurity';
+import { scrollToTop } from '../utils/scroll';
+import { detectRecoveryIntent, isValidRecoveryEmail, MIN_PASSWORD_LENGTH } from '../utils/authRecovery';
+import {
+  buildAnnouncementNavigationUrl,
+  getAnnouncementNavigationId,
+} from '../utils/announcementNavigation';
 
 interface AppContextType {
   lang: Language;
@@ -39,6 +65,12 @@ interface AppContextType {
   isRTL: boolean;
   currentPage: PageRoute;
   setCurrentPage: (page: PageRoute) => void;
+  announcementNavigationId: string | null;
+  navigateToAnnouncement: (announcementId: string) => void;
+  clearAnnouncementNavigation: (announcementId: string) => void;
+  isPageLoading: boolean;
+  navError: { page: PageRoute; error: unknown } | null;
+  retryNavigation: () => void;
   selectedArticle: JournalArticle | null;
   setSelectedArticle: (article: JournalArticle | null) => void;
   selectedMeetup: Meetup | null;
@@ -86,8 +118,25 @@ interface AppContextType {
   currentUserEmail: string | null;
   currentUserDesignation: string | null;
   loginAdmin: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
-  logoutAdmin: () => Promise<void>;
+  logoutAdmin: () => Promise<{ ok: boolean; error?: string }>;
   resetAdminPassword: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  requestPasswordReset: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  isPasswordRecovery: boolean;
+  updatePassword: (newPassword: string) => Promise<{ ok: boolean; error?: string }>;
+  completePasswordRecovery: () => Promise<void>;
+
+  // Member Auth & Notifications
+  currentUserId: string | null;
+  isMember: boolean;
+  memberNotifications: MemberNotification[];
+  unreadNotificationCount: number;
+  notificationsLoading: boolean;
+  loginMember: (email: string, password: string) => Promise<{ ok: boolean; error?: string; needsVerification?: boolean }>;
+  requestMemberMagicLink: (email: string) => Promise<{ ok: boolean; error?: string }>;
+  logoutMember: () => Promise<{ ok: boolean; error?: string }>;
+  refreshNotifications: () => Promise<void>;
+  markNotificationRead: (notificationId: string) => Promise<void>;
+  markAllNotificationsRead: () => Promise<void>;
 
   // CRUD Actions
   addMeetup: (meetup: Omit<Meetup, 'id'>) => Promise<void>;
@@ -99,11 +148,21 @@ interface AppContextType {
   deleteArticle: (id: string) => Promise<void>;
 
   addGalleryItem: (item: Omit<GalleryItem, 'id'>) => Promise<void>;
+  uploadGalleryItem: (
+    file: File,
+    title: string,
+    caption?: string
+  ) => Promise<{ ok: boolean; error?: string; item?: GalleryItem }>;
   deleteGalleryItem: (id: string) => Promise<void>;
+  getSignedGalleryUrl: (
+    path: string | null | undefined,
+    type?: 'original' | 'thumbnail',
+    expiresIn?: number
+  ) => Promise<string>;
 
-  addAnnouncement: (item: Omit<Announcement, 'id' | 'createdAt'>) => Promise<void>;
-  updateAnnouncement: (id: string, item: Partial<Announcement>) => Promise<void>;
-  deleteAnnouncement: (id: string) => Promise<void>;
+  addAnnouncement: (item: Omit<Announcement, 'id' | 'createdAt'>) => Promise<{ ok: boolean; error?: string }>;
+  updateAnnouncement: (id: string, item: Partial<Announcement>) => Promise<{ ok: boolean; error?: string }>;
+  deleteAnnouncement: (id: string) => Promise<{ ok: boolean; error?: string }>;
 
   addRegistration: (reg: Omit<Registration, 'id' | 'createdAt' | 'status'>) => Promise<{ ok: boolean; error?: string }>;
   updateRegistrationStatus: (id: string, status: Registration['status']) => Promise<void>;
@@ -119,17 +178,271 @@ interface AppContextType {
   updateStaffProfile: (id: string, updates: { role?: 'admin' | 'editor' | null; designation?: string }) => Promise<{ ok: boolean; error?: string }>;
 
   resetToDefaults: () => void;
-  exportDataJson: () => void;
+  exportDataJson: () => { ok: boolean; error?: string };
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const VALID_PAGES: PageRoute[] = [
+  'home',
+  'story',
+  'gatherings',
+  'journal',
+  'community',
+  'get-involved',
+  'contact',
+  'admin'
+];
+
+const getInitialPage = (): PageRoute => {
+  if (typeof window === 'undefined') return 'home';
+  try {
+    const hash = window.location.hash.replace(/^#[/]?/, '').toLowerCase() as PageRoute;
+    if (VALID_PAGES.includes(hash)) return hash;
+
+    const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '').toLowerCase() as PageRoute;
+    if (VALID_PAGES.includes(path)) return path;
+  } catch {
+    // Ignore and fallback to home
+  }
+  return 'home';
+};
+
+const sanitizeInstagramConfig = (value: unknown): InstagramAuthConfig => {
+  const candidate = value && typeof value === 'object'
+    ? value as Partial<InstagramAuthConfig>
+    : {};
+  const accountTypes: InstagramAuthConfig['accountType'][] = ['BUSINESS', 'CREATOR', 'PERSONAL'];
+  return {
+    connected: false,
+    username: typeof candidate.username === 'string'
+      ? candidate.username
+      : INITIAL_INSTAGRAM_CONFIG.username,
+    accountType: accountTypes.includes(candidate.accountType as InstagramAuthConfig['accountType'])
+      ? candidate.accountType as InstagramAuthConfig['accountType']
+      : INITIAL_INSTAGRAM_CONFIG.accountType,
+    ...(typeof candidate.lastSyncedAt === 'string' ? { lastSyncedAt: candidate.lastSyncedAt } : {})
+  };
+};
+
+const pageLoaders: Record<PageRoute, () => Promise<unknown>> = {
+  home: () => import('../pages/HomePage'),
+  story: () => import('../pages/OurStoryPage'),
+  gatherings: () => import('../pages/GatheringsPage'),
+  journal: () => import('../pages/JournalPage'),
+  community: () => import('../pages/CommunityPage'),
+  'get-involved': () => import('../pages/GetInvolvedPage'),
+  contact: () => import('../pages/ContactPage'),
+  admin: () => import('../pages/AdminDashboard'),
+};
+
+
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({children }) => {
+  const [initialPage] = useState<PageRoute>(getInitialPage);
+
   const [lang, setLangState] = useState<Language>(() => {
     return (localStorage.getItem('roa_lang') as Language) || 'en';
   });
 
-  const [currentPage, setCurrentPage] = useState<PageRoute>('home');
+  const initialPageLoadGenerationRef = React.useRef(0);
+  const [currentPage, setCurrentPageState] = useState<PageRoute>(initialPage);
+  const [announcementNavigationId, setAnnouncementNavigationId] = useState<string | null>(() =>
+    typeof window === 'undefined' ? null : getAnnouncementNavigationId(window.location.search)
+  );
+
+  // Keep the initial HTML loader visible while initial page chunk loads.
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+
+  const [navError, setNavError] = useState<{
+    page: PageRoute;
+    error: unknown;
+  } | null>(null);
+
+  const navSeqRef = React.useRef<number>(0);
+  const currentPageRef = React.useRef<PageRoute>(currentPage);
+  const isMountedRef = React.useRef(true);
+  const navigationTimersRef = React.useRef<Set<number>>(new Set());
+  const initialPageLoadRef = React.useRef<Promise<unknown> | null>(null);
+
+  // Navigation lifecycle cleanup.
+  React.useEffect(() => {
+    const mountedRef = isMountedRef;
+    const navigationSequenceRef = navSeqRef;
+    const navigationTimers = navigationTimersRef.current;
+
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      navigationSequenceRef.current++;
+
+      navigationTimers.forEach((timer) => {
+        window.clearTimeout(timer);
+      });
+
+      navigationTimers.clear();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    currentPageRef.current = currentPage;
+  }, [currentPage]);
+
+  // Preload the initial lazy page chunk once.
+  React.useEffect(() => {
+    const loadGenerationRef = initialPageLoadGenerationRef;
+
+    const loader = pageLoaders[initialPage];
+
+    if (!loader) {
+      return;
+    }
+
+    const loadGeneration = ++loadGenerationRef.current;
+    const navId = navSeqRef.current;
+
+    if (!initialPageLoadRef.current) {
+      initialPageLoadRef.current = loader();
+    }
+
+    initialPageLoadRef.current
+      .then(() => {
+        if (
+          loadGeneration === loadGenerationRef.current &&
+          isMountedRef.current &&
+          navSeqRef.current === navId
+        ) {
+          setIsPageLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (
+          loadGeneration !== loadGenerationRef.current ||
+          !isMountedRef.current ||
+          navSeqRef.current !== navId
+        ) {
+          return;
+        }
+
+        console.warn('Initial page load error:', err);
+        setIsPageLoading(false);
+      });
+
+    return () => {
+      loadGenerationRef.current++;
+    };
+  }, [initialPage]);
+  
+  const performNavigation = useCallback((targetPage: PageRoute, fromBrowserHistory = false) => {
+    // — If the target is already displayed, cancel any pending navigation and dismiss loader —
+    if (targetPage === currentPageRef.current) {
+      // Invalidate any in-flight navigation so its promise resolution is discarded
+      navSeqRef.current++;
+      setIsPageLoading(false);
+      setNavError(null);
+      scrollToTop();
+      return;
+    }
+
+    // Increment sequence: any older in-flight navigation is now stale
+    const navId = ++navSeqRef.current;
+    setIsPageLoading(true);
+    setNavError(null);
+
+    // Do NOT push history yet — only push once the navigation actually succeeds.
+    // This prevents phantom history entries from superseded navigations.
+
+    const loader = pageLoaders[targetPage];
+    const pagePromise = loader ? loader() : Promise.resolve();
+    const minDurationPromise = new Promise<void>(resolve => {
+      let timer = 0;
+      timer = window.setTimeout(() => {
+        navigationTimersRef.current.delete(timer);
+        resolve();
+      }, 500);
+      navigationTimersRef.current.add(timer);
+    });
+
+    Promise.all([pagePromise, minDurationPromise])
+      .then(() => {
+        // Discard resolution if a newer navigation was initiated in the meantime
+        if (!isMountedRef.current || navSeqRef.current !== navId) return;
+
+        // Push the history entry only now, for the winning navigation.
+        // Use the root path (/) since the app has no configured base path.
+        // This avoids producing wrong URLs like /story/#journal when the
+        // user arrived via a pathname-based direct link such as /story.
+        if (!fromBrowserHistory) {
+          const targetUrl = targetPage === 'home' ? '/' : `/#${targetPage}`;
+          try {
+            window.history.pushState({ page: targetPage }, '', targetUrl);
+          } catch {
+            window.location.hash = targetPage === 'home' ? '' : `#${targetPage}`;
+          }
+        }
+
+        currentPageRef.current = targetPage;
+        setCurrentPageState(targetPage);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        let timer = 0;
+        timer = window.setTimeout(() => {
+          navigationTimersRef.current.delete(timer);
+          if (isMountedRef.current && navSeqRef.current === navId) {
+            setIsPageLoading(false);
+          }
+        }, 120);
+        navigationTimersRef.current.add(timer);
+      })
+      .catch(err => {
+        if (!isMountedRef.current || navSeqRef.current !== navId) return;
+        console.warn('Navigation error:', err);
+        // Surface the error so the UI can show a recovery option
+        setNavError({ page: targetPage, error: err });
+        setIsPageLoading(false);
+      });
+  }, []);
+
+  const retryNavigation = useCallback(() => {
+    if (navError) {
+      const { page } = navError;
+      setNavError(null);
+      performNavigation(page, false);
+    }
+  }, [navError, performNavigation]);
+
+  const setCurrentPage = useCallback((targetPage: PageRoute) => {
+    if (targetPage !== 'home') {
+      setAnnouncementNavigationId(null);
+    }
+    performNavigation(targetPage, false);
+  }, [performNavigation]);
+
+  const navigateToAnnouncement = useCallback((announcementId: string) => {
+    const targetId = announcementId.trim();
+    if (!targetId) return;
+
+    const targetUrl = buildAnnouncementNavigationUrl(window.location.href, targetId);
+    window.history.pushState({ page: 'home' }, '', targetUrl);
+    setAnnouncementNavigationId(targetId);
+    performNavigation('home', true);
+  }, [performNavigation]);
+
+  const clearAnnouncementNavigation = useCallback((announcementId: string) => {
+    setAnnouncementNavigationId(currentId => currentId === announcementId ? null : currentId);
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const page = getInitialPage();
+      setAnnouncementNavigationId(getAnnouncementNavigationId(window.location.search));
+      // Always run performNavigation — it handles same-page cancellation internally
+      performNavigation(page, true);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [performNavigation]);
   const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
   const [selectedMeetup, setSelectedMeetup] = useState<Meetup | null>(null);
 
@@ -138,9 +451,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [adminRole, setAdminRole] = useState<'admin' | 'editor' | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [currentUserDesignation, setCurrentUserDesignation] = useState<string | null>(null);
+  const [currentAuthUserId, setCurrentAuthUserId] = useState<string | null>(null);
+  const [isMember, setIsMember] = useState(false);
+  const [memberNotifications, setMemberNotifications] = useState<MemberNotification[]>([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const notificationChannelRef = useRef<any>(null);
 
   const [isDbConnected, setIsDbConnected] = useState(false);
   const [dbLoading, setDbLoading] = useState(true);
+
+  // Dedicated sequence counter for stale data refresh protection
+  const refreshSequenceRef = useRef<number>(0);
+  const currentRoleRef = useRef<'admin' | 'editor' | null>(null);
+  const currentUserIdRef = useRef<string | null>(null);
+  const authCoordinatorRef = useRef(new AuthCoordinator());
+
+  // Password recovery intent is captured synchronously from the URL before
+  // supabase-js consumes and clears the recovery fragment.
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState<boolean>(() => detectRecoveryIntent(
+    typeof window !== 'undefined' ? window.location.hash : '',
+    typeof window !== 'undefined' ? window.location.search : ''
+  ));
+
 
   // LocalStorage-backed state with auto-migration
   const loadWithSanitization = <T,>(key: string, initial: T, isInvalid: (data: T) => boolean): T => {
@@ -161,7 +493,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const hasLegacyUrls = (items: any): boolean => {
     if (!Array.isArray(items)) return true;
     const str = JSON.stringify(items);
-    return str.includes('unsplash.com') || str.includes('/images/hero/roa-009') || str.includes('photo-15');
+    return str.includes('unsplash.com') || str.includes('photo-15');
   };
 
   const [meetups, setMeetups] = useState<Meetup[]>(() => {
@@ -180,10 +512,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return loadWithSanitization('roa_gallery_v4', initialGallery, (items) => !Array.isArray(items) || items.length < 12 || hasLegacyUrls(items));
   });
 
-  const [enquiries, setEnquiries] = useState<Enquiry[]>(() => {
-    const saved = localStorage.getItem('roa_enquiries_v4');
-    return saved ? JSON.parse(saved) : initialEnquiries;
-  });
+  // Sensitive data entities: initial state is empty to prevent unauthenticated exposure.
+  // Existing localStorage keys (roa_enquiries_v4, roa_registrations_v1, roa_staff_profiles_v1)
+  // are preserved without silent deletion, and are only accessible by verified administrators.
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
 
   const [reels, setReels] = useState<MeetupReel[]>(() => {
     try {
@@ -201,25 +533,52 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return initialReels;
   });
 
-  const [registrations, setRegistrations] = useState<Registration[]>(() => {
-    const saved = localStorage.getItem('roa_registrations_v1');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
 
   const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
-    const saved = localStorage.getItem('roa_announcements_v1');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const saved = localStorage.getItem('roa_announcements_v1');
+  return saved ? JSON.parse(saved) : [];
+});
 
-  const [staffProfiles, setStaffProfiles] = useState<StaffProfile[]>(() => {
-    const saved = localStorage.getItem('roa_staff_profiles_v1');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [staffProfiles, setStaffProfiles] = useState<StaffProfile[]>([]);
+  const resetNotificationsState = useCallback(() => {
+    if (notificationChannelRef.current && isSupabaseConfigured) {
+      supabase.removeChannel(notificationChannelRef.current).catch(() => {});
+      notificationChannelRef.current = null;
+    }
+    setMemberNotifications([]);
+    setNotificationsLoading(false);
+  }, []);
+
+  // Helper to fail closed and clear all administrative privileges and sensitive data
+  const resetAuthState = useCallback(() => {
+    currentRoleRef.current = null;
+    currentUserIdRef.current = null;
+    setIsAdmin(false);
+    setAdminRole(null);
+    setCurrentUserEmail(null);
+    setCurrentUserDesignation(null);
+    setCurrentAuthUserId(null);
+    setIsMember(false);
+    setRegistrations([]);
+    setEnquiries([]);
+    setStaffProfiles([]);
+    resetNotificationsState();
+    setAdminAuthLoading(false);
+    clearReelUrlCache();
+  }, [resetNotificationsState]);
+
+
 
   // Instagram integration state
   const [instagramConfig, setInstagramConfig] = useState<InstagramAuthConfig>(() => {
     const saved = localStorage.getItem('roa_ig_config');
-    return saved ? JSON.parse(saved) : INITIAL_INSTAGRAM_CONFIG;
+    if (!saved) return INITIAL_INSTAGRAM_CONFIG;
+    try {
+      return sanitizeInstagramConfig(JSON.parse(saved));
+    } catch {
+      return INITIAL_INSTAGRAM_CONFIG;
+    }
   });
 
   const [instagramMedia, setInstagramMedia] = useState<InstagramMediaItem[]>(() => {
@@ -237,33 +596,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   });
 
-  // IndexedDB custom reel resolver on mount
-  useEffect(() => {
-    let isMounted = true;
-    async function resolveCustomReels() {
-      const customReels = reels.filter(r => r.isCustomUpload && (!r.videoUrl || r.videoUrl.startsWith('blob:')));
-      if (customReels.length === 0) return;
+  const initialReelsSnapshotRef = useRef(reels);
 
-      const updated = await Promise.all(
-        reels.map(async (reel) => {
-          if (reel.isCustomUpload) {
-            const blobUrl = await getVideoObjectUrl(reel.id);
-            if (blobUrl) {
-              return { ...reel, videoUrl: blobUrl };
-            }
+ // IndexedDB custom reel resolver on mount.
+// Resolve only the initial local reels; do not rerun on setReels updates.
+useEffect(() => {
+
+  async function resolveCustomReels() {
+    const initialReels = initialReelsSnapshotRef.current;
+
+    const customReels = initialReels.filter(
+      r => r.isCustomUpload && (!r.videoUrl || r.videoUrl.startsWith('blob:'))
+    );
+
+    if (customReels.length === 0) return;
+
+    const updated = await Promise.all(
+      initialReels.map(async (reel) => {
+        if (reel.isCustomUpload) {
+          const blobUrl = await getVideoObjectUrl(reel.id);
+
+          if (blobUrl) {
+            return { ...reel, videoUrl: blobUrl };
           }
-          return reel;
-        })
-      );
+        }
 
-      if (isMounted) {
-        setReels(updated);
-      }
-    }
+        return reel;
+      })
+    );
 
-    resolveCustomReels();
-    return () => { isMounted = false; };
-  }, []);
+    if (isMountedRef.current) {
+  setReels(updated);
+}
+  }
+
+  void resolveCustomReels();
+}, []);
 
   // Sync to LocalStorage
   useEffect(() => {
@@ -289,20 +657,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [gallery]);
 
   useEffect(() => {
-    localStorage.setItem('roa_enquiries_v4', JSON.stringify(enquiries));
-  }, [enquiries]);
-
-  useEffect(() => {
-    localStorage.setItem('roa_registrations_v1', JSON.stringify(registrations));
-  }, [registrations]);
-
-  useEffect(() => {
     localStorage.setItem('roa_announcements_v1', JSON.stringify(announcements));
   }, [announcements]);
-
-  useEffect(() => {
-    localStorage.setItem('roa_staff_profiles_v1', JSON.stringify(staffProfiles));
-  }, [staffProfiles]);
 
   useEffect(() => {
     const metadata = reels.map(r => r.isCustomUpload ? { ...r, videoUrl: '' } : r);
@@ -310,7 +666,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [reels]);
 
   useEffect(() => {
-    localStorage.setItem('roa_ig_config', JSON.stringify(instagramConfig));
+    localStorage.setItem('roa_ig_config', JSON.stringify(sanitizeInstagramConfig(instagramConfig)));
   }, [instagramConfig]);
 
   useEffect(() => {
@@ -326,9 +682,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // --- SUPABASE LIVE DATA FETCHING ---
   const refreshData = useCallback(async () => {
+    const refreshSeq = ++refreshSequenceRef.current;
+    const initiatingUserId = currentUserIdRef.current;
+
     if (!isSupabaseConfigured) {
       setDbLoading(false);
       setIsDbConnected(false);
+      setRegistrations([]);
+      setEnquiries([]);
+      setStaffProfiles([]);
       return;
     }
 
@@ -342,27 +704,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('starts_at', { ascending: false });
 
-      if (!meetupsErr && dbMeetups && dbMeetups.length > 0) {
+      if (refreshSeq === refreshSequenceRef.current && !meetupsErr && dbMeetups && dbMeetups.length > 0) {
         anySuccess = true;
-        const mapped: Meetup[] = dbMeetups.map(m => ({
-          id: m.id,
-          title: m.title,
-          edition: m.edition || undefined,
-          date: new Date(m.starts_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
-          time: m.time_label || '8:30 AM – 11:00 AM IST',
-          venue: m.venue,
-          address: m.address || undefined,
-          description: m.description,
-          featuredImage: m.featured_image || '/images/enhanced/community/meetup-card-1.webp',
-          registrationUrl: m.registration_url || '',
-          rsvpLink: m.registration_url || undefined,
-          registrationStatus: m.registration_status,
-          capacity: m.capacity ? String(m.capacity) : undefined,
-          activities: Array.isArray(m.activities) ? (m.activities as string[]) : ['Silent Reading', 'Book Swap'],
-          schedule: Array.isArray(m.schedule) ? (m.schedule as { time: string; activity: string }[]) : undefined,
-          highlights: m.highlights || undefined,
-          isUpcoming: !m.is_completed && new Date(m.starts_at) >= new Date()
-        }));
+        const mapped: Meetup[] = dbMeetups.map(m => {
+          const startsAtMs = new Date(m.starts_at).getTime();
+          const isFuture = Number.isFinite(startsAtMs) && startsAtMs >= Date.now();
+          return {
+            id: m.id,
+            title: m.title,
+            edition: m.edition || undefined,
+            date: new Date(m.starts_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+            time: m.time_label || '8:30 AM – 11:00 AM IST',
+            startsAt: m.starts_at,
+            venue: m.venue,
+            address: m.address || undefined,
+            description: m.description,
+            featuredImage: m.featured_image || '/images/enhanced/community/meetup-card-1.webp',
+            registrationUrl: m.registration_url || '',
+            rsvpLink: m.registration_url || undefined,
+            registrationStatus: m.registration_status,
+            capacity: m.capacity ? String(m.capacity) : undefined,
+            activities: Array.isArray(m.activities) ? (m.activities as string[]) : ['Silent Reading', 'Book Swap'],
+            schedule: Array.isArray(m.schedule) ? (m.schedule as { time: string; activity: string }[]) : undefined,
+            highlights: m.highlights || undefined,
+            isPublished: m.is_published,
+            isCompleted: m.is_completed,
+            isUpcoming: Boolean(m.is_published) && !m.is_completed && m.registration_status !== 'cancelled' && isFuture,
+          };
+        });
         setMeetups(mapped);
       }
 
@@ -372,7 +741,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('published_at', { ascending: false });
 
-      if (!artErr && dbArticles && dbArticles.length > 0) {
+      if (refreshSeq === refreshSequenceRef.current && !artErr && dbArticles && dbArticles.length > 0) {
         anySuccess = true;
         const mappedArticles: JournalArticle[] = dbArticles.map(a => ({
           id: a.id,
@@ -399,13 +768,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('display_order', { ascending: true });
 
-      if (!galErr && dbGallery && dbGallery.length > 0) {
+      if (refreshSeq === refreshSequenceRef.current && !galErr && dbGallery && dbGallery.length > 0) {
         anySuccess = true;
         const mappedGal: GalleryItem[] = dbGallery.map(g => ({
           id: g.id,
           title: g.title,
           caption: g.caption || '',
           imageUrl: g.image_path,
+          thumbnailUrl: g.thumbnail_path || undefined,
           meetupId: g.meetup_id || undefined,
           date: new Date(g.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
         }));
@@ -418,45 +788,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('display_order', { ascending: true });
 
-      if (!reelsErr && dbReels && dbReels.length > 0) {
+      if (refreshSeq === refreshSequenceRef.current && !reelsErr && dbReels && dbReels.length > 0) {
         anySuccess = true;
         const mappedReels: MeetupReel[] = await Promise.all(
           dbReels.map(async r => {
-            let playableVideoUrl = r.video_path;
-            const playablePosterUrl = r.poster_path || undefined;
+            try {
+              const { videoUrl, posterUrl } = await resolveReelMediaUrls(
+                { video_path: r.video_path, poster_path: r.poster_path },
+                supabase
+              );
 
-            // If video_path is a Supabase Storage path (e.g. "reels/..."), resolve to signed or public URL
-            if (r.video_path && !r.video_path.startsWith('http://') && !r.video_path.startsWith('https://') && !r.video_path.startsWith('/') && !r.video_path.startsWith('blob:')) {
-              try {
-                const { data: signed } = await supabase.storage.from('roa-reels').createSignedUrl(r.video_path, 86400);
-                if (signed?.signedUrl) {
-                  playableVideoUrl = signed.signedUrl;
-                } else {
-                  const { data: pub } = supabase.storage.from('roa-reels').getPublicUrl(r.video_path);
-                  if (pub?.publicUrl) playableVideoUrl = pub.publicUrl;
-                }
-              } catch {
-                const { data: pub } = supabase.storage.from('roa-reels').getPublicUrl(r.video_path);
-                if (pub?.publicUrl) playableVideoUrl = pub.publicUrl;
-              }
+              return {
+                id: r.id,
+                title: r.title,
+                caption: r.caption || undefined,
+                videoUrl,
+                posterUrl,
+                order: r.display_order,
+                published: r.is_published,
+                isPublished: r.is_published,
+                createdAt: r.created_at,
+                durationSeconds: r.duration_seconds ? Number(r.duration_seconds) : undefined,
+                isCustomUpload: false
+              };
+            } catch (reelErr) {
+              console.warn(`Error resolving media for reel ${r.id}:`, reelErr);
+              return {
+                id: r.id,
+                title: r.title,
+                caption: r.caption || undefined,
+                videoUrl: '',
+                posterUrl: undefined,
+                order: r.display_order,
+                published: r.is_published,
+                isPublished: r.is_published,
+                createdAt: r.created_at,
+                durationSeconds: r.duration_seconds ? Number(r.duration_seconds) : undefined,
+                isCustomUpload: false
+              };
             }
-
-            return {
-              id: r.id,
-              title: r.title,
-              caption: r.caption || undefined,
-              videoUrl: playableVideoUrl,
-              posterUrl: playablePosterUrl,
-              order: r.display_order,
-              published: r.is_published,
-              isPublished: r.is_published,
-              createdAt: r.created_at,
-              durationSeconds: r.duration_seconds ? Number(r.duration_seconds) : undefined,
-              isCustomUpload: false
-            };
           })
         );
-        setReels(mappedReels);
+        if (refreshSeq === refreshSequenceRef.current) {
+          setReels(mappedReels);
+        }
       }
 
       // 5. Fetch announcements
@@ -465,7 +840,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('published_at', { ascending: false });
 
-      if (!annErr && dbAnnouncements) {
+      if (refreshSeq === refreshSequenceRef.current && !annErr && dbAnnouncements) {
         anySuccess = true;
         setAnnouncements(dbAnnouncements.map(an => ({
           id: an.id,
@@ -479,212 +854,595 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         })));
       }
 
-      // 6. Admin-only: Registrations
-      if (adminRole === 'admin') {
-        const { data: dbRegs } = await supabase
-          .from('registrations')
-          .select('*, meetups(title)')
-          .order('created_at', { ascending: false });
+      // Revalidate active user's role for both admin and editor sessions
+      const currentActiveUserId = currentUserIdRef.current;
+      const activeRole = currentRoleRef.current;
+      let activeUserVerifiedRole: 'admin' | 'editor' | null = activeRole;
 
-        if (dbRegs) {
-          anySuccess = true;
-          setRegistrations(dbRegs.map(r => ({
-            id: r.id,
-            meetupId: r.meetup_id,
-            meetupTitle: (r as any).meetups?.title || undefined,
-            name: r.name,
-            email: r.email,
-            phone: r.phone || undefined,
-            message: r.message || undefined,
-            consent: r.consent,
-            status: r.status,
-            details: r.details as Record<string, any>,
-            createdAt: r.created_at
-          })));
+      if (currentActiveUserId && activeRole) {
+        try {
+          const { data: myProfile, error: myProfileErr } = await supabase
+            .from('profiles')
+            .select('role, designation, full_name')
+            .eq('id', currentActiveUserId)
+            .maybeSingle();
+
+          if (refreshSeq === refreshSequenceRef.current && currentUserIdRef.current === currentActiveUserId) {
+            if (myProfileErr) {
+              // Temporary network or query failure: fail closed in application UI for sensitive admin data,
+              // but DO NOT destroy the valid Supabase Auth session.
+              console.warn('Temporary profile revalidation error during refresh; failing closed for administrative data:', myProfileErr.message);
+              currentRoleRef.current = null;
+              currentUserIdRef.current = null;
+              setIsAdmin(false);
+              setAdminRole(null);
+              setRegistrations([]);
+              setEnquiries([]);
+              setStaffProfiles([]);
+              activeUserVerifiedRole = null;
+              return;
+            } else if (!myProfile || (myProfile.role !== 'admin' && myProfile.role !== 'editor')) {
+              // Confirmed missing profile or role revoked: clear privileges and sign out via coordinator
+              console.warn('Active user staff role revoked or profile deleted; resetting auth and signing out via coordinator');
+              currentRoleRef.current = null;
+              currentUserIdRef.current = null;
+              setIsAdmin(false);
+              setAdminRole(null);
+              setRegistrations([]);
+              setEnquiries([]);
+              setStaffProfiles([]);
+              activeUserVerifiedRole = null;
+              await authCoordinatorRef.current.signOutForRevocation(currentActiveUserId, supabase, {
+                onLoading: setAdminAuthLoading,
+                onResetState: resetAuthState,
+              });
+              return;
+            } else {
+              const newRole = myProfile.role as 'admin' | 'editor';
+              if (activeRole === 'admin' && newRole === 'editor') {
+                // Role downgrade
+                console.warn('Admin role downgraded to editor; clearing admin data and updating role');
+                currentRoleRef.current = 'editor';
+                setAdminRole('editor');
+                setRegistrations([]);
+                setEnquiries([]);
+                setStaffProfiles([]);
+                activeUserVerifiedRole = 'editor';
+              } else if (activeRole === 'editor' && newRole === 'admin') {
+                currentRoleRef.current = 'admin';
+                setAdminRole('admin');
+                activeUserVerifiedRole = 'admin';
+              } else {
+                activeUserVerifiedRole = newRole;
+              }
+            }
+          }
+        } catch (err) {
+          console.warn('Exception during profile revalidation in refreshData; failing closed:', err);
+          if (refreshSeq === refreshSequenceRef.current && currentUserIdRef.current === currentActiveUserId) {
+            currentRoleRef.current = null;
+            currentUserIdRef.current = null;
+            setIsAdmin(false);
+            setAdminRole(null);
+            setRegistrations([]);
+            setEnquiries([]);
+            setStaffProfiles([]);
+            activeUserVerifiedRole = null;
+            return;
+          }
+        }
+      }
+
+      // Administrative queries: strictly verify active sequence, user identity, and admin role
+      const isVerifiedAdmin = currentRoleRef.current === 'admin' && adminRole === 'admin' && activeUserVerifiedRole === 'admin';
+
+      if (isVerifiedAdmin) {
+        const canApply = () => canApplySensitiveRefresh({
+          refreshSeq,
+          currentRefreshSeq: refreshSequenceRef.current,
+          currentRole: currentRoleRef.current,
+          adminRole,
+          initiatingUserId,
+          currentUserId: currentUserIdRef.current,
+        });
+
+        // 6. Admin-only: Registrations
+        try {
+          const { data: dbRegs, error: regsErr } = await supabase
+            .from('registrations')
+            .select('*, meetups(title)')
+            .order('created_at', { ascending: false });
+
+          if (!canApply()) {
+            // A stale request must not populate or clear another session's data
+            return;
+          }
+
+          if (regsErr || !dbRegs) {
+            console.warn('Failed to fetch registrations:', regsErr?.message);
+            setRegistrations([]);
+          } else {
+            anySuccess = true;
+            setRegistrations(dbRegs.map(r => ({
+              id: r.id,
+              meetupId: r.meetup_id,
+              meetupTitle: (r as any).meetups?.title || undefined,
+              name: r.name,
+              email: r.email,
+              phone: r.phone || undefined,
+              message: r.message || undefined,
+              consent: r.consent,
+              status: r.status,
+              details: r.details as Record<string, any>,
+              createdAt: r.created_at
+            })));
+          }
+        } catch (e) {
+          console.warn('Error fetching registrations:', e);
+          if (canApply()) {
+            setRegistrations([]);
+          }
         }
 
         // 7. Admin-only: Enquiries
-        const { data: dbEnqs } = await supabase
-          .from('enquiries')
-          .select('*')
-          .order('created_at', { ascending: false });
+        try {
+          const { data: dbEnqs, error: enqsErr } = await supabase
+            .from('enquiries')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-        if (dbEnqs) {
-          anySuccess = true;
-          setEnquiries(dbEnqs.map(e => ({
-            id: e.id,
-            type: e.type,
-            name: e.name,
-            email: e.email,
-            phone: e.phone || undefined,
-            message: e.message,
-            details: e.details as Record<string, any>,
-            createdAt: e.created_at,
-            status: e.status
-          })));
+          if (!canApply()) {
+            // A stale request must not populate or clear another session's data
+            return;
+          }
+
+          if (enqsErr || !dbEnqs) {
+            console.warn('Failed to fetch enquiries:', enqsErr?.message);
+            setEnquiries([]);
+          } else {
+            anySuccess = true;
+            setEnquiries(dbEnqs.map(e => ({
+              id: e.id,
+              type: e.type,
+              name: e.name,
+              email: e.email,
+              phone: e.phone || undefined,
+              message: e.message,
+              consent: e.consent,
+              details: e.details as Record<string, any>,
+              createdAt: e.created_at,
+              status: e.status
+            })));
+          }
+        } catch (e) {
+          console.warn('Error fetching enquiries:', e);
+          if (canApply()) {
+            setEnquiries([]);
+          }
         }
 
         // 8. Admin-only: Profiles
-        const { data: dbProfiles } = await supabase
-          .from('profiles')
-          .select('*')
-          .order('role', { ascending: true });
+        try {
+          const { data: dbProfiles, error: profsErr } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('role', { ascending: true });
 
-        if (dbProfiles) {
-          anySuccess = true;
-          setStaffProfiles(dbProfiles.map(p => ({
-            id: p.id,
-            email: p.email,
-            fullName: p.full_name || undefined,
-            role: p.role,
-            designation: p.designation || undefined,
-            createdAt: p.created_at,
-            updatedAt: p.updated_at
-          })));
+          if (!canApply()) {
+            // A stale request must not populate or clear another session's data
+            return;
+          }
+
+          if (profsErr || !dbProfiles) {
+            console.warn('Failed to fetch staff profiles:', profsErr?.message);
+            setStaffProfiles([]);
+          } else {
+            anySuccess = true;
+            // Check if active initiating user's role has been downgraded or revoked
+            const myProfile = dbProfiles.find(p => p.id === initiatingUserId);
+            if (myProfile && myProfile.role !== 'admin') {
+              console.warn('Admin role changed or revoked; adjusting frontend privileges');
+              currentRoleRef.current = myProfile.role === 'editor' ? 'editor' : null;
+              currentUserIdRef.current = myProfile.role === 'editor' ?initiatingUserId : null;
+              setAdminRole(myProfile.role === 'editor' ? 'editor' : null);
+              if (myProfile.role !== 'editor') {
+                setIsAdmin(false);
+              }
+              setRegistrations([]);
+              setEnquiries([]);
+              setStaffProfiles([]);
+              if (myProfile.role !== 'editor') {
+                resetAuthState();
+                if (initiatingUserId) {
+                  await authCoordinatorRef.current.signOutForRevocation(initiatingUserId, supabase, {
+                    onLoading: setAdminAuthLoading,
+                    onResetState: resetAuthState,
+                  });
+                }
+              }
+              return;
+            }
+
+            setStaffProfiles(dbProfiles.map(p => ({
+              id: p.id,
+              email: p.email,
+              fullName: p.full_name || undefined,
+              role: p.role,
+              designation: p.designation || undefined,
+              createdAt: p.created_at,
+              updatedAt: p.updated_at
+            })));
+          }
+        } catch (e) {
+          console.warn('Error fetching staff profiles:', e);
+          if (canApply()) {
+            setStaffProfiles([]);
+          }
+        }
+      } else {
+        // Enforce in-memory clearing of administrative data for non-admins / editors
+        // Only if this request is still the current refresh sequence
+        if (refreshSeq === refreshSequenceRef.current) {
+          setRegistrations([]);
+          setEnquiries([]);
+          setStaffProfiles([]);
         }
       }
 
-      setIsDbConnected(anySuccess);
+      if (refreshSeq === refreshSequenceRef.current) {
+        setIsDbConnected(anySuccess);
+      }
     } catch (e) {
       console.warn('Supabase query failed, falling back to local data:', e);
-      setIsDbConnected(false);
+      // Clear sensitive arrays only if the failing request is still the current refresh
+      // and its session ownership remains valid. A stale outer failure must not clear newer data.
+      if (canApplySensitiveRefresh({
+        refreshSeq,
+        currentRefreshSeq: refreshSequenceRef.current,
+        currentRole: currentRoleRef.current,
+        adminRole,
+        initiatingUserId,
+        currentUserId: currentUserIdRef.current,
+      })) {
+        setRegistrations([]);
+        setEnquiries([]);
+        setStaffProfiles([]);
+      }
+      if (refreshSeq === refreshSequenceRef.current) {
+        setIsDbConnected(false);
+      }
     } finally {
-      setDbLoading(false);
+      if (refreshSeq === refreshSequenceRef.current) {
+        setDbLoading(false);
+      }
     }
-  }, [adminRole]);
-
-  // Initial load
-  useEffect(() => {
-    void refreshData();
-  }, [refreshData]);
+}, [adminRole, resetAuthState]);
+ // Initial load
+useEffect(() => {
+  // oxlint-disable-next-line react/set-state-in-effect -- Initial mount intentionally starts the async data refresh and its loading-state updates.
+  void refreshData();
+}, [refreshData]);
 
   // Admin auth resolution
   useEffect(() => {
-    let active = true;
+    const lifecycle = new AbortController();
 
-    const resolveAdminSession = async () => {
-      if (!isSupabaseConfigured) {
-        if (active) {
-          setIsAdmin(false);
-          setAdminRole(null);
-          setCurrentUserEmail(null);
-          setCurrentUserDesignation(null);
-          setAdminAuthLoading(false);
-        }
+   const coordinatorCallbacks: AuthCoordinatorCallbacks = {
+  onLoading: (loading) => {
+    if (!lifecycle.signal.aborted) {
+      setAdminAuthLoading(loading);
+    }
+  },
+
+  onResetState: () => {
+    if (lifecycle.signal.aborted) return;
+
+    currentRoleRef.current = null;
+    currentUserIdRef.current = null;
+    resetAuthState();
+  },
+
+  onAccountSwitch: (_prevUserId, _newUserId) => {
+    if (lifecycle.signal.aborted) return;
+
+    refreshSequenceRef.current++;
+    currentRoleRef.current = null;
+    currentUserIdRef.current = null;
+    resetAuthState();
+  },
+
+  onAuthenticated: ({ userId, email, role, designation }) => {
+    if (lifecycle.signal.aborted) return;
+
+    currentRoleRef.current = role;
+    currentUserIdRef.current = userId;
+
+    if (role !== 'admin') {
+      setRegistrations([]);
+      setEnquiries([]);
+      setStaffProfiles([]);
+    }
+
+    setAdminRole(role);
+    setIsAdmin(true);
+    setCurrentUserEmail(email);
+    setCurrentUserDesignation(designation);
+    setCurrentAuthUserId(userId);
+    setIsMember(false);
+    setAdminAuthLoading(false);
+  },
+
+  onMemberAuthenticated: ({ userId, email }) => {
+    if (lifecycle.signal.aborted) return;
+
+    currentRoleRef.current = null;
+    currentUserIdRef.current = userId;
+    setAdminRole(null);
+    setIsAdmin(false);
+    setCurrentUserDesignation(null);
+    setRegistrations([]);
+    setEnquiries([]);
+    setStaffProfiles([]);
+    setCurrentUserEmail(email);
+    setCurrentAuthUserId(userId);
+    setIsMember(true);
+    setAdminAuthLoading(false);
+  },
+
+  onRoleDowngrade: () => {
+    if (lifecycle.signal.aborted) return;
+
+    setRegistrations([]);
+    setEnquiries([]);
+    setStaffProfiles([]);
+  },
+
+  onRefreshNeeded: () => {
+    if (!lifecycle.signal.aborted) {
+      void refreshData();
+    }
+  },
+};
+
+const resolveAdminSession = async (
+  existingSession?: any,
+  assignedSeq?: number
+) => {
+  if (lifecycle.signal.aborted) return;
+
+  if (!isSupabaseConfigured) {
+    resetAuthState();
+    return;
+  }
+
+  await authCoordinatorRef.current.resolveSession(
+    existingSession,
+    assignedSeq,
+    supabase,
+    coordinatorCallbacks
+  );
+};
+
+    // During a recovery redirect the user has a short-lived recovery session;
+    // profile resolution must not run (or sign out) before they set a password.
+    if (!isPasswordRecovery) {
+      void resolveAdminSession();
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (lifecycle.signal.aborted) return;
+
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
         return;
       }
 
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user || !active) {
-          if (active) {
-            setIsAdmin(false);
-            setAdminRole(null);
-            setCurrentUserEmail(null);
-            setCurrentUserDesignation(null);
-            setAdminAuthLoading(false);
-          }
-          return;
-        }
+      const decision = evaluateAuthStateChange({
+        event,
+        hasUser: Boolean(session?.user),
+        inFlightLogoutSeq: authCoordinatorRef.current.getInFlightLogoutSeq(),
+        inFlightLoginSeq: authCoordinatorRef.current.getInFlightLoginSeq(),
+        currentUserId: authCoordinatorRef.current.getCurrentUserId() ?? currentUserIdRef.current,
+        eventUserId: session?.user?.id || null,
+        isAlreadyVerified: (authCoordinatorRef.current.getCurrentRole() ?? currentRoleRef.current) !== null,
+      });
 
-        setCurrentUserEmail(session.user.email || null);
-
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role, designation, full_name')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
-        if (!active) return;
-        const role = profile?.role === 'admin' || profile?.role === 'editor'
-          ? profile.role
-          : null;
-        setAdminRole(role);
-        setIsAdmin(role !== null);
-        setCurrentUserDesignation(profile?.designation || null);
-        setAdminAuthLoading(false);
-      } catch (err) {
-        console.warn('Error resolving admin session:', err);
-        if (active) {
-          setAdminAuthLoading(false);
-        }
+      if (decision.action === 'IGNORE_IN_FLIGHT_LOGOUT') {
+        return;
       }
-    };
 
-    void resolveAdminSession();
+      if (decision.action === 'RESET_STATE') {
+        refreshSequenceRef.current++;
+        authCoordinatorRef.current.resetInternalState();
+        currentRoleRef.current = null;
+        currentUserIdRef.current = null;
+        resetAuthState();
+        return;
+      }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      void resolveAdminSession();
+      if (decision.action === 'IGNORE_IN_FLIGHT_LOGIN') {
+        return;
+      }
+
+      if (decision.action === 'UPDATE_EMAIL_ONLY') {
+        setCurrentUserEmail(session?.user?.email || null);
+        return;
+      }
+
+      // Defer profile resolution until after callback returns, preserving sequence and event ordering
+      const resolutionSeq = authCoordinatorRef.current.nextSeq();
+      queueMicrotask(() => {
+        if (
+  lifecycle.signal.aborted ||
+  resolutionSeq !== authCoordinatorRef.current.getLatestSeq()
+) return;
+        void resolveAdminSession(session, resolutionSeq);
+      });
     });
 
     return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
+  lifecycle.abort();
+  subscription.unsubscribe();
+};
+  }, [resetAuthState, refreshData, isPasswordRecovery]);
 
-  const loginAdmin = async (emailInput: string, passwordInput: string) => {
+  const loginAdmin = async (emailInput: string, passwordInput: string): Promise<{ ok: boolean; error?: string }> => {
     if (!isSupabaseConfigured) {
       return { ok: false, error: 'Supabase is not configured for this deployment.' };
     }
 
-    setAdminAuthLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: emailInput.trim(),
-      password: passwordInput,
+    return authCoordinatorRef.current.login(
+      emailInput,
+      passwordInput,
+      supabase,
+      {
+        onLoading: setAdminAuthLoading,
+        onResetState: () => {
+          currentRoleRef.current = null;
+          currentUserIdRef.current = null;
+          resetAuthState();
+        },
+        onAccountSwitch: (_prevUserId, _newUserId) => {
+          refreshSequenceRef.current++;
+          currentRoleRef.current = null;
+          currentUserIdRef.current = null;
+          resetAuthState();
+        },
+        onAuthenticated: ({ userId, email, role, designation }) => {
+          currentRoleRef.current = role;
+          currentUserIdRef.current = userId;
+          if (role !== 'admin') {
+            setRegistrations([]);
+            setEnquiries([]);
+            setStaffProfiles([]);
+          }
+          setAdminRole(role);
+          setIsAdmin(true);
+          setCurrentUserEmail(email);
+          setCurrentUserDesignation(designation);
+          setCurrentAuthUserId(userId);
+          setIsMember(false);
+          setAdminAuthLoading(false);
+        },
+        onMemberAuthenticated: ({ userId, email }) => {
+          currentRoleRef.current = null;
+          currentUserIdRef.current = userId;
+          setAdminRole(null);
+          setIsAdmin(false);
+          setCurrentUserDesignation(null);
+          setRegistrations([]);
+          setEnquiries([]);
+          setStaffProfiles([]);
+          setCurrentUserEmail(email);
+          setCurrentAuthUserId(userId);
+          setIsMember(true);
+          setAdminAuthLoading(false);
+        },
+        onRoleDowngrade: () => {
+          setRegistrations([]);
+          setEnquiries([]);
+          setStaffProfiles([]);
+        },
+        onRefreshNeeded: () => {
+          void refreshData();
+        },
+      }
+    );
+  };
+
+  const logoutAdmin = async (): Promise<{ ok: boolean; error?: string }> => {
+    refreshSequenceRef.current++;
+    const res = await authCoordinatorRef.current.logout(supabase, {
+      onLoading: setAdminAuthLoading,
+      onResetState: () => {
+        currentRoleRef.current = null;
+        currentUserIdRef.current = null;
+        resetAuthState();
+        if (currentPage === 'admin') {
+          setCurrentPage('home');
+        }
+      },
     });
-    if (error || !data.user) {
-      setAdminAuthLoading(false);
-      return { ok: false, error: error?.message || 'Unable to sign in.' };
+    return res;
+  };
+
+  /**
+   * Requests a password-reset email. Always reports success for a well-formed
+   * address so the response never discloses whether an account exists.
+   */
+  const requestPasswordReset = async (emailInput: string) => {
+    if (!isSupabaseConfigured) {
+      return { ok: false, error: 'Supabase is not configured for this deployment.' };
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role, designation')
-      .eq('id', data.user.id)
-      .maybeSingle();
-    const role = profile?.role === 'admin' || profile?.role === 'editor'
-      ? profile.role
-      : null;
-    if (!role) {
-      await supabase.auth.signOut();
-      setAdminAuthLoading(false);
-      return { ok: false, error: 'This account does not have administrator or editor access.' };
+    const email = emailInput.trim();
+    if (!isValidRecoveryEmail(email)) {
+      return { ok: false, error: 'Enter a valid email address.' };
     }
-    setAdminRole(role);
-    setIsAdmin(true);
-    setCurrentUserEmail(data.user.email || null);
-    setCurrentUserDesignation(profile?.designation || null);
-    setAdminAuthLoading(false);
-    void refreshData();
+
+    // Redirect to the app root so supabase-js can parse the implicit recovery
+    // fragment and emit PASSWORD_RECOVERY before the URL is cleaned.
+    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+
+    if (error) {
+      // Log only the provider message; never the address or any token.
+      console.warn('Password reset request did not complete:', error.message);
+    }
+
     return { ok: true };
   };
 
-  const logoutAdmin = async () => {
-    if (isSupabaseConfigured) {
-      await supabase.auth.signOut();
-    }
-    setIsAdmin(false);
-    setAdminRole(null);
-    setCurrentUserEmail(null);
-    setCurrentUserDesignation(null);
-    if (currentPage === 'admin') {
-      setCurrentPage('home');
-    }
-  };
+  // Kept for existing staff-dashboard call sites; identical safe behaviour.
+  const resetAdminPassword = requestPasswordReset;
 
-  const resetAdminPassword = async (emailInput: string) => {
+  /**
+   * Updates the password for the current recovery session. Requires a live
+   * session; supabase-js verifies the recovery JWT server-side.
+   */
+  const updatePassword = async (newPassword: string) => {
     if (!isSupabaseConfigured) {
       return { ok: false, error: 'Supabase is not configured for this deployment.' };
     }
+    if (typeof newPassword !== 'string' || newPassword.length < MIN_PASSWORD_LENGTH) {
+      return { ok: false, error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` };
+    }
 
-    const redirectTo = `${window.location.origin}${window.location.pathname}#/reset-password`;
-    const { error } = await supabase.auth.resetPasswordForEmail(emailInput.trim(), {
-      redirectTo,
-    });
-    return error
-      ? { ok: false, error: error.message }
-      : { ok: true };
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !sessionData.session) {
+      return { ok: false, error: 'This password reset link is invalid or has expired.' };
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+
+    return { ok: true };
+  };
+
+  /** Signs out the recovery session and returns the app to its normal state. */
+  const completePasswordRecovery = async () => {
+    refreshSequenceRef.current++;
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('Recovery sign-out did not complete:', err);
+    }
+
+    authCoordinatorRef.current.resetInternalState();
+    currentRoleRef.current = null;
+    currentUserIdRef.current = null;
+    resetAuthState();
+    setIsPasswordRecovery(false);
+
+    try {
+      window.history.replaceState(null, '', window.location.pathname);
+    } catch {
+      window.location.hash = '';
+    }
   };
 
   // --- CRUD METHODS (SUPABASE FIRST, FALLBACK LOCAL) ---
@@ -715,6 +1473,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
 
+  const deriveMeetupIsUpcoming = (m: Partial<Meetup>) => {
+    const startsAt = m.startsAt || (m.date ? parseMeetupDate(m.date) : undefined);
+    const startsAtMs = startsAt ? new Date(startsAt).getTime() : NaN;
+    const isFuture = Number.isFinite(startsAtMs) && startsAtMs >= Date.now();
+    const isPublished = m.isPublished ?? true;
+    const isCompleted = m.isCompleted ?? false;
+    const status = m.registrationStatus ?? 'open';
+    return Boolean(isPublished) && !isCompleted && status !== 'cancelled' && isFuture;
+  };
+
   // Meetup CRUD
   const addMeetup = async (meetupData: Omit<Meetup, 'id'>) => {
     const slug = meetupData.title
@@ -722,9 +1490,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
+    const startsAt = meetupData.startsAt || parseMeetupDate(meetupData.date);
     const localMeetup: Meetup = {
       ...meetupData,
       id: `meetup-${Date.now()}`,
+      startsAt,
+      isPublished: meetupData.isPublished ?? true,
+      isCompleted: meetupData.isCompleted ?? false,
+      isUpcoming: deriveMeetupIsUpcoming({ ...meetupData, startsAt }),
     };
 
     // Offline/demo mode: retain local-only functionality.
@@ -740,7 +1513,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           title: meetupData.title,
           slug: `${slug}-${Date.now().toString().slice(-4)}`,
           edition: meetupData.edition || null,
-          starts_at: parseMeetupDate(meetupData.date),
+          starts_at: startsAt,
           time_label: meetupData.time,
           venue: meetupData.venue,
           address: meetupData.address || null,
@@ -754,7 +1527,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           activities: meetupData.activities,
           schedule: meetupData.schedule || [],
           highlights: meetupData.highlights || null,
-          is_published: true,
+          is_published: meetupData.isPublished ?? true,
+          is_completed: meetupData.isCompleted ?? false,
         })
         .select('id')
         .single();
@@ -765,6 +1539,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setMeetups(prev => [{ ...localMeetup, id: data.id }, ...prev]);
     } catch (error) {
       console.error('Failed to create meetup:', error);
+      throw error;
     }
   };
 
@@ -772,7 +1547,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Offline/demo mode.
     if (!isSupabaseConfigured) {
       setMeetups(prev =>
-        prev.map(meetup => meetup.id === id ? { ...meetup, ...updated } : meetup)
+        prev.map(meetup => {
+          if (meetup.id !== id) return meetup;
+          const next = { ...meetup, ...updated };
+          return { ...next, isUpcoming: deriveMeetupIsUpcoming(next) };
+        })
       );
       return;
     }
@@ -783,6 +1562,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (updated.title !== undefined) dbUpdates.title = updated.title;
       if (updated.edition !== undefined) dbUpdates.edition = updated.edition;
       if (updated.date !== undefined) dbUpdates.starts_at = parseMeetupDate(updated.date);
+      if (updated.startsAt !== undefined) dbUpdates.starts_at = updated.startsAt;
       if (updated.time !== undefined) dbUpdates.time_label = updated.time;
       if (updated.venue !== undefined) dbUpdates.venue = updated.venue;
       if (updated.address !== undefined) dbUpdates.address = updated.address;
@@ -798,6 +1578,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (updated.activities !== undefined) dbUpdates.activities = updated.activities;
       if (updated.schedule !== undefined) dbUpdates.schedule = updated.schedule;
       if (updated.highlights !== undefined) dbUpdates.highlights = updated.highlights;
+      if (updated.isPublished !== undefined) dbUpdates.is_published = updated.isPublished;
+      if (updated.isCompleted !== undefined) dbUpdates.is_completed = updated.isCompleted;
 
       if (Object.keys(dbUpdates).length === 0) return;
 
@@ -812,10 +1594,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!data) throw new Error(`Meetup ${id} was not found or could not be updated.`);
 
       setMeetups(prev =>
-        prev.map(meetup => meetup.id === id ? { ...meetup, ...updated } : meetup)
+        prev.map(meetup => {
+          if (meetup.id !== id) return meetup;
+          const nextStartsAt = typeof dbUpdates.starts_at === 'string' ? dbUpdates.starts_at : meetup.startsAt;
+          const next = { ...meetup, ...updated, startsAt: nextStartsAt };
+          return { ...next, isUpcoming: deriveMeetupIsUpcoming(next) };
+        })
       );
     } catch (error) {
       console.error('Failed to update meetup:', error);
+      throw error;
     }
   };
 
@@ -996,33 +1784,239 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const deleteGalleryItem = async (id: string) => {
-    if (!isSupabaseConfigured) {
-      setGallery(prev => prev.filter(item => item.id !== id));
-      return;
+ const deleteGalleryItem = async (id: string) => {
+  if (!isSupabaseConfigured) {
+    setGallery(prev => prev.filter(item => item.id !== id));
+    return;
+  }
+
+  try {
+    // 1. Retrieve paths before deleting the database record.
+    const { data: galleryItem, error: fetchError } = await supabase
+      .from('gallery_images')
+      .select('image_path, thumbnail_path')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (fetchError) throw fetchError;
+
+    if (!galleryItem) {
+      throw new Error(`Gallery item ${id} was not found.`);
     }
 
-    try {
+    // 2. Delete the database record first.
+    const { data: deletedItem, error: deleteError } = await supabase
+      .from('gallery_images')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .maybeSingle();
+
+    if (deleteError) throw deleteError;
+
+    if (!deletedItem) {
+      throw new Error(`Gallery item ${id} could not be deleted.`);
+    }
+
+    // 3. Reflect the successful database deletion immediately.
+    setGallery(prev => prev.filter(item => item.id !== id));
+
+    // 4. Only consider valid private Storage paths.
+    const imagePath = isStoragePath(galleryItem.image_path)
+      ? galleryItem.image_path
+      : null;
+
+    const thumbnailPath = isStoragePath(galleryItem.thumbnail_path)
+      ? galleryItem.thumbnail_path
+      : null;
+
+    // Instagram URLs and other external media need no Storage cleanup.
+    if (!imagePath && !thumbnailPath) return;
+
+    // 5. Check whether another gallery record references each object.
+    let imagePathToDelete: string | null = null;
+    let thumbnailPathToDelete: string | null = null;
+
+    if (imagePath) {
       const { data, error } = await supabase
         .from('gallery_images')
-        .delete()
-        .eq('id', id)
         .select('id')
-        .maybeSingle();
+        .eq('image_path', imagePath)
+        .limit(1);
 
-      if (error) throw error;
-      if (!data) throw new Error(`Gallery item ${id} was not found or could not be deleted.`);
+      if (error) {
+        console.warn(
+          'Could not verify remaining image references. Preserving Storage object.',
+          error
+        );
+      } else if (!data || data.length === 0) {
+        imagePathToDelete = imagePath;
+      }
+    }
 
-      setGallery(prev => prev.filter(item => item.id !== id));
-    } catch (error) {
-      console.error('Failed to delete gallery item:', error);
+    if (thumbnailPath) {
+      const { data, error } = await supabase
+        .from('gallery_images')
+        .select('id')
+        .eq('thumbnail_path', thumbnailPath)
+        .limit(1);
+
+      if (error) {
+        console.warn(
+          'Could not verify remaining thumbnail references. Preserving Storage object.',
+          error
+        );
+      } else if (!data || data.length === 0) {
+        thumbnailPathToDelete = thumbnailPath;
+      }
+    }
+
+    // 6. Remove only confirmed-unreferenced private Storage objects.
+    if (imagePathToDelete || thumbnailPathToDelete) {
+      const cleanup = await deleteUploadedGalleryStorageObjects(
+        imagePathToDelete,
+        thumbnailPathToDelete
+      );
+
+      if (!cleanup.ok) {
+        console.warn(
+          'Gallery database record was deleted, but some Storage objects could not be cleaned up:',
+          cleanup.errors
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Failed to delete gallery item:', error);
+  }
+};
+
+  /**
+   * Secure community photograph upload handler.
+   *
+   * Workflow:
+   * 1. Validates metadata (title, caption) and file constraints (format, 20 MB max).
+   * 2. Generates an optimized WebP thumbnail client-side (max 640px, non-upscaled).
+   * 3. Uploads original photo to private `roa-gallery` bucket with collision-resistant path.
+   * 4. Uploads thumbnail to private `roa-thumbnails` bucket.
+   * 5. Inserts a record into `gallery_images` with `is_published: true`.
+   * 6. Updates React gallery state only after successful database insertion.
+   * 7. If database insertion fails, rolls back both storage objects and preserves the original error.
+   */
+  const uploadGalleryItem = async (
+    file: File,
+    title: string,
+    caption?: string
+  ): Promise<{ ok: boolean; error?: string; item?: GalleryItem }> => {
+    // 1. Validate metadata
+    const trimmedTitle = (title || '').trim();
+    if (trimmedTitle.length < 2 || trimmedTitle.length > 200) {
+      return {
+        ok: false,
+        error: 'Image title must be between 2 and 200 characters in length.'
+      };
+    }
+
+    const trimmedCaption = (caption || '').trim();
+    if (trimmedCaption.length > 1000) {
+      return {
+        ok: false,
+        error: 'Image caption must not exceed 1000 characters in length.'
+      };
+    }
+
+    // Validate file (format, constraints, signature)
+    const fileValidation = await validateGalleryImageFile(file);
+    if (!fileValidation.valid) {
+      return {
+        ok: false,
+        error: fileValidation.error || 'The selected file does not meet gallery requirements.'
+      };
+    }
+
+    // 2. Prepare thumbnail
+    let prepared;
+    try {
+      prepared = await prepareGalleryImage(file);
+    } catch (err: any) {
+      return {
+        ok: false,
+        error: `Thumbnail preparation failed: ${err?.message || err}`
+      };
+    }
+
+    // 3 & 4. Upload original and thumbnail to Supabase Storage
+    let storagePaths;
+    try {
+      storagePaths = await uploadGalleryImages(
+        prepared.originalFile,
+        prepared.thumbnailBlob,
+        prepared.mimeType
+      );
+    } catch (err: any) {
+      return {
+        ok: false,
+        error: `Storage upload failed: ${err?.message || err}`
+      };
+    }
+
+    const { imagePath, thumbnailPath } = storagePaths;
+
+    // 5. Insert record into `gallery_images` table
+    try {
+      const { data, error: dbError } = await supabase
+        .from('gallery_images')
+        .insert({
+          title: trimmedTitle,
+          caption: trimmedCaption || null,
+          image_path: imagePath,
+          thumbnail_path: thumbnailPath,
+          display_order: gallery.length + 1,
+          is_published: true,
+        })
+        .select('id, title, caption, image_path, thumbnail_path, created_at, meetup_id')
+        .single();
+
+      if (dbError) throw dbError;
+      if (!data?.id) throw new Error('Database record was not returned after insertion.');
+
+      // 8 & 9. Update React gallery state only after successful database insertion
+      const newItem: GalleryItem = {
+        id: data.id,
+        title: data.title,
+        caption: data.caption || '',
+        imageUrl: data.image_path,
+        thumbnailUrl: data.thumbnail_path || undefined,
+        meetupId: data.meetup_id || undefined,
+        date: new Date(data.created_at || Date.now()).toLocaleDateString('en-US', {
+          month: 'short',
+          year: 'numeric'
+        })
+      };
+
+      setGallery(prev => [newItem, ...prev]);
+
+      return { ok: true, item: newItem };
+    } catch (dbError: any) {
+      console.error('Failed to create gallery database record:', dbError);
+
+      // Attempt to clean up both uploaded storage objects
+      const cleanupResult = await deleteUploadedGalleryStorageObjects(imagePath, thumbnailPath);
+      const cleanupReport = cleanupResult.ok
+        ? 'Uploaded storage objects were safely rolled back.'
+        : `Warning: Failed to clean up storage objects: ${cleanupResult.errors.join('; ')}`;
+
+      const preservedError = `Database insertion failed: ${dbError?.message || dbError}. ${cleanupReport}`;
+      return {
+        ok: false,
+        error: preservedError
+      };
     }
   };
 
   // Announcements CRUD
   const addAnnouncement = async (
     item: Omit<Announcement, 'id' | 'createdAt'>
-  ) => {
+  ): Promise<{ ok: boolean; error?: string }> => {
     const localAnnouncement: Announcement = {
       ...item,
       id: `ann-${Date.now()}`,
@@ -1031,7 +2025,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (!isSupabaseConfigured) {
       setAnnouncements(prev => [localAnnouncement, ...prev]);
-      return;
+      return { ok: true };
     }
 
     try {
@@ -1042,7 +2036,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           content: item.content,
           action_url: item.actionUrl || null,
           is_published: item.isPublished,
-          published_at: item.publishedAt,
+          published_at: item.publishedAt || new Date().toISOString(),
           expires_at: item.expiresAt || null,
         })
         .select('id')
@@ -1055,20 +2049,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         { ...localAnnouncement, id: data.id },
         ...prev,
       ]);
+      return { ok: true };
     } catch (error) {
       console.error('Failed to create announcement:', error);
+      return { ok: false, error: error instanceof Error ? error.message : 'Failed to create announcement.' };
     }
   };
 
   const updateAnnouncement = async (
     id: string,
     item: Partial<Announcement>
-  ) => {
+  ): Promise<{ ok: boolean; error?: string }> => {
     if (!isSupabaseConfigured) {
       setAnnouncements(prev =>
         prev.map(a => a.id === id ? { ...a, ...item } : a)
       );
-      return;
+      return { ok: true };
     }
 
     try {
@@ -1076,12 +2072,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       if (item.title !== undefined) dbUpdates.title = item.title;
       if (item.content !== undefined) dbUpdates.content = item.content;
-      if (item.actionUrl !== undefined) dbUpdates.action_url = item.actionUrl;
+      if (item.actionUrl !== undefined) dbUpdates.action_url = item.actionUrl || null;
       if (item.isPublished !== undefined) dbUpdates.is_published = item.isPublished;
       if (item.publishedAt !== undefined) dbUpdates.published_at = item.publishedAt;
-      if (item.expiresAt !== undefined) dbUpdates.expires_at = item.expiresAt;
+      if (item.expiresAt !== undefined) dbUpdates.expires_at = item.expiresAt || null;
 
-      if (Object.keys(dbUpdates).length === 0) return;
+      if (Object.keys(dbUpdates).length === 0) return { ok: true };
 
       const { data, error } = await supabase
         .from('announcements')
@@ -1096,15 +2092,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setAnnouncements(prev =>
         prev.map(a => a.id === id ? { ...a, ...item } : a)
       );
+      return { ok: true };
     } catch (error) {
       console.error('Failed to update announcement:', error);
+      return { ok: false, error: error instanceof Error ? error.message : 'Failed to update announcement.' };
     }
   };
 
-  const deleteAnnouncement = async (id: string) => {
+  const deleteAnnouncement = async (id: string): Promise<{ ok: boolean; error?: string }> => {
     if (!isSupabaseConfigured) {
       setAnnouncements(prev => prev.filter(a => a.id !== id));
-      return;
+      return { ok: true };
     }
 
     try {
@@ -1119,8 +2117,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!data) throw new Error(`Announcement ${id} was not found or could not be deleted.`);
 
       setAnnouncements(prev => prev.filter(a => a.id !== id));
+      return { ok: true };
     } catch (error) {
       console.error('Failed to delete announcement:', error);
+      return { ok: false, error: error instanceof Error ? error.message : 'Failed to delete announcement.' };
     }
   };
 
@@ -1128,8 +2128,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const addRegistration = async (
     regData: Omit<Registration, 'id' | 'createdAt' | 'status'>
   ): Promise<{ ok: boolean; error?: string }> => {
+    if (regData.consent !== true) {
+      return { ok: false, error: 'Explicit consent is required to register for this gathering.' };
+    }
+
+    const trimmedName = (regData.name || '').trim();
+    const trimmedEmail = (regData.email || '').trim().toLowerCase();
+    const trimmedPhone = regData.phone ? regData.phone.trim() : null;
+    const trimmedMessage = regData.message ? regData.message.trim() : null;
+
+    if (!trimmedName || trimmedName.length < 2 || trimmedName.length > 100) {
+      return { ok: false, error: 'Full name must be between 2 and 100 characters.' };
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail) || trimmedEmail.length > 255) {
+      return { ok: false, error: 'Please enter a valid email address.' };
+    }
+
+    if (trimmedPhone && trimmedPhone.length > 30) {
+      return { ok: false, error: 'Phone number cannot exceed 30 characters.' };
+    }
+
+    if (trimmedMessage && trimmedMessage.length > 1000) {
+      return { ok: false, error: 'Message cannot exceed 1000 characters.' };
+    }
+
     const newReg: Registration = {
       ...regData,
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone || undefined,
+      message: trimmedMessage || undefined,
+      consent: regData.consent,
       id: `reg-${Date.now()}`,
       createdAt: new Date().toISOString(),
       status: 'new',
@@ -1137,31 +2168,55 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Offline/demo mode.
     if (!isSupabaseConfigured) {
-      setRegistrations(prev => [newReg, ...prev]);
+      if (adminRole === 'admin') {
+        setRegistrations(prev => [newReg, ...prev]);
+      }
       return { ok: true };
     }
 
     try {
-      const { data, error } = await supabase
-        .from('registrations')
-        .insert({
-          meetup_id: regData.meetupId,
-          name: regData.name.trim(),
-          email: regData.email.trim(),
-          phone: regData.phone ? regData.phone.trim() : null,
-          message: regData.message ? regData.message.trim() : null,
-          consent: true,
-        })
-        .select('id')
-        .single();
+      let data: { id: string };
 
-      if (error) throw error;
-      if (!data?.id) throw new Error('Registration could not be confirmed.');
+      if (adminRole === 'admin') {
+        const result = await supabase
+          .from('registrations')
+          .insert({
+            meetup_id: regData.meetupId,
+            name: trimmedName,
+            email: trimmedEmail,
+            phone: trimmedPhone,
+            message: trimmedMessage,
+            consent: regData.consent,
+          })
+          .select('id')
+          .single();
 
-      setRegistrations(prev => [
-        { ...newReg, id: data.id },
-        ...prev,
-      ]);
+        if (result.error) throw result.error;
+        if (!result.data?.id) throw new Error('Registration could not be confirmed.');
+        data = result.data;
+      } else {
+        const { error } = await supabase
+          .from('registrations')
+          .insert({
+            meetup_id: regData.meetupId,
+            name: trimmedName,
+            email: trimmedEmail,
+            phone: trimmedPhone,
+            message: trimmedMessage,
+            consent: regData.consent,
+          });
+
+        if (error) throw error;
+        return { ok: true };
+      }
+
+      // Only retain registrations in memory if caller is an authorized administrator
+      if (adminRole === 'admin') {
+        setRegistrations(prev => [
+          { ...newReg, id: data.id },
+          ...prev,
+        ]);
+      }
 
       return { ok: true };
     } catch (error) {
@@ -1180,6 +2235,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     id: string,
     status: Registration['status']
   ) => {
+    if (adminRole !== 'admin') {
+      console.warn('Unauthorized attempt to update registration status');
+      return;
+    }
+
     if (!isSupabaseConfigured) {
       setRegistrations(prev =>
         prev.map(r => r.id === id ? { ...r, status } : r)
@@ -1207,6 +2267,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteRegistration = async (id: string) => {
+    if (adminRole !== 'admin') {
+      console.warn('Unauthorized attempt to delete registration');
+      return;
+    }
+
     if (!isSupabaseConfigured) {
       setRegistrations(prev => prev.filter(r => r.id !== id));
       return;
@@ -1247,78 +2312,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     reelData: Omit<MeetupReel, 'id' | 'createdAt'>,
     videoFile?: File | Blob
   ): Promise<string> => {
-    const id = `reel-${Date.now()}`;
-    let finalVideoUrl = reelData.videoUrl;
-    let storagePath: string | null = null;
-    let isCustomUpload = reelData.isCustomUpload ?? false;
-
-    if (videoFile) {
-      isCustomUpload = true;
-
-      // 1. Upload to Supabase Storage (roa-reels bucket)
-      try {
-        const ext = (videoFile instanceof File && videoFile.name)
-          ? videoFile.name.split('.').pop()?.toLowerCase() || 'mp4'
-          : 'mp4';
-        storagePath = `reels/${id}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from('roa-reels')
-          .upload(storagePath, videoFile, {
-            contentType: videoFile.type || 'video/mp4',
-            upsert: false
-          });
-
-        if (uploadError) {
-          console.warn('Supabase Storage upload failed, falling back to IndexedDB:', uploadError.message);
-          storagePath = null;
-        }
-      } catch (uploadErr) {
-        console.warn('Supabase Storage upload error, falling back to IndexedDB:', uploadErr);
-        storagePath = null;
-      }
-
-      // 2. Always keep local blob for immediate playback
-      await saveVideoBlob(id, videoFile);
-      finalVideoUrl = URL.createObjectURL(videoFile);
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase client is not configured for reel persistence.');
     }
 
-    const calculatedOrder = reelData.order ?? (reels.length > 0 ? Math.max(...reels.map(r => r.order)) + 1 : 1);
-    const isPub = reelData.published ?? reelData.isPublished ?? true;
-    const newReel: MeetupReel = {
-      ...reelData,
-      id,
-      videoUrl: finalVideoUrl,
-      order: calculatedOrder,
-      published: isPub,
-      isPublished: isPub,
-      isCustomUpload,
-      createdAt: new Date().toISOString()
-    };
+    const { id, newReel } = await executeCreateReel({
+      reelData,
+      videoFile,
+      existingReels: reels,
+      supabaseClient: supabase,
+      saveBlob: saveVideoBlob,
+    });
 
     setReels(prev => [...prev, newReel]);
-
-    // 3. Insert into reels table (for both uploaded files and external URLs)
-    const dbVideoPath = storagePath ?? (reelData.videoUrl || null);
-    if (dbVideoPath) {
-      try {
-        const { data: inserted } = await supabase.from('reels').insert({
-          title: reelData.title,
-          caption: reelData.caption || null,
-          video_path: dbVideoPath,
-          poster_path: reelData.posterUrl || null,
-          display_order: calculatedOrder,
-          is_published: isPub
-        }).select('id').single();
-
-        // Update local state with the real DB UUID so future operations target the correct row
-        if (inserted?.id) {
-          setReels(prev => prev.map(r => r.id === id ? { ...r, id: inserted.id } : r));
-        }
-      } catch (e) {
-        console.warn('Reel saved locally; database sync failed:', e);
-      }
-    }
-
     return id;
   };
 
@@ -1442,42 +2448,108 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       throw new Error('Enquiry submission is currently unavailable. Please try again later.');
     }
 
-    const { data, error } = await supabase
-      .from('enquiries')
-      .insert({
-        type: enquiryData.type,
-        name: enquiryData.name.trim(),
-        email: enquiryData.email.trim(),
-        phone: enquiryData.phone ? enquiryData.phone.trim() : null,
-        message: enquiryData.message.trim(),
-        details: enquiryData.details || {},
-        consent: true,
-      })
-      .select('id')
-      .single();
-
-    if (error) {
-      throw new Error(error.message || 'Unable to submit your message at this time.');
+    if (enquiryData.consent !== true) {
+      throw new Error('Explicit consent is required to submit an enquiry.');
     }
 
-    if (!data?.id) {
-      throw new Error('Your enquiry could not be confirmed. Please try again.');
+    const trimmedName = (enquiryData.name || '').trim();
+    const trimmedEmail = (enquiryData.email || '').trim().toLowerCase();
+    const trimmedPhone = enquiryData.phone ? enquiryData.phone.trim() : null;
+    const trimmedMessage = (enquiryData.message || '').trim();
+
+    if (!trimmedName || trimmedName.length < 2 || trimmedName.length > 100) {
+      throw new Error('Full name must be between 2 and 100 characters.');
     }
 
-    const newEnquiry: Enquiry = {
-      ...enquiryData,
-      id: data.id,
-      createdAt: new Date().toISOString(),
-      status: 'new',
-    };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail) || trimmedEmail.length > 255) {
+      throw new Error('Please enter a valid email address.');
+    }
 
-    setEnquiries(prev => [newEnquiry, ...prev]);
+    if (trimmedPhone && trimmedPhone.length > 30) {
+      throw new Error('Phone number cannot exceed 30 characters.');
+    }
+
+    if (!trimmedMessage || trimmedMessage.length < 5 || trimmedMessage.length > 2000) {
+      throw new Error('Message must be between 5 and 2000 characters.');
+    }
+
+    const validTypes: EnquiryType[] = ['volunteer', 'book_donation', 'collaboration', 'contact'];
+    if (!validTypes.includes(enquiryData.type)) {
+      throw new Error('Invalid enquiry category.');
+    }
+
+    let data: { id: string };
+
+    if (adminRole === 'admin') {
+      const result = await supabase
+        .from('enquiries')
+        .insert({
+          type: enquiryData.type,
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: trimmedPhone,
+          message: trimmedMessage,
+          details: enquiryData.details || {},
+          consent: enquiryData.consent,
+        })
+        .select('id')
+        .single();
+
+      if (result.error) {
+        throw new Error(result.error.message || 'Unable to submit your message at this time.');
+      }
+
+      if (!result.data?.id) {
+        throw new Error('Your enquiry could not be confirmed. Please try again.');
+      }
+      data = result.data;
+    } else {
+      const { error } = await supabase
+        .from('enquiries')
+        .insert({
+          type: enquiryData.type,
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: trimmedPhone,
+          message: trimmedMessage,
+          details: enquiryData.details || {},
+          consent: enquiryData.consent,
+        });
+
+      if (error) {
+        throw new Error(error.message || 'Unable to submit your message at this time.');
+      }
+      return;
+    }
+
+    // Only retain enquiries in memory if the caller is an authenticated administrator
+    if (adminRole === 'admin') {
+      const newEnquiry: Enquiry = {
+        ...enquiryData,
+        name: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone || undefined,
+        message: trimmedMessage,
+        consent: enquiryData.consent,
+        id: data.id,
+        createdAt: new Date().toISOString(),
+        status: 'new',
+      };
+
+      setEnquiries(prev => [newEnquiry, ...prev]);
+    }
   };
 
   const updateEnquiryStatus = async (
     id: string,
     status: Enquiry['status']
   ) => {
+    if (adminRole !== 'admin') {
+      console.warn('Unauthorized attempt to update enquiry status');
+      return;
+    }
+
     if (!isSupabaseConfigured) {
       setEnquiries(prev =>
         prev.map(enquiry =>
@@ -1509,6 +2581,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteEnquiry = async (id: string) => {
+    if (adminRole !== 'admin') {
+      console.warn('Unauthorized attempt to delete enquiry');
+      return;
+    }
+
     if (!isSupabaseConfigured) {
       setEnquiries(prev => prev.filter(enquiry => enquiry.id !== id));
       return;
@@ -1578,7 +2655,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Instagram Media Library Operations
   const updateInstagramConfig = (cfg: Partial<InstagramAuthConfig>) => {
-    setInstagramConfig(prev => ({ ...prev, ...cfg }));
+    setInstagramConfig(prev => sanitizeInstagramConfig({ ...prev, ...cfg }));
   };
 
   const disconnectInstagram = () => {
@@ -1586,8 +2663,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       connected: false,
       username: 'readers.of.aurangabad',
       accountType: 'CREATOR',
-      accessToken: undefined,
-      tokenExpiry: undefined,
       lastSyncedAt: undefined
     });
   };
@@ -1668,41 +2743,310 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  // --- MEMBER NOTIFICATIONS & AUTH ---
+  const refreshNotifications = useCallback(async () => {
+    if (!isSupabaseConfigured || !currentAuthUserId) {
+      setMemberNotifications([]);
+      return;
+    }
+
+    await Promise.resolve();
+    setNotificationsLoading(true);
+    try {
+      const [{ data: notificationsData, error: notificationsError }, { data: receiptsData, error: receiptsError }] = await Promise.all([
+        supabase
+          .from('notifications')
+          .select('id, type, title, message, meetup_id, announcement_id, action_url, created_at')
+          .order('created_at', { ascending: false })
+          .limit(100),
+        supabase
+          .from('notification_receipts')
+          .select('notification_id, read_at')
+          .eq('member_id', currentAuthUserId),
+      ]);
+
+      if (notificationsError) throw notificationsError;
+      if (receiptsError) throw receiptsError;
+
+      const receiptMap = new Map<string, string>();
+      (receiptsData || []).forEach(r => {
+        receiptMap.set(r.notification_id, r.read_at);
+      });
+
+      const mapped: MemberNotification[] = (notificationsData || []).map(n => ({
+        id: n.id,
+        type: n.type as MemberNotification['type'],
+        title: n.title,
+        message: n.message,
+        meetupId: n.meetup_id || undefined,
+        announcementId: n.announcement_id || undefined,
+        actionUrl: n.action_url || undefined,
+        createdAt: n.created_at,
+        readAt: receiptMap.get(n.id) || null,
+      }));
+
+      setMemberNotifications(mapped);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, [currentAuthUserId]);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured || !currentAuthUserId) {
+      if (notificationChannelRef.current) {
+        supabase.removeChannel(notificationChannelRef.current).catch(() => {});
+        notificationChannelRef.current = null;
+      }
+      return;
+    }
+
+    queueMicrotask(() => {
+      void refreshNotifications();
+    });
+
+    const channel = supabase
+      .channel(`member-notifications-${currentAuthUserId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        () => {
+          void refreshNotifications();
+        }
+      )
+      .subscribe();
+
+    notificationChannelRef.current = channel;
+
+    return () => {
+      supabase.removeChannel(channel).catch(() => {});
+      if (notificationChannelRef.current === channel) {
+        notificationChannelRef.current = null;
+      }
+    };
+  }, [currentAuthUserId, refreshNotifications]);
+
+  const markNotificationRead = async (notificationId: string) => {
+    if (!isSupabaseConfigured || !currentAuthUserId) return;
+    const readAt = new Date().toISOString();
+    setMemberNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, readAt: n.readAt || readAt } : n));
+    try {
+      const { error } = await supabase
+        .from('notification_receipts')
+        .upsert({
+          notification_id: notificationId,
+          member_id: currentAuthUserId,
+          read_at: readAt,
+        }, { onConflict: 'notification_id,member_id' });
+      if (error) throw error;
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
+  };
+
+  const markAllNotificationsRead = async () => {
+    if (!isSupabaseConfigured || !currentAuthUserId) return;
+    const readAt = new Date().toISOString();
+    const unreadIds = memberNotifications.filter(n => !n.readAt).map(n => n.id);
+    if (unreadIds.length === 0) return;
+
+    setMemberNotifications(prev => prev.map(n => n.readAt ? n : { ...n, readAt }));
+    try {
+      const rows = unreadIds.map(id => ({
+        notification_id: id,
+        member_id: currentAuthUserId,
+        read_at: readAt,
+      }));
+      const { error } = await supabase
+        .from('notification_receipts')
+        .upsert(rows, { onConflict: 'notification_id,member_id' });
+      if (error) throw error;
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
+    }
+  };
+
+  const loginMember = async (email: string, password: string): Promise<{ ok: boolean; error?: string; needsVerification?: boolean }> => {
+    if (!isSupabaseConfigured) {
+      return { ok: false, error: 'Supabase is not configured for this deployment.' };
+    }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (error) return { ok: false, error: error.message };
+      if (!data?.user) return { ok: false, error: 'Unable to sign in.' };
+
+      const sessionRes = await supabase.auth.getSession();
+      if (sessionRes.data.session) {
+        await authCoordinatorRef.current.resolveSession(sessionRes.data.session, undefined, supabase, {
+          onLoading: setAdminAuthLoading,
+          onResetState: () => {
+            currentRoleRef.current = null;
+            currentUserIdRef.current = null;
+            resetAuthState();
+          },
+          onAuthenticated: ({ userId, email: userEmail, role, designation }) => {
+            currentRoleRef.current = role;
+            currentUserIdRef.current = userId;
+            setAdminRole(role);
+            setIsAdmin(true);
+            setCurrentUserEmail(userEmail);
+            setCurrentUserDesignation(designation);
+            setCurrentAuthUserId(userId);
+            setIsMember(false);
+            setAdminAuthLoading(false);
+          },
+          onMemberAuthenticated: ({ userId, email: userEmail }) => {
+            currentRoleRef.current = null;
+            currentUserIdRef.current = userId;
+            setAdminRole(null);
+            setIsAdmin(false);
+            setCurrentUserDesignation(null);
+            setCurrentUserEmail(userEmail);
+            setCurrentAuthUserId(userId);
+            setIsMember(true);
+            setAdminAuthLoading(false);
+          },
+          onRefreshNeeded: () => { void refreshData(); },
+        });
+      }
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : 'Unable to sign in.' };
+    }
+  };
+
+  const requestMemberMagicLink = async (email: string): Promise<{ ok: boolean; error?: string }> => {
+    if (!isSupabaseConfigured) {
+      return { ok: false, error: 'Supabase is not configured for this deployment.' };
+    }
+    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        emailRedirectTo: redirectTo,
+        // Accounts are provisioned administratively; the public sign-in form
+        // must never be able to create new users.
+        shouldCreateUser: false,
+      },
+    });
+
+    if (error && /signups?\s+not\s+allowed|user\s+not\s+found/i.test(error.message)) {
+      // Do not disclose whether the address belongs to an existing account.
+      return { ok: true };
+    }
+
+    return error ? { ok: false, error: error.message } : { ok: true };
+  };
+
+  const logoutMember = async (): Promise<{ ok: boolean; error?: string }> => {
+    return logoutAdmin();
+  };
+
+  const unreadNotificationCount = memberNotifications.filter(n => !n.readAt).length;
+
   const resetToDefaults = () => {
     setMeetups(initialMeetups);
     setArticles(initialArticles);
     setStories(initialReaderStories);
     setGallery(initialGallery);
-    setEnquiries(initialEnquiries);
+    setEnquiries([]);
     setReels(initialReels);
     setInstagramConfig(INITIAL_INSTAGRAM_CONFIG);
     setInstagramMedia(SAMPLE_INSTAGRAM_POSTS);
     setRegistrations([]);
     setAnnouncements([]);
-    localStorage.clear();
+
+    // Selectively reset community content items without destroying unrelated or sensitive keys
+    const contentKeysToReset = [
+      'roa_meetups_v4',
+      'roa_articles_v4',
+      'roa_stories_v4',
+      'roa_gallery_v4',
+      'roa_reels_v1',
+      'roa_announcements_v1',
+      'roa_ig_media',
+      'roa_ig_config',
+    ];
+    for (const key of contentKeysToReset) {
+      localStorage.removeItem(key);
+    }
   };
 
-  const exportDataJson = () => {
-    const data = {
+  const exportDataJson = (): { ok: boolean; error?: string } => {
+    if (!isAdmin || !adminRole) {
+      const msg = 'Access denied: You must be an authenticated administrator or editor to export data.';
+      console.warn(msg);
+      alert(msg);
+      return { ok: false, error: msg };
+    }
+
+    const isFullAdmin = adminRole === 'admin';
+    const timestamp = new Date().toISOString().slice(0, 10);
+
+    const baseData = {
       meetups,
       articles,
       stories,
       gallery,
-      enquiries,
-      registrations,
       announcements,
       reels: reels.map(r => ({ ...r, videoUrl: r.isCustomUpload ? '' : r.videoUrl })),
       instagramMedia,
-      instagramConfig,
-      exportedAt: new Date().toISOString()
+      instagramConfig: sanitizeInstagramConfig(instagramConfig),
+      exportedAt: new Date().toISOString(),
+      exportType: isFullAdmin ? 'full_administrative' : 'public_content',
     };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `readers-of-aurangabad-full-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+
+    // Full administrative backup includes attendee PII & enquiries only when caller is verified admin
+    // isFullAdmin ? { ...baseData, enquiries, registrations, } : baseData
+    // Enforce client-side role and state synchronization checks to govern UI export safety
+    const result = buildBackupExport({
+      isAdmin,
+      adminRole,
+      activeRoleRef: currentRoleRef.current,
+      activeUserId: currentUserIdRef.current,
+      baseData,
+      sensitiveData: {
+        enquiries,
+        registrations,
+      },
+      timestamp,
+    });
+
+    if (!result.ok || !result.exportPayload || !result.filename) {
+      const msg = result.error || 'Access denied: You must be an authenticated administrator or editor to export data.';
+      console.warn(msg);
+      alert(msg);
+      return { ok: false, error: msg };
+    }
+
+    const exportPayload = result.exportPayload;
+    const filename = isFullAdmin
+      ? `readers-of-aurangabad-full-backup-${timestamp}.json`
+      : `readers-of-aurangabad-content-backup-${timestamp}.json`;
+
+    try {
+      const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1000);
+      return { ok: true };
+    } catch (err: any) {
+      const msg = `Export failed: ${err?.message || err}`;
+      console.error(msg);
+      alert(msg);
+      return { ok: false, error: msg };
+    }
   };
 
   return (
@@ -1714,6 +3058,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isRTL,
         currentPage,
         setCurrentPage,
+        announcementNavigationId,
+        navigateToAnnouncement,
+        clearAnnouncementNavigation,
+        isPageLoading,
+        navError,
+        retryNavigation,
         selectedArticle,
         setSelectedArticle,
         selectedMeetup,
@@ -1753,6 +3103,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         loginAdmin,
         logoutAdmin,
         resetAdminPassword,
+        requestPasswordReset,
+        isPasswordRecovery,
+        updatePassword,
+        completePasswordRecovery,
+        currentUserId: currentAuthUserId,
+        isMember,
+        memberNotifications,
+        unreadNotificationCount,
+        notificationsLoading,
+        loginMember,
+        requestMemberMagicLink,
+        logoutMember,
+        refreshNotifications,
+        markNotificationRead,
+        markAllNotificationsRead,
         addMeetup,
         updateMeetup,
         deleteMeetup,
@@ -1760,7 +3125,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateArticle,
         deleteArticle,
         addGalleryItem,
+        uploadGalleryItem,
         deleteGalleryItem,
+        getSignedGalleryUrl,
         addAnnouncement,
         updateAnnouncement,
         deleteAnnouncement,
@@ -1782,6 +3149,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 };
 
+// eslint-disable-next-line react/only-export-components -- This module intentionally exports its provider and paired context hook.
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {

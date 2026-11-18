@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { JournalArticle } from '../types';
 import { X, Clock, Calendar, Share2, Bookmark, Check, BookOpen, ArrowLeft } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 
 interface ArticleModalProps {
   article: JournalArticle | null;
@@ -15,8 +17,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   onSelectArticle
 }) => {
   const { articles } = useApp();
+  const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const dismiss = useModalEscapeDismiss(Boolean(article), onClose, surfaceRef);
 
   if (!article) return null;
 
@@ -44,16 +49,31 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200">
-      <div
-        className="glass-modal rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
+    <motion.div
+      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-md flex items-center justify-center p-2 sm:p-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: shouldReduceMotion ? 0.01 : 0.2 }}
+    >
+      <motion.div
+        ref={surfaceRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={article.title}
+        tabIndex={-1}
+        className="p3-modal-surface p3-article-modal glass-modal rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative border-white/75"
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16, scale: shouldReduceMotion ? 1 : 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 10, scale: shouldReduceMotion ? 1 : 0.985 }}
+        transition={{ duration: shouldReduceMotion ? 0.01 : 0.28, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar */}
-        <div className="px-6 py-4 border-b border-white/40 glass-nav flex items-center justify-between sticky top-0 z-20">
+        <div className="p3-modal-header px-6 py-4 border-b border-white/40 glass-nav flex items-center justify-between sticky top-0 z-20">
           <button
-            onClick={onClose}
-            className="flex items-center gap-1.5 text-xs font-semibold text-[#595550] hover:text-[#1C1B1A] transition-colors"
+            onClick={dismiss}
+            className="p3-text-action flex items-center gap-1.5 text-xs font-semibold text-[#595550] hover:text-[#1C1B1A] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Journal</span>
@@ -62,7 +82,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setBookmarked(!bookmarked)}
-              className={`p-2 rounded-lg border transition-colors ${
+              className={`p3-icon-button p-2 rounded-lg border transition-colors ${
                 bookmarked
                   ? 'bg-[#EBF0E9] text-[#455240] border-[#455240]/30'
                   : 'text-[#595550] border-[#E8E2D5] hover:bg-white'
@@ -74,7 +94,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E8E2D5] text-xs font-medium text-[#595550] hover:bg-white transition-colors"
+              className="p3-secondary-action flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E8E2D5] text-xs font-medium text-[#595550] hover:bg-white transition-colors"
               title="Share piece"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -82,8 +102,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </button>
 
             <button
-              onClick={onClose}
-              className="p-2 rounded-lg text-[#595550] hover:text-[#1C1B1A] hover:bg-white border border-transparent hover:border-[#E8E2D5] transition-colors"
+              onClick={dismiss}
+              className="p3-icon-button p3-modal-close p-2 rounded-lg text-[#595550] hover:text-[#1C1B1A] hover:bg-white border border-transparent hover:border-[#E8E2D5] transition-colors"
               aria-label="Close"
             >
               <X className="w-4 h-4" />
@@ -93,7 +113,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
         {/* Article Scroll Body */}
         <div
-          className="p-6 sm:p-10 overflow-y-auto"
+          className="p3-modal-body p3-reading-body p-6 sm:p-10 overflow-y-auto"
           dir={isUrdu ? 'rtl' : 'ltr'}
         >
           {/* Article Header Meta */}
@@ -159,7 +179,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               <img
                 src={article.coverImage}
                 alt={article.title}
-                className="w-full h-72 sm:h-96 object-cover object-[center_20%]"
+                loading="lazy"
+                className="w-full h-56 sm:h-72 md:h-96 object-cover object-[center_20%]"
               />
             </div>
           )}
@@ -224,20 +245,20 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         </div>
 
         {/* Sticky Reading Bar */}
-        <div className="p-3 bg-white border-t border-[#E8E2D5] text-center text-xs text-[#8C857B] flex items-center justify-between px-6">
+        <div className="p3-modal-actions p-3 bg-white border-t border-[#E8E2D5] text-center text-xs text-[#8C857B] flex items-center justify-between px-6">
           <div className="flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-[#455240]" />
             <span>Readers of Aurangabad Journal</span>
           </div>
           <button
-            onClick={onClose}
-            className="text-[#1C1B1A] font-semibold hover:underline"
+            onClick={dismiss}
+            className="p3-text-action text-[#1C1B1A] font-semibold hover:underline"
           >
             Close Reader
           </button>
         </div>
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

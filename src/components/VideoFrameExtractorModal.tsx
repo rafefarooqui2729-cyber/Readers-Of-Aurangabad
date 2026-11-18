@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import type { InstagramMediaItem, ExtractedFrame } from '../types';
 import { 
   X, 
@@ -22,7 +22,7 @@ import {
 import { useApp } from '../context/AppContext';
 
 interface VideoFrameExtractorModalProps {
-  mediaItem: InstagramMediaItem | null;
+  mediaItem: InstagramMediaItem;
   onClose: () => void;
 }
 
@@ -32,13 +32,15 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 }) => {
   const { addExtractedFramesToMediaLibrary, updateInstagramMedia } = useApp();
 
-  const [activeVideoSrc, setActiveVideoSrc] = useState<string>('');
+  const [activeVideoSrc, setActiveVideoSrc] = useState<string>(mediaItem.mediaUrl);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [format, setFormat] = useState<'image/jpeg' | 'image/webp'>('image/jpeg');
 
-  const [extractedFrames, setExtractedFrames] = useState<ExtractedFrame[]>([]);
+  const [extractedFrames, setExtractedFrames] = useState<ExtractedFrame[]>(
+  () => mediaItem.extractedFrames || []
+);
   const [selectedFrameIds, setSelectedFrameIds] = useState<Set<string>>(new Set());
   const [isExtracting, setIsExtracting] = useState(false);
   const [extractStatus, setExtractStatus] = useState('');
@@ -47,18 +49,6 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (mediaItem) {
-      setActiveVideoSrc(mediaItem.mediaUrl);
-      setExtractedFrames(mediaItem.extractedFrames || []);
-      setSelectedFrameIds(new Set());
-      setCorsWarning(false);
-      setSuccessMsg('');
-    }
-  }, [mediaItem]);
-
-  if (!mediaItem) return null;
 
   // Handle Video Metadata Loaded
   const handleLoadedMetadata = () => {

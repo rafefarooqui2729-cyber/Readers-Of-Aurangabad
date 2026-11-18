@@ -16,19 +16,22 @@ export interface Meetup {
   edition?: string; // e.g. "Chapter 12", "Monsoon Session"
   date: string;
   time: string;
+  startsAt?: string;
   venue: string;
   address?: string;
   description: string;
   featuredImage: string;
   registrationUrl: string; // Google Form link
   rsvpLink?: string;
-  registrationStatus: 'open' | 'closed' | 'announced' | 'past';
+  registrationStatus: 'open' | 'closed' | 'announced' | 'past' | 'cancelled';
   capacity?: string;
   activities: string[];
   schedule?: { time: string; activity: string }[];
   highlights?: string;
   photos?: string[];
   isUpcoming: boolean;
+  isPublished?: boolean;
+  isCompleted?: boolean;
 }
 
 export type JournalCategory =
@@ -78,6 +81,7 @@ export interface Enquiry {
   email: string;
   phone?: string;
   message: string;
+  consent: boolean;
   details?: Record<string, any>;
   createdAt: string;
   status: 'new' | 'contacted' | 'resolved';
@@ -88,6 +92,7 @@ export interface GalleryItem {
   title: string;
   caption: string;
   imageUrl: string;
+  thumbnailUrl?: string;
   meetupId?: string;
   date: string;
 }
@@ -140,8 +145,6 @@ export interface InstagramAuthConfig {
   username: string;
   accountType: 'BUSINESS' | 'CREATOR' | 'PERSONAL';
   appId?: string;
-  accessToken?: string; // Token placeholder managed securely
-  tokenExpiry?: string;
   lastSyncedAt?: string;
 }
 
@@ -194,4 +197,24 @@ export interface StaffProfile {
   designation?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export type NotificationType =
+  | 'meetup_published'
+  | 'meetup_schedule_updated'
+  | 'meetup_venue_updated'
+  | 'meetup_cancelled'
+  | 'announcement_published'
+  | 'community_update_published';
+
+export interface MemberNotification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  meetupId?: string;
+  announcementId?: string;
+  actionUrl?: string;
+  createdAt: string;
+  readAt?: string | null;
 }
