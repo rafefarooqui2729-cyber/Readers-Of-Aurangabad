@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 import type { GalleryItem } from '../types';
 
-// ─── Editorial Category System ────────────────────────────────────────────────
+// â”€â”€â”€ Editorial Category System â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 type GalleryCategory = 'all' | 'reading-together' | 'meetup-moments' | 'community-portraits' | 'behind-the-scenes';
 
 const CATEGORY_LABELS: Record<GalleryCategory, string> = {
@@ -111,7 +111,7 @@ function toGalleryEnrichedImage(
   };
 }
 
-// ─── Lightbox ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Lightbox â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface LightboxProps {
   images: EnrichedImage[];
   current: number;
@@ -167,28 +167,28 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
     >
       {/* Backdrop */}
       <div
-        className="p3-modal-backdrop absolute inset-0 bg-[#20231F]/92 backdrop-blur-md"
+        className="p3-modal-backdrop absolute inset-0 bg-[#171717]/92 backdrop-blur-md"
         onClick={dismiss}
       />
 
       {/* Close */}
       <button
         onClick={dismiss}
-        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-none glass-dark flex items-center justify-center text-[#F4F0E8] hover:text-white transition-colors"
         aria-label="Close lightbox"
       >
         <X className="w-5 h-5" />
       </button>
 
       {/* Counter */}
-      <div className="p3-lightbox-counter absolute top-5 left-5 z-10 glass-pill px-3 py-1 text-xs font-semibold text-[#F2EBDD]">
+      <div className="p3-lightbox-counter absolute top-5 left-5 z-10 glass-pill px-3 py-1 text-xs font-semibold text-[#F4F0E8]">
         {current + 1} / {images.length}
       </div>
 
       {/* Nav Left */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F4F0E8] hover:text-white transition-colors"
         aria-label="Previous"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -197,7 +197,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       {/* Nav Right */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-full glass-dark flex items-center justify-center text-[#F2EBDD] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F4F0E8] hover:text-white transition-colors"
         aria-label="Next"
       >
         <ChevronRight className="w-5 h-5" />
@@ -216,11 +216,11 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
           <img
             src={img.gallery || img.web}
             alt={img.alt}
-            className="w-full h-full object-contain max-h-[80vh] rounded-xl shadow-2xl"
+            className="w-full h-full object-contain max-h-[80vh] rounded-none shadow-[8px_8px_0_#171717]"
           />
           {/* Category chip */}
           <div className="mt-3 flex items-center gap-2">
-            <span className="p3-lightbox-caption text-xs font-semibold uppercase tracking-widest text-[#B89A65]">
+            <span className="p3-lightbox-caption text-xs font-semibold uppercase tracking-widest text-[#D9F36A]">
               {CATEGORY_LABELS[img.editorialCategory]}
             </span>
           </div>
@@ -230,7 +230,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
   );
 };
 
-// ─── Main Gallery Component ────────────────────────────────────────────────────
+// â”€â”€â”€ Main Gallery Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface CommunityGalleryProps {
   /** If true, show a compact 18-image preview grid (for homepage) */
   compact?: boolean;
@@ -359,10 +359,10 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
             onClick={() => handleCategoryChange(cat)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer border ${
+            className={`px-4 py-2 rounded-none text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer border ${
               activeCategory === cat
-                ? 'bg-[#20231F] text-[#F2EBDD] border-[#20231F] shadow-sm'
-                : 'glass-pill text-[#595550] hover:text-[#1C1B1A] border-[#D4CCC0]/60'
+                ? 'bg-[#171717] text-[#F4F0E8] border-[#171717] shadow-[3px_3px_0_#171717]'
+                : 'glass-pill text-[#4F4A43] hover:text-[#171717] border-[#D4CCC0]/60'
             }`}
           >
             {CATEGORY_LABELS[cat]}
@@ -388,7 +388,7 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
             <motion.div
               key={img.id}
               variants={itemVariants}
-              className="break-inside-avoid relative overflow-hidden rounded-xl bg-[#20231F] border border-white/10 group cursor-pointer"
+              className="break-inside-avoid relative overflow-hidden rounded-none bg-[#171717] border border-white/10 group cursor-pointer"
               onClick={() => openLightbox(idx)}
               role="button"
               tabIndex={0}
@@ -412,11 +412,11 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
               />
 
               {/* Hover Overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-t from-[#20231F]/80 via-[#20231F]/20 to-transparent opacity-0 group-hover:opacity-100 ${shouldReduceMotion ? '' : 'transition-opacity duration-350'} flex flex-col justify-end p-4`}>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#B89A65] mb-1">
+              <div className={`absolute inset-0 bg-gradient-to-t from-[#171717]/80 via-[#171717]/20 to-transparent opacity-0 group-hover:opacity-100 ${shouldReduceMotion ? '' : 'transition-opacity duration-350'} flex flex-col justify-end p-4`}>
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#D9F36A] mb-1">
                   {CATEGORY_LABELS[img.editorialCategory]}
                 </span>
-                <div className="w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <div className="w-6 h-6 rounded-none bg-white/20 backdrop-blur-sm flex items-center justify-center">
                   <ZoomIn className="w-3 h-3 text-white" />
                 </div>
               </div>
@@ -432,7 +432,7 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
             onClick={() => setVisibleCount(prev => prev + 12)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="glass-button px-8 py-3 rounded-full text-sm font-semibold cursor-pointer"
+            className="glass-button px-8 py-3 rounded-none text-sm font-semibold cursor-pointer"
           >
             Load More ({filtered.length - visibleCount} remaining)
           </motion.button>

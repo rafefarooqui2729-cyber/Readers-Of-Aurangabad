@@ -21,14 +21,11 @@ export const JoinSection: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // Honeypot anti-spam check
     if (honeypot.trim()) {
-      // Silently treat as spam bot
       setSubmitted(true);
       return;
     }
 
-    // Basic rate limit check
     const lastSubmitTime = Number(sessionStorage.getItem('roa_last_join_submit') || '0');
     const now = Date.now();
     if (now - lastSubmitTime < 5000) {
@@ -69,29 +66,32 @@ export const JoinSection: React.FC = () => {
     }
   };
 
+  const inputClassName =
+    'w-full bg-[#171717] border-2 border-[#F4F0E8]/35 text-[#F4F0E8] placeholder-[#B8B2A8] rounded-none px-4 py-3 text-sm focus:outline-none focus:border-[#D9F36A] focus:shadow-[4px_4px_0_rgba(217,243,106,0.2)]';
+
   return (
     <section
       id="join-community"
-      className="bg-[#1B2A49] text-[#F4ECDD] py-16 sm:py-24 border-t-2 border-[#1B2A49] relative overflow-hidden"
+      className="relative overflow-hidden border-y-[3px] border-[#171717] bg-[#171717] py-16 text-[#F4F0E8] sm:py-24 dark:border-[#D9F36A]"
       aria-label="Join Readers of Aurangabad"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
-          {/* Left Column: Stamp, Invitation, & Direct WhatsApp Link (6 cols) */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="flex items-center gap-4">
-              <Stamp year={siteConfig.establishedYear} size="md" />
+      <div className="absolute left-0 top-0 h-2 w-full bg-[#F4512C]" aria-hidden="true" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+          <div className="space-y-6 lg:col-span-6">
+            <div className="flex flex-wrap items-start gap-4">
+              <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-0" />
               <div>
-                <Eyebrow color="marigold">MH20 INVITATION</Eyebrow>
-                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#F4ECDD] mt-1 leading-tight">
-                  There is a chair saved for you.
+                <Eyebrow color="marigold">MH20 invitation</Eyebrow>
+                <h2 className="mt-2 font-display text-4xl uppercase leading-[0.92] tracking-[-0.03em] text-[#F4F0E8] sm:text-5xl">
+                  Pull up a chair. Bring a book.
                 </h2>
               </div>
             </div>
 
-            <p className="font-sans text-base sm:text-lg text-[#D1C5B0] leading-relaxed max-w-xl">
-              Readers of Aurangabad is free, volunteer-run, and open to anyone who loves the smell of physical pages. No gatekeeping, no compulsory readings, and no speed tests.
+            <p className="max-w-xl border-l-4 border-[#D9F36A] pl-4 font-serif text-lg italic leading-relaxed text-[#F4F0E8]/92">
+              Readers of Aurangabad is free, volunteer-run, and open to anyone who loves physical
+              books and real conversation. No gatekeeping, no compulsory reading list, no speed tests.
             </p>
 
             <div className="pt-2">
@@ -99,50 +99,44 @@ export const JoinSection: React.FC = () => {
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-[#5E7A63] hover:bg-[#4E6752] text-[#F4ECDD] font-sans font-bold text-base tracking-wide px-6 py-3.5 rounded-[4px] transition-colors shadow-sm min-h-[48px]"
+                className="inline-flex min-h-[48px] items-center gap-3 border-2 border-[#F4F0E8] bg-[#25D366] px-6 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.06em] text-white shadow-[4px_4px_0_#000] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#000]"
               >
-                <MessageCircle className="w-5 h-5" />
-                <span>Join directly via WhatsApp</span>
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                <span>Join via WhatsApp</span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-              <span className="block text-xs text-[#D1C5B0] mt-2">
-                Active group with Sunday meetup locations, timings, and book discussions.
+              <span className="mt-3 block text-xs text-[#B8B2A8]">
+                Sunday meetup locations, timings, and community updates.
               </span>
             </div>
           </div>
 
-          {/* Right Column: Three-Field Form with Honeypot & Rate Limiting (6 cols) */}
           <div className="lg:col-span-6">
-            <div className="bg-[#243557] border-2 border-[#F4ECDD]/20 rounded-[6px] p-6 sm:p-8">
-              <h3 className="font-serif text-2xl font-bold text-[#F4ECDD]">
-                Introduce yourself to the circle
+            <div className="border-2 border-[#F4F0E8]/30 bg-[#202020] p-6 shadow-[8px_8px_0_#000] sm:p-8">
+              <h3 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#F4F0E8]">
+                Introduce yourself
               </h3>
-              <p className="text-sm text-[#D1C5B0] mt-1 mb-6">
-                Fill this quick card or drop by our next gathering in person.
+              <p className="mt-2 text-sm text-[#D6D0C6]">
+                Share a few details and we&apos;ll help you find the next chapter.
               </p>
 
               {submitted ? (
-                <div className="bg-[#5E7A63]/20 border border-[#5E7A63] p-6 rounded-[4px] text-center space-y-3">
-                  <div className="w-10 h-10 rounded-full bg-[#5E7A63] text-[#F4ECDD] flex items-center justify-center mx-auto">
-                    <Check className="w-6 h-6" />
+                <div className="mt-6 border-2 border-[#D9F36A] bg-[#171717] p-6 text-center">
+                  <div className="mx-auto flex h-11 w-11 items-center justify-center border-2 border-[#171717] bg-[#D9F36A] text-[#171717]">
+                    <Check className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <h4 className="font-serif text-xl font-bold text-[#F4ECDD]">
-                    Welcome to Readers of Aurangabad!
+                  <h4 className="mt-4 font-display text-xl uppercase tracking-[-0.02em] text-[#F4F0E8]">
+                    Welcome to the circle
                   </h4>
-                  <p className="text-sm text-[#D1C5B0]">
-                    We’ve received your details. Check your phone or Instagram for an invite to our upcoming Sunday chapter.
+                  <p className="mt-2 text-sm text-[#D6D0C6]">
+                    We&apos;ve received your details. Watch for an invite to an upcoming Sunday chapter.
                   </p>
-                  <Button
-                    variant="primary"
-                    onClick={() => setSubmitted(false)}
-                    className="mt-3"
-                  >
+                  <Button variant="primary" onClick={() => setSubmitted(false)} className="mt-4">
                     Send another message
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Honeypot field (hidden from real users) */}
+                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                   <div className="hidden" aria-hidden="true">
                     <label htmlFor="website_hp">Leave this empty</label>
                     <input
@@ -156,10 +150,9 @@ export const JoinSection: React.FC = () => {
                     />
                   </div>
 
-                  {/* 1. Name */}
                   <div>
-                    <label htmlFor="join-name" className="block text-xs font-bold uppercase tracking-wider text-[#F4ECDD] mb-1">
-                      Your Name <span className="text-[#E8B04A]">*</span>
+                    <label htmlFor="join-name" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
+                      Your name <span className="text-[#F4512C]">*</span>
                     </label>
                     <input
                       id="join-name"
@@ -168,14 +161,13 @@ export const JoinSection: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Asim Khan, Aditi Joshi"
-                      className="w-full bg-[#1B2A49] border border-[#F4ECDD]/30 text-[#F4ECDD] placeholder-[#D1C5B0]/50 rounded-[4px] px-4 py-3 text-sm focus:outline-none focus:border-[#E8B04A] focus:ring-1 focus:ring-[#E8B04A]"
+                      className={inputClassName}
                     />
                   </div>
 
-                  {/* 2. Phone or Instagram */}
                   <div>
-                    <label htmlFor="join-contact" className="block text-xs font-bold uppercase tracking-wider text-[#F4ECDD] mb-1">
-                      Phone Number or Instagram Handle <span className="text-[#E8B04A]">*</span>
+                    <label htmlFor="join-contact" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
+                      Phone or Instagram <span className="text-[#F4512C]">*</span>
                     </label>
                     <input
                       id="join-contact"
@@ -184,58 +176,51 @@ export const JoinSection: React.FC = () => {
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                       placeholder="e.g. +91 98765 43210 or @reader_handle"
-                      className="w-full bg-[#1B2A49] border border-[#F4ECDD]/30 text-[#F4ECDD] placeholder-[#D1C5B0]/50 rounded-[4px] px-4 py-3 text-sm focus:outline-none focus:border-[#E8B04A] focus:ring-1 focus:ring-[#E8B04A]"
+                      className={inputClassName}
                     />
                   </div>
 
-                  {/* 3. Favourite Genres */}
                   <div>
-                    <label htmlFor="join-genres" className="block text-xs font-bold uppercase tracking-wider text-[#F4ECDD] mb-1">
-                      Favourite Genres or Current Book (Optional)
+                    <label htmlFor="join-genres" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
+                      Favourite genres or current book (optional)
                     </label>
                     <input
                       id="join-genres"
                       type="text"
                       value={genres}
                       onChange={(e) => setGenres(e.target.value)}
-                      placeholder="e.g. Marathi history, Urdu poetry, Sci-fi, Philosophy"
-                      className="w-full bg-[#1B2A49] border border-[#F4ECDD]/30 text-[#F4ECDD] placeholder-[#D1C5B0]/50 rounded-[4px] px-4 py-3 text-sm focus:outline-none focus:border-[#E8B04A] focus:ring-1 focus:ring-[#E8B04A]"
+                      placeholder="e.g. Marathi history, Urdu poetry, sci-fi, philosophy"
+                      className={inputClassName}
                     />
                   </div>
 
-                  {/* Explicit Consent Checkbox */}
-                  <label className="flex items-start gap-3 pt-1 cursor-pointer">
+                  <label className="flex cursor-pointer items-start gap-3 pt-1">
                     <input
                       type="checkbox"
                       required
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-1 w-4 h-4 rounded-[2px] accent-[#A8431F] text-[#A8431F] bg-[#1B2A49] border-[#F4ECDD]/40 focus:ring-[#A8431F]"
+                      className="mt-1 h-4 w-4 shrink-0 accent-[#F4512C]"
                     />
-                    <span className="text-xs text-[#D1C5B0] leading-snug">
-                      I agree that Readers of Aurangabad may use my details to contact me about upcoming reading meetups and community gatherings.
+                    <span className="text-xs leading-relaxed text-[#D6D0C6]">
+                      I agree that Readers of Aurangabad may use my details to contact me about
+                      upcoming reading meetups and community gatherings.
                     </span>
                   </label>
 
-                  {error && (
-                    <p className="text-xs text-[#E8B04A] bg-[#1B2A49] border border-[#E8B04A]/40 rounded-[4px] px-3 py-2">
+                  {error ? (
+                    <p className="border-2 border-[#F4512C] bg-[#171717] px-3 py-2 text-xs text-[#FFD5C8]">
                       {error}
                     </p>
-                  )}
+                  ) : null}
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    disabled={loading}
-                    className="w-full mt-2"
-                  >
+                  <Button type="submit" variant="primary" disabled={loading} className="mt-2 w-full">
                     {loading ? 'Submitting…' : 'Join Readers of Aurangabad'}
                   </Button>
                 </form>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </section>

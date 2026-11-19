@@ -19,22 +19,19 @@ export const Stamp: React.FC<StampProps> = ({
 
   return (
     <div
-      aria-label={`Official Community Stamp: Readers of Aurangabad, Established ${year}`}
-      className={`relative inline-flex items-center justify-center rounded-full border-[3px] border-[#E8B04A] p-2 text-center select-none rotate-[-8deg] transition-transform duration-300 hover:rotate-[-4deg] ${sizeClasses[size]} ${className}`}
-      style={{
-        boxShadow: 'inset 0 0 0 2px rgba(232, 176, 74, 0.25)',
-      }}
+      aria-label={`Community stamp: Readers of Aurangabad, Established ${year}`}
+      className={`relative inline-flex items-center justify-center rounded-none border-[3px] border-[#171717] bg-[#D9F36A] p-2 text-center select-none rotate-[-6deg] transition-transform duration-200 hover:rotate-[-2deg] shadow-[6px_6px_0_#171717] ${sizeClasses[size]} ${className}`}
     >
-      <div className="flex flex-col items-center justify-center font-serif uppercase tracking-widest text-[#E8B04A] leading-tight">
-        <span className="text-[0.8em] font-sans font-bold tracking-[0.25em] opacity-90">
-          MEMBER OF
+      <div className="flex flex-col items-center justify-center font-sans uppercase tracking-widest text-[#171717] leading-tight">
+        <span className="text-[0.75em] font-bold tracking-[0.22em]">
+          MH20 READING
         </span>
-        <span className="font-serif font-bold text-[1.1em] my-0.5 tracking-wider px-1 text-center">
-          Readers of
+        <span className="font-display text-[1.05em] my-1 tracking-[0.04em] px-1 text-center leading-[0.95]">
+          READERS OF
           <br />
-          Aurangabad
+          AURANGABAD
         </span>
-        <span className="text-[0.85em] font-sans font-bold tracking-[0.2em] border-t border-[#E8B04A]/60 pt-0.5 mt-0.5">
+        <span className="text-[0.8em] font-bold tracking-[0.18em] border-t-2 border-[#171717] pt-1 mt-1">
           EST. {year}
         </span>
       </div>

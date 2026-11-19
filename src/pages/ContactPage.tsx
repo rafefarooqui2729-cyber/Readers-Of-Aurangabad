@@ -86,37 +86,37 @@ export const ContactPage: React.FC = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
           {/* Contact details */}
           <div className="space-y-6 lg:col-span-5">
-            <PaperPanel className="rounded-[6px] p-6 sm:p-8">
+            <PaperPanel className="rounded-none p-6 sm:p-8">
               <SectionHeading eyebrow="Where to find us" title="The community desk" />
               <dl className="mt-7 space-y-6 font-sans text-sm">
                 <div className="flex items-start gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#F4512C]/30 text-[#F4512C]">
                     <MapPin className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <div>
-                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6E6960]">
                       Location
                     </dt>
-                    <dd className="mt-1 font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    <dd className="mt-1 font-bold text-[#171717] dark:text-[#F4F0E8]">
                       Aurangabad (Chhatrapati Sambhajinagar)
                     </dd>
-                    <dd className="text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                    <dd className="text-xs text-[#4F4A43] dark:text-[#D6D0C6]">
                       Maharashtra 431001, India
                     </dd>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#5E7A63]/30 text-[#5E7A63]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#6E6960]/30 text-[#6E6960]">
                     <Mail className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <div className="min-w-0 break-words">
-                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6E6960]">
                       General enquiries
                     </dt>
-                    <dd className="mt-1 font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    <dd className="mt-1 font-bold text-[#171717] dark:text-[#F4F0E8]">
                       <a
                         href="mailto:readersofaurangabad@gmail.com"
-                        className="inline-flex min-h-[24px] items-center hover:text-[#A8431F] hover:underline"
+                        className="inline-flex min-h-[24px] items-center hover:text-[#F4512C] hover:underline"
                       >
                         readersofaurangabad@gmail.com
                       </a>
@@ -124,11 +124,11 @@ export const ContactPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#F4512C]/30 text-[#F4512C]">
                     <InstagramIcon className="h-5 w-5" />
                   </span>
                   <div>
-                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6E6960]">
                       Instagram
                     </dt>
                     <dd className="mt-1">
@@ -136,26 +136,26 @@ export const ContactPage: React.FC = () => {
                         href={siteConfig.instagramUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex min-h-[24px] items-center gap-1 font-bold text-[#1B2A49] hover:text-[#A8431F] dark:text-[#F4ECDD] dark:hover:text-[#E8B04A]"
+                        className="inline-flex min-h-[24px] items-center gap-1 font-bold text-[#171717] hover:text-[#F4512C] dark:text-[#F4F0E8] dark:hover:text-[#D9F36A]"
                       >
                         {siteConfig.instagramHandle}
                         <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                       </a>
                     </dd>
-                    <dd className="text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                    <dd className="text-xs text-[#4F4A43] dark:text-[#D6D0C6]">
                       Fastest for weekly gathering announcements.
                     </dd>
                   </div>
                 </div>
               </dl>
-              <p className="mt-7 border-t border-[#1B2A49]/10 pt-5 font-sans text-xs leading-relaxed text-[#4B5A77] dark:border-[#F4ECDD]/10 dark:text-[#D1C5B0]">
-                <strong className="text-[#1B2A49] dark:text-[#F4ECDD]">Note on registrations:</strong>{' '}
+              <p className="mt-7 border-t border-[#171717]/15 pt-5 font-sans text-xs leading-relaxed text-[#4F4A43] dark:border-[#F4F0E8]/15 dark:text-[#D6D0C6]">
+                <strong className="text-[#171717] dark:text-[#F4F0E8]">Note on registrations:</strong>{' '}
                 To RSVP for the next Sunday gathering, use the official form linked from the
                 Gatherings page.
               </p>
             </PaperPanel>
 
-            <div className="relative h-48 overflow-hidden bg-[#1B2A49]">
+            <div className="relative h-48 overflow-hidden bg-[#171717]">
               <img
                 src="/images/enhanced/community/card-2.webp"
                 alt="Sunday morning gathering in an Aurangabad public park"
@@ -164,10 +164,10 @@ export const ContactPage: React.FC = () => {
                 className="h-full w-full object-cover object-[center_25%]"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1B2A49]/90 to-transparent px-4 pb-4 pt-10">
-                <p className="font-sans text-xs font-bold text-[#F4ECDD]">
+                <p className="font-sans text-xs font-bold text-[#F4F0E8]">
                   Historic grounds &amp; garden lawns
                 </p>
-                <p className="font-sans text-[11px] text-[#F4ECDD]/75">
+                <p className="font-sans text-[11px] text-[#F4F0E8]/75">
                   Where our Sunday chapters assemble
                 </p>
               </div>
@@ -176,7 +176,7 @@ export const ContactPage: React.FC = () => {
 
           {/* Form */}
           <div className="lg:col-span-7">
-            <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <PaperPanel className="rounded-none p-6 sm:p-10">
               <SectionHeading
                 eyebrow="Write to us"
                 title="Send us a note"
@@ -247,10 +247,10 @@ export const ContactPage: React.FC = () => {
                   />
                   <label
                     htmlFor="contact-consent"
-                    className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]"
+                    className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]"
                   >
                     {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
-                    <span className="text-[#A8431F]">*</span>
+                    <span className="text-[#F4512C]">*</span>
                   </label>
                 </div>
 
@@ -259,7 +259,7 @@ export const ContactPage: React.FC = () => {
                     id="contact-form-error"
                     role="alert"
                     aria-live="assertive"
-                    className="border border-[#A8431F]/40 bg-[#A8431F]/10 p-3 font-sans text-xs text-[#A8431F]"
+                    className="border border-[#F4512C]/40 bg-[#F4512C]/10 p-3 font-sans text-xs text-[#F4512C]"
                   >
                     {error}
                   </p>
@@ -269,7 +269,7 @@ export const ContactPage: React.FC = () => {
                   <div
                     role="status"
                     aria-live="polite"
-                    className="flex items-center gap-2 border border-[#5E7A63]/40 bg-[#5E7A63]/10 p-3 font-sans text-xs text-[#5E7A63] dark:text-[#8BA890]"
+                    className="flex items-center gap-2 border border-[#6E6960]/40 bg-[#5E7A63]/10 p-3 font-sans text-xs text-[#6E6960] dark:text-[#B8B2A8]"
                   >
                     <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                     <span>Your message has been received! We will reply via email shortly.</span>

@@ -19,9 +19,9 @@ const CATEGORIES: JournalCategory[] = [
 const LANGUAGES: { code: string; label: string }[] = [
   { code: 'all', label: 'All' },
   { code: 'en', label: 'English' },
-  { code: 'hi', label: 'हिन्दी' },
-  { code: 'ur', label: 'اردو' },
-  { code: 'mr', label: 'मराठी' },
+  { code: 'hi', label: 'à¤¹à¤¿à¤¨à¥à¤¦à¥€' },
+  { code: 'ur', label: 'Ø§Ø±Ø¯Ùˆ' },
+  { code: 'mr', label: 'à¤®à¤°à¤¾à¤ à¥€' },
 ];
 
 export const JournalPage: React.FC = () => {
@@ -63,12 +63,12 @@ export const JournalPage: React.FC = () => {
       <div className="space-y-10 sm:space-y-12">
         <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 lg:px-12" aria-label="Find articles">
           <div className="max-w-xl">
-            <label htmlFor="journal-search" className="mb-2 block font-sans text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+            <label htmlFor="journal-search" className="mb-2 block font-sans text-xs font-bold text-[#171717] dark:text-[#F4F0E8]">
               Search the journal
             </label>
             <div className="relative">
               <Search
-                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E7A63] dark:text-[#8BA890]"
+                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6E6960] dark:text-[#B8B2A8]"
                 aria-hidden="true"
               />
               <input
@@ -76,7 +76,7 @@ export const JournalPage: React.FC = () => {
                 type="search"
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search articles, authors, or literary topics…"
+                placeholder="Search articles, authors, or literary topicsâ€¦"
                 className={`${fieldClasses} pl-11`}
               />
             </div>
@@ -108,10 +108,10 @@ export const JournalPage: React.FC = () => {
             })}
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-[#1B2A49]/15 pt-5 dark:border-[#F4ECDD]/15 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-4 border-t border-[#171717]/20 pt-5 dark:border-[#F4F0E8]/20 sm:flex-row sm:items-end sm:justify-between">
             <div role="group" aria-label="Filter by language">
-              <p className="mb-2 flex items-center gap-2 font-sans text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
-                <Globe className="h-4 w-4 text-[#5E7A63] dark:text-[#8BA890]" aria-hidden="true" />
+              <p className="mb-2 flex items-center gap-2 font-sans text-xs font-bold text-[#171717] dark:text-[#F4F0E8]">
+                <Globe className="h-4 w-4 text-[#6E6960] dark:text-[#B8B2A8]" aria-hidden="true" />
                 Language
               </p>
               <div className="flex flex-wrap gap-2">
@@ -127,7 +127,7 @@ export const JournalPage: React.FC = () => {
                 ))}
               </div>
             </div>
-            <p className="font-sans text-xs text-[#4B5A77] dark:text-[#D1C5B0]" aria-live="polite">
+            <p className="font-sans text-xs text-[#4F4A43] dark:text-[#D6D0C6]" aria-live="polite">
               Showing {filteredArticles.length} published {filteredArticles.length === 1 ? 'piece' : 'pieces'}
             </p>
           </div>
@@ -145,9 +145,9 @@ export const JournalPage: React.FC = () => {
                     type="button"
                     onClick={() => setSelectedArticle(article)}
                     aria-label={`Read ${article.title}`}
-                    className="group flex h-full w-full flex-col border border-[#1B2A49]/15 bg-[#FFF8EA] text-left transition-colors hover:border-[#A8431F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A8431F] dark:border-[#F4ECDD]/15 dark:bg-[#243557] dark:hover:border-[#E8B04A]"
+                    className="group flex h-full w-full flex-col border border-[#171717]/20 bg-[#FFFCF5] text-left transition-colors hover:border-[#F4512C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A8431F] dark:border-[#F4F0E8]/20 dark:bg-[#202020] dark:hover:border-[#D9F36A]"
                   >
-                    <div className="relative h-52 overflow-hidden bg-[#1B2A49] sm:h-56">
+                    <div className="relative h-52 overflow-hidden bg-[#171717] sm:h-56">
                       <img
                         src={article.coverImage}
                         alt={article.title}
@@ -156,10 +156,10 @@ export const JournalPage: React.FC = () => {
                         className="h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-                        <span className="border border-[#1B2A49]/20 bg-[#FFF8EA] px-2.5 py-1 text-[11px] font-bold text-[#1B2A49]">
+                        <span className="border border-[#1B2A49]/20 bg-[#FFFCF5] px-2.5 py-1 text-[11px] font-bold text-[#171717]">
                           {article.category}
                         </span>
-                        <span className="border border-[#F4ECDD]/40 bg-[#1B2A49] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#F4ECDD]">
+                        <span className="border border-[#F4ECDD]/40 bg-[#171717] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#F4F0E8]">
                           {article.language}
                         </span>
                       </div>
@@ -168,7 +168,7 @@ export const JournalPage: React.FC = () => {
                     <div className="flex flex-1 flex-col p-5">
                       <div dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
                         <h2
-                          className={`font-display text-xl font-bold leading-snug text-[#1B2A49] transition-colors group-hover:text-[#A8431F] dark:text-[#F4ECDD] dark:group-hover:text-[#E8B04A] sm:text-2xl ${
+                          className={`font-display text-xl font-bold leading-snug text-[#171717] transition-colors group-hover:text-[#F4512C] dark:text-[#F4F0E8] dark:group-hover:text-[#D9F36A] sm:text-2xl ${
                             isUrdu
                               ? 'font-urdu text-right leading-[2.1]'
                               : isIndic
@@ -179,7 +179,7 @@ export const JournalPage: React.FC = () => {
                           {article.title}
                         </h2>
                         <p
-                          className={`mt-3 line-clamp-3 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0] ${
+                          className={`mt-3 line-clamp-3 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6] ${
                             isUrdu
                               ? 'font-urdu text-right text-base leading-[2.1]'
                               : isIndic
@@ -191,15 +191,15 @@ export const JournalPage: React.FC = () => {
                         </p>
                       </div>
 
-                      <div className="mt-auto border-t border-[#1B2A49]/10 pt-4 dark:border-[#F4ECDD]/10">
-                        <div className="flex items-center justify-between gap-3 font-sans text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
-                          <span className="font-bold text-[#1B2A49] dark:text-[#F4ECDD]">{article.author}</span>
+                      <div className="mt-auto border-t border-[#171717]/15 pt-4 dark:border-[#F4F0E8]/15">
+                        <div className="flex items-center justify-between gap-3 font-sans text-xs text-[#4F4A43] dark:text-[#D6D0C6]">
+                          <span className="font-bold text-[#171717] dark:text-[#F4F0E8]">{article.author}</span>
                           <span className="flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5 text-[#5E7A63] dark:text-[#8BA890]" aria-hidden="true" />
+                            <Clock className="h-3.5 w-3.5 text-[#6E6960] dark:text-[#B8B2A8]" aria-hidden="true" />
                             {article.readingTime} min
                           </span>
                         </div>
-                        <span className="mt-4 flex items-center gap-2 font-sans text-xs font-bold text-[#A8431F] dark:text-[#E8B04A]">
+                        <span className="mt-4 flex items-center gap-2 font-sans text-xs font-bold text-[#F4512C] dark:text-[#D9F36A]">
                           Read full piece
                           <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </span>
@@ -210,12 +210,12 @@ export const JournalPage: React.FC = () => {
               })}
             </div>
           ) : (
-            <PaperPanel className="mx-auto max-w-md rounded-[6px] p-8 text-center sm:p-10">
-              <Feather className="mx-auto h-8 w-8 text-[#A8431F] dark:text-[#E8B04A]" aria-hidden="true" />
-              <h2 className="mt-4 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+            <PaperPanel className="mx-auto max-w-md rounded-none p-8 text-center sm:p-10">
+              <Feather className="mx-auto h-8 w-8 text-[#F4512C] dark:text-[#D9F36A]" aria-hidden="true" />
+              <h2 className="mt-4 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
                 No articles found
               </h2>
-              <p className="mt-2 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+              <p className="mt-2 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
                 Try a different search term, or reset the filters to see every published piece.
               </p>
               <Button type="button" onClick={clearFilters} className="mt-6">
@@ -226,15 +226,15 @@ export const JournalPage: React.FC = () => {
         </section>
 
         <section className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="flex flex-col gap-6 rounded-[6px] border-l-4 border-l-[#E8B04A] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <PaperPanel className="flex flex-col gap-6 rounded-none border-l-4 border-l-[#E8B04A] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
-              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#A8431F] dark:text-[#E8B04A]">
+              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#F4512C] dark:text-[#D9F36A]">
                 Write for the journal
               </p>
-              <h2 className="mt-2 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+              <h2 className="mt-2 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
                 We publish reader stories and perspectives
               </h2>
-              <p className="mt-2 max-w-lg font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+              <p className="mt-2 max-w-lg font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
                 Have you written a poem in Dakhani, a critique of a regional novel, or a personal essay on how
                 reading changed you? Send your draft to our editors.
               </p>

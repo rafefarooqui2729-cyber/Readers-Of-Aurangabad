@@ -90,7 +90,7 @@ export const GatheringsPage: React.FC = () => {
       <div className="space-y-12 sm:space-y-16">
         {/* What to expect */}
         <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
-          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+          <PaperPanel className="rounded-none p-6 sm:p-10">
             <SectionHeading
               eyebrow="What to expect"
               title={t.gatherings.experienceHeading}
@@ -102,20 +102,20 @@ export const GatheringsPage: React.FC = () => {
                 return (
                   <li
                     key={step.title}
-                    className="border border-[#1B2A49]/10 bg-[#F4ECDD] p-5 dark:border-[#F4ECDD]/10 dark:bg-[#1B2A49]"
+                    className="border border-[#171717]/15 bg-[#F4F0E8] p-5 dark:border-[#F4F0E8]/15 dark:bg-[#171717]"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center border border-[#5E7A63]/30 text-[#5E7A63] dark:text-[#8BA890]">
+                      <span className="flex h-10 w-10 items-center justify-center border border-[#6E6960]/30 text-[#6E6960] dark:text-[#B8B2A8]">
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </span>
-                      <span className="font-display text-xl font-bold text-[#5E7A63]/40 dark:text-[#8BA890]/40">
+                      <span className="font-display text-xl font-bold text-[#6E6960]/40 dark:text-[#B8B2A8]/40">
                         0{index + 1}
                       </span>
                     </div>
-                    <h3 className="mt-4 font-display text-lg font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    <h3 className="mt-4 font-display text-lg font-bold text-[#171717] dark:text-[#F4F0E8]">
                       {step.title}
                     </h3>
-                    <p className="mt-2 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    <p className="mt-2 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
                       {step.text}
                     </p>
                   </li>
@@ -127,7 +127,7 @@ export const GatheringsPage: React.FC = () => {
 
         {/* Philosophy */}
         <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+          <PaperPanel className="rounded-none p-6 sm:p-10">
             <SectionHeading
               eyebrow={t.gatherings.philosophyEyebrow}
               title={t.gatherings.philosophyHeading}
@@ -139,31 +139,31 @@ export const GatheringsPage: React.FC = () => {
                 return (
                   <article
                     key={principle.num}
-                    className="border border-[#1B2A49]/10 bg-[#F4ECDD] p-6 dark:border-[#F4ECDD]/10 dark:bg-[#1B2A49]"
+                    className="border border-[#171717]/15 bg-[#F4F0E8] p-6 dark:border-[#F4F0E8]/15 dark:bg-[#171717]"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <span className="flex h-10 w-10 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                      <span className="flex h-10 w-10 items-center justify-center border border-[#F4512C]/30 text-[#F4512C]">
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </span>
-                      <span className="font-display text-3xl font-bold text-[#A8431F]/25" aria-hidden="true">
+                      <span className="font-display text-3xl font-bold text-[#F4512C]/25" aria-hidden="true">
                         {principle.num}
                       </span>
                     </div>
-                    <h3 className="mt-4 font-display text-xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    <h3 className="mt-4 font-display text-xl font-bold text-[#171717] dark:text-[#F4F0E8]">
                       {principle.title}
                     </h3>
-                    <p className="mt-2 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    <p className="mt-2 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
                       {principle.desc}
                     </p>
                   </article>
                 );
               })}
             </div>
-            <div className="mt-8 border-l-4 border-[#E8B04A] bg-[#1B2A49] px-6 py-8 sm:px-10">
-              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#E8B04A]">
+            <div className="mt-8 border-l-4 border-[#D9F36A] bg-[#171717] px-6 py-8 sm:px-10">
+              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#D9F36A]">
                 {t.gatherings.coreBeliefLabel}
               </p>
-              <blockquote className="mt-3 font-serif text-xl italic leading-relaxed text-[#F4ECDD] sm:text-2xl">
+              <blockquote className="mt-3 font-serif text-xl italic leading-relaxed text-[#F4F0E8] sm:text-2xl">
                 &ldquo;{t.gatherings.coreBeliefQuote}&rdquo;
               </blockquote>
             </div>
@@ -178,9 +178,9 @@ export const GatheringsPage: React.FC = () => {
               {displayedMeetups.map((meetup) => (
                 <article
                   key={meetup.id}
-                  className="flex h-full flex-col border border-[#1B2A49]/15 bg-[#FFF8EA] dark:border-[#F4ECDD]/15 dark:bg-[#243557]"
+                  className="flex h-full flex-col border border-[#171717]/20 bg-[#FFFCF5] dark:border-[#F4F0E8]/20 dark:bg-[#202020]"
                 >
-                  <div className="relative h-52 overflow-hidden bg-[#1B2A49]">
+                  <div className="relative h-52 overflow-hidden bg-[#171717]">
                     <img
                       src={meetup.featuredImage}
                       alt={meetup.title}
@@ -190,11 +190,11 @@ export const GatheringsPage: React.FC = () => {
                     />
                     <div className="absolute left-4 top-4 flex flex-wrap gap-2">
                       {meetup.edition ? (
-                        <span className="border border-[#F4ECDD]/40 bg-[#1B2A49] px-2.5 py-1 text-[11px] font-bold text-[#F4ECDD]">
+                        <span className="border border-[#F4ECDD]/40 bg-[#171717] px-2.5 py-1 text-[11px] font-bold text-[#F4F0E8]">
                           {meetup.edition}
                         </span>
                       ) : null}
-                      <span className="border border-[#F4ECDD]/40 bg-[#1B2A49]/85 px-2.5 py-1 text-[11px] font-bold text-[#F4ECDD]">
+                      <span className="border border-[#F4ECDD]/40 bg-[#171717]/85 px-2.5 py-1 text-[11px] font-bold text-[#F4F0E8]">
                         {meetup.registrationStatus === 'cancelled'
                           ? 'Cancelled'
                           : isMeetupUpcoming(meetup)
@@ -204,25 +204,25 @@ export const GatheringsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-5">
-                    <h3 className="font-display text-xl font-bold leading-snug text-[#1B2A49] dark:text-[#F4ECDD]">
+                    <h3 className="font-display text-xl font-bold leading-snug text-[#171717] dark:text-[#F4F0E8]">
                       {meetup.title}
                     </h3>
-                    <p className="mt-2 line-clamp-3 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    <p className="mt-2 line-clamp-3 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
                       {meetup.description}
                     </p>
-                    <dl className="mt-4 space-y-2 border-t border-[#1B2A49]/10 pt-4 font-sans text-xs text-[#4B5A77] dark:border-[#F4ECDD]/10 dark:text-[#D1C5B0]">
+                    <dl className="mt-4 space-y-2 border-t border-[#171717]/15 pt-4 font-sans text-xs text-[#4F4A43] dark:border-[#F4F0E8]/15 dark:text-[#D6D0C6]">
                       <div className="flex items-center gap-2">
-                        <Calendar className="h-3.5 w-3.5 text-[#5E7A63]" aria-hidden="true" />
+                        <Calendar className="h-3.5 w-3.5 text-[#6E6960]" aria-hidden="true" />
                         <dt className="sr-only">Date</dt>
-                        <dd className="font-bold text-[#1B2A49] dark:text-[#F4ECDD]">{meetup.date}</dd>
+                        <dd className="font-bold text-[#171717] dark:text-[#F4F0E8]">{meetup.date}</dd>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="h-3.5 w-3.5 text-[#5E7A63]" aria-hidden="true" />
+                        <Clock className="h-3.5 w-3.5 text-[#6E6960]" aria-hidden="true" />
                         <dt className="sr-only">Time</dt>
                         <dd>{meetup.time}</dd>
                       </div>
                       <div className="flex items-center gap-2">
-                        <MapPin className="h-3.5 w-3.5 text-[#A8431F]" aria-hidden="true" />
+                        <MapPin className="h-3.5 w-3.5 text-[#F4512C]" aria-hidden="true" />
                         <dt className="sr-only">Venue</dt>
                         <dd className="truncate">{meetup.venue}</dd>
                       </div>
@@ -232,18 +232,18 @@ export const GatheringsPage: React.FC = () => {
                         {meetup.activities.slice(0, 2).map((activity) => (
                           <li
                             key={activity}
-                            className="border border-[#1B2A49]/15 bg-[#F4ECDD] px-2 py-1 text-[10px] font-semibold text-[#4B5A77] dark:border-[#F4ECDD]/15 dark:bg-[#1B2A49] dark:text-[#D1C5B0]"
+                            className="border border-[#171717]/20 bg-[#F4F0E8] px-2 py-1 text-[10px] font-semibold text-[#4F4A43] dark:border-[#F4F0E8]/20 dark:bg-[#171717] dark:text-[#D6D0C6]"
                           >
                             {activity}
                           </li>
                         ))}
                       </ul>
                     ) : null}
-                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#1B2A49]/10 pt-5 dark:border-[#F4ECDD]/10">
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#171717]/15 pt-5 dark:border-[#F4F0E8]/15">
                       <button
                         type="button"
                         onClick={() => setSelectedMeetup(meetup)}
-                        className="min-h-[44px] font-sans text-xs font-bold text-[#1B2A49] underline underline-offset-4 hover:text-[#A8431F] dark:text-[#F4ECDD] dark:hover:text-[#E8B04A]"
+                        className="min-h-[44px] font-sans text-xs font-bold text-[#171717] underline underline-offset-4 hover:text-[#F4512C] dark:text-[#F4F0E8] dark:hover:text-[#D9F36A]"
                       >
                         View details &amp; photos
                       </button>
@@ -262,9 +262,9 @@ export const GatheringsPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedMeetup(meetup)}
-                          className="min-h-[44px] font-sans text-xs font-bold text-[#A8431F] hover:underline"
+                          className="min-h-[44px] font-sans text-xs font-bold text-[#F4512C] hover:underline"
                         >
-                          {isMeetupUpcoming(meetup) ? 'View gathering details →' : 'Browse chapter archive →'}
+                          {isMeetupUpcoming(meetup) ? 'View gathering details â†’' : 'Browse chapter archive â†’'}
                         </button>
                       )}
                     </div>
@@ -274,10 +274,10 @@ export const GatheringsPage: React.FC = () => {
             </div>
           ) : (
             <PaperPanel className="mx-auto mt-8 max-w-xl p-10 text-center">
-              <h3 className="font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+              <h3 className="font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
                 No events in this category
               </h3>
-              <p className="mt-3 font-sans text-sm text-[#4B5A77] dark:text-[#D1C5B0]">
+              <p className="mt-3 font-sans text-sm text-[#4F4A43] dark:text-[#D6D0C6]">
                 {t.gatherings.emptyUpcoming}
               </p>
             </PaperPanel>

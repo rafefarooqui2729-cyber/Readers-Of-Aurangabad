@@ -24,8 +24,6 @@ export const Navbar: React.FC = () => {
   const [memberSignInOpen, setMemberSignInOpen] = useState(false);
   const isAuthenticated = Boolean(currentUserId);
 
-  // Navigation labels come from translations and point to the pages that
-  // actually exist. The community route is Readers & Stories, not a book archive.
   const navLinks: { key: PageRoute; label: string }[] = [
     { key: 'gatherings', label: t.nav.gatherings },
     { key: 'community', label: t.nav.community },
@@ -52,55 +50,50 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header
-      className="sticky top-0 z-40 bg-[#F4ECDD] dark:bg-[#1B2A49] border-b border-[#1B2A49]/20 dark:border-[#384F7A] transition-colors duration-200"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-
-          {/* Wordmark in Fraunces bold */}
+    <header className="sticky top-0 z-40 border-b-[3px] border-[#171717] bg-[#F4F0E8]/96 dark:bg-[#171717]/96 backdrop-blur-sm dark:border-[#D9F36A]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-[76px] items-center justify-between gap-3">
           <button
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-3 text-left focus-visible:outline-2 focus-visible:outline-[#A8431F] group cursor-pointer"
+            className="group flex min-w-0 items-center gap-3 text-left cursor-pointer"
             aria-label="Readers of Aurangabad Home"
           >
-            <div className="w-10 h-10 rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 overflow-hidden bg-[#FFF8EA] dark:bg-[#243557] flex items-center justify-center p-0.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#171717] bg-[#FFFCF5] p-0.5 shadow-[3px_3px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:shadow-[3px_3px_0_#000]">
               <img
                 src="/brand/logo.png"
-                alt="Readers of Aurangabad Logo"
-                className="w-full h-full object-cover"
+                alt="Readers of Aurangabad logo"
+                className="h-full w-full object-cover"
               />
             </div>
-            <div>
-              <span className="block font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#1B2A49] dark:text-[#F4ECDD] leading-none">
+            <div className="min-w-0">
+              <span className="block truncate font-display text-[1.05rem] uppercase leading-none tracking-[-0.02em] text-[#171717] dark:text-[#F4F0E8] sm:text-[1.2rem]">
                 Readers of Aurangabad
               </span>
-              <span className="block text-[11px] font-sans font-bold tracking-[0.2em] uppercase text-[#A8431F] mt-1">
-                MH20 · A READING COMMUNITY
+              <span className="mt-1 block font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#F4512C]">
+                MH20 · Reading Movement
               </span>
             </div>
           </button>
 
-          {/* Desktop Navigation Links with Underline Slide */}
-          <nav className="hidden lg:flex items-center gap-6" aria-label="Main Navigation">
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const isActive = currentPage === link.key;
               return (
                 <button
                   key={link.key}
                   onClick={() => handleNavClick(link.key)}
-                  className={`relative text-base tracking-wide py-2 px-1 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-[#A8431F] ${
+                  className={`relative min-h-[44px] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer ${
                     isActive
-                      ? 'text-[#1B2A49] dark:text-[#F4ECDD] font-bold'
-                      : 'text-[#1B2A49]/70 dark:text-[#F4ECDD]/70 hover:text-[#1B2A49] dark:hover:text-[#F4ECDD] font-medium'
+                      ? 'text-[#171717] dark:text-[#F4F0E8]'
+                      : 'text-[#4F4A43] hover:text-[#171717] dark:text-[#B8B2A8] dark:hover:text-[#F4F0E8]'
                   }`}
                 >
                   <span>{link.label}</span>
                   {isActive && (
-                    <motion.div
+                    <motion.span
                       layoutId="nav-underline"
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#A8431F]"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      className="absolute inset-x-2 bottom-1 h-[3px] bg-[#F4512C]"
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
                 </button>
@@ -108,25 +101,20 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Action Cluster: Theme, Language, Notifications, Auth, Join Us */}
-          <div className="hidden lg:flex items-center gap-3">
-            {/* Theme Toggle (Dark / Light) */}
+          <div className="hidden items-center gap-2 lg:flex">
             <ThemeToggle />
 
-            {/* Language Switcher */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-[4px] text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 hover:bg-[#1B2A49]/5 dark:hover:bg-[#F4ECDD]/10 transition-colors cursor-pointer min-h-[44px]"
-                title="Change Language"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
+                title="Change language"
                 aria-label="Select language"
+                aria-expanded={langDropdownOpen}
               >
-                <Globe className="w-3.5 h-3.5 text-[#5E7A63]" />
-                <span className="uppercase tracking-wider">{lang}</span>
-                <span className="text-[#A8431F]">
-                  ({languages.find(l => l.code === lang)?.nativeName})
-                </span>
+                <Globe className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>{lang}</span>
               </button>
 
               <AnimatePresence>
@@ -136,23 +124,21 @@ export const Navbar: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className={`absolute mt-2 w-36 bg-[#FFF8EA] dark:bg-[#243557] border-2 border-[#1B2A49] dark:border-[#384F7A] rounded-[4px] shadow-md py-1 z-50 ${
-                      isRTL ? 'left-0' : 'right-0'
-                    }`}
+                    className={`absolute mt-2 w-40 border-2 border-[#171717] bg-[#FFFCF5] p-1 shadow-[6px_6px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:shadow-[6px_6px_0_#000] z-50 ${isRTL ? 'left-0' : 'right-0'}`}
                   >
                     {languages.map((l) => (
                       <button
                         key={l.code}
                         type="button"
                         onClick={() => handleLanguageSelect(l.code)}
-                        className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                        className={`flex w-full min-h-[40px] items-center justify-between px-3 py-2 text-left text-xs font-bold transition-colors cursor-pointer ${
                           lang === l.code
-                            ? 'bg-[#A8431F] text-[#F4ECDD] font-bold'
-                            : 'text-[#1B2A49] dark:text-[#F4ECDD] hover:bg-[#1B2A49]/10'
+                            ? 'bg-[#171717] text-[#F4F0E8]'
+                            : 'text-[#171717] hover:bg-[#D9F36A] dark:text-[#F4F0E8] dark:hover:bg-[#D9F36A] dark:hover:text-[#171717]'
                         }`}
                       >
                         <span>{l.nativeName}</span>
-                        <span className="text-[10px] uppercase font-mono">{l.code}</span>
+                        <span className="font-mono text-[10px] uppercase opacity-70">{l.code}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -160,7 +146,6 @@ export const Navbar: React.FC = () => {
               </AnimatePresence>
             </div>
 
-            {/* Notification Center */}
             <MemberNotificationCenter
               isMember={isMember}
               isAuthenticated={isAuthenticated}
@@ -177,59 +162,54 @@ export const Navbar: React.FC = () => {
               onOpenSignIn={() => setMemberSignInOpen(true)}
             />
 
-            {/* Member Auth Button */}
             {isAuthenticated ? (
               <button
                 type="button"
                 onClick={() => { void (isAdmin ? logoutAdmin() : logoutMember()); }}
-                className="px-3 py-2 rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD] hover:bg-[#1B2A49]/5 dark:hover:bg-[#F4ECDD]/10 flex items-center gap-1.5 cursor-pointer min-h-[44px]"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
                 title="Signed in"
               >
-                <LogOut className="w-3.5 h-3.5 text-[#A8431F]" />
+                <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Sign out</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => setMemberSignInOpen(true)}
-                className="px-3 py-2 rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD] hover:bg-[#1B2A49]/5 dark:hover:bg-[#F4ECDD]/10 flex items-center gap-1.5 cursor-pointer min-h-[44px]"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
               >
-                <User className="w-3.5 h-3.5 text-[#5E7A63]" />
-                <span>Member sign in</span>
+                <User className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>Member</span>
               </button>
             )}
 
-            {/* Admin Portal Shortcut */}
             <button
               type="button"
               onClick={() => handleNavClick('admin')}
-              className={`p-2.5 rounded-[4px] border transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
+              className={`flex min-h-[44px] min-w-[44px] items-center justify-center border-2 transition-colors cursor-pointer ${
                 currentPage === 'admin'
-                  ? 'bg-[#1B2A49] text-[#F4ECDD] border-[#1B2A49]'
+                  ? 'border-[#171717] bg-[#171717] text-[#F4F0E8]'
                   : isAdmin
-                  ? 'border-[#5E7A63] text-[#5E7A63] hover:bg-[#5E7A63] hover:text-white'
-                  : 'border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-[#1B2A49]/70 dark:text-[#F4ECDD]/70 hover:text-[#1B2A49]'
+                  ? 'border-[#171717] bg-[#D9F36A] text-[#171717]'
+                  : 'border-[#171717] bg-[#FFFCF5] text-[#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
               }`}
-              title={isAdmin ? "Admin Portal (Authenticated)" : "Admin Portal"}
+              title={isAdmin ? 'Admin Portal (Authenticated)' : 'Admin Portal'}
               aria-label="Admin Portal"
             >
-              {isAdmin ? <ShieldCheck className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
+              {isAdmin ? <ShieldCheck className="h-4 w-4" /> : <Lock className="h-3.5 w-3.5" />}
             </button>
 
-            {/* Clay "Join Us" Button */}
             <button
               type="button"
               onClick={() => handleNavClick('contact')}
-              className="bg-[#A8431F] text-[#F4ECDD] hover:bg-[#8F3717] active:bg-[#782E12] font-sans font-bold text-sm tracking-wide px-5 py-2.5 rounded-[4px] transition-colors cursor-pointer min-h-[44px] flex items-center justify-center"
+              className="flex min-h-[44px] items-center justify-center border-2 border-[#171717] bg-[#F4512C] px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-[0.1em] text-white shadow-[4px_4px_0_#171717] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] cursor-pointer"
             >
               {t.nav.joinCommunity}
             </button>
           </div>
 
-          {/* Mobile Right Controls: Theme + Notifications + 44px Menu Button */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex items-center gap-2 lg:hidden">
             <ThemeToggle />
-
             <MemberNotificationCenter
               isMember={isMember}
               isAuthenticated={isAuthenticated}
@@ -245,21 +225,19 @@ export const Navbar: React.FC = () => {
               }}
               onOpenSignIn={() => setMemberSignInOpen(true)}
             />
-
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="min-h-[44px] min-w-[44px] p-2 text-[#1B2A49] dark:text-[#F4ECDD] rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 hover:bg-[#1B2A49]/5 transition-colors flex items-center justify-center"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center border-2 border-[#171717] bg-[#FFFCF5] text-[#171717] shadow-[3px_3px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000]"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Full-height Drawer Menu with Large Links */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -267,19 +245,19 @@ export const Navbar: React.FC = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: shouldReduceMotion ? 0.1 : 0.25, ease: 'easeInOut' }}
-              className="lg:hidden border-t border-[#1B2A49]/20 dark:border-[#384F7A] py-6 px-2 space-y-3 bg-[#F4ECDD] dark:bg-[#1B2A49] overflow-hidden"
+              transition={{ duration: shouldReduceMotion ? 0.1 : 0.22, ease: 'easeInOut' }}
+              className="overflow-hidden border-t-2 border-[#171717] py-5 dark:border-[#F4F0E8]/25 lg:hidden"
             >
-              <nav className="flex flex-col space-y-2" aria-label="Mobile Navigation">
+              <nav className="flex flex-col gap-2" aria-label="Mobile Navigation">
                 {navLinks.map((link) => (
                   <button
                     key={link.key}
                     type="button"
                     onClick={() => handleNavClick(link.key)}
-                    className={`w-full text-left px-4 py-3 rounded-[4px] font-serif text-2xl font-bold tracking-tight transition-colors ${
+                    className={`min-h-[48px] w-full border-2 px-4 py-3 text-left font-display text-xl uppercase tracking-[-0.01em] transition-colors ${
                       currentPage === link.key
-                        ? 'bg-[#1B2A49] text-[#F4ECDD] dark:bg-[#FFF8EA] dark:text-[#1B2A49]'
-                        : 'text-[#1B2A49] dark:text-[#F4ECDD] hover:bg-[#1B2A49]/10'
+                        ? 'border-[#171717] bg-[#171717] text-[#F4F0E8]'
+                        : 'border-[#171717] bg-[#FFFCF5] text-[#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
                     }`}
                   >
                     {link.label}
@@ -287,38 +265,35 @@ export const Navbar: React.FC = () => {
                 ))}
               </nav>
 
-              {/* Language Switcher in Mobile Drawer */}
-              <div className="pt-4 border-t border-[#1B2A49]/15 dark:border-[#384F7A]">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#5E7A63] block mb-2 px-4">
-                  Select Language / भाषा / زبان
+              <div className="mt-5 border-t-2 border-[#171717]/20 pt-4 dark:border-[#F4F0E8]/20">
+                <span className="mb-2 block px-1 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#6E6960] dark:text-[#B8B2A8]">
+                  Language
                 </span>
-                <div className="grid grid-cols-2 gap-2 px-2">
+                <div className="grid grid-cols-2 gap-2">
                   {languages.map((l) => (
                     <button
                       key={l.code}
                       type="button"
                       onClick={() => handleLanguageSelect(l.code)}
-                      className={`min-h-[44px] py-2 px-3 rounded-[4px] text-xs font-bold border transition-colors flex items-center justify-between ${
+                      className={`min-h-[44px] border-2 px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] ${
                         lang === l.code
-                          ? 'bg-[#A8431F] text-[#F4ECDD] border-[#A8431F]'
-                          : 'bg-[#FFF8EA] dark:bg-[#243557] text-[#1B2A49] dark:text-[#F4ECDD] border-[#1B2A49]/20'
+                          ? 'border-[#171717] bg-[#F4512C] text-white'
+                          : 'border-[#171717] bg-[#FFFCF5] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
                       }`}
                     >
-                      <span>{l.nativeName}</span>
-                      <span className="opacity-70 font-mono text-[10px]">{l.code}</span>
+                      {l.nativeName}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Action Buttons in Mobile Drawer */}
-              <div className="pt-4 px-2 space-y-2">
+              <div className="mt-4 space-y-2">
                 <button
                   type="button"
                   onClick={() => handleNavClick('contact')}
-                  className="w-full bg-[#A8431F] text-[#F4ECDD] hover:bg-[#8F3717] min-h-[48px] rounded-[4px] font-sans font-bold text-base tracking-wide flex items-center justify-center transition-colors"
+                  className="flex min-h-[48px] w-full items-center justify-center border-2 border-[#171717] bg-[#F4512C] font-sans text-sm font-bold uppercase tracking-[0.08em] text-white shadow-[4px_4px_0_#171717]"
                 >
-                  {t.nav.joinCommunity} (MH20)
+                  {t.nav.joinCommunity}
                 </button>
 
                 {isAuthenticated ? (
@@ -329,9 +304,9 @@ export const Navbar: React.FC = () => {
                       else void logoutMember();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full min-h-[44px] rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD] flex items-center justify-center gap-2"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#171717] bg-[#FFFCF5] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]"
                   >
-                    <LogOut className="w-4 h-4 text-[#A8431F]" />
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
                     <span>Sign out</span>
                   </button>
                 ) : (
@@ -341,9 +316,9 @@ export const Navbar: React.FC = () => {
                       setMemberSignInOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full min-h-[44px] rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD] flex items-center justify-center gap-2"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#171717] bg-[#FFFCF5] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]"
                   >
-                    <User className="w-4 h-4 text-[#5E7A63]" />
+                    <User className="h-4 w-4" aria-hidden="true" />
                     <span>Member sign in</span>
                   </button>
                 )}
@@ -351,9 +326,9 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleNavClick('admin')}
-                  className="w-full min-h-[44px] text-xs font-bold text-[#1B2A49]/70 dark:text-[#F4ECDD]/70 hover:text-[#1B2A49] flex items-center justify-center gap-2"
+                  className="flex min-h-[44px] w-full items-center justify-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#4F4A43] underline underline-offset-4 dark:text-[#B8B2A8]"
                 >
-                  <Lock className="w-3.5 h-3.5" />
+                  <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{t.nav.admin}</span>
                 </button>
               </div>

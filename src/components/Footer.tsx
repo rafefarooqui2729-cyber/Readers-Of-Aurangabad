@@ -17,8 +17,6 @@ export const Footer: React.FC = () => {
     scrollToTop();
   };
 
-  // Navigate to Our Story, then scroll to the real Code of Conduct section once
-  // the lazy-loaded page has mounted.
   const handleCodeOfConduct = () => {
     setCurrentPage('story');
     scrollToTop();
@@ -36,164 +34,120 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#1B2A49] text-[#F4ECDD] pt-16 pb-12 border-t-2 border-[#1B2A49] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-[#F4ECDD]/20 items-start">
-
-          {/* Brand & Stamp (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
+    <footer className="relative overflow-hidden border-t-[3px] border-[#171717] bg-[#171717] pb-12 pt-14 text-[#F4F0E8] dark:border-[#D9F36A]">
+      <div className="absolute left-0 top-0 h-2 w-full bg-[#F4512C]" aria-hidden="true" />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-start gap-10 border-b-2 border-[#F4F0E8]/20 pb-10 md:grid-cols-2 lg:grid-cols-12">
+          <div className="space-y-6 lg:col-span-5">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-[4px] border border-[#F4ECDD]/30 overflow-hidden bg-[#FFF8EA] p-0.5 shrink-0">
+              <div className="h-12 w-12 shrink-0 border-2 border-[#F4F0E8] bg-[#F4F0E8] p-0.5">
                 <img
                   src="/brand/logo.png"
                   alt="Readers of Aurangabad"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
-
               <div>
-                <span className="block font-serif text-2xl font-bold tracking-tight text-[#F4ECDD]">
+                <span className="block font-display text-2xl uppercase leading-none tracking-[-0.02em] text-[#F4F0E8]">
                   Readers of Aurangabad
                 </span>
-                <span className="block text-xs font-sans font-bold tracking-[0.2em] text-[#E8B04A] uppercase mt-0.5">
-                  MH20 · A READING COMMUNITY
+                <span className="mt-1 block font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#D9F36A]">
+                  MH20 · Local Reading Movement
                 </span>
               </div>
             </div>
 
-            <p className="font-serif italic text-lg text-[#F4ECDD]/90 leading-relaxed max-w-md">
-              "We meet on quiet weekend mornings under trees and in open courtyards. Bring whatever book you are currently reading—Marathi, Urdu, Hindi, English—read in peaceful silence, and share chai and honest reflections."
+            <p className="max-w-md border-l-4 border-[#F4512C] pl-4 font-serif text-lg italic leading-relaxed text-[#F4F0E8]/92">
+              Quiet mornings, physical books, open courtyards, and conversations across Marathi, Urdu, Hindi, and English in Aurangabad.
             </p>
 
-            {/* Social & Contact Links */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
                 href={siteConfig.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-[4px] bg-[#243557] hover:bg-[#A8431F] text-[#F4ECDD] text-xs font-bold transition-colors border border-[#F4ECDD]/20 min-h-[44px]"
+                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F4F0E8] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F4F0E8] transition-colors hover:bg-[#D9F36A] hover:text-[#171717]"
               >
-                <InstagramIcon className="w-4 h-4 text-[#E8B04A]" />
+                <InstagramIcon className="h-4 w-4" />
                 <span>{siteConfig.instagramHandle}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#F4ECDD]/70" />
+                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
 
               <a
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-[4px] bg-[#243557] hover:bg-[#5E7A63] text-[#F4ECDD] text-xs font-bold transition-colors border border-[#F4ECDD]/20 min-h-[44px]"
+                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F4F0E8] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F4F0E8] transition-colors hover:bg-[#D9F36A] hover:text-[#171717]"
               >
-                <MessageCircle className="w-4 h-4 text-[#5E7A63]" />
+                <MessageCircle className="h-4 w-4" />
                 <span>WhatsApp Group</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-[#F4ECDD]/70" />
+                <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
 
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-[4px] bg-[#243557] hover:bg-[#A8431F] text-[#F4ECDD] text-xs font-bold transition-colors border border-[#F4ECDD]/20 min-h-[44px]"
+                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F4F0E8] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F4F0E8] transition-colors hover:bg-[#D9F36A] hover:text-[#171717]"
               >
-                <Mail className="w-4 h-4 text-[#E8B04A]" />
+                <Mail className="h-4 w-4" />
                 <span>{siteConfig.email}</span>
               </a>
 
-              <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-[#243557] text-[#D1C5B0] text-xs font-medium border border-[#F4ECDD]/20 min-h-[44px]">
-                <MapPin className="w-4 h-4 text-[#E8B04A]" />
+              <div className="inline-flex min-h-[44px] items-center gap-1.5 border-2 border-[#F4F0E8]/50 px-4 py-2 font-sans text-xs font-medium text-[#F4F0E8]/85">
+                <MapPin className="h-4 w-4 text-[#D9F36A]" />
                 <span>{siteConfig.locationLine}</span>
               </div>
             </div>
           </div>
 
-          {/* Navigation Links (3 cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            <h3 className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#E8B04A]">
+          <div className="space-y-4 lg:col-span-3">
+            <h3 className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#D9F36A]">
               Navigation
             </h3>
-            <ul className="space-y-2.5 text-sm font-sans">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('home')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  {t.nav.home}
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('gatherings')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  {t.nav.gatherings}
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('community')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  Readers &amp; Stories
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('journal')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  {t.nav.journal}
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('story')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  {t.nav.story}
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNav('contact')}
-                  className="text-[#F4ECDD]/80 hover:text-[#F4ECDD] hover:underline transition-colors cursor-pointer text-left py-1"
-                >
-                  {t.nav.getInvolved}
-                </button>
-              </li>
+            <ul className="space-y-2 font-sans text-sm">
+              {[
+                { key: 'home' as PageRoute, label: t.nav.home },
+                { key: 'gatherings' as PageRoute, label: t.nav.gatherings },
+                { key: 'community' as PageRoute, label: 'Readers & Stories' },
+                { key: 'journal' as PageRoute, label: t.nav.journal },
+                { key: 'story' as PageRoute, label: t.nav.story },
+                { key: 'contact' as PageRoute, label: t.nav.getInvolved },
+              ].map((item) => (
+                <li key={item.key}>
+                  <button
+                    type="button"
+                    onClick={() => handleNav(item.key)}
+                    className="min-h-[32px] py-1 text-left text-[#F4F0E8]/85 transition-colors hover:text-[#D9F36A] hover:underline underline-offset-4 cursor-pointer"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
               <li>
                 <button
                   type="button"
                   onClick={() => handleNav('admin')}
-                  className="text-[#E8B04A] hover:underline transition-colors cursor-pointer text-left py-1 flex items-center gap-1"
+                  className="inline-flex min-h-[32px] items-center gap-1 py-1 text-left font-bold text-[#D9F36A] hover:underline underline-offset-4 cursor-pointer"
                 >
                   <span>{t.nav.admin}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Stamp & Code of Conduct (4 cols) */}
-          <div className="lg:col-span-4 flex flex-col items-start sm:items-end justify-between space-y-6">
-            <Stamp year={siteConfig.establishedYear} size="md" />
+          <div className="flex flex-col items-start justify-between space-y-6 sm:items-end lg:col-span-4">
+            <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-0 sm:!rotate-[-4deg]" />
 
-            <div className="sm:text-right space-y-2">
-              <span className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#5E7A63] block">
-                COMMUNITY STANDARDS
+            <div className="space-y-2 sm:text-right">
+              <span className="block font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#F4512C]">
+                Community standards
               </span>
-              <p className="text-xs text-[#D1C5B0] max-w-xs leading-relaxed">
-                Quiet hours during reading, respect across all languages and viewpoints, no commercial promotion or gatekeeping.
+              <p className="max-w-xs text-xs leading-relaxed text-[#F4F0E8]/75">
+                Quiet hours during reading, respect across languages and viewpoints, no commercial promotion or gatekeeping.
               </p>
               <a
                 href={siteConfig.footer.codeOfConductUrl}
                 onClick={(e) => {
-                  // Keep SPA navigation + smooth in-page scroll for ordinary clicks.
-                  // Modified clicks / new-tab intents keep native browser behavior.
                   if (
                     e.defaultPrevented ||
                     e.button !== 0 ||
@@ -207,26 +161,22 @@ export const Footer: React.FC = () => {
                   e.preventDefault();
                   handleCodeOfConduct();
                 }}
-                className="inline-flex min-h-[24px] items-center text-xs font-bold text-[#E8B04A] hover:underline pt-1"
+                className="inline-flex min-h-[24px] items-center font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#D9F36A] underline underline-offset-4"
               >
                 Read our Code of Conduct →
               </a>
             </div>
           </div>
-
         </div>
 
-        {/* Bottom Credits & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#D1C5B0] gap-4">
+        <div className="flex flex-col items-center justify-between gap-4 pt-8 font-sans text-xs text-[#F4F0E8]/70 sm:flex-row">
           <p>
             © {CURRENT_YEAR} Readers of Aurangabad (MH20). {siteConfig.footer.copyrightText}
           </p>
-          <div className="flex items-center gap-1.5 text-xs text-[#D1C5B0]">
-            <span>Grounded in</span>
-            <span className="text-[#F4ECDD] font-bold">Aurangabad (Chhatrapati Sambhajinagar), Maharashtra</span>
-          </div>
+          <p className="text-[#F4F0E8]">
+            Grounded in <span className="font-bold text-[#D9F36A]">Aurangabad (Chhatrapati Sambhajinagar), Maharashtra</span>
+          </p>
         </div>
-
       </div>
     </footer>
   );

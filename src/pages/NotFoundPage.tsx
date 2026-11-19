@@ -28,61 +28,58 @@ export const NotFoundPage: React.FC = () => {
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-xl w-full text-center space-y-6 sm:space-y-8"
+        className="max-w-2xl w-full border-2 border-[#171717] bg-[#FFFCF5] p-6 sm:p-10 shadow-[8px_8px_0_#171717] dark:border-[#F4F0E8]/30 dark:bg-[#202020] dark:shadow-[8px_8px_0_#000]"
       >
-        {/* Stamp & Chapter Badge */}
-        <div className="flex flex-col items-center justify-center gap-3">
-          <Stamp year={siteConfig.establishedYear} size="lg" />
-          <Eyebrow color="clay" className="mt-2">
-            CHAPTER NOT FOUND · MH20
-          </Eyebrow>
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <Eyebrow color="clay" className="mb-3">
+              CHAPTER NOT FOUND · MH20
+            </Eyebrow>
+            <h1 className="font-display text-4xl uppercase leading-[0.92] tracking-[-0.03em] text-[#171717] dark:text-[#F4F0E8] sm:text-5xl">
+              This page is off the shelf.
+            </h1>
+          </div>
+          <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-[-3deg]" />
         </div>
 
-        {/* Heading */}
-        <div className="space-y-3">
-          <h1 className="font-serif font-bold text-3xl sm:text-4xl lg:text-5xl text-[#1B2A49] dark:text-[#F4ECDD] leading-tight">
-            This page is still on someone's shelf.
-          </h1>
-          <p className="font-sans text-base sm:text-lg text-[#4B5A77] dark:text-[#D1C5B0] leading-relaxed max-w-md mx-auto">
-            Perhaps it was borrowed by a reader under the garden shade, or tucked away in an uncatalogued corner. Let’s head back to the circle.
-          </p>
-        </div>
+        <p className="mt-5 max-w-xl border-l-4 border-[#F4512C] pl-4 font-serif text-lg italic leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6] sm:text-xl">
+          The link you followed doesn&apos;t lead to a published chapter. Head back to the reading
+          movement or browse upcoming gatherings in Aurangabad.
+        </p>
 
-        {/* Bookmark Motif Card */}
-        <div className="bg-[#FFF8EA] dark:bg-[#243557] border-2 border-[#1B2A49]/15 dark:border-[#F4ECDD]/15 rounded-[6px] p-6 text-left max-w-md mx-auto shadow-sm">
+        <div className="mt-8 border-2 border-[#171717] bg-[#F4F0E8] p-5 dark:border-[#F4F0E8]/25 dark:bg-[#171717]">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-[4px] bg-[#A8431F]/10 dark:bg-[#A8431F]/20 text-[#A8431F] flex items-center justify-center shrink-0">
-              <BookOpen className="w-5 h-5" aria-hidden="true" />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#171717] bg-[#D9F36A] text-[#171717]">
+              <BookOpen className="h-5 w-5" aria-hidden="true" />
             </div>
-            <div className="space-y-1">
-              <span className="font-serif font-bold text-base text-[#1B2A49] dark:text-[#F4ECDD] block">
-                Reading Tip
+            <div>
+              <span className="block font-sans text-xs font-bold uppercase tracking-[0.16em] text-[#F4512C]">
+                Reading tip
               </span>
-              <p className="font-sans text-xs sm:text-sm text-[#4B5A77] dark:text-[#D1C5B0] leading-relaxed">
-                If you were looking for an event registration or announcement, check our latest Sunday chapter in the gatherings archive.
+              <p className="mt-1 font-sans text-sm leading-relaxed text-[#171717] dark:text-[#F4F0E8]">
+                Looking for an event, announcement, or registration link? Check Gatherings for the
+                latest chapter details and community updates.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button
             variant="primary"
             onClick={handleReturnHome}
-            className="w-full sm:w-auto flex items-center justify-center gap-2"
+            className="w-full sm:w-auto"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Return to Homepage</span>
+            <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+            Return home
           </Button>
-
           <Button
             variant="secondary"
             onClick={handleBrowseGatherings}
-            className="w-full sm:w-auto flex items-center justify-center gap-2"
+            className="w-full sm:w-auto"
           >
-            <Compass className="w-4 h-4" />
-            <span>Explore Gatherings</span>
+            <Compass className="mr-2 h-4 w-4" aria-hidden="true" />
+            Explore gatherings
           </Button>
         </div>
       </motion.div>

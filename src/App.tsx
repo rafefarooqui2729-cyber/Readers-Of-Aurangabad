@@ -99,24 +99,25 @@ class PageErrorBoundary extends React.Component<PageErrorBoundaryProps, PageErro
 
       return (
         <div className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-16 text-center">
-          <div className="w-16 h-16 mb-6 rounded-full bg-[#8D5B4C]/10 flex items-center justify-center">
-            <svg className="w-8 h-8 text-[#8D5B4C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
+          <div className="max-w-md border-2 border-[#171717] dark:border-[#F4F0E8]/30 bg-[#FFFCF5] dark:bg-[#202020] p-8 shadow-[8px_8px_0_#171717] dark:shadow-[8px_8px_0_#000]">
+            <div className="w-14 h-14 mx-auto mb-5 border-2 border-[#171717] bg-[#D9F36A] flex items-center justify-center">
+              <svg className="w-7 h-7 text-[#171717]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <h2 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#171717] dark:text-[#F4F0E8] mb-2">
+              Unable to load this page
+            </h2>
+            <p className="text-sm text-[#4F4A43] dark:text-[#D6D0C6] mb-6">
+              Something went wrong while loading. Please check your connection and try again.
+            </p>
+            <button
+              onClick={this.handleRetry}
+              className="min-h-[48px] px-6 py-2.5 border-2 border-[#171717] bg-[#F4512C] text-white text-sm font-bold uppercase tracking-[0.04em] shadow-[4px_4px_0_#171717] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] transition-transform cursor-pointer"
+            >
+              Try again
+            </button>
           </div>
-          <h2 className="text-xl font-semibold text-[#1C1B1A] mb-2" style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
-            Unable to load this page
-          </h2>
-          <p className="text-sm text-[#77736D] mb-6 max-w-sm" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
-            Something went wrong while loading. Please check your connection and try again.
-          </p>
-          <button
-            onClick={this.handleRetry}
-            className="px-6 py-2.5 rounded-lg bg-[#455240] text-white text-sm font-medium hover:bg-[#3A4636] transition-colors cursor-pointer"
-            style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
-          >
-            Try again
-          </button>
         </div>
       );
     }
@@ -138,7 +139,7 @@ const AppContent: React.FC = () => {
     isPasswordRecovery
   } = useApp();
   const shouldReduceMotion = useReducedMotion();
-  const isCinematic = currentPage !== 'admin' && !isPasswordRecovery;
+  const isPublicShell = currentPage !== 'admin' && !isPasswordRecovery;
 
   const [lazyPages, setLazyPages] = React.useState(createLazyPages);
 
@@ -190,26 +191,28 @@ const AppContent: React.FC = () => {
   }, [isPageLoading]);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#F4ECDD] dark:bg-[#1B2A49] text-[#1B2A49] dark:text-[#F4ECDD] transition-colors duration-200">
-      {/* Subtle Paper Grain Texture (Inline SVG Noise) */}
+    <div className="relative min-h-screen flex flex-col bg-[#F4F0E8] dark:bg-[#171717] text-[#171717] dark:text-[#F4F0E8] transition-colors duration-200">
       <PaperGrain />
 
       {/* Accessible Skip-to-Content Link */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[#A8431F] focus:text-[#F4ECDD] focus:font-bold focus:rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#E8B04A]"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[#F4512C] focus:text-white focus:font-bold focus:rounded-none focus:border-2 focus:border-[#171717] focus:outline-none"
       >
         Skip to main content
       </a>
 
-      {isCinematic && <CinematicAtmosphere />}
+      {isPublicShell && <CinematicAtmosphere />}
 
-      <div className="relative z-10 flex flex-1 flex-col">
-        {/* Top Navbar */}
+      <div className={`relative z-10 flex flex-1 flex-col ${isPublicShell ? 'cinematic-shell mh20-shell' : ''}`}>
         <Navbar />
 
         {/* Main Page Content with Smooth Page Fade Transitions */}
-        <main id="main-content" tabIndex={-1} className={currentPage === 'admin' || isPasswordRecovery ? 'admin-shell flex-1' : 'flex-1 focus:outline-none'}>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className={currentPage === 'admin' || isPasswordRecovery ? 'admin-shell flex-1' : 'flex-1 focus:outline-none'}
+        >
         {isPasswordRecovery ? (
           <ResetPasswordPage />
         ) : (
@@ -241,6 +244,8 @@ const AppContent: React.FC = () => {
         </AnimatePresence>
         )}
         </main>
+
+        <Footer />
       </div>
 
       {/* Navigation error recovery overlay */}
@@ -252,24 +257,23 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FAF8F5]"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F4F0E8] dark:bg-[#171717]"
           >
-            <div className="text-center px-6">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#8D5B4C]/10 flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#8D5B4C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="text-center px-6 max-w-md border-2 border-[#171717] dark:border-[#F4F0E8]/30 bg-[#FFFCF5] dark:bg-[#202020] p-8 shadow-[8px_8px_0_#171717] dark:shadow-[8px_8px_0_#000]">
+              <div className="w-14 h-14 mx-auto mb-5 border-2 border-[#171717] bg-[#D9F36A] flex items-center justify-center">
+                <svg className="w-7 h-7 text-[#171717]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold text-[#1C1B1A] mb-2" style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}>
+              <h2 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#171717] dark:text-[#F4F0E8] mb-2">
                 Page could not be loaded
               </h2>
-              <p className="text-sm text-[#77736D] mb-6 max-w-sm mx-auto" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              <p className="text-sm text-[#4F4A43] dark:text-[#D6D0C6] mb-6">
                 We were unable to load this page. Please check your network connection and try again.
               </p>
               <button
                 onClick={retryFailedNavigation}
-                className="px-6 py-2.5 rounded-lg bg-[#455240] text-white text-sm font-medium hover:bg-[#3A4636] transition-colors cursor-pointer"
-                style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}
+                className="min-h-[48px] px-6 py-2.5 border-2 border-[#171717] bg-[#F4512C] text-white text-sm font-bold uppercase tracking-[0.04em] shadow-[4px_4px_0_#171717] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] transition-transform cursor-pointer"
               >
                 Try again
               </button>
@@ -278,35 +282,32 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Global Interactive Modals */}
-      <Suspense fallback={null}>
-        <AnimatePresence>
-          {selectedMeetup && (
-            <MeetupModal
-              key={selectedMeetup.id}
-              meetup={selectedMeetup}
-              onClose={() => setSelectedMeetup(null)}
-            />
-          )}
-        </AnimatePresence>
-      </Suspense>
+      <div className={isPublicShell ? 'cinematic-shell mh20-shell' : ''}>
+        {/* Global Interactive Modals */}
+        <Suspense fallback={null}>
+          <AnimatePresence>
+            {selectedMeetup && (
+              <MeetupModal
+                key={selectedMeetup.id}
+                meetup={selectedMeetup}
+                onClose={() => setSelectedMeetup(null)}
+              />
+            )}
+          </AnimatePresence>
+        </Suspense>
 
-      <Suspense fallback={null}>
-        <AnimatePresence>
-          {selectedArticle && (
-            <ArticleModal
-              key={selectedArticle.id}
-              article={selectedArticle}
-              onClose={() => setSelectedArticle(null)}
-              onSelectArticle={(article) => setSelectedArticle(article)}
-            />
-          )}
-        </AnimatePresence>
-      </Suspense>
-
-      {/* Footer */}
-      <div className="relative z-10">
-        <Footer />
+        <Suspense fallback={null}>
+          <AnimatePresence>
+            {selectedArticle && (
+              <ArticleModal
+                key={selectedArticle.id}
+                article={selectedArticle}
+                onClose={() => setSelectedArticle(null)}
+                onSelectArticle={(article) => setSelectedArticle(article)}
+              />
+            )}
+          </AnimatePresence>
+        </Suspense>
       </div>
 
       {/* Global Full-Screen Book Page-Turning Loader */}

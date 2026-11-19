@@ -48,12 +48,12 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
       document.documentElement.classList.add('dark');
       document.documentElement.setAttribute('data-theme', 'dark');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#1B2A49');
+      if (meta) meta.setAttribute('content', '#171717');
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.setAttribute('data-theme', 'light');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#F4ECDD');
+      if (meta) meta.setAttribute('content', '#F4F0E8');
     }
   };
 
@@ -62,12 +62,12 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-      className={`min-h-[44px] min-w-[44px] p-2.5 rounded-[4px] border border-[#1B2A49]/30 dark:border-[#F4ECDD]/30 text-[#1B2A49] dark:text-[#F4ECDD] hover:bg-[#1B2A49]/5 dark:hover:bg-[#F4ECDD]/10 transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-2 focus-visible:outline-[#A8431F] ${className}`}
+      className={`min-h-[44px] min-w-[44px] p-2.5 rounded-none border-2 border-[#171717] dark:border-[#F4F0E8]/35 text-[#171717] dark:text-[#F4F0E8] bg-[#FFFCF5] dark:bg-[#202020] shadow-[3px_3px_0_#171717] dark:shadow-[3px_3px_0_#000] hover:bg-[#D9F36A] hover:text-[#171717] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F4512C] ${className}`}
     >
       {theme === 'light' ? (
-        <Moon className="w-4 h-4 text-[#1B2A49]" aria-hidden="true" />
+        <Moon className="w-4 h-4" aria-hidden="true" />
       ) : (
-        <Sun className="w-4 h-4 text-[#E8B04A]" aria-hidden="true" />
+        <Sun className="w-4 h-4" aria-hidden="true" />
       )}
     </button>
   );

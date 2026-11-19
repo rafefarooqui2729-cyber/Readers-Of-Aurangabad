@@ -241,7 +241,7 @@ const toggleMute = () => {
   if (availableReels.length === 0) {
     return (
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[#E8E2D5] bg-[#211F1C] px-5 py-8 text-center text-[#E8E2D5]">
+        <div className="rounded-none border border-[#171717] bg-[#171717] px-5 py-8 text-center text-[#171717]">
           <AlertCircle className="mx-auto mb-2 h-6 w-6" />
           <p className="font-semibold">Reels unavailable</p>
           <p className="mt-1 text-sm text-white/70">The published video files could not be loaded.</p>
@@ -254,17 +254,17 @@ const toggleMute = () => {
   return (
     <section ref={sectionRef} className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="mb-7 text-center">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#455240]/20 bg-[#455240]/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#455240] backdrop-blur-xl">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-none border border-[#171717]/20 bg-[#171717]/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#171717] backdrop-blur-xl">
           <Film className="h-3.5 w-3.5" /> Visual Chronicles
         </div>
-        <h2 className="font-serif text-3xl font-bold text-[#1C1B1A] sm:text-4xl">Reel collection</h2>
-        <p className="mt-1 font-serif text-xl italic text-[#455240]">Meetup moments.</p>
+        <h2 className="font-serif text-3xl font-bold text-[#171717] sm:text-4xl">Reel collection</h2>
+        <p className="mt-1 font-serif text-xl italic text-[#171717]">Meetup moments.</p>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel rounded-3xl p-4 sm:p-7 lg:p-9">
+      <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel rounded-none p-4 sm:p-7 lg:p-9">
         <div className="grid items-center gap-7 lg:grid-cols-[360px_minmax(0,1fr)]">
           <div className="mx-auto w-full max-w-[360px]">
-            <div className="relative aspect-[9/16] overflow-hidden rounded-3xl border border-white/20 bg-[#171615] shadow-2xl">
+            <div className="relative aspect-[9/16] overflow-hidden rounded-none border border-white/20 bg-[#171717] shadow-[8px_8px_0_#171717]">
               <video
                 ref={currentRef}
                 key={currentReel.id}
@@ -306,12 +306,12 @@ const toggleMute = () => {
               )}
 
               <div className="absolute inset-x-3 top-3 flex items-center justify-between">
-                <span className="rounded-full border border-white/20 bg-black/45 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-xl">Auto-play loop</span>
-                <span className="rounded-full border border-white/20 bg-black/45 px-3 py-1 text-xs text-white backdrop-blur-xl">{currentIndex + 1} / {availableReels.length}</span>
+                <span className="rounded-none border border-white/20 bg-black/45 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-xl">Auto-play loop</span>
+                <span className="rounded-none border border-white/20 bg-black/45 px-3 py-1 text-xs text-white backdrop-blur-xl">{currentIndex + 1} / {availableReels.length}</span>
               </div>
 
-              <div className="absolute inset-x-3 bottom-3 rounded-2xl border border-white/20 bg-black/45 p-2.5 text-white backdrop-blur-xl">
-                <div className="mb-2 h-1 overflow-hidden rounded-full bg-white/20" role="slider" aria-label="Video progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
+              <div className="absolute inset-x-3 bottom-3 rounded-none border border-white/20 bg-black/45 p-2.5 text-white backdrop-blur-xl">
+                <div className="mb-2 h-1 overflow-hidden rounded-none bg-white/20" role="slider" aria-label="Video progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
                   <div className="h-full bg-white transition-[width]" style={{ width: `${progress}%` }} />
                 </div>
                 <div className="flex items-center justify-between gap-2">
@@ -320,10 +320,10 @@ const toggleMute = () => {
                     <p className="text-[10px] text-white/70">{Math.floor(currentTime)}s / {Number.isFinite(duration) ? Math.floor(duration) : 0}s</p>
                   </div>
                   <div className="flex gap-1.5">
-                    <button type="button" onClick={() => beginTransition(safeCurrentIndex - 1)} aria-label="Previous reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-full text-white"><ChevronLeft className="h-4 w-4" /></button>
-                    <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reel' : 'Play reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-full text-white">{isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}</button>
-                    <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reel' : 'Mute reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-full text-white">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}</button>
-                    <button type="button" onClick={() => beginTransition(safeCurrentIndex + 1)} aria-label="Next reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-full text-white"><ChevronRight className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => beginTransition(safeCurrentIndex - 1)} aria-label="Previous reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white"><ChevronLeft className="h-4 w-4" /></button>
+                    <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reel' : 'Play reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white">{isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}</button>
+                    <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reel' : 'Mute reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}</button>
+                    <button type="button" onClick={() => beginTransition(safeCurrentIndex + 1)} aria-label="Next reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white"><ChevronRight className="h-4 w-4" /></button>
                   </div>
                 </div>
               </div>
@@ -331,9 +331,9 @@ const toggleMute = () => {
           </div>
 
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#455240]/20 bg-[#455240]/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#455240] backdrop-blur-xl"><Sparkles className="h-3.5 w-3.5" /> Community reel</div>
-            <h3 className="font-serif text-3xl font-bold text-[#1C1B1A] sm:text-4xl">{currentReel.title}</h3>
-            {currentReel.caption && <p className="max-w-xl text-base leading-relaxed text-[#595550] sm:text-lg">{currentReel.caption}</p>}
+            <div className="inline-flex items-center gap-2 rounded-none border border-[#171717]/20 bg-[#171717]/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#171717] backdrop-blur-xl"><Sparkles className="h-3.5 w-3.5" /> Community reel</div>
+            <h3 className="font-serif text-3xl font-bold text-[#171717] sm:text-4xl">{currentReel.title}</h3>
+            {currentReel.caption && <p className="max-w-xl text-base leading-relaxed text-[#4F4A43] sm:text-lg">{currentReel.caption}</p>}
           </div>
         </div>
       </motion.div>
