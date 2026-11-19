@@ -3,6 +3,9 @@ import type { Meetup } from '../types';
 import { X, Calendar, Clock, MapPin, ExternalLink, CheckCircle, AlertCircle, Share2 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
+import { getSafeRegistrationUrl } from '../utils/url';
+import { isMeetupUpcoming } from '../utils/meetupStatus';
+import { siteConfig } from '../content/siteConfig';
 
 interface MeetupModalProps {
   meetup: Meetup | null;
@@ -16,20 +19,43 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
   if (!meetup) return null;
 
-  const handleShare = () => {
+  const registrationUrl = getSafeRegistrationUrl(meetup);
+
+  const handleShare = async () => {
     if (navigator.share) {
-      navigator.share({
-        title: meetup.title,
-        text: `Join Readers of Aurangabad for ${meetup.title} on ${meetup.date}!`,
-        url: window.location.href,
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(`${meetup.title} - Readers of Aurangabad\nDate: ${meetup.date}\nRegistration: ${meetup.registrationUrl}`);
+      try {
+        await navigator.share({
+          title: meetup.title,
+          text: `Join Readers of Aurangabad for ${meetup.title} on ${meetup.date}!`,
+          url: window.location.href,
+        });
+      } catch {
+        // Share dismissed or unsupported at call time — nothing else to do.
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        `${meetup.title} - Readers of Aurangabad\nDate: ${meetup.date}`,
+      );
       alert('Event details copied to clipboard!');
+    } catch {
+      alert('Could not copy event details. Please try again.');
     }
   };
 
   const getStatusBadge = () => {
+    // A past date always renders as an archive, even if a stale admin status
+    // was left as "open".
+    if (meetup.registrationStatus !== 'cancelled' && !isMeetupUpcoming(meetup)) {
+      return (
+        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#595550] border border-[#E8E2D5]">
+          Past Gathering Archive
+        </span>
+      );
+    }
+
     switch (meetup.registrationStatus) {
       case 'open':
         return (
@@ -234,14 +260,24 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
               Close
             </button>
 
-            {meetup.registrationStatus === 'open' ? (
+            {isMeetupUpcoming(meetup) && meetup.registrationStatus === 'open' && registrationUrl ? (
               <a
-                href={meetup.registrationUrl}
+                href={registrationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p3-primary-action inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm"
               >
-                <span>Register via Google Form</span>
+                <span>Register now</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            ) : isMeetupUpcoming(meetup) && meetup.registrationStatus === 'open' ? (
+              <a
+                href={siteConfig.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p3-primary-action inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm"
+              >
+                <span>Ask on WhatsApp</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             ) : (

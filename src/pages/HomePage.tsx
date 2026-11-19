@@ -17,6 +17,10 @@ import { FeaturedAnnouncementReel } from '../components/FeaturedAnnouncementReel
 import { ReelCollectionSection } from '../components/ReelCollectionSection';
 import { CommunityGallery } from '../components/CommunityGallery';
 import { UpcomingEventSpotlight } from '../components/UpcomingEventSpotlight';
+import { JoinSection } from '../components/JoinSection';
+import { StatBlock } from '../components/ui/StatBlock';
+import { QuoteCard } from '../components/ui/QuoteCard';
+import { Eyebrow } from '../components/ui/Eyebrow';
 import { scrollToTop } from '../utils/scroll';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 import {
@@ -24,6 +28,12 @@ import {
   getAnnouncementNavigationId,
   scrollToAnnouncement,
 } from '../utils/announcementNavigation';
+import { communityStats } from '../content/stats';
+import { memberVoices } from '../content/testimonials';
+import { siteConfig } from '../content/siteConfig';
+import { isMeetupUpcoming, getMeetupStartMs } from '../utils/meetupStatus';
+import { getSafeRegistrationUrl } from '../utils/url';
+import { teamMembers } from '../content/team';
 
 export const HomePage: React.FC = () => {
   const {
@@ -45,8 +55,8 @@ export const HomePage: React.FC = () => {
   const [announcementsNow] = React.useState(() => Date.now());
   const upcomingMeetups = useMemo(() => {
     return meetups
-      .filter(m => m.isUpcoming && m.isPublished !== false)
-      .sort((a, b) => new Date(a.startsAt || a.date).getTime() - new Date(b.startsAt || b.date).getTime());
+      .filter(m => isMeetupUpcoming(m))
+      .sort((a, b) => getMeetupStartMs(a) - getMeetupStartMs(b));
   }, [meetups]);
   const nearestUpcomingMeetup = upcomingMeetups[0] || null;
   const latestAnnouncement = useMemo(() => {
@@ -210,6 +220,27 @@ export const HomePage: React.FC = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* 1b. PROOF STRIP — Community statistics */}
+      <motion.section
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-40px' }}
+        className="bg-[#F4ECDD] dark:bg-[#1B2A49] border-y border-[#1B2A49]/10 dark:border-[#F4ECDD]/10 py-8 sm:py-10"
+        aria-label="Community statistics"
+      >
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 justify-items-center sm:justify-items-start">
+          {communityStats.map((stat) => (
+            <StatBlock
+              key={stat.id}
+              value={stat.value}
+              suffix={stat.suffix}
+              label={stat.label}
+            />
+          ))}
+        </div>
+      </motion.section>
 
       {/* 2. THE AURANGABAD READING MOVEMENT — Editorial Storytelling Section on Warm Paper */}
       <motion.section
@@ -395,7 +426,7 @@ export const HomePage: React.FC = () => {
           </div>
           <button
             onClick={() => { setCurrentPage('gatherings'); scrollToTop(); }}
-            className="p4-touch-target text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
+            className="p4-touch-target inline-flex min-h-[24px] items-center text-xs font-semibold text-[#20231F] hover:text-[#777C60] gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
           >
             <span>{t.gatherings.viewAllGatherings}</span>
             <ChevronRight className="w-4 h-4" />
@@ -416,17 +447,7 @@ export const HomePage: React.FC = () => {
                 variants={staggerItem}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="glass-card rounded-2xl overflow-hidden flex flex-col cursor-pointer group"
-                onClick={() => setSelectedMeetup(meetup)}
-                role="button"
-                tabIndex={0}
-                aria-label={`View details for ${meetup.title}`}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    setSelectedMeetup(meetup);
-                  }
-                }}
+                className="glass-card rounded-2xl overflow-hidden flex flex-col group"
               >
                 {/* Cover */}
                 {meetup.featuredImage && (
@@ -460,21 +481,33 @@ export const HomePage: React.FC = () => {
 
                   <div className="pt-4 border-t border-[#E5DFD4]/60 flex items-center justify-between gap-3">
                     <button
-                      onClick={(e) => { e.stopPropagation(); setSelectedMeetup(meetup); }}
-                      className="text-xs font-semibold text-[#595550] hover:text-[#20231F] transition-colors cursor-pointer"
+                      type="button"
+                      onClick={() => setSelectedMeetup(meetup)}
+                      className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#595550] hover:text-[#20231F] transition-colors cursor-pointer"
                     >
                       View Details
                     </button>
-                    <a
-                      href={meetup.registrationUrl || meetup.rsvpLink || 'https://forms.gle/readers-of-aurangabad'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="glass-button px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                    >
-                      <span>RSVP Free</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </a>
+                    {meetup.registrationStatus === 'open' && getSafeRegistrationUrl(meetup) ? (
+                      <a
+                        href={getSafeRegistrationUrl(meetup)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="glass-button px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>RSVP Free</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <a
+                        href={siteConfig.whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="glass-button px-5 py-2.5 rounded-full text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Ask on WhatsApp</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -488,12 +521,12 @@ export const HomePage: React.FC = () => {
             <h3 className="font-serif text-2xl font-bold text-[#20231F]">Next Chapter in the Making</h3>
             <p className="text-base text-[#595550] font-serif italic">"{t.gatherings.emptyUpcoming}"</p>
             <a
-              href="https://instagram.com/readers.of.aurangabad"
+              href={siteConfig.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-button text-xs font-semibold mt-2"
             >
-              <span>Follow on Instagram for Announcements</span>
+              <span>Follow {siteConfig.instagramHandle} for Announcements</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -527,7 +560,7 @@ export const HomePage: React.FC = () => {
           <div className="lg:col-span-4 lg:text-right">
             <button
               onClick={() => { setCurrentPage('community'); scrollToTop(); }}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#20231F] hover:text-[#777C60] transition-colors cursor-pointer"
+              className="inline-flex min-h-[24px] items-center gap-1.5 text-xs font-semibold text-[#20231F] hover:text-[#777C60] transition-colors cursor-pointer"
             >
               <span>Explore full archive</span>
               <ChevronRight className="w-4 h-4" />
@@ -537,6 +570,98 @@ export const HomePage: React.FC = () => {
 
         <CommunityGallery compact={true} />
       </motion.section>
+
+      {/* ══════════════════════════════════════════════════════════════
+          8b. FOUNDER'S NOTE — A pull-quote from our published reflection
+          ════════════════════════════════════════════════════════════ */}
+      {memberVoices.length > 0 && (
+        <motion.section
+          variants={revealVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
+          aria-label="A note from our founder"
+        >
+          <div className="pb-6 border-b border-[#E5DFD4] dark:border-[#F4ECDD]/10">
+            <Eyebrow color="clay">From Our Founder</Eyebrow>
+            <h2 className="font-serif font-bold text-[#1B2A49] dark:text-[#F4ECDD] mt-2 leading-tight section-h2">
+              Why we gather.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-6 max-w-3xl">
+            {memberVoices.map((voice) => (
+              <QuoteCard
+                key={voice.id}
+                quote={voice.quote}
+                memberName={voice.memberName}
+                joinYear={voice.joinYear}
+                location={voice.location}
+              />
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          8c. THE TEAM — People behind Readers of Aurangabad
+          ════════════════════════════════════════════════════════════ */}
+      {teamMembers.length > 0 && (
+        <motion.section
+          variants={revealVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
+          aria-label="The team"
+        >
+          <div className="pb-6 border-b border-[#E5DFD4] dark:border-[#F4ECDD]/10">
+            <Eyebrow color="neem">The Circle</Eyebrow>
+            <h2 className="font-serif font-bold text-[#1B2A49] dark:text-[#F4ECDD] mt-2 leading-tight section-h2">
+              People who make it happen.
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {teamMembers.map((member) => (
+              <motion.div
+                key={member.id}
+                whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center text-center gap-3"
+              >
+                {/* Photo or ink placeholder */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[6px] overflow-hidden bg-[#1B2A49] dark:bg-[#243557] shrink-0 border-2 border-[#1B2A49]/10 dark:border-[#F4ECDD]/10">
+                  {member.photoUrl ? (
+                    <img
+                      src={member.photoUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover object-top"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Users className="w-8 h-8 text-[#F4ECDD]/40" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="font-serif font-bold text-sm text-[#1B2A49] dark:text-[#F4ECDD] leading-snug">
+                    {member.name}
+                  </p>
+                  <p className="font-sans text-xs text-[#5E7A63] dark:text-[#D1C5B0] mt-0.5">
+                    {member.role}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════
+          8d. JOIN SECTION — Warm community invitation with form
+          ════════════════════════════════════════════════════════════ */}
+      <JoinSection />
 
       {/* ══════════════════════════════════════════════════════════════
           9. JOURNAL PREVIEW
@@ -560,7 +685,7 @@ export const HomePage: React.FC = () => {
           </div>
           <button
             onClick={() => { setCurrentPage('journal'); scrollToTop(); }}
-            className="text-xs font-semibold text-[#20231F] hover:text-[#777C60] flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#20231F] hover:text-[#777C60] gap-1.5 transition-colors cursor-pointer"
           >
             <span>Browse All Articles</span>
             <ChevronRight className="w-4 h-4" />
@@ -655,7 +780,7 @@ export const HomePage: React.FC = () => {
 </p>
               <button
                 onClick={() => { setCurrentPage('contact'); scrollToTop(); }}
-                className="text-xs font-semibold text-[#777C60] hover:text-[#20231F] pt-1 inline-flex items-center gap-1 cursor-pointer"
+                className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#777C60] hover:text-[#20231F] pt-1 gap-1 cursor-pointer"
               >
                 <span>Submit to Journal</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -704,12 +829,12 @@ export const HomePage: React.FC = () => {
                 Become a Part of Us
               </motion.button>
               <a
-                href="https://instagram.com/readers.of.aurangabad"
+                href={siteConfig.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass-pill px-6 py-3.5 rounded-full text-sm font-semibold text-[#F2EBDD] border-white/20 hover:bg-white/10 transition-all inline-block"
               >
-                @readers.of.aurangabad
+                {siteConfig.instagramHandle}
               </a>
             </div>
           </div>
@@ -743,7 +868,7 @@ export const HomePage: React.FC = () => {
               aria-label="Close announcement"
               className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-[#E8E2D5] text-2xl text-[#595550] transition-colors hover:bg-white"
             >
-              <span aria-hidden="true">?</span>
+              <span aria-hidden="true">×</span>
             </button>
 
             <div className="mb-6 pr-10">

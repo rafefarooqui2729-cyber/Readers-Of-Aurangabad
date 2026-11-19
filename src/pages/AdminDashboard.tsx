@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { isStoragePath } from '../utils/galleryStorage';
+import { isSafeExternalUrl, isSafeActionUrl, safeExternalHref } from '../utils/url';
+import { isMeetupUpcoming } from '../utils/meetupStatus';
 import { validateGalleryImageFile } from '../utils/galleryImageUtils';
 import { validateReelVideoFile } from '../utils/reelStorage';
 import { downloadCsvFile } from '../utils/csvUtils';
@@ -186,7 +188,7 @@ export const AdminDashboard: React.FC = () => {
   const [mAddress, setMAddress] = useState('Aurangabad, Maharashtra');
   const [mDesc, setMDesc] = useState('');
   const [mImage, setMImage] = useState('/images/enhanced/community/meetup-card-1.webp');
-  const [mRegUrl, setMRegUrl] = useState('https://forms.gle/readers-of-aurangabad');
+  const [mRegUrl, setMRegUrl] = useState('');
   const [mStatus, setMStatus] = useState<Meetup['registrationStatus']>('open');
   const [mCapacity, setMCapacity] = useState('40');
   const [mIsUpcoming, setMIsUpcoming] = useState(true);
@@ -325,6 +327,17 @@ export const AdminDashboard: React.FC = () => {
     if (!mTitle.trim()) return;
     setAdminFeedback(null);
 
+    // Fail closed on invalid/unsafe registration URLs rather than persisting
+    // a value that would be rendered as a working link.
+    const safeRegUrl = safeExternalHref(mRegUrl);
+    if (mRegUrl.trim() && !safeRegUrl) {
+      setAdminFeedback({
+        type: 'error',
+        message: 'Enter a valid http(s) registration URL, or leave the field blank.',
+      });
+      return;
+    }
+
     try {
       await addMeetup({
         edition: mEdition.trim(),
@@ -335,8 +348,8 @@ export const AdminDashboard: React.FC = () => {
         address: mAddress.trim(),
         description: mDesc.trim(),
         featuredImage: mImage.trim(),
-        registrationUrl: mRegUrl.trim(),
-        rsvpLink: mRegUrl.trim(),
+        registrationUrl: safeRegUrl ?? '',
+        rsvpLink: safeRegUrl,
         capacity: mCapacity.trim() || undefined,
         activities: ['Silent Reading', 'Passage Discussion', 'Book Swap'],
         isUpcoming: mIsUpcoming,
@@ -503,6 +516,14 @@ export const AdminDashboard: React.FC = () => {
     e.preventDefault();
     if (!annTitle.trim() || !annContent.trim()) return;
     setAdminFeedback(null);
+
+    if (annUrl.trim() && !isSafeActionUrl(annUrl)) {
+      setAdminFeedback({
+        type: 'error',
+        message: 'Enter a valid http(s) URL or an internal page name, or leave the field blank.',
+      });
+      return;
+    }
 
     const res = await addAnnouncement({
       title: annTitle.trim(),
@@ -1053,7 +1074,7 @@ export const AdminDashboard: React.FC = () => {
               <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Total Gatherings</span>
               <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">{meetups.length}</span>
               <span className="text-xs text-[#455240] block mt-1">
-                {meetups.filter(m => m.isUpcoming).length} upcoming scheduled
+                {meetups.filter(m => isMeetupUpcoming(m)).length} upcoming scheduled
               </span>
             </div>
 
@@ -1524,11 +1545,15 @@ export const AdminDashboard: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-xs text-[#595550] leading-relaxed">{ann.content}</p>
-                    {ann.actionUrl && (
-                      <a href={ann.actionUrl} target="_blank" rel="noreferrer" className="text-xs text-[#455240] hover:underline font-semibold block mt-1">
+                    {ann.actionUrl && isSafeExternalUrl(ann.actionUrl) ? (
+                      <a href={ann.actionUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#455240] hover:underline font-semibold block mt-1">
                         Action Link: {ann.actionUrl}
                       </a>
-                    )}
+                    ) : ann.actionUrl ? (
+                      <span className="text-xs text-[#455240] font-semibold block mt-1">
+                        Action page: {ann.actionUrl}
+                      </span>
+                    ) : null}
                   </div>
                   <button
                     onClick={() => {
@@ -1923,12 +1948,15 @@ export const AdminDashboard: React.FC = () => {
                 <div>
                   <label className="block font-semibold text-[#1C1B1A] mb-1">Custom RSVP / Form URL</label>
                   <input
-                    type="text"
+                    type="url"
                     value={mRegUrl}
                     onChange={(e) => setMRegUrl(e.target.value)}
-                    placeholder="https://forms.gle/readers-of-aurangabad"
+                    placeholder="https://… (optional — leave blank if not confirmed)"
                     className="w-full px-3 py-2 rounded-xl glass-input"
                   />
+                  <p className="mt-1 text-[11px] text-[#8C857B]">
+                    Only a confirmed http(s) link is shown as a registration destination. Leave blank to ask readers to contact us instead.
+                  </p>
                 </div>
               </div>
 

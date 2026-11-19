@@ -9,9 +9,17 @@
     <title>Readers of Aurangabad | Building a Reading Community in MH20</title>
     <meta name="title" content="Readers of Aurangabad | Building a Reading Community in MH20" />
     <meta name="description" content="Discover Readers of Aurangabad, a community bringing people together through books, reading meetups, conversations, and stories. Join the reading movement in MH20." />
-    <meta name="keywords" content="Readers of Aurangabad, Book club in Aurangabad, Reading community Aurangabad, Readers of MH20, Book meetups in Aurangabad, Reading culture in Maharashtra, Literary events in Aurangabad, Book discussions Aurangabad" />
     <meta name="author" content="Abdul Rafe Farooqui" />
     <link rel="canonical" href="https://readersofaurangabad.com/" />
+    <script>
+      // Prevent Vercel preview deployments from competing with canonical production domain
+      if (window.location.hostname.includes('vercel.app') && !window.location.hostname.includes('readersofaurangabad.com')) {
+        const meta = document.createElement('meta');
+        meta.name = 'robots';
+        meta.content = 'noindex, nofollow';
+        document.head.appendChild(meta);
+      }
+    </script>
 
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
@@ -27,12 +35,25 @@
     <meta property="twitter:description" content="A reading movement in Aurangabad bringing people, books, ideas, and stories together. Making reading a part of everyday life again." />
     <meta property="twitter:image" content="https://readersofaurangabad.com/images/edited/hero/hero-main-desktop.webp" />
 
-    <!-- Google Fonts for Editorial Literary Typography -->
+    <!-- Google Fonts: Fraunces (Headings/Display), DM Sans (Body/UI), and regional scripts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <meta name="theme-color" content="#0A0B09" />
+    <!-- One theme-color tag, driven by the same roa-theme preference as the rest of the UI. -->
+    <meta name="theme-color" content="#F4ECDD" id="meta-theme-color" />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('roa-theme');
+          var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', isDark);
+          document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+          var meta = document.getElementById('meta-theme-color');
+          if (meta) meta.setAttribute('content', isDark ? '#1B2A49' : '#F4ECDD');
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Structured Data (JSON-LD) for Local Community & Literary Organization -->
     <script type="application/ld+json">
@@ -57,7 +78,7 @@
         "addressCountry": "IN"
       },
       "sameAs": [
-        "https://www.instagram.com/readers.of.aurangabad"
+        "https://instagram.com/books.toread._"
       ]
     }
     </script>
@@ -72,9 +93,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #FAF8F5;
-  color: #1C1B1A;
+  background: #F4ECDD;
+  color: #1B2A49;
   transition: opacity 0.45s ease;
+}
+
+html.dark #initial-loader,
+html[data-theme="dark"] #initial-loader {
+  background: #1B2A49;
+  color: #F4ECDD;
 }
 
 .init-book-stage {
@@ -134,7 +161,7 @@
   overflow: hidden;
   z-index: 2;
   padding: 10px 11px 8px 11px;
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: "Fraunces", Georgia, serif;
   box-sizing: border-box;
 }
 
@@ -154,7 +181,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
   font-size: 5.5px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -197,7 +224,7 @@
   -webkit-backface-visibility: hidden;
   border: 1px solid #DFD5C2;
   padding: 10px 11px 8px 11px;
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: "Fraunces", Georgia, serif;
   box-sizing: border-box;
 }
 
@@ -237,7 +264,7 @@
 }
 
 .init-title {
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: "Fraunces", Georgia, serif;
   font-size: 26px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -246,7 +273,7 @@
 }
 
 .init-subtitle {
-  font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.26em;
@@ -302,39 +329,21 @@
   }
 }
 
-/* Cinematic loader skin — paper pages remain light against a charcoal stage. */
-#initial-loader {
-  background: #0A0B09;
-  color: #F4EFE5;
+/* Match the pre-React surface to the saved theme so the loader never flashes a second palette. */
+html.dark body,
+html[data-theme="dark"] body {
+  background: #1B2A49;
+  color: #F4ECDD;
 }
 
-.init-book-cover {
-  background: #141511;
-  border: 1px solid rgba(201, 167, 97, 0.35);
-  box-shadow:
-    0 24px 60px -12px rgba(0, 0, 0, 0.85),
-    inset 0 0 0 1px rgba(201, 167, 97, 0.18);
-}
+html.dark .init-title,
+html[data-theme="dark"] .init-title { color: #F4ECDD; }
 
-.init-book-spine {
-  background: linear-gradient(90deg, #1C150E 0%, #7A5A2E 25%, #C9A761 50%, #7A5A2E 75%, #1C150E 100%);
-}
-
-.init-page-header {
-  color: #8A6A34;
-  border-bottom-color: rgba(201, 167, 97, 0.35);
-}
-
-.init-title {
-  color: #F4EFE5;
-}
-
-.init-subtitle {
-  color: #9C9587;
-}
+html.dark .init-subtitle,
+html[data-theme="dark"] .init-subtitle { color: #D1C5B0; }
     </style>
   </head>
-  <body class="bg-[#0A0B09] text-[#F4EFE5] antialiased selection:bg-[#C9A761]/30 selection:text-[#F4EFE5]">
+  <body class="bg-[#F4ECDD] text-[#1B2A49] antialiased selection:bg-[#E8B04A]/40 selection:text-[#1B2A49]">
     <!-- Initial Loading Screen (Visible immediately before JS execution) -->
     <div id="initial-loader" role="status" aria-live="polite" aria-label="Loading Readers of Aurangabad">
       <div class="init-book-stage" aria-hidden="true">

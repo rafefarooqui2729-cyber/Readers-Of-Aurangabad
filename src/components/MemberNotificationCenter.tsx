@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Bell, CheckCheck, X, Calendar, Megaphone, AlertCircle, Clock } from 'lucide-react';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
+import { isSafeActionUrl, isSafeExternalUrl } from '../utils/url';
 import type { MemberNotification } from '../types';
 
 interface MemberNotificationCenterProps {
@@ -83,10 +84,11 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
       return;
     }
     if (n.actionUrl) {
-      if (/^https?:\/\//i.test(n.actionUrl)) {
-        window.open(n.actionUrl, '_blank', 'noopener,noreferrer');
-      } else {
-        onNavigate(n.actionUrl);
+      const target = n.actionUrl.trim();
+      if (isSafeExternalUrl(target)) {
+        window.open(target, '_blank', 'noopener,noreferrer');
+      } else if (isSafeActionUrl(target)) {
+        onNavigate(target);
       }
     }
   };

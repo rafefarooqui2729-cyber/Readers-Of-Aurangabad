@@ -8,7 +8,8 @@ export type PageRoute =
   | 'community'
   | 'get-involved'
   | 'contact'
-  | 'admin';
+  | 'admin'
+  | '404';
 
 export interface Meetup {
   id: string;

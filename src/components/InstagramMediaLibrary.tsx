@@ -23,6 +23,7 @@ import { VideoFrameExtractorModal } from './VideoFrameExtractorModal';
 import {
   SAMPLE_INSTAGRAM_POSTS
 } from '../services/instagramService';
+import { safeExternalHref } from '../utils/url';
 
 const CATEGORIES: MediaCategory[] = [
   'Meetups',
@@ -458,15 +459,17 @@ export const InstagramMediaLibrary: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <a
-                      href={item.permalink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1.5 rounded-lg border border-[#E8E2D5] text-[#595550] hover:text-[#1C1B1A]"
-                      title="View original on Instagram"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    {safeExternalHref(item.permalink) ? (
+                      <a
+                        href={safeExternalHref(item.permalink)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-lg border border-[#E8E2D5] text-[#595550] hover:text-[#1C1B1A]"
+                        title="View original on Instagram"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    ) : null}
 
                     <button
                       onClick={() => {

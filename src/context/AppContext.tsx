@@ -22,7 +22,6 @@ import type { Translations } from '../i18n/translations';
 import {
   initialMeetups,
   initialArticles,
-  initialReaderStories,
   initialGallery,
   initialReels
 } from '../data/initialData';
@@ -57,6 +56,7 @@ import {
   buildAnnouncementNavigationUrl,
   getAnnouncementNavigationId,
 } from '../utils/announcementNavigation';
+import { isMeetupUpcoming, normalizeMeetup, parseMeetupDate } from '../utils/meetupStatus';
 
 interface AppContextType {
   lang: Language;
@@ -191,17 +191,23 @@ const VALID_PAGES: PageRoute[] = [
   'community',
   'get-involved',
   'contact',
-  'admin'
+  'admin',
+  '404'
 ];
 
 const getInitialPage = (): PageRoute => {
   if (typeof window === 'undefined') return 'home';
   try {
-    const hash = window.location.hash.replace(/^#[/]?/, '').toLowerCase() as PageRoute;
-    if (VALID_PAGES.includes(hash)) return hash;
+    const rawHash = window.location.hash.replace(/^#[/]?/, '').toLowerCase();
+    if (VALID_PAGES.includes(rawHash as PageRoute)) return rawHash as PageRoute;
 
-    const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '').toLowerCase() as PageRoute;
-    if (VALID_PAGES.includes(path)) return path;
+    const rawPath = window.location.pathname.replace(/^\//, '').replace(/\/$/, '').toLowerCase();
+    if (VALID_PAGES.includes(rawPath as PageRoute)) return rawPath as PageRoute;
+
+    // A non-empty hash or path that is not a recognised page route is invalid.
+    // Unknown hashes are only treated as 404 when they are not accompanied by a
+    // valid pathname route (e.g. /story#code-of-conduct is a valid in-page anchor).
+    if (rawHash || rawPath) return '404';
   } catch {
     // Ignore and fallback to home
   }
@@ -234,6 +240,7 @@ const pageLoaders: Record<PageRoute, () => Promise<unknown>> = {
   'get-involved': () => import('../pages/GetInvolvedPage'),
   contact: () => import('../pages/ContactPage'),
   admin: () => import('../pages/AdminDashboard'),
+  '404': () => import('../pages/NotFoundPage'),
 };
 
 
@@ -497,16 +504,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({children }
   };
 
   const [meetups, setMeetups] = useState<Meetup[]>(() => {
-    return loadWithSanitization('roa_meetups_v4', initialMeetups, hasLegacyUrls);
+    const stored = loadWithSanitization('roa_meetups_v4', initialMeetups, hasLegacyUrls);
+    return Array.isArray(stored) ? stored.map(normalizeMeetup) : initialMeetups.map(normalizeMeetup);
   });
 
   const [articles, setArticles] = useState<JournalArticle[]>(() => {
     return loadWithSanitization('roa_articles_v4', initialArticles, hasLegacyUrls);
   });
 
-  const [stories, setStories] = useState<ReaderStory[]>(() => {
-    return loadWithSanitization('roa_stories_v4', initialReaderStories, hasLegacyUrls);
-  });
+  // Public reader stories require documented consent. Start empty and never
+  // render legacy locally stored narratives without confirmation.
+  const [stories, setStories] = useState<ReaderStory[]>([]);
 
   const [gallery, setGallery] = useState<GalleryItem[]>(() => {
     return loadWithSanitization('roa_gallery_v4', initialGallery, (items) => !Array.isArray(items) || items.length < 12 || hasLegacyUrls(items));
@@ -707,13 +715,17 @@ useEffect(() => {
       if (refreshSeq === refreshSequenceRef.current && !meetupsErr && dbMeetups && dbMeetups.length > 0) {
         anySuccess = true;
         const mapped: Meetup[] = dbMeetups.map(m => {
-          const startsAtMs = new Date(m.starts_at).getTime();
-          const isFuture = Number.isFinite(startsAtMs) && startsAtMs >= Date.now();
-          return {
+          const meetup: Meetup = {
             id: m.id,
             title: m.title,
             edition: m.edition || undefined,
-            date: new Date(m.starts_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+            date: new Date(m.starts_at).toLocaleDateString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }),
             time: m.time_label || '8:30 AM – 11:00 AM IST',
             startsAt: m.starts_at,
             venue: m.venue,
@@ -729,8 +741,9 @@ useEffect(() => {
             highlights: m.highlights || undefined,
             isPublished: m.is_published,
             isCompleted: m.is_completed,
-            isUpcoming: Boolean(m.is_published) && !m.is_completed && m.registration_status !== 'cancelled' && isFuture,
+            isUpcoming: false,
           };
+          return { ...meetup, isUpcoming: isMeetupUpcoming(meetup) };
         });
         setMeetups(mapped);
       }
@@ -1447,41 +1460,8 @@ const resolveAdminSession = async (
 
   // --- CRUD METHODS (SUPABASE FIRST, FALLBACK LOCAL) ---
 
-  /**
-   * Parse a meetup date string into an ISO-8601 timestamp suitable for the
-   * `starts_at timestamptz` column. Handles both ISO strings and the
-   * human-readable locale format produced by the UI ("Sunday, November 15, 2026").
-   * Rejects invalid or empty date strings by throwing an explicit Error rather than
-   * silently corrupting records with the current date.
-   */
-  const parseMeetupDate = (dateStr: string): string => {
-    if (!dateStr || !dateStr.trim()) {
-      throw new Error('Meetup date cannot be empty.');
-    }
-
-    // ISO date / timestamp — fast path
-    const direct = new Date(dateStr);
-    if (!isNaN(direct.getTime())) return direct.toISOString();
-
-    // Human-readable with weekday prefix: "Sunday, November 15, 2026"
-    // Strip the weekday token and try again
-    const stripped = dateStr.replace(/^[A-Za-z]+,\s*/, '').trim();
-    const withoutWeekday = new Date(stripped);
-    if (!isNaN(withoutWeekday.getTime())) return withoutWeekday.toISOString();
-
-    throw new Error(`Invalid meetup date format: "${dateStr}". Please provide a valid date format.`);
-  };
-
-
-  const deriveMeetupIsUpcoming = (m: Partial<Meetup>) => {
-    const startsAt = m.startsAt || (m.date ? parseMeetupDate(m.date) : undefined);
-    const startsAtMs = startsAt ? new Date(startsAt).getTime() : NaN;
-    const isFuture = Number.isFinite(startsAtMs) && startsAtMs >= Date.now();
-    const isPublished = m.isPublished ?? true;
-    const isCompleted = m.isCompleted ?? false;
-    const status = m.registrationStatus ?? 'open';
-    return Boolean(isPublished) && !isCompleted && status !== 'cancelled' && isFuture;
-  };
+  // Date parsing and upcoming derivation live in utils/meetupStatus so seed,
+  // localStorage and Supabase paths all fail closed with the same IST-aware logic.
 
   // Meetup CRUD
   const addMeetup = async (meetupData: Omit<Meetup, 'id'>) => {
@@ -1490,14 +1470,14 @@ const resolveAdminSession = async (
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-    const startsAt = meetupData.startsAt || parseMeetupDate(meetupData.date);
+    const startsAt = meetupData.startsAt || parseMeetupDate(meetupData.date, meetupData.time);
     const localMeetup: Meetup = {
       ...meetupData,
       id: `meetup-${Date.now()}`,
       startsAt,
       isPublished: meetupData.isPublished ?? true,
       isCompleted: meetupData.isCompleted ?? false,
-      isUpcoming: deriveMeetupIsUpcoming({ ...meetupData, startsAt }),
+      isUpcoming: isMeetupUpcoming({ ...meetupData, startsAt }),
     };
 
     // Offline/demo mode: retain local-only functionality.
@@ -1550,7 +1530,7 @@ const resolveAdminSession = async (
         prev.map(meetup => {
           if (meetup.id !== id) return meetup;
           const next = { ...meetup, ...updated };
-          return { ...next, isUpcoming: deriveMeetupIsUpcoming(next) };
+          return { ...next, isUpcoming: isMeetupUpcoming(next) };
         })
       );
       return;
@@ -1561,7 +1541,10 @@ const resolveAdminSession = async (
 
       if (updated.title !== undefined) dbUpdates.title = updated.title;
       if (updated.edition !== undefined) dbUpdates.edition = updated.edition;
-      if (updated.date !== undefined) dbUpdates.starts_at = parseMeetupDate(updated.date);
+      if (updated.date !== undefined) {
+        const existingTime = updated.time ?? meetups.find(m => m.id === id)?.time;
+        dbUpdates.starts_at = parseMeetupDate(updated.date, existingTime);
+      }
       if (updated.startsAt !== undefined) dbUpdates.starts_at = updated.startsAt;
       if (updated.time !== undefined) dbUpdates.time_label = updated.time;
       if (updated.venue !== undefined) dbUpdates.venue = updated.venue;
@@ -1598,7 +1581,7 @@ const resolveAdminSession = async (
           if (meetup.id !== id) return meetup;
           const nextStartsAt = typeof dbUpdates.starts_at === 'string' ? dbUpdates.starts_at : meetup.startsAt;
           const next = { ...meetup, ...updated, startsAt: nextStartsAt };
-          return { ...next, isUpcoming: deriveMeetupIsUpcoming(next) };
+          return { ...next, isUpcoming: isMeetupUpcoming(next) };
         })
       );
     } catch (error) {
@@ -2949,9 +2932,10 @@ const resolveAdminSession = async (
   const unreadNotificationCount = memberNotifications.filter(n => !n.readAt).length;
 
   const resetToDefaults = () => {
-    setMeetups(initialMeetups);
+    setMeetups(initialMeetups.map(normalizeMeetup));
     setArticles(initialArticles);
-    setStories(initialReaderStories);
+    // Public reader stories require documented consent; reset to an empty set.
+    setStories([]);
     setGallery(initialGallery);
     setEnquiries([]);
     setReels(initialReels);

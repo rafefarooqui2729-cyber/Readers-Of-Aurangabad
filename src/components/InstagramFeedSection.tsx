@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, ChevronLeft, ChevronRight, Pause, Play, Volume2, VolumeX } from 'lucide-react';
 import { announcementReel, reelPlaylist, type ReelPlaylistEntry } from '../data/mediaPlaylist';
 import { InstagramIcon } from './Icons';
+import { siteConfig } from '../content/siteConfig';
 
 const VideoFallback = ({ compact = false }: { compact?: boolean }) => (
   <div className={`h-full w-full flex flex-col items-center justify-center text-center bg-[#211F1C] text-[#E8E2D5] ${compact ? 'p-4' : 'p-8'}`}>
@@ -242,7 +243,7 @@ export const InstagramFeedSection: React.FC = () => {
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 space-y-10">
       <div className="border-b border-[#E8E2D5] pb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#8D5B4C]"><InstagramIcon className="h-4 w-4" />@readers.of.aurangabad</div>
+          <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#8D5B4C]"><InstagramIcon className="h-4 w-4" />{siteConfig.instagramHandle}</div>
           <h2 className="font-serif text-3xl font-bold text-[#1C1B1A] sm:text-4xl">Community Media</h2>
         </div>
       </div>

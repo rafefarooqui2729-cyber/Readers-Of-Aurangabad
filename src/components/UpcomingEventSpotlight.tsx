@@ -3,6 +3,9 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Bell, Calendar, Clock, MapPin, ArrowRight, Sparkles } from 'lucide-react';
 import type { Announcement, Meetup } from '../types';
 import { announcementTargetDomId } from '../utils/announcementNavigation';
+import { getMeetupStartMs } from '../utils/meetupStatus';
+import { getSafeRegistrationUrl } from '../utils/url';
+import { siteConfig } from '../content/siteConfig';
 
 interface UpcomingEventSpotlightProps {
   meetup: Meetup | null;
@@ -20,9 +23,9 @@ interface TimeLeft {
   seconds: number;
 }
 
-const getTimeLeft = (targetIso?: string): TimeLeft => {
-  const target = targetIso ? new Date(targetIso).getTime() : NaN;
-  const totalMs = Number.isFinite(target) ? Math.max(0, target - Date.now()) : 0;
+const getTimeLeft = (targetMs?: number): TimeLeft => {
+  const hasTarget = typeof targetMs === 'number' && Number.isFinite(targetMs);
+  const totalMs = hasTarget ? Math.max(0, (targetMs as number) - Date.now()) : 0;
   const totalSeconds = Math.floor(totalMs / 1000);
   const days = Math.floor(totalSeconds / 86400);
   const hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -73,21 +76,27 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
   onViewGatherings,
 }) => {
   const shouldReduceMotion = useReducedMotion() ?? false;
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(meetup?.startsAt));
+  const startMs = getMeetupStartMs(meetup);
+  const hasValidDate = Number.isFinite(startMs);
+  const registrationUrl = meetup ? getSafeRegistrationUrl(meetup) : undefined;
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(startMs));
 
   useEffect(() => {
-    if (!meetup?.startsAt) return;
+    if (!hasValidDate) return;
 
-    const tick = () => setTimeLeft(getTimeLeft(meetup.startsAt));
+    const tick = () => setTimeLeft(getTimeLeft(startMs));
     const timeoutId = window.setTimeout(tick, 0);
     const intervalId = window.setInterval(tick, 1000);
     return () => {
       window.clearTimeout(timeoutId);
       window.clearInterval(intervalId);
     };
-  }, [meetup?.startsAt, meetup?.id]);
+  }, [startMs, hasValidDate, meetup?.id]);
 
-  const isLiveOrPast = useMemo(() => Boolean(meetup?.startsAt) && timeLeft.totalMs <= 0, [meetup?.startsAt, timeLeft.totalMs]);
+  const isLiveOrPast = useMemo(
+    () => hasValidDate && timeLeft.totalMs <= 0,
+    [hasValidDate, timeLeft.totalMs],
+  );
 
   const announcementPreview = useMemo(() => {
     if (!announcement) return '';
@@ -142,9 +151,17 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
 
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-[#777C60] font-semibold mb-3">
-                    {isLiveOrPast ? 'Event is starting soon or in progress' : 'Countdown to gathering'}
+                    {!hasValidDate
+                      ? 'Date to be confirmed'
+                      : isLiveOrPast
+                      ? 'Event is starting soon or in progress'
+                      : 'Countdown to gathering'}
                   </p>
-                  {isLiveOrPast ? (
+                  {!hasValidDate ? (
+                    <div className="rounded-2xl border border-[#455240]/15 bg-white/70 px-5 py-4 text-[#455240] font-medium">
+                      The date for this gathering is yet to be confirmed. Check the gathering archive for updates.
+                    </div>
+                  ) : isLiveOrPast ? (
                     <div className="rounded-2xl border border-[#455240]/15 bg-white/70 px-5 py-4 text-[#455240] font-medium">
                       This gathering is happening now or its scheduled start time has arrived. Check details for the latest update.
                     </div>
@@ -163,17 +180,26 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                     onClick={() => onViewEvent(meetup)}
                     className="glass-button px-5 py-3 rounded-full text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>View details & register</span>
+                    <span>View details</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                  {meetup.registrationUrl && (
+                  {registrationUrl && meetup.registrationStatus === 'open' ? (
                     <a
-                      href={meetup.registrationUrl}
+                      href={registrationUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="glass-button-secondary px-5 py-3 rounded-full text-sm font-semibold cursor-pointer"
                     >
-                      {meetup.registrationStatus === 'open' ? 'Register now' : 'Registration info'}
+                      Register now
+                    </a>
+                  ) : (
+                    <a
+                      href={siteConfig.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="glass-button-secondary px-5 py-3 rounded-full text-sm font-semibold cursor-pointer"
+                    >
+                      Ask on WhatsApp
                     </a>
                   )}
                 </div>

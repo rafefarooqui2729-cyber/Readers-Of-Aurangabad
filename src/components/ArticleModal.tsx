@@ -32,19 +32,28 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
     .filter(a => a.id !== article.id && (a.category === article.category || a.language === article.language))
     .slice(0, 2);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (navigator.share) {
-      navigator.share({
-        title: article.title,
-        text: `Read "${article.title}" by ${article.author} on Readers of Aurangabad Journal`,
-        url: window.location.href,
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(
+      try {
+        await navigator.share({
+          title: article.title,
+          text: `Read "${article.title}" by ${article.author} on Readers of Aurangabad Journal`,
+          url: window.location.href,
+        });
+      } catch {
+        // Share dismissed or unsupported at call time — nothing else to do.
+      }
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
         `"${article.title}" by ${article.author}\nReaders of Aurangabad Journal\nRead here: ${window.location.origin}`
       );
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setCopied(false);
     }
   };
 

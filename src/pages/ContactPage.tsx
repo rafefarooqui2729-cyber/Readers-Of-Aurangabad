@@ -1,22 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import {
-  Mail,
-  MapPin,
-  Send,
-  CheckCircle,
-  ArrowUpRight,
-  MessageSquare
-} from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { Mail, MapPin, Send, CheckCircle, ArrowUpRight } from 'lucide-react';
 import { InstagramIcon } from '../components/Icons';
+import { Button, fieldClasses, FormField, PageHero, PaperPanel, SectionHeading } from '../components/ui';
+import { siteConfig } from '../content/siteConfig';
 
 type ContactErrorField = 'name' | 'email' | 'message' | 'consent' | 'form';
 
 export const ContactPage: React.FC = () => {
   const { addEnquiry } = useApp();
-  const shouldReduceMotion = useReducedMotion();
-  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -60,7 +52,7 @@ export const ContactPage: React.FC = () => {
         email: email.trim(),
         message: message.trim(),
         consent,
-        details: { subject: subject.trim() || 'General Inquiry' }
+        details: { subject: subject.trim() || 'General Inquiry' },
       });
       setIsSubmitting(false);
       setSuccess(true);
@@ -72,174 +64,140 @@ export const ContactPage: React.FC = () => {
     } catch (submissionError) {
       setIsSubmitting(false);
       setErrorField('form');
-      setError(submissionError instanceof Error ? submissionError.message : 'Unable to submit your message. Please try again.');
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : 'Unable to submit your message. Please try again.'
+      );
     }
   };
 
   return (
-    <div className="p2-page p2-contact pb-16 paper-grain overflow-hidden">
+    <div className="paper-grain overflow-hidden pb-16">
+      <PageHero
+        image="/images/enhanced/gallery/roa-054-2026-11-05.webp"
+        alt="Readers gathered for a Sunday session in Aurangabad"
+        eyebrow="We would love to hear from you"
+        title="Get in Touch"
+        lead="Whether you have a question about our meetups, want to suggest a book, or simply want to say hello."
+      />
 
-      {/* 1. FULL-BLEED HERO */}
-      <section className="p2-hero p2-hero--contact relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/images/enhanced/gallery/roa-054-2026-11-05.webp"
-            alt="Readers of Aurangabad gathering"
-            className="w-full h-full object-cover object-[center_20%]"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeCurve }}
-          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
-        >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
-            <MessageSquare className="w-3.5 h-3.5 text-[#B89A65]" />
-            <span>We'd Love to Hear From You</span>
-          </span>
-
-          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
-          >
-            Get in Touch
-          </h1>
-
-          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-xl leading-relaxed">
-            "Whether you have a question about our meetups, want to suggest a book, or simply say hello."
-          </p>
-        </motion.div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
-      </section>
-
-      {/* 2. CONTACT CONTENT GRID */}
-      <section className="p2-contact-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
-        <div className="p2-contact-grid grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
-
-          {/* Left Column: Official Contact Metadata (5 cols) */}
-          <div className="p2-contact-details lg:col-span-5 space-y-8">
-            <div className="p2-contact-card paper-card p-8 rounded-3xl space-y-6 bg-white border border-[#E8E2D5]">
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-                The Community Headquarters
-              </h3>
-
-              <div className="space-y-5 text-sm">
-
-                {/* Location */}
-                <div className="p2-contact-method flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
+      <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+          {/* Contact details */}
+          <div className="space-y-6 lg:col-span-5">
+            <PaperPanel className="rounded-[6px] p-6 sm:p-8">
+              <SectionHeading eyebrow="Where to find us" title="The community desk" />
+              <dl className="mt-7 space-y-6 font-sans text-sm">
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                    <MapPin className="h-5 w-5" aria-hidden="true" />
+                  </span>
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Location</span>
-                    <p className="font-medium text-[#1C1B1A]">Aurangabad (Chhatrapati Sambhajinagar)</p>
-                    <p className="text-xs text-[#595550]">Maharashtra 431001, India</p>
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                      Location
+                    </dt>
+                    <dd className="mt-1 font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                      Aurangabad (Chhatrapati Sambhajinagar)
+                    </dd>
+                    <dd className="text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                      Maharashtra 431001, India
+                    </dd>
                   </div>
                 </div>
-
-                {/* Email */}
-                <div className="p2-contact-method flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] shrink-0">
-                    <Mail className="w-5 h-5" />
-                  </div>
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#5E7A63]/30 text-[#5E7A63]">
+                    <Mail className="h-5 w-5" aria-hidden="true" />
+                  </span>
                   <div className="min-w-0 break-words">
-                    <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Official Inquiries</span>
-                    <p className="font-medium text-[#1C1B1A]">contact@readersofaurangabad.com</p>
-                    <p className="text-xs text-[#595550]">readersofaurangabad@gmail.com</p>
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                      General enquiries
+                    </dt>
+                    <dd className="mt-1 font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                      <a
+                        href="mailto:readersofaurangabad@gmail.com"
+                        className="inline-flex min-h-[24px] items-center hover:text-[#A8431F] hover:underline"
+                      >
+                        readersofaurangabad@gmail.com
+                      </a>
+                    </dd>
                   </div>
                 </div>
-
-                {/* Instagram */}
-                <div className="p2-contact-method flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0">
-                    <InstagramIcon className="w-5 h-5" />
-                  </div>
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                    <InstagramIcon className="h-5 w-5" />
+                  </span>
                   <div>
-                    <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Official Instagram</span>
-                    <a
-                      href="https://instagram.com/readers.of.aurangabad"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-[#1C1B1A] hover:text-[#455240] flex items-center gap-1 transition-colors"
-                    >
-                      <span>@readers.of.aurangabad</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-[#8D5B4C]" />
-                    </a>
-                    <p className="text-xs text-[#595550]">Fastest for weekly gathering announcements</p>
+                    <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63]">
+                      Instagram
+                    </dt>
+                    <dd className="mt-1">
+                      <a
+                        href={siteConfig.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-[24px] items-center gap-1 font-bold text-[#1B2A49] hover:text-[#A8431F] dark:text-[#F4ECDD] dark:hover:text-[#E8B04A]"
+                      >
+                        {siteConfig.instagramHandle}
+                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                      </a>
+                    </dd>
+                    <dd className="text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                      Fastest for weekly gathering announcements.
+                    </dd>
                   </div>
                 </div>
+              </dl>
+              <p className="mt-7 border-t border-[#1B2A49]/10 pt-5 font-sans text-xs leading-relaxed text-[#4B5A77] dark:border-[#F4ECDD]/10 dark:text-[#D1C5B0]">
+                <strong className="text-[#1B2A49] dark:text-[#F4ECDD]">Note on registrations:</strong>{' '}
+                To RSVP for the next Sunday gathering, use the official form linked from the
+                Gatherings page.
+              </p>
+            </PaperPanel>
 
-              </div>
-
-              <div className="pt-4 border-t border-[#F4EFEA] text-xs text-[#8C857B] leading-relaxed">
-                <p>
-                  <strong>Note on Meetup Registrations:</strong> If you are looking to RSVP for our next Sunday gathering, please head over to the Gatherings page to access the official Google Form.
+            <div className="relative h-48 overflow-hidden bg-[#1B2A49]">
+              <img
+                src="/images/enhanced/community/card-2.webp"
+                alt="Sunday morning gathering in an Aurangabad public park"
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover object-[center_25%]"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1B2A49]/90 to-transparent px-4 pb-4 pt-10">
+                <p className="font-sans text-xs font-bold text-[#F4ECDD]">
+                  Historic grounds &amp; garden lawns
+                </p>
+                <p className="font-sans text-[11px] text-[#F4ECDD]/75">
+                  Where our Sunday chapters assemble
                 </p>
               </div>
             </div>
-
-            {/* Gathering Location Photography */}
-            <div className="p2-contact-photo rounded-2xl overflow-hidden border border-[#E8E2D5] shadow-sm relative group bg-[#1C1B1A]">
-              <img
-                src="/images/enhanced/community/card-2.webp"
-                alt="Sunday morning gatherings in Aurangabad public parks"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-48 object-cover object-[center_25%] opacity-90 group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
-                <span className="text-white text-xs font-semibold">Historic Grounds & Garden Lawns</span>
-                <span className="text-[10px] text-[#E8E2D5]">Where our Sunday chapters assemble</span>
-              </div>
-            </div>
-
-            {/* Quick Literary Quotation */}
-            <div className="p2-contact-quote p-6 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] space-y-2">
-              <p className="font-serif italic text-sm text-[#1C1B1A]">
-                "In a quiet circle, every voice has weight, and every silence is understood."
-              </p>
-              <span className="text-[11px] font-semibold text-[#8D5B4C] uppercase tracking-wider block">
-                — Readers of MH20
-              </span>
-            </div>
           </div>
 
-          {/* Right Column: Interactive Contact Form (7 cols) */}
-          <div className="p2-contact-form-column lg:col-span-7">
-            <div className="p3-form-card p2-contact-form-card paper-card p-8 sm:p-10 rounded-3xl bg-white border border-[#E8E2D5]">
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A] mb-2">
-                Send Us a Note
-              </h3>
-              <p className="text-sm text-[#595550] mb-6">
-                Fill in the form below and a member of the organizing circle will get back to you.
-              </p>
-
-              <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="p3-form p2-contact-form space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="contact-name" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                      Your Name <span className="text-red-500">*</span>
-                    </label>
+          {/* Form */}
+          <div className="lg:col-span-7">
+            <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+              <SectionHeading
+                eyebrow="Write to us"
+                title="Send us a note"
+                description="A member of the organizing circle will read your message and reply by email."
+              />
+              <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="mt-8 space-y-5">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <FormField id="contact-name" label="Your name" required invalid={errorField === 'name'}>
                     <input
                       id="contact-name"
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Ayesha Siddiqui"
+                      placeholder="Your name"
                       aria-invalid={errorField === 'name' || undefined}
                       aria-describedby={errorField === 'name' ? 'contact-form-error' : undefined}
-                      className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                      className={fieldClasses}
                     />
-                  </div>
-
-                  <div>
-                    <label htmlFor="contact-email" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
+                  </FormField>
+                  <FormField id="contact-email" label="Email address" required invalid={errorField === 'email'}>
                     <input
                       id="contact-email"
                       type="email"
@@ -249,29 +207,21 @@ export const ContactPage: React.FC = () => {
                       placeholder="name@example.com"
                       aria-invalid={errorField === 'email' || undefined}
                       aria-describedby={errorField === 'email' ? 'contact-form-error' : undefined}
-                      className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                      className={fieldClasses}
                     />
-                  </div>
+                  </FormField>
                 </div>
-
-                <div>
-                  <label htmlFor="contact-subject" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                    Subject / Topic
-                  </label>
+                <FormField id="contact-subject" label="Subject / topic">
                   <input
                     id="contact-subject"
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    placeholder="e.g. Venue Suggestion / Literary Journal Submission"
-                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    placeholder="Venue suggestion / journal submission"
+                    className={fieldClasses}
                   />
-                </div>
-
-                <div>
-                  <label htmlFor="contact-message" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                    Message <span className="text-red-500">*</span>
-                  </label>
+                </FormField>
+                <FormField id="contact-message" label="Message" required invalid={errorField === 'message'}>
                   <textarea
                     id="contact-message"
                     rows={5}
@@ -281,11 +231,10 @@ export const ContactPage: React.FC = () => {
                     placeholder="Write your message here..."
                     aria-invalid={errorField === 'message' || undefined}
                     aria-describedby={errorField === 'message' ? 'contact-form-error' : undefined}
-                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+                    className={fieldClasses}
                   />
-                </div>
-
-                <div className="flex items-start gap-3 pt-1">
+                </FormField>
+                <div className="flex items-start gap-3">
                   <input
                     id="contact-consent"
                     type="checkbox"
@@ -294,56 +243,54 @@ export const ContactPage: React.FC = () => {
                     onChange={(e) => setConsent(e.target.checked)}
                     aria-invalid={errorField === 'consent' || undefined}
                     aria-describedby={errorField === 'consent' ? 'contact-form-error' : undefined}
-                    className="p3-checkbox mt-0.5 w-4 h-4 rounded text-[#455240] focus:ring-[#455240] border-[#E8E2D5] bg-[#FAF8F5] cursor-pointer"
+                    className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#A8431F]"
                   />
-                  <label htmlFor="contact-consent" className="text-xs text-[#595550] leading-relaxed cursor-pointer select-none">
-                    I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry. <span className="text-red-500">*</span>
+                  <label
+                    htmlFor="contact-consent"
+                    className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]"
+                  >
+                    {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
+                    <span className="text-[#A8431F]">*</span>
                   </label>
                 </div>
 
-                {error && (
+                {error ? (
                   <p
                     id="contact-form-error"
                     role="alert"
                     aria-live="assertive"
-                    className="p3-form-error text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200"
+                    className="border border-[#A8431F]/40 bg-[#A8431F]/10 p-3 font-sans text-xs text-[#A8431F]"
                   >
                     {error}
                   </p>
-                )}
+                ) : null}
 
-                {success && (
+                {success ? (
                   <div
                     role="status"
                     aria-live="polite"
-                    className="p3-form-success flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200"
+                    className="flex items-center gap-2 border border-[#5E7A63]/40 bg-[#5E7A63]/10 p-3 font-sans text-xs text-[#5E7A63] dark:text-[#8BA890]"
                   >
-                    <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+                    <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                     <span>Your message has been received! We will reply via email shortly.</span>
                   </div>
-                )}
+                ) : null}
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="p3-form-submit w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
-                >
+                <Button type="submit" disabled={isSubmitting} className="w-full">
                   {isSubmitting ? (
                     <span>Sending your note...</span>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
-                      <span>Send Message</span>
+                      <Send className="mr-2 h-4 w-4" aria-hidden="true" />
+                      Send message
                     </>
                   )}
-                </button>
+                </Button>
               </form>
-            </div>
+            </PaperPanel>
           </div>
-
         </div>
       </section>
-
     </div>
   );
 };

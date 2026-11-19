@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { BookLoader } from './components/BookLoader';
 import { CinematicAtmosphere } from './components/CinematicAtmosphere';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import { PaperGrain } from './components/ui/PaperGrain';
 
 const MeetupModal = React.lazy(() => import('./components/MeetupModal').then(m => ({ default: m.MeetupModal })));
 const ArticleModal = React.lazy(() => import('./components/ArticleModal').then(m => ({ default: m.ArticleModal })));
@@ -42,6 +43,7 @@ const pageFactories = {
   'get-involved': () => import('./pages/GetInvolvedPage').then(m => ({ default: m.GetInvolvedPage as React.ComponentType<unknown> })),
   contact: () => import('./pages/ContactPage').then(m => ({ default: m.ContactPage as React.ComponentType<unknown> })),
   admin: () => import('./pages/AdminDashboard').then(m => ({ default: m.AdminDashboard as React.ComponentType<unknown> })),
+  '404': () => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage as React.ComponentType<unknown> })),
 };
 
 const createLazyPages = () => ({
@@ -53,6 +55,7 @@ const createLazyPages = () => ({
   'get-involved': lazyRetryable(pageFactories['get-involved']),
   contact: lazyRetryable(pageFactories.contact),
   admin: lazyRetryable(pageFactories.admin),
+  '404': lazyRetryable(pageFactories['404']),
 });
 
 /**
@@ -187,23 +190,26 @@ const AppContent: React.FC = () => {
   }, [isPageLoading]);
 
   return (
-    <div className={isCinematic ? 'cinematic-shell min-h-screen flex flex-col' : 'min-h-screen flex flex-col bg-[#FAF8F5] text-[#1C1B1A] relative selection:bg-[#455240]/15 selection:text-[#1C1B1A]'}>
-      {isCinematic ? (
-        <CinematicAtmosphere />
-      ) : (
-        <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden="true">
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#455240]/7 blur-[120px]" />
-          <div className="absolute top-1/3 -right-36 w-[28rem] h-[28rem] rounded-full bg-[#8D5B4C]/6 blur-[140px]" />
-          <div className="absolute bottom-1/4 -left-28 w-80 h-80 rounded-full bg-[#B88B4A]/6 blur-[130px]" />
-        </div>
-      )}
+    <div className="relative min-h-screen flex flex-col bg-[#F4ECDD] dark:bg-[#1B2A49] text-[#1B2A49] dark:text-[#F4ECDD] transition-colors duration-200">
+      {/* Subtle Paper Grain Texture (Inline SVG Noise) */}
+      <PaperGrain />
+
+      {/* Accessible Skip-to-Content Link */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[#A8431F] focus:text-[#F4ECDD] focus:font-bold focus:rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#E8B04A]"
+      >
+        Skip to main content
+      </a>
+
+      {isCinematic && <CinematicAtmosphere />}
 
       <div className="relative z-10 flex flex-1 flex-col">
         {/* Top Navbar */}
         <Navbar />
 
         {/* Main Page Content with Smooth Page Fade Transitions */}
-        <main className={currentPage === 'admin' || isPasswordRecovery ? 'admin-shell flex-1' : 'flex-1'}>
+        <main id="main-content" tabIndex={-1} className={currentPage === 'admin' || isPasswordRecovery ? 'admin-shell flex-1' : 'flex-1 focus:outline-none'}>
         {isPasswordRecovery ? (
           <ResetPasswordPage />
         ) : (
@@ -228,6 +234,7 @@ const AppContent: React.FC = () => {
                 {currentPage === 'get-involved' && React.createElement(lazyPages['get-involved'])}
                 {currentPage === 'contact' && React.createElement(lazyPages.contact)}
                 {currentPage === 'admin' && React.createElement(lazyPages.admin)}
+                {currentPage === '404' && React.createElement(lazyPages['404'])}
               </Suspense>
             </PageErrorBoundary>
           </motion.div>

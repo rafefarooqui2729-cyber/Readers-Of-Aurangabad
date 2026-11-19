@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import type { JournalCategory } from '../types';
-import {
-  Search,
-  Clock,
-  ArrowRight,
-  Globe,
-  Feather
-} from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Clock, Feather, Globe, Search } from 'lucide-react';
 import { scrollToTop } from '../utils/scroll';
+import { Button, fieldClasses, FilterButton, PageHero, PaperPanel } from '../components/ui';
 
 const CATEGORIES: JournalCategory[] = [
   'Reader Stories',
@@ -19,7 +13,15 @@ const CATEGORIES: JournalCategory[] = [
   'Poetry',
   'Opinions',
   'Creative Writing',
-  'Community Experiences'
+  'Community Experiences',
+];
+
+const LANGUAGES: { code: string; label: string }[] = [
+  { code: 'all', label: 'All' },
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिन्दी' },
+  { code: 'ur', label: 'اردو' },
+  { code: 'mr', label: 'मराठी' },
 ];
 
 export const JournalPage: React.FC = () => {
@@ -27,294 +29,229 @@ export const JournalPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const shouldReduceMotion = useReducedMotion();
-  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
-  const filteredArticles = articles.filter((art) => {
-    const matchesCategory = selectedCategory === 'All' || art.category === selectedCategory;
-    const matchesLanguage = selectedLanguage === 'all' || art.language === selectedLanguage;
-    const matchesSearch = searchQuery.trim() === '' ||
-      art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      art.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      art.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredArticles = articles.filter((article) => {
+    const matchesCategory =
+      selectedCategory === 'All' || article.category === selectedCategory;
+    const matchesLanguage =
+      selectedLanguage === 'all' || article.language === selectedLanguage;
+    const query = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      query === '' ||
+      article.title.toLowerCase().includes(query) ||
+      article.author.toLowerCase().includes(query) ||
+      article.excerpt.toLowerCase().includes(query);
     return matchesCategory && matchesLanguage && matchesSearch;
   });
 
+  const clearFilters = () => {
+    setSelectedCategory('All');
+    setSelectedLanguage('all');
+    setSearchQuery('');
+  };
+
   return (
-    <div className="p2-page p2-journal pb-16 paper-grain overflow-hidden">
+    <div className="paper-grain overflow-hidden pb-16">
+      <PageHero
+        image="/images/enhanced/gallery/roa-019-2026-11-05.webp"
+        alt="Books open for reading"
+        eyebrow="Writing from the reading community"
+        title="The Journal"
+        lead="Essays, reader memoirs, cultural reflections, and poetry from Aurangabad, the Deccan, and beyond."
+      />
 
-      {/* Full-bleed hero — roa-019 (books/pages) */}
-      <section className="p2-hero p2-hero--journal relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/images/enhanced/gallery/roa-019-2026-11-05.webp"
-            alt="Books and reading"
-            className="w-full h-full object-cover object-[center_20%]"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/92 via-[#20231F]/30 to-[#20231F]/10" />
-        </div>
+      <div className="space-y-10 sm:space-y-12">
+        <section className="mx-auto max-w-7xl px-5 pt-8 sm:px-8 lg:px-12" aria-label="Find articles">
+          <div className="max-w-xl">
+            <label htmlFor="journal-search" className="mb-2 block font-sans text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+              Search the journal
+            </label>
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5E7A63] dark:text-[#8BA890]"
+                aria-hidden="true"
+              />
+              <input
+                id="journal-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search articles, authors, or literary topics…"
+                className={`${fieldClasses} pl-11`}
+              />
+            </div>
+          </div>
+        </section>
 
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeCurve }}
-          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
-        >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
-            <Feather className="w-3 h-3 text-[#B89A65]" />
-            Independent Literary Magazine
-          </span>
-
-          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
+        <section className="mx-auto max-w-7xl space-y-5 px-5 sm:px-8 lg:px-12" aria-label="Filter articles">
+          <div
+            className="flex items-center gap-2 overflow-x-auto pb-2"
+            role="group"
+            aria-label="Filter by category"
           >
-            The Journal
-          </h1>
-
-          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
-            "Essays, reader memoirs, cultural reflections, and poetry from Aurangabad, the Deccan, and beyond."
-          </p>
-        </motion.div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
-      </section>
-
-      <div className="space-y-8 sm:space-y-10">
-      {/* Search Bar */}
-      <div className="p2-journal-search max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-8">
-        <div className="max-w-md relative">
-          <Search className="w-4 h-4 text-[#8C857B] absolute left-4 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search articles, authors, or literary topics..."
-            className="w-full pl-11 pr-4 py-3 rounded-full glass-input focus:border-[#777C60] focus:ring-1 focus:ring-[#777C60] outline-none text-sm text-[#20231F] placeholder-[#8C857B] transition-all"
-          />
-        </div>
-      </div>
-
-      {/* 2. CATEGORY & LANGUAGE FILTER BARS */}
-      <section className="p2-journal-filters max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 space-y-4">
-
-        {/* Categories Horizontal Scroll */}
-        <div className="p2-category-bar flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          <button
-            data-active={selectedCategory === 'All'}
-            onClick={() => setSelectedCategory('All')}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-              selectedCategory === 'All'
-                ? 'bg-[#1C1B1A] text-white shadow-sm'
-                : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
-            }`}
-          >
-            All Categories ({articles.length})
-          </button>
-          {CATEGORIES.map((cat) => {
-            const count = articles.filter(a => a.category === cat).length;
-            return (
-              <button
-                key={cat}
-                data-active={selectedCategory === cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-[#1C1B1A] text-white shadow-sm'
-                    : 'bg-white text-[#595550] border border-[#E8E2D5] hover:border-[#1C1B1A]'
-                }`}
-              >
-                {cat} {count > 0 && `(${count})`}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Language Filter Tags */}
-        <div className="p2-language-bar flex flex-wrap items-center justify-between gap-y-2 text-xs text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
-          <div className="flex flex-wrap items-center gap-2 gap-y-1">
-            <Globe className="w-3.5 h-3.5 text-[#455240]" />
-            <span className="font-semibold text-[#1C1B1A]">Language:</span>
-            <button
-              data-active={selectedLanguage === 'all'}
-              onClick={() => setSelectedLanguage('all')}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                selectedLanguage === 'all' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
-              }`}
-            >
-              All
-            </button>
-            <button
-              data-active={selectedLanguage === 'en'}
-              onClick={() => setSelectedLanguage('en')}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                selectedLanguage === 'en' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
-              }`}
-            >
-              English
-            </button>
-            <button
-              data-active={selectedLanguage === 'hi'}
-              onClick={() => setSelectedLanguage('hi')}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                selectedLanguage === 'hi' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
-              }`}
-            >
-              हिन्दी
-            </button>
-            <button
-              data-active={selectedLanguage === 'ur'}
-              onClick={() => setSelectedLanguage('ur')}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                selectedLanguage === 'ur' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
-              }`}
-            >
-              اردو
-            </button>
-            <button
-              data-active={selectedLanguage === 'mr'}
-              onClick={() => setSelectedLanguage('mr')}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                selectedLanguage === 'mr' ? 'bg-[#1C1B1A] text-white font-semibold' : 'hover:text-[#1C1B1A]'
-              }`}
-            >
-              मराठी
-            </button>
+            <FilterButton active={selectedCategory === 'All'} onClick={() => setSelectedCategory('All')}>
+              All categories ({articles.length})
+            </FilterButton>
+            {CATEGORIES.map((category) => {
+              const count = articles.filter((article) => article.category === category).length;
+              return (
+                <FilterButton
+                  key={category}
+                  active={selectedCategory === category}
+                  onClick={() => setSelectedCategory(category)}
+                  className="shrink-0"
+                >
+                  {category}
+                  {count > 0 ? ` (${count})` : ''}
+                </FilterButton>
+              );
+            })}
           </div>
 
-          <span>Showing {filteredArticles.length} published pieces</span>
-        </div>
+          <div className="flex flex-col gap-4 border-t border-[#1B2A49]/15 pt-5 dark:border-[#F4ECDD]/15 sm:flex-row sm:items-end sm:justify-between">
+            <div role="group" aria-label="Filter by language">
+              <p className="mb-2 flex items-center gap-2 font-sans text-xs font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                <Globe className="h-4 w-4 text-[#5E7A63] dark:text-[#8BA890]" aria-hidden="true" />
+                Language
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {LANGUAGES.map((language) => (
+                  <FilterButton
+                    key={language.code}
+                    active={selectedLanguage === language.code}
+                    onClick={() => setSelectedLanguage(language.code)}
+                    className="min-h-[36px] px-3 py-1.5"
+                  >
+                    {language.label}
+                  </FilterButton>
+                ))}
+              </div>
+            </div>
+            <p className="font-sans text-xs text-[#4B5A77] dark:text-[#D1C5B0]" aria-live="polite">
+              Showing {filteredArticles.length} published {filteredArticles.length === 1 ? 'piece' : 'pieces'}
+            </p>
+          </div>
+        </section>
 
-      </section>
-
-      {/* 3. ARTICLES MAGAZINE GRID */}
-      <section className="p2-journal-articles max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {filteredArticles.length > 0 ? (
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            variants={{ hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.06 } } }}
-            className="p2-article-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {filteredArticles.map((article) => {
-              const isUrdu = article.language === 'ur';
-              return (
-                <motion.div
-                  key={article.id}
-                  variants={{ hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: easeCurve } } }}
-                  whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-                  onClick={() => setSelectedArticle(article)}
-                  className="p2-article-card paper-card rounded-2xl overflow-hidden cursor-pointer flex flex-col justify-between group transition-shadow"
-                >
-                  <div>
-                    <div className="p2-article-image relative h-52 sm:h-56 overflow-hidden bg-[#1C1B1A]">
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12" aria-label="Journal articles">
+          {filteredArticles.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredArticles.map((article) => {
+                const isUrdu = article.language === 'ur';
+                const isIndic = article.language === 'hi' || article.language === 'mr';
+                return (
+                  <button
+                    key={article.id}
+                    type="button"
+                    onClick={() => setSelectedArticle(article)}
+                    aria-label={`Read ${article.title}`}
+                    className="group flex h-full w-full flex-col border border-[#1B2A49]/15 bg-[#FFF8EA] text-left transition-colors hover:border-[#A8431F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#A8431F] dark:border-[#F4ECDD]/15 dark:bg-[#243557] dark:hover:border-[#E8B04A]"
+                  >
+                    <div className="relative h-52 overflow-hidden bg-[#1B2A49] sm:h-56">
                       <img
                         src={article.coverImage}
                         alt={article.title}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500"
+                        className="h-full w-full object-cover object-[center_25%] transition-transform duration-500 group-hover:scale-105"
                       />
-                      <div className="absolute top-4 left-4 flex gap-2">
-                        <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5] shadow-sm">
+                      <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+                        <span className="border border-[#1B2A49]/20 bg-[#FFF8EA] px-2.5 py-1 text-[11px] font-bold text-[#1B2A49]">
                           {article.category}
                         </span>
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase bg-black/60 text-white backdrop-blur-sm">
+                        <span className="border border-[#F4ECDD]/40 bg-[#1B2A49] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#F4ECDD]">
                           {article.language}
                         </span>
                       </div>
                     </div>
 
-                    <div className="p2-article-body p-5 space-y-3" dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
-                      <h3 className={`font-bold text-xl sm:text-2xl text-[#1C1B1A] group-hover:text-[#455240] transition-colors leading-snug ${
-                        isUrdu
-                          ? 'font-urdu text-right text-2xl leading-[2.1]'
-                          : article.language === 'hi' || article.language === 'mr'
-                          ? 'font-hindi leading-[1.6]'
-                          : 'font-serif'
-                      }`}>
-                        {article.title}
-                      </h3>
-
-                      <p className={`text-sm text-[#595550] line-clamp-3 leading-relaxed ${
-                        isUrdu
-                          ? 'font-urdu text-right text-base leading-[2.1]'
-                          : article.language === 'hi' || article.language === 'mr'
-                          ? 'font-hindi leading-[1.7]'
-                          : ''
-                      }`}>
-                        {article.excerpt}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="p-6 pt-0 space-y-3">
-                    <div className="p2-article-footer pt-3 border-t border-[#F4EFEA] flex items-center justify-between text-xs text-[#8C857B]">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-[#1C1B1A]">{article.author}</span>
+                    <div className="flex flex-1 flex-col p-5">
+                      <div dir={isUrdu ? 'rtl' : 'ltr'} lang={article.language}>
+                        <h2
+                          className={`font-display text-xl font-bold leading-snug text-[#1B2A49] transition-colors group-hover:text-[#A8431F] dark:text-[#F4ECDD] dark:group-hover:text-[#E8B04A] sm:text-2xl ${
+                            isUrdu
+                              ? 'font-urdu text-right leading-[2.1]'
+                              : isIndic
+                              ? 'font-hindi leading-[1.6]'
+                              : 'font-serif'
+                          }`}
+                        >
+                          {article.title}
+                        </h2>
+                        <p
+                          className={`mt-3 line-clamp-3 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0] ${
+                            isUrdu
+                              ? 'font-urdu text-right text-base leading-[2.1]'
+                              : isIndic
+                              ? 'font-hindi leading-[1.7]'
+                              : ''
+                          }`}
+                        >
+                          {article.excerpt}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{article.readingTime} min</span>
+
+                      <div className="mt-auto border-t border-[#1B2A49]/10 pt-4 dark:border-[#F4ECDD]/10">
+                        <div className="flex items-center justify-between gap-3 font-sans text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                          <span className="font-bold text-[#1B2A49] dark:text-[#F4ECDD]">{article.author}</span>
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="h-3.5 w-3.5 text-[#5E7A63] dark:text-[#8BA890]" aria-hidden="true" />
+                            {article.readingTime} min
+                          </span>
+                        </div>
+                        <span className="mt-4 flex items-center gap-2 font-sans text-xs font-bold text-[#A8431F] dark:text-[#E8B04A]">
+                          Read full piece
+                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                        </span>
                       </div>
                     </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <PaperPanel className="mx-auto max-w-md rounded-[6px] p-8 text-center sm:p-10">
+              <Feather className="mx-auto h-8 w-8 text-[#A8431F] dark:text-[#E8B04A]" aria-hidden="true" />
+              <h2 className="mt-4 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                No articles found
+              </h2>
+              <p className="mt-2 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                Try a different search term, or reset the filters to see every published piece.
+              </p>
+              <Button type="button" onClick={clearFilters} className="mt-6">
+                Clear all filters
+              </Button>
+            </PaperPanel>
+          )}
+        </section>
 
-                    <button
-                      onClick={() => setSelectedArticle(article)}
-                      className="w-full text-center py-2 text-xs font-semibold text-[#1C1B1A] group-hover:text-[#455240] group-hover:bg-[#F4EFEA] rounded-lg transition-colors flex items-center justify-center gap-1.5"
-                    >
-                      <span>Read Full Piece</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        ) : (
-          <div className="p2-empty-state bg-white border border-[#E8E2D5] rounded-2xl p-12 text-center max-w-md mx-auto space-y-3">
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">No articles found</h3>
-            <p className="text-sm text-[#595550]">
-              Try resetting your category or language filters.
-            </p>
-            <button
+        <section className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="flex flex-col gap-6 rounded-[6px] border-l-4 border-l-[#E8B04A] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+            <div>
+              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#A8431F] dark:text-[#E8B04A]">
+                Write for the journal
+              </p>
+              <h2 className="mt-2 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                We publish reader stories and perspectives
+              </h2>
+              <p className="mt-2 max-w-lg font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                Have you written a poem in Dakhani, a critique of a regional novel, or a personal essay on how
+                reading changed you? Send your draft to our editors.
+              </p>
+            </div>
+            <Button
+              type="button"
               onClick={() => {
-                setSelectedCategory('All');
-                setSelectedLanguage('all');
-                setSearchQuery('');
+                setCurrentPage('contact');
+                scrollToTop();
               }}
-              className="text-xs font-semibold text-[#455240] underline pt-2"
+              className="shrink-0"
             >
-              Clear all filters
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* 4. CALL FOR WRITERS BANNER */}
-      <section className="p2-journal-submit max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="paper-card p-8 sm:p-10 rounded-2xl bg-[#F4EFEA] border border-[#E8E2D5] flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-center sm:text-left">
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-              We Publish Reader Stories & Perspectives
-            </h3>
-            <p className="text-sm text-[#595550] max-w-lg leading-relaxed">
-              Have you written a poem in Dakhani, a critique of a regional novel, or a personal essay on how reading changed you? Send your draft to our editors.
-            </p>
-          </div>
-
-          <button
-            onClick={() => {
-              setCurrentPage('contact');
-              scrollToTop();
-            }}
-            className="shrink-0 bg-[#1C1B1A] hover:bg-[#455240] text-white px-6 py-3 rounded-full text-xs font-semibold transition-all shadow-sm"
-          >
-            Submit an Article
-          </button>
-        </div>
-      </section>
-
+              Submit an article
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </Button>
+          </PaperPanel>
+        </section>
       </div>
     </div>
   );

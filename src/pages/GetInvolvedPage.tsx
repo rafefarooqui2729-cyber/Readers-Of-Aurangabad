@@ -8,27 +8,34 @@ import {
   CheckCircle,
   MessageCircle,
   ArrowRight,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { InstagramIcon } from '../components/Icons';
+import { siteConfig } from '../content/siteConfig';
+import { isMeetupUpcoming } from '../utils/meetupStatus';
+import { getSafeRegistrationUrl } from '../utils/url';
+import {
+  Button,
+  fieldClasses,
+  FilterButton,
+  FormField,
+  PageHero,
+  PaperPanel,
+  SectionHeading,
+} from '../components/ui';
 
 type InvolvedErrorField = 'name' | 'email' | 'message' | 'consent' | 'form';
 
 export const GetInvolvedPage: React.FC = () => {
   const { addEnquiry, meetups, setCurrentPage } = useApp();
   const [activeTab, setActiveTab] = useState<EnquiryType>('volunteer');
-  const shouldReduceMotion = useReducedMotion();
-  const easeCurve = [0.16, 1, 0.3, 1] as const;
 
-  // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
 
-  // Specific dynamic fields
   const [volunteerSkills, setVolunteerSkills] = useState('');
   const [bookDetails, setBookDetails] = useState('');
   const [collabOrg, setCollabOrg] = useState('');
@@ -39,7 +46,8 @@ export const GetInvolvedPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [errorField, setErrorField] = useState<InvolvedErrorField | null>(null);
 
-  const upcomingMeetup = meetups.find(m => m.isUpcoming);
+  const upcomingMeetup = meetups.find((m) => isMeetupUpcoming(m));
+  const registrationUrl = upcomingMeetup ? getSafeRegistrationUrl(upcomingMeetup) : undefined;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +61,9 @@ export const GetInvolvedPage: React.FC = () => {
       return;
     }
     if (!consent) {
-      setErrorMessage('Please agree that Readers of Aurangabad may use your information to respond before submitting.');
+      setErrorMessage(
+        'Please agree that Readers of Aurangabad may use your information to respond before submitting.'
+      );
       setErrorField('consent');
       return;
     }
@@ -78,12 +88,13 @@ export const GetInvolvedPage: React.FC = () => {
         phone: phone.trim(),
         message: message.trim(),
         consent,
-        details
+        details,
       });
       setIsSubmitting(false);
-      setSuccessMessage('Your expression of interest has been safely recorded. Our team will reach out to you shortly.');
+      setSuccessMessage(
+        'Your expression of interest has been safely recorded. Our team will reach out to you shortly.'
+      );
 
-      // Reset form
       setName('');
       setEmail('');
       setPhone('');
@@ -95,443 +106,346 @@ export const GetInvolvedPage: React.FC = () => {
     } catch (submissionError) {
       setIsSubmitting(false);
       setErrorField('form');
-      setErrorMessage(submissionError instanceof Error ? submissionError.message : 'Unable to submit your form. Please try again.');
+      setErrorMessage(
+        submissionError instanceof Error
+          ? submissionError.message
+          : 'Unable to submit your form. Please try again.'
+      );
     }
   };
 
+  const selectTab = (tab: EnquiryType) => {
+    setActiveTab(tab);
+    setSuccessMessage('');
+    setErrorMessage('');
+    setErrorField(null);
+  };
+
+  const callout =
+    activeTab === 'volunteer'
+      ? 'Help with Sunday morning setup, photographing real meetup moments, or sharing announcements.'
+      : activeTab === 'book_donation'
+      ? 'We accept good-condition fiction, non-fiction, poetry, and educational books across English, Marathi, Hindi, and Urdu.'
+      : 'Are you a local café, independent bookstore, college literary club, or cultural institution in Aurangabad? Let’s organize a joint gathering.';
+
   return (
-    <div className="p2-page p2-involved pb-16 paper-grain overflow-hidden">
+    <div className="paper-grain overflow-hidden pb-16">
+      <PageHero
+        image="/images/enhanced/gallery/roa-060-2026-11-05.webp"
+        alt="Readers exchanging books at an Aurangabad gathering"
+        eyebrow="Participate in the movement"
+        title="Get Involved"
+        lead="A reading movement flourishes through the hands that lay out mats, share books, and welcome strangers."
+      />
 
-      {/* 1. FULL-BLEED HERO */}
-      <section className="p2-hero p2-hero--involved relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/images/enhanced/gallery/roa-060-2026-11-05.webp"
-            alt="Reading session in Aurangabad"
-            className="w-full h-full object-cover object-[center_20%]"
-            fetchPriority="high"
+      <div className="space-y-12 sm:space-y-16">
+        {/* Quick ways in */}
+        <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
+          <SectionHeading
+            eyebrow="Start here"
+            title="Two easy ways to join in"
+            description="Follow the announcements, or come and sit with us at the next Sunday chapter."
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeCurve }}
-          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
-        >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
-            <HandHeart className="w-3.5 h-3.5 text-[#B89A65]" />
-            <span>Participate in the Movement</span>
-          </span>
-
-          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
-          >
-            Get Involved
-          </h1>
-
-          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
-            "A reading movement flourishes not through passive observers, but through hands that lay out mats, share books, and welcome strangers."
-          </p>
-        </motion.div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
-      </section>
-
-      <div className="space-y-8 sm:space-y-10 pt-6">
-
-        <div className="p2-involved-banner relative h-56 sm:h-72 rounded-3xl overflow-hidden border border-[#E8E2D5] shadow-md max-w-4xl mx-auto mt-6 group">
-          <img
-            src="/images/enhanced/community/community-banner-wide.webp"
-            alt="Readers of Aurangabad exchanging books and collaborating"
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover object-[center_25%] group-hover:scale-102 transition-transform duration-700"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
-            <span className="text-white text-xs sm:text-sm font-medium">
-              Community book exchange and volunteer circle — Readers of MH20
-            </span>
-          </div>
-        </div>
-
-      {/* 2. FAST ACTION TILES: Join & Attend */}
-      <section className="p2-action-path max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p2-action-grid grid grid-cols-1 md:grid-cols-2 gap-8">
-
-          {/* Tile A: Join Community Online */}
-          <div className="p2-action-card paper-card p-6 rounded-3xl space-y-5 bg-white border border-[#E8E2D5] flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C]">
-                <InstagramIcon className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-                Join the Community Online
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center border border-[#A8431F]/30 text-[#A8431F]">
+                <InstagramIcon className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 className="mt-5 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                Join the conversation online
               </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                Follow our official Instagram for weekly Sunday meetup announcements, venue updates, book excerpts, and community spotlights.
+              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                Follow our Instagram for weekly Sunday announcements, venue updates, book excerpts,
+                and community spotlights.
               </p>
-            </div>
-
-            <div className="pt-4 flex flex-wrap gap-3">
-              <a
-                href="https://instagram.com/readers.of.aurangabad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#1C1B1A] hover:bg-[#455240] text-white px-5 py-2.5 rounded-full text-xs font-semibold transition-all shadow-sm"
-              >
-                <InstagramIcon className="w-3.5 h-3.5" />
-                <span>Follow @readers.of.aurangabad</span>
-                <ExternalLink className="w-3 h-3 text-[#B4ADA2]" />
-              </a>
-
-              <a
-                href="https://chat.whatsapp.com/invite-readers-of-aurangabad"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#EBF0E9] hover:bg-[#455240] hover:text-white text-[#2E372B] px-5 py-2.5 rounded-full text-xs font-semibold transition-all border border-[#455240]/20"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>Join WhatsApp Announcements</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Tile B: Attend a Meetup */}
-          <div className="p2-action-card paper-card p-6 rounded-3xl space-y-5 bg-[#FAF8F5] border border-[#E8E2D5] flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-[#E8E2D5] flex items-center justify-center text-[#455240]">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-                Attend an Upcoming Gathering
-              </h3>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                Registrations for our gatherings are free and managed simply via Google Forms to help us gauge attendance and arrange shade.
-              </p>
-            </div>
-
-            <div className="pt-4">
-              {upcomingMeetup && upcomingMeetup.registrationStatus === 'open' ? (
-                <a
-                  href={upcomingMeetup.registrationUrl}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button
+                  asAnchor
+                  href={siteConfig.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#455240] hover:bg-[#1C1B1A] text-white px-5 py-2.5 rounded-full text-xs font-semibold transition-all shadow-sm"
+                  className="px-4 py-2 text-xs"
                 >
-                  <span>RSVP for {upcomingMeetup.title}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              ) : (
-                <button
-                  onClick={() => setCurrentPage('gatherings')}
-                  className="inline-flex items-center gap-2 text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] underline"
+                  <InstagramIcon className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                  Follow {siteConfig.instagramHandle}
+                  <ExternalLink className="ml-2 h-3 w-3" aria-hidden="true" />
+                </Button>
+                <Button
+                  asAnchor
+                  variant="secondary"
+                  href={siteConfig.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-xs"
                 >
-                  <span>Check Meetup Archive & Schedules</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
+                  <MessageCircle className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                  Join the WhatsApp group
+                </Button>
+              </div>
+            </PaperPanel>
 
-        </div>
-      </section>
-
-      {/* 3. MULTI-PURPOSE ENQUIRY FORM (Volunteer, Donate Books, Collaborate) */}
-      <section className="p2-participation max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p3-form-card p2-participation-card paper-card p-8 sm:p-12 rounded-3xl bg-white border border-[#E8E2D5] shadow-lg">
-
-          <div className="p2-participation-heading text-center space-y-2 mb-8">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
-              Direct Inquiry
-            </span>
-            <h2 className="font-serif text-3xl font-bold text-[#1C1B1A]">
-              Connect Your Passion With the Movement
-            </h2>
-            <p className="text-sm text-[#595550]">
-              Select how you would like to participate below:
-            </p>
-          </div>
-
-          {/* Tab Selector */}
-          <div className="p2-participation-tabs grid grid-cols-1 sm:grid-cols-3 gap-2 p-1.5 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] mb-8 text-xs font-semibold">
-            <button
-              type="button"
-              data-active={activeTab === 'volunteer'}
-              onClick={() => {
-                setActiveTab('volunteer');
-                setSuccessMessage('');
-                setErrorMessage('');
-                setErrorField(null);
-              }}
-              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'volunteer'
-                  ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
-              }`}
-            >
-              Become a Volunteer
-            </button>
-
-            <button
-              type="button"
-              data-active={activeTab === 'book_donation'}
-              onClick={() => {
-                setActiveTab('book_donation');
-                setSuccessMessage('');
-                setErrorMessage('');
-                setErrorField(null);
-              }}
-              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'book_donation'
-                  ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
-              }`}
-            >
-              Donate Physical Books
-            </button>
-
-            <button
-              type="button"
-              data-active={activeTab === 'collaboration'}
-              onClick={() => {
-                setActiveTab('collaboration');
-                setSuccessMessage('');
-                setErrorMessage('');
-                setErrorField(null);
-              }}
-              className={`py-2.5 px-3 rounded-xl transition-all duration-200 ${
-                activeTab === 'collaboration'
-                  ? 'bg-[#1C1B1A] text-white shadow'
-                  : 'text-[#595550] hover:text-[#1C1B1A] hover:bg-white/70'
-              }`}
-            >
-              Collaborate / Venue
-            </button>
-          </div>
-
-          {/* Dynamic Explanatory Callout */}
-          <div className="p3-form-callout p2-participation-callout mb-6 p-4 rounded-xl text-xs bg-[#FAF8F5] border border-[#E8E2D5] text-[#595550]">
-            {activeTab === 'volunteer' && (
-              <p>
-                <strong>Volunteering:</strong> Help with Sunday morning setup, taking photographs of real meetup moments, or managing social media announcements.
+            <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center border border-[#5E7A63]/30 text-[#5E7A63]">
+                <BookOpen className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 className="mt-5 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                Attend a gathering
+              </h3>
+              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                Gatherings are free and open to all. Join our WhatsApp group to hear about the next
+                chapter and confirm your plans.
               </p>
-            )}
-            {activeTab === 'book_donation' && (
-              <p>
-                <strong>Book Donations:</strong> We accept good-condition fiction, non-fiction, poetry, and educational books across English, Marathi, Hindi, and Urdu to seed our community lending shelf.
-              </p>
-            )}
-            {activeTab === 'collaboration' && (
-              <p>
-                <strong>Collaborations:</strong> Are you a local café, independent bookstore, college literary club, or cultural institution in Aurangabad? Let’s organize a joint gathering.
-              </p>
-            )}
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="p3-form p2-participation-form space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="involved-name" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="involved-name"
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Farhan Shaikh"
-                  aria-invalid={errorField === 'name' || undefined}
-                  aria-describedby={errorField === 'name' ? 'involved-form-error' : undefined}
-                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="involved-email" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                  Email Address <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="involved-email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  aria-invalid={errorField === 'email' || undefined}
-                  aria-describedby={errorField === 'email' ? 'involved-form-error' : undefined}
-                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="involved-phone" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                WhatsApp / Phone Number (Optional)
-              </label>
-              <input
-                id="involved-phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98XXX XXXXX"
-                className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-              />
-            </div>
-
-            {/* Context-Specific Fields */}
-            {activeTab === 'volunteer' && (
-              <div>
-                <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                  How would you like to help? (Skills / Interests)
-                </label>
-                <input
-                  type="text"
-                  value={volunteerSkills}
-                  onChange={(e) => setVolunteerSkills(e.target.value)}
-                  placeholder="e.g. Event photography, park coordination, poster design"
-                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-                />
-              </div>
-            )}
-
-            {activeTab === 'book_donation' && (
-              <div>
-                <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                  Approximate Quantity & Genres
-                </label>
-                <input
-                  type="text"
-                  value={bookDetails}
-                  onChange={(e) => setBookDetails(e.target.value)}
-                  placeholder="e.g. 15 Marathi novels and 10 English paperbacks"
-                  className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-                />
-              </div>
-            )}
-
-            {activeTab === 'collaboration' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                    Organization / Café Name
-                  </label>
-                  <input
-                    type="text"
-                    value={collabOrg}
-                    onChange={(e) => setCollabOrg(e.target.value)}
-                    placeholder="e.g. Old City Bookhouse / Deccan Roasters"
-                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                    Partner Category
-                  </label>
-                  <select
-                    value={collabType}
-                    onChange={(e) => setCollabType(e.target.value)}
-                    className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
+              <div className="mt-6">
+                {upcomingMeetup && upcomingMeetup.registrationStatus === 'open' && registrationUrl ? (
+                  <Button
+                    asAnchor
+                    href={registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 text-xs"
                   >
-                    <option value="Café / Venue Partner">Café / Venue Partner</option>
-                    <option value="Bookstore / Publisher">Bookstore / Publisher</option>
-                    <option value="College / University Society">College / University Society</option>
-                    <option value="Cultural / Literary NGO">Cultural / Literary NGO</option>
-                  </select>
-                </div>
+                    RSVP for the next chapter
+                    <ExternalLink className="ml-2 h-3.5 w-3.5" aria-hidden="true" />
+                  </Button>
+                ) : upcomingMeetup && upcomingMeetup.registrationStatus === 'open' ? (
+                  <Button
+                    asAnchor
+                    variant="secondary"
+                    href={siteConfig.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 text-xs"
+                  >
+                    <MessageCircle className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                    Ask on WhatsApp
+                  </Button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage('gatherings')}
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#A8431F] underline underline-offset-4"
+                  >
+                    Check the gathering archive
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </button>
+                )}
               </div>
-            )}
+            </PaperPanel>
+          </div>
+        </section>
 
-            <div>
-              <label htmlFor="involved-message" className="block text-xs font-semibold text-[#1C1B1A] mb-1">
-                Your Message / Note <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="involved-message"
-                rows={4}
-                required
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Tell us a little bit about yourself and why you'd like to be involved..."
-                aria-invalid={errorField === 'message' || undefined}
-                aria-describedby={errorField === 'message' ? 'involved-form-error' : undefined}
-                className="p3-input w-full px-4 py-2.5 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] focus:border-[#455240] focus:ring-1 focus:ring-[#455240] outline-none text-sm text-[#1C1B1A]"
-              />
-            </div>
+        {/* Enquiry form */}
+        <section className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <SectionHeading
+              eyebrow="Offer a hand"
+              title="Connect your passion with the circle"
+              description="Choose how you would like to participate and tell us a little about yourself."
+              center
+            />
 
-            <div className="flex items-start gap-3 pt-1">
-              <input
-                id="get-involved-consent"
-                type="checkbox"
-                required
-                checked={consent}
-                onChange={(e) => setConsent(e.target.checked)}
-                aria-invalid={errorField === 'consent' || undefined}
-                aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
-                className="p3-checkbox mt-0.5 w-4 h-4 rounded text-[#455240] focus:ring-[#455240] border-[#E8E2D5] bg-[#FAF8F5] cursor-pointer"
-              />
-              <label htmlFor="get-involved-consent" className="text-xs text-[#595550] leading-relaxed cursor-pointer select-none">
-                I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry. <span className="text-red-500">*</span>
-              </label>
-            </div>
-
-            {errorMessage && (
-              <p
-                id="involved-form-error"
-                role="alert"
-                aria-live="assertive"
-                className="p3-form-error text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200"
-              >
-                {errorMessage}
-              </p>
-            )}
-
-            {successMessage && (
-              <div
-                role="status"
-                aria-live="polite"
-                className="p3-form-success flex items-center gap-2 text-xs text-green-800 bg-green-50 p-3 rounded-xl border border-green-200"
-              >
-                <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
-                <span>{successMessage}</span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="p3-form-submit w-full bg-[#1C1B1A] hover:bg-[#455240] text-white py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+            <div
+              className="mt-8 grid grid-cols-1 gap-2 sm:grid-cols-3"
+              role="group"
+              aria-label="How would you like to help?"
             >
-              {isSubmitting ? (
-                <span>Submitting your note...</span>
-              ) : (
-                <>
-                  <Send className="w-4 h-4" />
-                  <span>Submit Expression of Interest</span>
-                </>
-              )}
-            </button>
-          </form>
+              <FilterButton active={activeTab === 'volunteer'} onClick={() => selectTab('volunteer')}>
+                Volunteer
+              </FilterButton>
+              <FilterButton
+                active={activeTab === 'book_donation'}
+                onClick={() => selectTab('book_donation')}
+              >
+                Donate books
+              </FilterButton>
+              <FilterButton
+                active={activeTab === 'collaboration'}
+                onClick={() => selectTab('collaboration')}
+              >
+                Collaborate
+              </FilterButton>
+            </div>
 
-        </div>
-      </section>
+            <p className="mt-6 border-l-4 border-[#E8B04A] bg-[#F4ECDD] px-4 py-3 font-sans text-xs leading-relaxed text-[#4B5A77] dark:bg-[#1B2A49] dark:text-[#D1C5B0]">
+              {callout}
+            </p>
 
-      {/* 4. FUTURE EXPANSION NOTE (Honoring Budget = ₹0, No Paid Gateways) */}
-      <section className="p2-future-horizon max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-3">
-        <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
-          The Future Horizon
-        </span>
-        <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
-          Building a Community Reading Sanctuary
-        </h3>
-        <p className="text-xs sm:text-sm text-[#595550] max-w-xl mx-auto leading-relaxed">
-          Readers of Aurangabad is entirely free and community-sustained. Our future roadmap envisions an open-access physical book library, community reading badges, and literary walking trails across historic Aurangabad.
-        </p>
-      </section>
+            <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="mt-8 space-y-5">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <FormField id="involved-name" label="Full name" required invalid={errorField === 'name'}>
+                  <input
+                    id="involved-name"
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your name"
+                    aria-invalid={errorField === 'name' || undefined}
+                    aria-describedby={errorField === 'name' ? 'involved-form-error' : undefined}
+                    className={fieldClasses}
+                  />
+                </FormField>
+                <FormField id="involved-email" label="Email address" required invalid={errorField === 'email'}>
+                  <input
+                    id="involved-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    aria-invalid={errorField === 'email' || undefined}
+                    aria-describedby={errorField === 'email' ? 'involved-form-error' : undefined}
+                    className={fieldClasses}
+                  />
+                </FormField>
+              </div>
 
+              <FormField id="involved-phone" label="WhatsApp / phone (optional)">
+                <input
+                  id="involved-phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98XXX XXXXX"
+                  className={fieldClasses}
+                />
+              </FormField>
+
+              {activeTab === 'volunteer' ? (
+                <FormField id="volunteer-skills" label="How would you like to help?">
+                  <input
+                    id="volunteer-skills"
+                    type="text"
+                    value={volunteerSkills}
+                    onChange={(e) => setVolunteerSkills(e.target.value)}
+                    placeholder="Event photography, park coordination, poster design"
+                    className={fieldClasses}
+                  />
+                </FormField>
+              ) : null}
+
+              {activeTab === 'book_donation' ? (
+                <FormField id="book-details" label="Approximate quantity & genres">
+                  <input
+                    id="book-details"
+                    type="text"
+                    value={bookDetails}
+                    onChange={(e) => setBookDetails(e.target.value)}
+                    placeholder="15 Marathi novels and 10 English paperbacks"
+                    className={fieldClasses}
+                  />
+                </FormField>
+              ) : null}
+
+              {activeTab === 'collaboration' ? (
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <FormField id="collab-org" label="Organization / café name">
+                    <input
+                      id="collab-org"
+                      type="text"
+                      value={collabOrg}
+                      onChange={(e) => setCollabOrg(e.target.value)}
+                      placeholder="Your organization"
+                      className={fieldClasses}
+                    />
+                  </FormField>
+                  <FormField id="collab-type" label="Partner category">
+                    <select
+                      id="collab-type"
+                      value={collabType}
+                      onChange={(e) => setCollabType(e.target.value)}
+                      className={fieldClasses}
+                    >
+                      <option value="Café / Venue Partner">Café / Venue Partner</option>
+                      <option value="Bookstore / Publisher">Bookstore / Publisher</option>
+                      <option value="College / University Society">College / University Society</option>
+                      <option value="Cultural / Literary NGO">Cultural / Literary NGO</option>
+                    </select>
+                  </FormField>
+                </div>
+              ) : null}
+
+              <FormField id="involved-message" label="Your message" required invalid={errorField === 'message'}>
+                <textarea
+                  id="involved-message"
+                  rows={4}
+                  required
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Tell us a little about yourself and why you would like to help..."
+                  aria-invalid={errorField === 'message' || undefined}
+                  aria-describedby={errorField === 'message' ? 'involved-form-error' : undefined}
+                  className={fieldClasses}
+                />
+              </FormField>
+
+              <div className="flex items-start gap-3">
+                <input
+                  id="get-involved-consent"
+                  type="checkbox"
+                  required
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  aria-invalid={errorField === 'consent' || undefined}
+                  aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#A8431F]"
+                />
+                <label
+                  htmlFor="get-involved-consent"
+                  className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]"
+                >
+                  {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
+                  <span className="text-[#A8431F]">*</span>
+                </label>
+              </div>
+
+              {errorMessage ? (
+                <p
+                  id="involved-form-error"
+                  role="alert"
+                  aria-live="assertive"
+                  className="border border-[#A8431F]/40 bg-[#A8431F]/10 p-3 font-sans text-xs text-[#A8431F]"
+                >
+                  {errorMessage}
+                </p>
+              ) : null}
+
+              {successMessage ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="flex items-center gap-2 border border-[#5E7A63]/40 bg-[#5E7A63]/10 p-3 font-sans text-xs text-[#5E7A63] dark:text-[#8BA890]"
+                >
+                  <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span>{successMessage}</span>
+                </div>
+              ) : null}
+
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? (
+                  <span>Submitting your note...</span>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" aria-hidden="true" />
+                    Submit expression of interest
+                  </>
+                )}
+              </Button>
+            </form>
+          </PaperPanel>
+        </section>
+
+        <section className="mx-auto max-w-3xl px-5 pb-4 text-center sm:px-8">
+          <HandHeart className="mx-auto h-7 w-7 text-[#A8431F]" aria-hidden="true" />
+          <h3 className="mt-4 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+            A community reading sanctuary
+          </h3>
+          <p className="mx-auto mt-3 max-w-xl font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+            Readers of Aurangabad is free and community-sustained. Our hopes for the future include
+            an open-access book shelf, shared reading badges, and literary walks across historic
+            Aurangabad.
+          </p>
+        </section>
       </div>
     </div>
   );

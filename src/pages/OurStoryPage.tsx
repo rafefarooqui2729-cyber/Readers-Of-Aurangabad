@@ -1,416 +1,331 @@
-import React, { useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Compass, Heart, Feather, Users, Sparkles, MapPin, ArrowRight } from 'lucide-react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { siteConfig } from '../content/siteConfig';
+import { ArrowRight, Compass, ExternalLink, Feather, Heart, MapPin, Sparkles, Users } from 'lucide-react';
+import { scrollToTop } from '../utils/scroll';
+import { Button, PageHero, PaperPanel, SectionHeading } from '../components/ui';
+
+const tenets = [
+  {
+    icon: Compass,
+    title: 'Our Mission',
+    text: 'To revive reading as an unhurried, collective cultural habit in Aurangabad through accessible physical gatherings, an independent literary journal, and welcoming public reading spaces.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Our Vision',
+    text: 'A city where parks, gardens, and quiet corners are celebrated as shared reading spaces, where books travel between neighbourhoods, and where dialogue flourishes across four languages.',
+  },
+  {
+    icon: Heart,
+    title: 'Our Values',
+    text: 'No elitism: manga and philosophy are welcome equally. No language hierarchies: Marathi, Urdu, Hindi, and English sit side by side. No performance: real paper, real presence, real conversation.',
+  },
+];
+
+const moments = [
+  {
+    image: '/images/enhanced/community/community-banner-wide.webp',
+    alt: 'Readers gathered quietly in a park in Aurangabad',
+    title: 'The hour of silence',
+    text: 'A full hour with notifications off, surrounded by trees and the sound of turning pages.',
+  },
+  {
+    image: '/images/enhanced/community/card-1.webp',
+    alt: 'A Readers of Aurangabad gathering near a historic landmark',
+    title: 'Public spaces, shared',
+    text: 'Literature returns to the streets, gardens, and courtyards that belong to everyone.',
+  },
+  {
+    image: '/images/enhanced/hero/terrace-gathering-wide.webp',
+    alt: 'Readers assembled together on a garden terrace',
+    title: 'A reading family',
+    text: 'Readers across languages and generations gather with no pretension and no gatekeeping.',
+  },
+];
+
+const conduct = [
+  {
+    title: 'Quiet hours are shared hours',
+    text: 'During silent reading, keep phones away and conversations low so everyone can settle into their book.',
+  },
+  {
+    title: 'Every reader is welcome',
+    text: 'Marathi, Urdu, Hindi, English — and every genre in between — sit side by side. No gatekeeping by language, title, or background.',
+  },
+  {
+    title: 'Respect every viewpoint',
+    text: 'Disagree with curiosity, never with contempt. Personal reflections stay voluntary and are shared only with permission.',
+  },
+  {
+    title: 'No commercial promotion',
+    text: 'Gatherings are non-commercial. Please do not use the circle to advertise products, services, or causes.',
+  },
+  {
+    title: 'Privacy matters',
+    text: 'Do not photograph or publish another reader without their consent. Stories and contact details are never shared publicly without permission.',
+  },
+  {
+    title: 'Care for the space',
+    text: 'Leave public venues as you found them and help make first-time visitors feel at ease.',
+  },
+];
 
 export const OurStoryPage: React.FC = () => {
   const { setCurrentPage } = useApp();
-  const shouldReduceMotion = useReducedMotion();
-  const easeCurve = [0.16, 1, 0.3, 1] as const;
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', shouldReduceMotion ? '0%' : '18%']);
 
-  const revealVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeCurve } },
-  };
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.location.hash !== '#code-of-conduct') return;
+
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+      const target = document.getElementById('code-of-conduct');
+      attempts += 1;
+      if (target) {
+        window.clearInterval(timer);
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (attempts > 20) {
+        window.clearInterval(timer);
+      }
+    }, 50);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   return (
-    <div className="p2-page p2-story pb-16 paper-grain overflow-hidden">
+    <div className="paper-grain overflow-hidden pb-16">
+      <PageHero
+        image="/images/enhanced/gallery/roa-006-2026-11-05.webp"
+        alt="Readers of Aurangabad gathered outdoors"
+        eyebrow="The origin of the movement"
+        title="Our Story"
+        lead="Every movement begins with a simple thought — and ours began in the city of centuries."
+      />
 
-      {/* 1. FULL-BLEED HERO with roa-006 */}
-      <section
-        ref={heroRef}
-        className="p2-hero p2-hero--story relative min-h-[52vh] sm:min-h-[60vh] flex flex-col justify-end overflow-hidden"
-        aria-label="Our Story hero"
-      >
-        <motion.div style={{ y: bgY }} className="absolute inset-0 will-change-transform">
-          <img
-            src="/images/enhanced/gallery/roa-006-2026-11-05.webp"
-            alt="Readers of Aurangabad community at the terrace"
-            className="w-full h-full object-cover object-[center_20%]"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/90 via-[#20231F]/30 to-[#20231F]/10" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#20231F]/30 via-transparent to-transparent" />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeCurve }}
-          className="p2-hero-copy relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 pb-6 sm:pb-10 space-y-3 sm:space-y-4"
-        >
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-dark border border-white/15 text-[#F2EBDD]/90 text-xs font-semibold tracking-wide">
-            <span className={`w-1.5 h-1.5 rounded-full bg-[#B89A65] ${shouldReduceMotion ? '' : 'animate-pulse'}`} />
-            The Origin of the Movement
-          </span>
-
-          <h1 className="font-serif font-bold text-[#F2EBDD] leading-[1.0]"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}
-          >
-            Our Story
-          </h1>
-
-          <p className="font-serif italic text-[#F2EBDD]/75 text-lg sm:text-xl max-w-2xl leading-relaxed">
-            "Every movement begins with a simple thought — and ours began in the city of centuries."
+      <div className="space-y-12 sm:space-y-16">
+        <section className="mx-auto max-w-4xl px-5 pt-10 text-center sm:px-8">
+          <p className="font-serif text-lg italic leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0] sm:text-xl">
+            In a city full of centuries-old stories, we wanted to create a space where people could discover
+            the joy of reading together.
           </p>
-        </motion.div>
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#B89A65]/30 to-transparent" />
-      </section>
+        </section>
 
-      <div className="space-y-6 sm:space-y-8">
-      {/* Introduction subheading */}
-      <motion.div
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="p2-story-intro pt-10 max-w-4xl mx-auto px-5 sm:px-8 text-center space-y-4"
-      >
-        <p className="text-lg sm:text-xl text-[#595550] font-serif italic max-w-2xl mx-auto leading-relaxed">
-          "In a city full of centuries-old stories, we wanted to create a space where people could discover the joy of reading together."
-        </p>
-      </motion.div>
-
-      {/* 2. THE CORE NARRATIVE (Editorial Layout) */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="p2-story-narrative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
-        <div className="p2-manuscript paper-card p-6 sm:p-10 rounded-3xl space-y-8 text-base sm:text-lg text-[#2A2826] leading-[1.85] font-serif">
-
-          <p className="text-xl sm:text-2xl font-bold text-[#1C1B1A] leading-snug">
-            Not another platform telling people which books to read. Not another community limited by genres or languages.
-          </p>
-
-          <p>
-            Just a simple, enduring idea: <strong>bring readers together, create meaningful real-world experiences, and make reading a part of everyday life again.</strong>
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-8 not-prose font-sans">
-            <div className="p2-marginalia p-6 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5]">
-              <span className="text-xs font-bold text-[#8D5B4C] uppercase tracking-wider block mb-2">The Reality We Saw</span>
-              <p className="text-sm text-[#595550] leading-relaxed">
-                Screens had colonized our free time. Bookshops were thinning, and solitary readers had nowhere to share their joy without commercial pressure or academic judgment.
+        <section className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <div className="space-y-7 font-serif text-base leading-[1.85] text-[#1B2A49] dark:text-[#F4ECDD] sm:text-lg">
+              <p className="text-xl font-bold leading-snug sm:text-2xl">
+                Not another platform telling people which books to read. Not another community limited by
+                genres or languages.
               </p>
-            </div>
-
-            <div className="p2-marginalia p-6 rounded-2xl bg-[#EBF0E9]/60 border border-[#455240]/20">
-              <span className="text-xs font-bold text-[#455240] uppercase tracking-wider block mb-2">The Sanctuary We Built</span>
-              <p className="text-sm text-[#2E372B] leading-relaxed">
-                An open sanctuary under trees and across friendly spaces where anyone could bring whatever they were reading, sit quietly for an hour, and make authentic human connections.
+              <p>
+                Just a simple, enduring idea:{' '}
+                <strong className="text-[#A8431F] dark:text-[#E8B04A]">
+                  bring readers together, create meaningful real-world experiences, and make reading a part
+                  of everyday life again.
+                </strong>
               </p>
-            </div>
-          </div>
-
-          <p>
-            Aurangabad—Chhatrapati Sambhajinagar—has historically been a crossroads of civilizational dialogue. From Buddhist rock-cut meditation halls at Ajanta and Ellora, to Sufi sanctuaries and modern educational institutions, this city understands reflection. Readers of Aurangabad (Readers of MH20) is an organic continuation of that legacy for our digital generation.
-          </p>
-
-          <p>
-            We don't test your comprehension. We don't ask you to finish a book a week. We simply invite you to sit down, open a book, breathe, and belong.
-          </p>
-
-        </div>
-      </motion.section>
-
-      {/* 3. MISSION, VISION & ETHOS */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="p2-story-tenets max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
-        <div className="p2-tenet-grid grid grid-cols-1 md:grid-cols-3 gap-8">
-
-          <div className="paper-card p-8 rounded-2xl space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240]">
-              <Compass className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">Our Mission</h3>
-            <p className="text-sm text-[#595550] leading-relaxed">
-              To revive reading as an unhurried, collective cultural habit in Aurangabad by hosting accessible physical gatherings, curating an independent literary journal, and building a community book archive.
-            </p>
-          </div>
-
-          <div className="paper-card p-8 rounded-2xl space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C]">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">Our Vision</h3>
-            <p className="text-sm text-[#595550] leading-relaxed">
-              A city where public parks, gardens, and quiet corners are celebrated as communal reading sanctuaries, where every neighborhood has access to shared books, and where dialogue flourishes across languages.
-            </p>
-          </div>
-
-          <div className="paper-card p-8 rounded-2xl space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#1C1B1A]">
-              <Heart className="w-6 h-6" />
-            </div>
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">Our Core Values</h3>
-            <ul className="text-xs text-[#595550] space-y-2 leading-relaxed">
-              <li><strong>Zero Elitism:</strong> All genres—fiction, textbooks, comics, philosophy—are welcomed equally.</li>
-              <li><strong>Radical Inclusivity:</strong> Four regional languages (English, Hindi, Urdu, Marathi) honoured side-by-side.</li>
-              <li><strong>Physical Warmth:</strong> Real handshakes, real paper, real presence over social media clout.</li>
-            </ul>
-          </div>
-
-        </div>
-      </motion.section>
-
-      {/* 4. FOUNDER INTRODUCTION WITH EMBLEM INTEGRATION */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="p2-story-founder max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
-      >
-        <div className="p2-founder-card paper-card p-8 sm:p-12 rounded-3xl border border-[#E8E2D5] bg-white">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-
-            {/* Founder Avatar / Portrait Slot with Real Photo & Official Crest */}
-            <div className="md:col-span-4 flex flex-col items-center text-center space-y-3">
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                transition={{ duration: 0.2 }}
-                className="w-48 h-56 sm:w-56 sm:h-64 rounded-2xl overflow-hidden border-4 border-[#FAF8F5] shadow-xl bg-[#1C1B1A] relative group"
-              >
-                <img
-                  src="/images/enhanced/community/founder-wide.webp"
-                  alt="Abdul Rafe Farooqui — Founder, Readers of Aurangabad"
-                  className="w-full h-full object-cover object-[center_15%] group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-2 right-2 w-12 h-12 rounded-full overflow-hidden border border-white/80 shadow-md bg-white p-0.5">
-                  <img src="/brand/logo.png" alt="Seal" className="w-full h-full object-contain" />
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div className="border border-[#1B2A49]/10 bg-[#F4ECDD] p-5 dark:border-[#F4ECDD]/10 dark:bg-[#1B2A49]">
+                  <span className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#A8431F] dark:text-[#E8B04A]">
+                    The reality we saw
+                  </span>
+                  <p className="font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    Screens had colonised our free time, bookshops were thinning, and solitary readers had
+                    nowhere to share their joy without commercial pressure or academic judgment.
+                  </p>
                 </div>
-              </motion.div>
+                <div className="border border-[#5E7A63]/25 bg-[#F4ECDD] p-5 dark:border-[#8BA890]/25 dark:bg-[#1B2A49]">
+                  <span className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E7A63] dark:text-[#8BA890]">
+                    The sanctuary we built
+                  </span>
+                  <p className="font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    An open space under trees and across friendly venues where anyone can bring whatever
+                    they are reading, sit quietly for an hour, and make an authentic human connection.
+                  </p>
+                </div>
+              </div>
+              <p>
+                Aurangabad — Chhatrapati Sambhajinagar — has historically been a crossroads of civilisational
+                dialogue. From the Buddhist rock-cut halls of Ajanta and Ellora to Sufi sanctuaries and modern
+                educational institutions, this city understands reflection. Readers of Aurangabad (Readers of
+                MH20) is an organic continuation of that legacy for our digital generation.
+              </p>
+              <p>
+                We don&rsquo;t test your comprehension. We don&rsquo;t ask you to finish a book a week. We simply
+                invite you to sit down, open a book, breathe, and belong.
+              </p>
+            </div>
+          </PaperPanel>
+        </section>
 
-              <div>
-                <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <SectionHeading
+            eyebrow="What we stand for"
+            title="Mission, vision, and values"
+            description="A reading community built on welcome, curiosity, and the simple pleasure of being together."
+          />
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {tenets.map((tenet) => {
+              const Icon = tenet.icon;
+              return (
+                <article
+                  key={tenet.title}
+                  className="border border-[#1B2A49]/15 bg-[#FFF8EA] p-6 dark:border-[#F4ECDD]/15 dark:bg-[#243557]"
+                >
+                  <span className="flex h-11 w-11 items-center justify-center border border-[#A8431F]/30 text-[#A8431F] dark:border-[#E8B04A]/40 dark:text-[#E8B04A]">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-5 font-display text-xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    {tenet.title}
+                  </h3>
+                  <p className="mt-3 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    {tenet.text}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-center">
+              <div className="md:col-span-4">
+                <img
+                  src="/images/enhanced/community/founder-portrait.webp"
+                  alt="Abdul Rafe Farooqui, founder of Readers of Aurangabad"
+                  loading="lazy"
+                  decoding="async"
+                  className="aspect-[4/5] w-full border border-[#1B2A49]/15 object-cover object-[center_15%] dark:border-[#F4ECDD]/15"
+                />
+                <h2 className="mt-4 font-display text-2xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
                   Abdul Rafe Farooqui
-                </h3>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#8D5B4C]">
+                </h2>
+                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#A8431F] dark:text-[#E8B04A]">
                   Founder, Readers of Aurangabad
                 </p>
-                <div className="flex items-center justify-center gap-1 text-[11px] text-[#8C857B] mt-1">
-                  <MapPin className="w-3 h-3 text-[#455240]" />
-                  <span>Aurangabad, Maharashtra</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Founder Words */}
-            <div className="p2-founder-words md:col-span-8 space-y-4 text-sm sm:text-base text-[#595550] leading-relaxed font-serif">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FAF8F5] text-[#1C1B1A] border border-[#E8E2D5]">
-                <Feather className="w-3.5 h-3.5 text-[#8D5B4C]" />
-                <span>Founder’s Note</span>
+                <p className="mt-2 flex items-center gap-1.5 font-sans text-xs text-[#4B5A77] dark:text-[#D1C5B0]">
+                  <MapPin className="h-3.5 w-3.5 text-[#5E7A63] dark:text-[#8BA890]" aria-hidden="true" />
+                  {siteConfig.locationLine}
+                </p>
               </div>
 
-              <p className="italic text-lg text-[#1C1B1A]">
-                "I started Readers of Aurangabad with one conviction: readers in our city don't lack curiosity; they simply needed an unhurried, genuine space to gather."
-              </p>
-
-              <p>
-                When you step into one of our meetups, you aren't asked who you voted for, what language your ancestors spoke, or how many bestsellers you've read. You are welcomed simply as a human being holding a book.
-              </p>
-
-              <p>
-                This movement belongs entirely to the readers of Aurangabad. Every volunteer who brings extra mats, every reader who shares a favorite poem, and every quiet soul who simply reads in peace shapes our collective narrative.
-              </p>
-
-              <div className="pt-2">
+              <div className="space-y-5 md:col-span-8">
+                <p className="flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#A8431F] dark:text-[#E8B04A]">
+                  <Feather className="h-4 w-4" aria-hidden="true" />
+                  From the founder&rsquo;s journal
+                </p>
+                <blockquote className="border-l-4 border-[#E8B04A] pl-5 font-serif text-lg italic leading-relaxed text-[#1B2A49] dark:text-[#F4ECDD] sm:text-xl">
+                  We are carving out a public sanctuary where a teenager reading manga sits beside a retired
+                  schoolmaster reading Marathi prose, and where no one asks for credentials before welcoming
+                  you to the circle.
+                </blockquote>
+                <p className="font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                  Abdul Rafe started Readers of Aurangabad with a simple conviction: readers in the city did
+                  not lack curiosity — they needed an unhurried, genuine space to gather. That belief continues
+                  to shape every Sunday morning, every open book, and every conversation over chai.
+                </p>
                 <a
-                  href="https://instagram.com/readers.of.aurangabad"
+                  href={siteConfig.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-[#1C1B1A] hover:text-[#455240] transition-colors"
+                  className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#1B2A49] underline underline-offset-4 hover:text-[#A8431F] dark:text-[#F4ECDD] dark:hover:text-[#E8B04A]"
                 >
-                  <span>Connect with the Movement on Instagram</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  Follow {siteConfig.instagramHandle} on Instagram
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
               </div>
             </div>
+          </PaperPanel>
+        </section>
 
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <SectionHeading
+            eyebrow="Photographic chronicle"
+            title="Moments that define the movement"
+            description="Authentic snapshots from park lawns and public courtyards in Aurangabad."
+          />
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {moments.map((moment) => (
+              <article
+                key={moment.title}
+                className="border border-[#1B2A49]/15 bg-[#FFF8EA] dark:border-[#F4ECDD]/15 dark:bg-[#243557]"
+              >
+                <img
+                  src={moment.image}
+                  alt={moment.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-56 w-full object-cover object-[center_25%] sm:h-64"
+                />
+                <div className="p-5">
+                  <h3 className="font-display text-lg font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    {moment.title}
+                  </h3>
+                  <p className="mt-2 font-sans text-xs leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    {moment.text}
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
-        </div>
-      </motion.section>
+        </section>
 
-      {/* 4b. VISUAL MILESTONES: THE MOVEMENT IN PHOTOGRAPHS */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="p2-story-chronicle max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
-      >
-        <div className="p2-chapter-heading border-b border-[#E8E2D5] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C] block mb-1">
-              Photographic Chronicle
-            </span>
-            <h2 className="font-serif text-3xl font-bold text-[#1C1B1A]">
-              Moments That Define Our Movement
-            </h2>
-          </div>
-          <p className="text-xs text-[#8C857B]">
-            Authentic snapshots from park lawns and public courtyards in Aurangabad
-          </p>
-        </div>
+        <section id="code-of-conduct" className="mx-auto max-w-5xl scroll-mt-24 px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <SectionHeading
+              eyebrow="Community standards"
+              title="Code of Conduct"
+              description="How we look after one another so reading stays welcoming for everyone."
+            />
+            <ul className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {conduct.map((item) => (
+                <li
+                  key={item.title}
+                  className="border border-[#1B2A49]/12 bg-[#FFF8EA] p-5 dark:border-[#F4ECDD]/15 dark:bg-[#243557]"
+                >
+                  <h3 className="font-display text-base font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 font-sans text-xs leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                    {item.text}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </PaperPanel>
+        </section>
 
-        <div className="p2-chronicle-grid grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
-              <img
-                src="/images/enhanced/community/community-banner-wide.webp"
-                alt="Quiet reading sanctuary in the park"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-5 space-y-1">
-              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">The Sacred Hour of Silence</h3>
-              <p className="text-xs text-[#595550] leading-relaxed">
-                60 minutes where all notifications stop and the only sound is turning paper under morning trees.
-              </p>
-            </div>
-          </div>
-
-          <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
-              <img
-                src="/images/enhanced/community/card-1.webp"
-                alt="Historic Delhi Gate chapter gathering"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-5 space-y-1">
-              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">Reclaiming Public Spaces</h3>
-              <p className="text-xs text-[#595550] leading-relaxed">
-                Bringing literature into the heart of historic Aurangabad so culture belongs to everyone.
-              </p>
-            </div>
-          </div>
-
-          <div className="paper-card rounded-2xl overflow-hidden group">
-            <div className="relative h-60 sm:h-64 overflow-hidden bg-[#1C1B1A]">
-              <img
-                src="/images/enhanced/hero/terrace-gathering-wide.webp"
-                alt="Community assembly on garden terrace"
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-5 space-y-1">
-              <h3 className="font-serif font-bold text-lg text-[#1C1B1A]">A Growing Reading Family</h3>
-              <p className="text-xs text-[#595550] leading-relaxed">
-                Readers across Marathi, Urdu, Hindi, and English gathered side-by-side with zero pretension.
-              </p>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* 5. ORGANIZING TEAM & STEWARDSHIP */}
-      <motion.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.55, ease: easeCurve }}
-        className="p2-story-stewards max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
-      >
-        <div className="text-center space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#8D5B4C]">
-            Community Stewards
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#1C1B1A]">
-            The Organizing Circle
-          </h2>
-          <p className="text-sm text-[#595550] max-w-xl mx-auto">
-            Driven by passion, run by readers. We don't have corporate sponsors; we have caring citizens.
-          </p>
-        </div>
-
-        <div className="p2-steward-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          <div className="paper-card p-6 rounded-2xl text-center space-y-3">
-            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#E8E2D5] mx-auto bg-[#1C1B1A]">
-              <img src="/images/enhanced/thumbnails/roa-061-2026-11-05-thumb.webp" alt="Abdul Rafe Farooqui" className="w-full h-full object-cover object-[center_20%]" />
-            </div>
-            <div>
-              <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Abdul Rafe Farooqui</h4>
-              <p className="text-xs text-[#8D5B4C] font-semibold">Founder & Community Lead</p>
-            </div>
-            <p className="text-xs text-[#595550] leading-relaxed">
-              Curating gatherings, welcoming new readers, and anchoring the movement's vision.
-            </p>
-          </div>
-
-          <div className="paper-card p-6 rounded-2xl text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] mx-auto text-lg font-serif font-bold">
-              VL
-            </div>
-            <div>
-              <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Volunteer Circle</h4>
-              <p className="text-xs text-[#8D5B4C] font-semibold">Gathering Logistics & Hospitality</p>
-            </div>
-            <p className="text-xs text-[#595550] leading-relaxed">
-              Managing park coordination, seating mats, tea, and warm welcomes every Sunday morning.
-            </p>
-          </div>
-
-          <div className="paper-card p-6 rounded-2xl text-center space-y-3">
-            <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#455240] mx-auto text-lg font-serif font-bold">
-              ED
-            </div>
-            <div>
-              <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Journal Editors</h4>
-              <p className="text-xs text-[#8D5B4C] font-semibold">Literature & Multilingual Content</p>
-            </div>
-            <p className="text-xs text-[#595550] leading-relaxed">
-              Reviewing essays, poems, and book reviews in English, Hindi, Urdu, and Marathi.
-            </p>
-          </div>
-
-          <div className="paper-card p-6 rounded-2xl text-center space-y-3 bg-[#F4EFEA] border-dashed border-[#8D5B4C]/40 flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="w-16 h-16 rounded-full bg-white border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] mx-auto">
-                <Users className="w-6 h-6" />
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+          <PaperPanel className="rounded-[6px] p-6 sm:p-10">
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl">
+                <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#A8431F] dark:text-[#E8B04A]">
+                  Community stewardship
+                </p>
+                <h2 className="mt-2 font-display text-3xl font-bold text-[#1B2A49] dark:text-[#F4ECDD]">
+                  Run by readers
+                </h2>
+                <p className="mt-3 font-sans text-sm leading-relaxed text-[#4B5A77] dark:text-[#D1C5B0]">
+                  Founder Abdul Rafe Farooqui anchors the vision. The rest is shaped by readers who bring a
+                  book, a mat, a suggestion, or simply a willingness to help the circle feel welcome.
+                </p>
               </div>
-              <div>
-                <h4 className="font-serif font-bold text-lg text-[#1C1B1A]">Join the Circle</h4>
-                <p className="text-xs text-[#8D5B4C] font-semibold">Be a Community Steward</p>
-              </div>
-              <p className="text-xs text-[#595550]">
-                Help us host meetups, photograph moments, or organize book donation drives.
-              </p>
-            </div>
-            <div className="pt-3">
-              <button
+              <Button
+                type="button"
                 onClick={() => {
                   setCurrentPage('get-involved');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  scrollToTop();
                 }}
-                className="text-xs font-semibold text-[#1C1B1A] hover:text-[#455240] underline cursor-pointer"
+                className="shrink-0"
               >
-                Volunteer with Us →
-              </button>
+                <Users className="mr-2 h-4 w-4" aria-hidden="true" />
+                Volunteer with us
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Button>
             </div>
-          </div>
-
-        </div>
-      </motion.section>
-
+          </PaperPanel>
+        </section>
       </div>
     </div>
   );

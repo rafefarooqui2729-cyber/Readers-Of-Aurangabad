@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+/* ThemeToggle persists to localStorage and sets .dark on <html>; make dark: follow it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-paper: #F4ECDD;
+  --color-paper-soft: #FFF8EA;
+  --color-ink: #1B2A49;
+  --color-clay: #A8431F;
+  --color-marigold: #E8B04A;
+  --color-neem: #5E7A63;
+  --color-card-dark: #243557;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius-button: 4px;
+  --radius-card: 6px;
+}
+
 @font-face {
   font-family: "Jameel Noori Nastaleeq";
   src: url("/fonts/jameel-noori-nastaleeq-regular/Jameel%20Noori%20Nastaleeq%20Regular/Jameel%20Noori%20Nastaleeq%20Regular.ttf") format("truetype");
@@ -7,50 +28,91 @@
   font-weight: 400;
   font-display: swap;
 }
+
 @layer base {
   :root {
-    --font-serif: 'Cormorant Garamond', Georgia, serif;
-    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Fraunces', Georgia, serif;
+    --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
     --font-urdu: 'Jameel Noori Nastaleeq', 'Noto Nastaliq Urdu', 'Amiri', serif;
     --font-hindi: 'Noto Serif Devanagari', 'Mangal', Georgia, serif;
     --font-devanagari: var(--font-hindi);
 
-    /* Distinctive Literary Colour Identity */
-    --color-deep-ink: #20231F;
-    --color-warm-paper: #F2EBDD;
-    --color-warm-paper-light: #FBF8F3;
-    --color-muted-olive: #777C60;
-    --color-muted-olive-dark: #4A4E39;
-    --color-muted-olive-light: #E8ECE0;
-    --color-terracotta: #A65F46;
-    --color-terracotta-light: #F7EBE7;
-    --color-antique-gold: #B89A65;
-    --color-stone: #C8C0B2;
-    --color-stone-light: #E5DFD4;
-    --color-soft-glass: rgba(255, 255, 255, 0.42);
-    --color-ink-glass: rgba(32, 35, 31, 0.82);
+    /* Chai, Paper & Ink Design System (Light Mode) */
+    --color-paper: #F4ECDD;
+    --color-paper-soft: #FFF8EA;
+    --color-ink: #1B2A49;
+    --color-clay: #A8431F;
+    --color-marigold: #E8B04A;
+    --color-neem: #5E7A63;
+    --bg-page: var(--color-paper);
+    --bg-card: var(--color-paper-soft);
+    --text-primary: var(--color-ink);
+    --text-muted: #3D4F6E;
+    --border-ink: #1B2A49;
 
     /* Legacy mapping for backward compatibility */
+    --color-deep-ink: var(--color-ink);
+    --color-warm-paper: var(--color-paper);
+    --color-warm-paper-light: var(--color-paper-soft);
+    --color-muted-olive: var(--color-neem);
+    --color-muted-olive-dark: #3E5442;
+    --color-muted-olive-light: #E0EADE;
+    --color-terracotta: var(--color-clay);
+    --color-terracotta-light: #F8EBE6;
+    --color-antique-gold: var(--color-marigold);
+    --color-stone: #C8C0B2;
+    --color-stone-light: #E5DFD4;
+    --color-soft-glass: rgba(255, 248, 234, 0.85);
+    --color-ink-glass: rgba(27, 42, 73, 0.92);
+
     --color-paper-light: var(--color-warm-paper);
-    --color-paper-warm: #EAE2D2;
-    --color-paper-border: var(--color-stone);
-    --color-charcoal: var(--color-deep-ink);
-    --color-charcoal-muted: #595550;
-    --color-olive: var(--color-muted-olive);
-    --color-olive-dark: var(--color-muted-olive-dark);
-    --color-olive-light: var(--color-muted-olive-light);
-    --color-clay: var(--color-terracotta);
+    --color-paper-warm: var(--color-paper);
+    --color-paper-border: var(--border-ink);
+    --color-charcoal: var(--color-ink);
+    --color-charcoal-muted: var(--text-muted);
+    --color-olive: var(--color-neem);
     --color-clay-light: var(--color-terracotta-light);
-    --color-gold: var(--color-antique-gold);
+    --color-gold: var(--color-marigold);
+
+    --radius-button: 4px;
+    --radius-card: 6px;
+  }
+
+  [data-theme="dark"],
+  .dark {
+    /* Chai, Paper & Ink Design System (Dark Mode) */
+    --color-paper: #1B2A49;
+    --color-paper-soft: #243557;
+    --color-ink: #F4ECDD;
+    --color-clay: #A8431F;
+    --color-marigold: #E8B04A;
+    --color-neem: #8BA890;
+    --bg-page: #1B2A49;
+    --bg-card: #243557;
+    --text-primary: #F4ECDD;
+    --text-muted: #D1C5B0;
+    --border-ink: #384F7A;
+
+    --color-deep-ink: #0E182B;
+    --color-warm-paper: #1B2A49;
+    --color-warm-paper-light: #243557;
+    --color-paper-border: #384F7A;
+    --color-charcoal: #F4ECDD;
+    --color-charcoal-muted: #D1C5B0;
+    --color-soft-glass: rgba(36, 53, 87, 0.85);
   }
 
   body {
-    background-color: var(--color-warm-paper);
-    color: var(--color-deep-ink);
-    font-family: var(--font-sans);
-    line-height: 1.65;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 17.5px;
+    line-height: 1.55;
     scroll-behavior: smooth;
     overflow-x: clip;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   img {
@@ -58,7 +120,21 @@
   }
 
   h1, h2, h3, h4, .font-editorial {
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+
+  .hero-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 5.25rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .section-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.15;
     letter-spacing: -0.015em;
   }
 
@@ -315,6 +391,42 @@ html:has(.cinematic-shell)::-webkit-scrollbar-thumb:hover,
   -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow: 0 24px 64px -12px rgba(28, 27, 26, 0.18), 0 4px 20px rgba(28, 27, 26, 0.08);
+}
+
+/* Chai, Paper & Ink Theme Tokens for Cards & Glass */
+[data-theme="dark"] .paper-card,
+.dark .paper-card {
+  background-color: #243557;
+  border-color: rgba(244, 236, 221, 0.15);
+  color: #F4ECDD;
+}
+
+[data-theme="dark"] .glass-card,
+.dark .glass-card {
+  background: rgba(36, 53, 87, 0.85);
+  border-color: rgba(244, 236, 221, 0.15);
+  color: #F4ECDD;
+}
+
+[data-theme="dark"] .glass-pill,
+.dark .glass-pill {
+  background: rgba(36, 53, 87, 0.7);
+  border-color: rgba(244, 236, 221, 0.2);
+  color: #F4ECDD;
+}
+
+[data-theme="dark"] .glass-input,
+.dark .glass-input {
+  background: #1B2A49;
+  border-color: rgba(244, 236, 221, 0.25);
+  color: #F4ECDD;
+}
+
+[data-theme="dark"] .glass-modal,
+.dark .glass-modal {
+  background: rgba(27, 42, 73, 0.96);
+  border-color: rgba(244, 236, 221, 0.18);
+  color: #F4ECDD;
 }
 
 
