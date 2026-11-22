@@ -195,24 +195,17 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
   };
 
   return (
-    <section ref={sectionRef} className="cine-scene relative py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      {/* Decorative glass glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-80 bg-[#24262D]/10 rounded-none blur-[100px] pointer-events-none -z-10" />
-
-      {/* Main Glass Card Frame */}
+    <section ref={sectionRef} className="rr-container rr-section--tight">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="cine-scene glass-panel rounded-none p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-[var(--mh20-shadow-lg)]"
+        className="rr-panel p-6 sm:p-9 lg:p-11"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Announcement reel player */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="cine-layer cine-layer--floating relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-none sm:rounded-none overflow-hidden glass-dark border border-white/20 shadow-[var(--mh20-shadow-lg)] group select-none">
-
-              {/* Native Video Element with object-contain to ensure the full frame is visible */}
+        <div className="grid grid-cols-1 items-center gap-9 lg:grid-cols-12 lg:gap-12">
+          <div className="flex justify-center lg:col-span-5">
+            <div className="relative aspect-[9/16] w-full max-w-[300px] select-none overflow-hidden border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]">
               <video
                 ref={videoRef}
                 src={isNearViewport ? videoSrc : undefined}
@@ -221,17 +214,16 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                 muted={isMuted}
                 loop
                 preload={isNearViewport ? 'metadata' : 'none'}
-                className="w-full h-full object-contain bg-black/95 transition-transform duration-500"
+                className="h-full w-full object-contain bg-[color:var(--rr-dark)]"
                 onClick={togglePlay}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onError={() => setHasError(true)}
               />
 
-              {/* Accessible Placeholder when video is not yet near viewport and no poster image exists */}
               {!isNearViewport && !posterSrc && (
                 <div
-                  className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center cursor-pointer bg-[#24262D] select-none"
+                  className="absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-center bg-[color:var(--rr-dark)] p-6 text-center select-none"
                   onClick={togglePlay}
                   role="button"
                   tabIndex={0}
@@ -243,65 +235,59 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                     }
                   }}
                 >
-                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[var(--mh20-shadow)] mb-4 group-hover:scale-110 active:scale-95 transition-transform">
-                    <Play className="w-7 h-7 translate-x-0.5 text-[#C7EFDE]" />
-                  </div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#C7EFDE] mb-1">
+                  <span className="mb-5 flex h-14 w-14 items-center justify-center border border-[color:var(--rr-brass)] text-[color:var(--rr-on-dark)]">
+                    <Play className="h-6 w-6 translate-x-0.5" aria-hidden="true" />
+                  </span>
+                  <span className="rr-meta mb-2 text-[color:var(--rr-brass)]">
                     Readers of Aurangabad
                   </span>
-                  <p className="text-base font-display text-white/90">
+                  <span className="font-display text-xl text-[color:var(--rr-on-dark)]/90">
                     Community Announcement
-                  </p>
-                  <p className="text-xs text-white/50 mt-1">
+                  </span>
+                  <span className="mt-2 text-xs text-[color:var(--rr-on-dark)]/60">
                     Click to watch announcement
-                  </p>
+                  </span>
                 </div>
               )}
 
               {hasError && (
-                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#24262D] px-6 text-center text-[#F7F3EB]">
+                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[color:var(--rr-dark)] px-6 text-center text-[color:var(--rr-on-dark)]">
                   <p className="font-semibold">Announcement reel unavailable</p>
-                  <p className="mt-1 text-sm text-white/70">The announcement video file could not be loaded.</p>
+                  <p className="mt-1 text-sm text-[color:var(--rr-on-dark)]/70">The announcement video file could not be loaded.</p>
                 </div>
               )}
 
-              {/* Top Glass Badge */}
-              <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
-                <span className="glass-pill px-3 py-1 rounded-none text-[11px] font-medium tracking-widest text-[#FFFDF8] uppercase bg-[#24262D]/45 border-white/20 flex items-center gap-1.5 shadow-[var(--mh20-shadow-sm)]">
-                  <span className="w-2 h-2 rounded-none bg-[#C7EFDE]" />
-                  ANNOUNCEMENT
+              <div className="pointer-events-none absolute inset-x-4 top-4 z-10 flex items-center justify-between gap-2">
+                <span className="rr-meta flex items-center gap-2 border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/85 px-3 py-1.5 text-[color:var(--rr-on-dark)]">
+                  <span className="h-1.5 w-1.5 bg-[color:var(--rr-brass)]" aria-hidden="true" />
+                  Announcement
                 </span>
-
-                {/* Duration indicator */}
                 {duration > 0 && (
-                  <span className="glass-pill px-2.5 py-0.5 rounded-none text-[11px] font-mono text-white/90 bg-[#24262D]/45 border-white/10">
+                  <span className="rr-meta border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/85 px-2.5 py-1 text-[color:var(--rr-on-dark)]/85">
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 )}
               </div>
 
-              {/* Big Center Play Overlay (visible when paused and video is active or has poster) */}
               {(isNearViewport || posterSrc) && !isPlaying && (
                 <div
                   onClick={togglePlay}
-                  className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer transition-opacity z-10"
+                  className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-[color:var(--rr-dark)]/45 transition-opacity"
                 >
-                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[var(--mh20-shadow)] hover:scale-110 active:scale-95 transition-transform">
-                    {isEnded ? <RotateCcw className="w-7 h-7" /> : <Play className="w-7 h-7 translate-x-0.5" />}
-                  </div>
+                  <span className="flex h-14 w-14 items-center justify-center border border-[color:var(--rr-brass)] bg-[color:var(--rr-dark)]/70 text-[color:var(--rr-on-dark)]">
+                    {isEnded ? <RotateCcw className="h-6 w-6" /> : <Play className="h-6 w-6 translate-x-0.5" />}
+                  </span>
                 </div>
               )}
 
-              {/* Bottom Glass Control Bar */}
-              <div className="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/85 via-black/45 to-transparent backdrop-blur-[6px] z-10 transition-opacity">
-                {/* Scrubbable Progress Line */}
+              <div className="absolute inset-x-0 bottom-0 z-10 bg-[color:var(--rr-dark)]/85 p-4">
                 <div
-                  className="w-full h-1.5 bg-white/20 hover:h-2 rounded-none mb-3 cursor-pointer transition-all overflow-hidden"
+                  className="mb-3 h-1 w-full cursor-pointer bg-[color:var(--rr-on-dark)]/25 hover:h-1.5"
                   onClick={handleSeek}
                   title="Seek"
                 >
                   <div
-                    className="h-full bg-[#F7F3EB] rounded-none transition-all duration-100 relative"
+                    className="h-full bg-[color:var(--rr-brass)]"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -310,77 +296,55 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                   <button
                     onClick={togglePlay}
                     aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                    className="glass-dark-control w-11 h-11 rounded-none flex items-center justify-center cursor-pointer text-white"
+                    className="rr-touch flex h-11 w-11 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-on-dark)] cursor-pointer"
                   >
-                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 translate-x-0.5" />}
+                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 translate-x-0.5" />}
                   </button>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={toggleMute}
-                      aria-label={isMuted ? 'Unmute' : 'Mute'}
-                      className="glass-dark-control px-3 h-11 rounded-none flex items-center gap-1.5 text-xs text-white cursor-pointer"
-                    >
-                      {isMuted ? (
-                        <>
-                          <VolumeX className="w-4 h-4 text-[#FFD8C1]" />
-                          <span className="font-sans font-medium text-[11px]">Unmute</span>
-                        </>
-                      ) : (
-                        <>
-                          <Volume2 className="w-4 h-4 text-[#C7EFDE]" />
-                          <span className="font-sans font-medium text-[11px]">Mute</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  <button
+                    onClick={toggleMute}
+                    aria-label={isMuted ? 'Unmute' : 'Mute'}
+                    className="rr-touch flex h-11 items-center gap-2 border border-[color:var(--rr-border)] px-3 text-[color:var(--rr-on-dark)] cursor-pointer"
+                  >
+                    {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    <span className="rr-meta">{isMuted ? 'Unmute' : 'Mute'}</span>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Editorial Glass Content Card */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="space-y-3">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#24262D] leading-[1.15]">
+          <div className="space-y-6 lg:col-span-7">
+            <div>
+              <span className="rr-eyebrow">The Announcement Reel</span>
+              <h2 className="rr-title rr-title--compact mt-5 text-[color:var(--rr-ink)]">
                 {title}
               </h2>
-              <p className="text-lg sm:text-xl font-display italic text-[#24262D]">
+              <p className="mt-3 font-display text-xl italic text-[color:var(--rr-terracotta)]">
                 {subtitle}
               </p>
             </div>
 
-            <p className="text-[#5E5B55] text-base sm:text-lg leading-relaxed font-sans max-w-xl">
-              {description}
-            </p>
+            <p className="rr-lede">{description}</p>
 
-            {/* Community Focus Callout */}
-            <div className="inline-flex items-center gap-3.5 px-4 py-3 rounded-none glass-card border-[#D8CBFF]/25">
-              <span className="w-2.5 h-2.5 rounded-none bg-[#5E5B55] shrink-0" />
+            <div className="rr-panel rr-panel--sage flex items-center gap-4 border-l border-[color:var(--rr-brass)] px-5 py-4">
+              <span className="h-2 w-2 shrink-0 bg-[color:var(--rr-terracotta)]" aria-hidden="true" />
               <div>
-                <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-[#5E5B55] block">
-                  Community Focus
-                </span>
-                <p className="text-xs sm:text-sm font-semibold text-[#24262D]">
+                <span className="rr-meta block text-[color:var(--rr-muted)]">Community Focus</span>
+                <p className="mt-1 text-sm font-semibold text-[color:var(--rr-forest)]">
                   Monthly Gatherings &amp; Reader Circles
                 </p>
               </div>
             </div>
 
-            <div className="pt-2 flex flex-wrap items-center gap-4">
-              <button
-                onClick={togglePlay}
-                className="glass-button px-6 py-3 rounded-none text-sm font-medium flex items-center gap-2 cursor-pointer shadow-[var(--mh20-shadow-sm)]"
-              >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            <div className="rr-event-actions pt-2">
+              <button onClick={togglePlay} className="rr-btn cursor-pointer">
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                 <span>{isPlaying ? 'Pause Announcement' : 'Watch Announcement'}</span>
               </button>
 
-              <button
-                onClick={toggleMute}
-                className="glass-button-secondary px-5 py-3 rounded-none text-sm font-medium flex items-center gap-2 cursor-pointer"
-              >
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              <button onClick={toggleMute} className="rr-btn rr-btn--outline cursor-pointer">
+                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                 <span>{isMuted ? 'Unmute Audio' : 'Mute Audio'}</span>
               </button>
             </div>

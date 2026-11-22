@@ -752,25 +752,25 @@ export const AdminDashboard: React.FC = () => {
   // Render Login Gate
   if (!isAdmin) {
     return (
-      <div className="min-h-[85vh] flex items-center justify-center px-4 py-16 paper-grain">
-        <div className="glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-[#D8CBFF]/25 shadow-[var(--mh20-shadow-lg)]">
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#24262D] via-[#F47B49] to-[#FFD8C1]" />
+      <div className="admin-shell rr-container min-h-[85vh] flex items-center justify-center py-16">
+        <div className="rr-panel max-w-md w-full p-8 sm:p-10 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-px bg-[var(--rr-brass)]" />
 
           <div className="text-center space-y-3 mb-8">
-            <div className="w-14 h-14 rounded-2xl glass-dark mx-auto flex items-center justify-center text-[#FFD8C1] shadow-inner">
+            <div className="w-14 h-14 rr-panel--dark mx-auto flex items-center justify-center text-[var(--rr-brass)]">
               <Lock className="w-7 h-7" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D]">
+            <h1 className="rr-title rr-title--compact">
               Staff Sign In
             </h1>
-            <p className="text-xs text-[#5E5B55] leading-relaxed max-w-xs mx-auto">
+            <p className="rr-body text-xs text-center max-w-xs mx-auto">
               Authorized portal for Founders and Community Leads of Readers of Aurangabad.
             </p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#24262D] mb-1.5">
+              <label className="rr-label block mb-2">
                 Staff Email Address
               </label>
               <input
@@ -779,19 +779,19 @@ export const AdminDashboard: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="founder@readersofaurangabad.com"
-                className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                className="rr-input text-xs"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-[#24262D]">
+                <label className="rr-label block">
                   Password
                 </label>
                 <button
                   type="button"
                   onClick={handleResetPassword}
-                  className="text-[11px] text-[#24262D] hover:underline font-medium cursor-pointer"
+                  className="rr-link text-[11px] font-medium"
                 >
                   Forgot password?
                 </button>
@@ -802,19 +802,19 @@ export const AdminDashboard: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-3.5 py-2.5 rounded-xl glass-input text-xs"
+                className="rr-input text-xs"
               />
             </div>
 
             {loginError && (
-              <div className="p-3 rounded-xl bg-[#F47B49]/15 border border-[#F47B49]/45 text-[#24262D] text-xs flex items-center gap-2">
+              <div className="rr-alert text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                 <span>{loginError}</span>
               </div>
             )}
 
             {resetMessage && (
-              <div className="p-3 rounded-xl bg-[#C7EFDE]/45 border border-[#C7EFDE] text-[#24262D] text-xs flex items-center gap-2">
+              <div className="rr-alert rr-alert--success text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                 <span>{resetMessage}</span>
               </div>
@@ -823,10 +823,10 @@ export const AdminDashboard: React.FC = () => {
             <button
               type="submit"
               disabled={adminAuthLoading}
-              className="w-full py-3 rounded-xl glass-button text-xs font-semibold tracking-wide flex items-center justify-center gap-2 cursor-pointer transition-all mt-2"
+              className="rr-btn w-full mt-2"
             >
               {adminAuthLoading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-[var(--rr-on-dark)] border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <ShieldCheck className="w-4 h-4" />
@@ -836,8 +836,8 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#D4CFC5] text-center">
-            <span className="text-[11px] text-[#5E5B55] block">
+          <div className="mt-8 pt-6 border-t border-[var(--rr-border)] text-center">
+            <span className="text-[11px] text-[var(--rr-muted)] block">
               Protected by PostgreSQL Row-Level Security & Role Anti-Tamper Engine
             </span>
           </div>
@@ -848,47 +848,47 @@ export const AdminDashboard: React.FC = () => {
 
   // Render Authenticated Dashboard
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 paper-grain">
+    <div className="admin-shell rr-container py-12 space-y-10">
 
       {/* Top Identity & Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#D4CFC5]">
-        <div className="space-y-1">
+      <div className="rr-section-head">
+        <div className="rr-section-head__copy space-y-2">
           <div className="flex items-center gap-2.5">
-            <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#24262D] text-white flex items-center gap-1.5">
+            <span className="rr-meta px-2.5 py-1 bg-[var(--rr-forest)] text-[var(--rr-on-dark)] flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{adminRole === 'admin' ? 'Founder (Admin)' : 'Community Lead (Editor)'}</span>
             </span>
 
             {/* Supabase Database Connection Badge */}
-            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+            <span className={`rr-meta inline-flex items-center gap-1 px-2.5 py-0.5 border ${
               isDbConnected
-                ? 'bg-[#C7EFDE]/45 text-[#24262D] border-[#C7EFDE]'
-                : 'bg-[#FFD8C1]/45 text-[#24262D] border-[#FFD8C1]'
+                ? 'bg-[var(--rr-sage)] text-[var(--rr-forest)] border-[var(--rr-brass)]'
+                : 'bg-[var(--rr-brass)]/20 text-[var(--rr-ink)] border-[var(--rr-brass)]'
             }`}>
               <Database className="w-3 h-3" />
               <span>{isDbConnected ? 'Supabase Live' : 'Local Fallback'}</span>
             </span>
 
             {currentUserDesignation && (
-              <span className="text-xs text-[#5E5B55] italic font-serif">
+              <span className="rr-body text-xs italic font-serif">
                 "{currentUserDesignation}"
               </span>
             )}
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D]">
+          <h1 className="rr-title rr-title--compact">
             Administrative Portal
           </h1>
-          <p className="text-xs text-[#5E5B55]">
-            Signed in as <span className="font-semibold text-[#24262D]">{currentUserEmail}</span>
+          <p className="rr-body text-xs">
+            Signed in as <span className="font-semibold text-[var(--rr-ink)]">{currentUserEmail}</span>
           </p>
         </div>
 
         {/* Global Action Buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="rr-section-head__action flex items-center gap-2 flex-wrap">
           <button
             onClick={() => void refreshData()}
             disabled={dbLoading}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-button-secondary text-xs font-semibold cursor-pointer"
+            className="rr-btn rr-btn--outline"
             title="Refresh live data from Supabase"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${dbLoading ? 'animate-spin' : ''}`} />
@@ -897,7 +897,7 @@ export const AdminDashboard: React.FC = () => {
 
           <button
             onClick={exportDataJson}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass-button-secondary text-xs font-semibold cursor-pointer"
+            className="rr-btn rr-btn--outline"
             title={adminRole === 'admin' ? 'Export full administrative JSON backup (includes registrations & enquiries)' : 'Export public content JSON backup (meetups, articles, gallery)'}
           >
             <Download className="w-3.5 h-3.5" />
@@ -911,7 +911,7 @@ export const AdminDashboard: React.FC = () => {
                 alert(res.error);
               }
             }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl glass-button text-xs font-semibold cursor-pointer"
+            className="rr-btn"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -920,11 +920,11 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-1.5 border-b border-[#D4CFC5] pb-3 text-xs font-semibold overflow-x-auto">
+      <div className="rr-filter-row overflow-x-auto border-b border-[var(--rr-border)]">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-            activeTab === 'overview' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors cursor-pointer whitespace-nowrap ${
+            activeTab === 'overview' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           Overview
@@ -932,8 +932,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('meetups')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'meetups' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'meetups' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <Calendar className="w-3.5 h-3.5" />
@@ -949,18 +949,18 @@ export const AdminDashboard: React.FC = () => {
             }
             setActiveTab('registrations');
           }}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
             activeTab === 'registrations'
-              ? 'glass-button'
+              ? 'rr-btn'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-[#F7F3EB] text-[#5E5B55] cursor-not-allowed'
-                : 'glass-button-secondary'
+                ? 'opacity-60 bg-[var(--rr-paper)] text-[var(--rr-muted)] cursor-not-allowed'
+                : 'rr-btn--outline'
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
           <span>{adminRole === 'admin' ? `Registrations (${registrations.length})` : 'Registrations'}</span>
           {newRegistrationsCount > 0 && adminRole === 'admin' && (
-            <span className="w-4 h-4 rounded-full bg-[#F47B49] text-white text-[10px] flex items-center justify-center">
+            <span className="w-4 h-4 bg-[var(--rr-terracotta)] text-[var(--rr-on-dark)] text-[10px] flex items-center justify-center">
               {newRegistrationsCount}
             </span>
           )}
@@ -968,8 +968,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('gallery')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'gallery' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'gallery' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <ImageIcon className="w-3.5 h-3.5" />
@@ -978,8 +978,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('reels')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'reels' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'reels' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <Film className="w-3.5 h-3.5" />
@@ -988,8 +988,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('announcements')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'announcements' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'announcements' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <Bell className="w-3.5 h-3.5" />
@@ -998,8 +998,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('articles')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'articles' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'articles' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <FileText className="w-3.5 h-3.5" />
@@ -1008,8 +1008,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('instagram')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'instagram' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'instagram' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <InstagramIcon className="w-3.5 h-3.5" />
@@ -1025,18 +1025,18 @@ export const AdminDashboard: React.FC = () => {
             }
             setActiveTab('enquiries');
           }}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
             activeTab === 'enquiries'
-              ? 'glass-button'
+              ? 'rr-btn'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-[#F7F3EB] text-[#5E5B55] cursor-not-allowed'
-                : 'glass-button-secondary'
+                ? 'opacity-60 bg-[var(--rr-paper)] text-[var(--rr-muted)] cursor-not-allowed'
+                : 'rr-btn--outline'
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <Inbox className="w-3.5 h-3.5" />}
           <span>{adminRole === 'admin' ? `Inquiries (${enquiries.length})` : 'Inquiries'}</span>
           {newEnquiriesCount > 0 && adminRole === 'admin' && (
-            <span className="w-4 h-4 rounded-full bg-[#F47B49] text-white text-[10px] flex items-center justify-center">
+            <span className="w-4 h-4 bg-[var(--rr-terracotta)] text-[var(--rr-on-dark)] text-[10px] flex items-center justify-center">
               {newEnquiriesCount}
             </span>
           )}
@@ -1046,8 +1046,8 @@ export const AdminDashboard: React.FC = () => {
         {adminRole === 'admin' && (
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-              activeTab === 'users' ? 'glass-button' : 'glass-button-secondary'
+            className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+              activeTab === 'users' ? 'rr-btn' : 'rr-btn--outline'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
@@ -1057,8 +1057,8 @@ export const AdminDashboard: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('media')}
-          className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'media' ? 'glass-button' : 'glass-button-secondary'
+          className={`rr-touch transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+            activeTab === 'media' ? 'rr-btn' : 'rr-btn--outline'
           }`}
         >
           <HardDrive className="w-3.5 h-3.5" />
@@ -1069,58 +1069,58 @@ export const AdminDashboard: React.FC = () => {
       {/* --- TAB 1: OVERVIEW & STATS --- */}
       {activeTab === 'overview' && (
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Total Gatherings</span>
-              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{meetups.length}</span>
-              <span className="text-xs text-[#24262D] block mt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px border border-[var(--rr-border)] bg-[var(--rr-border)]">
+            <div className="rr-panel p-6">
+              <span className="rr-meta text-[var(--rr-muted)] block">Total Gatherings</span>
+              <span className="rr-title rr-title--small text-3xl text-[var(--rr-forest)] block mt-2">{meetups.length}</span>
+              <span className="text-xs text-[var(--rr-ink)] block mt-1">
                 {meetups.filter(m => isMeetupUpcoming(m)).length} upcoming scheduled
               </span>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Registrations</span>
-              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">
+            <div className="rr-panel p-6">
+              <span className="rr-meta text-[var(--rr-muted)] block">Registrations</span>
+              <span className="rr-title rr-title--small text-3xl text-[var(--rr-forest)] block mt-2">
                 {adminRole === 'admin' ? registrations.length : 'Protected (Admin)'}
               </span>
-              <span className="text-xs text-[#F47B49] block mt-1">
+              <span className="text-xs text-[var(--rr-terracotta)] block mt-1">
                 {adminRole === 'admin' ? `${newRegistrationsCount} new attendees` : 'Founder Access Only'}
               </span>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Journal Articles</span>
-              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{articles.length}</span>
-              <span className="text-xs text-[#24262D] block mt-1">Published community writings</span>
+            <div className="rr-panel p-6">
+              <span className="rr-meta text-[var(--rr-muted)] block">Journal Articles</span>
+              <span className="rr-title rr-title--small text-3xl text-[var(--rr-forest)] block mt-2">{articles.length}</span>
+              <span className="text-xs text-[var(--rr-ink)] block mt-1">Published community writings</span>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Meetup Reels</span>
-              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{reels.length}</span>
-              <span className="text-xs text-[#24262D] block mt-1">
+            <div className="rr-panel p-6">
+              <span className="rr-meta text-[var(--rr-muted)] block">Meetup Reels</span>
+              <span className="rr-title rr-title--small text-3xl text-[var(--rr-forest)] block mt-2">{reels.length}</span>
+              <span className="text-xs text-[var(--rr-ink)] block mt-1">
                 {reels.filter(r => r.published ?? r.isPublished).length} published
               </span>
             </div>
           </div>
 
           {/* Quick Shortcuts & Permissions Banner */}
-          <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4 border border-[#D8CBFF]/25">
-            <h3 className="font-serif text-lg font-bold text-[#24262D]">
+          <div className="rr-panel p-6 sm:p-8 space-y-5">
+            <h3 className="rr-title rr-title--small">
               System Operational Status
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-xl bg-white/70 border border-[#D4CFC5] space-y-2">
-                <span className="font-semibold text-[#24262D] block">Current Access Tier</span>
-                <p className="text-[#5E5B55] leading-relaxed">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-px border border-[var(--rr-border)] bg-[var(--rr-border)] text-xs">
+              <div className="rr-panel p-5 space-y-2">
+                <span className="rr-label block">Current Access Tier</span>
+                <p className="text-[var(--rr-muted)] leading-relaxed">
                   {adminRole === 'admin'
                     ? 'Founder / Full Administrator: You have unrestricted access to manage meetups, gallery images, articles, video reels, attendee registration PII, contact enquiries, and staff roles.'
                     : 'Community Lead / Editor: You can publish and curate meetups, reels, gallery items, and articles. Attendee registrations and member inquiries are strictly protected and hidden.'}
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/70 border border-[#D4CFC5] space-y-2">
-                <span className="font-semibold text-[#24262D] block">Supabase Backend Link</span>
-                <p className="text-[#5E5B55] leading-relaxed">
+              <div className="rr-panel p-5 space-y-2">
+                <span className="rr-label block">Supabase Backend Link</span>
+                <p className="text-[var(--rr-muted)] leading-relaxed">
                   {isDbConnected
                     ? 'Connected to Supabase project rtjulebzjiwbnizqwxjn. Row-Level Security policies are actively enforced server-side.'
                     : 'Operating in local client fallback mode. Once you execute the migration in Supabase SQL Editor, click "Sync DB" above to link live data.'}
@@ -1135,24 +1135,24 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'meetups' && (
         <div className="space-y-6">
           {adminFeedback && (
-            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-[#C7EFDE]/45 border-[#C7EFDE] text-[#24262D]' : 'bg-[#F47B49]/15 border-[#F47B49]/45 text-[#24262D]'}`}>
+            <div className={`rr-alert text-xs ${adminFeedback.type === 'success' ? 'rr-alert--success' : ''}`}>
               {adminFeedback.message}
             </div>
           )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[var(--rr-muted)]" />
               <input
                 type="text"
                 placeholder="Search meetups by title or venue..."
                 value={meetupSearch}
                 onChange={(e) => setMeetupSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl glass-input text-xs"
+                className="rr-input pl-9 text-xs"
               />
             </div>
             <button
               onClick={() => { setAdminFeedback(null); setShowMeetupModal(true); }}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
+              className="rr-btn self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
               <span>Schedule Gathering</span>
@@ -1161,19 +1161,19 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMeetups.map(m => (
-              <div key={m.id} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border-[#D8CBFF]/25">
-                <div className="relative h-40 bg-[#24262D]">
-                  <img src={m.featuredImage} alt={m.title} className="w-full h-full object-cover opacity-85" />
+              <div key={m.id} className="rr-panel overflow-hidden flex flex-col justify-between">
+                <div className="rr-image relative h-40">
+                  <img src={m.featuredImage} alt={m.title} className="w-full h-full object-cover" />
                   <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
                     {m.edition && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F47B49] text-white uppercase">
+                      <span className="rr-meta px-2 py-1 bg-[var(--rr-terracotta)] text-[var(--rr-on-dark)]">
                         {m.edition}
                       </span>
                     )}
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/90 text-[#24262D] uppercase">
+                    <span className="rr-meta px-2 py-1 bg-[var(--rr-ivory)] text-[var(--rr-ink)] border border-[var(--rr-border)]">
                       {m.registrationStatus}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${m.isPublished === false ? 'bg-[#D4CFC5] text-[#24262D]' : 'bg-[#C7EFDE] text-[#24262D]'}`}>
+                    <span className={`rr-meta px-2 py-1 border border-[var(--rr-border)] ${m.isPublished === false ? 'bg-[var(--rr-paper)] text-[var(--rr-muted)]' : 'bg-[var(--rr-sage)] text-[var(--rr-forest)]'}`}>
                       {m.isPublished === false ? 'Draft' : 'Published'}
                     </span>
                   </div>
@@ -1181,17 +1181,17 @@ export const AdminDashboard: React.FC = () => {
 
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="font-serif text-lg font-bold text-[#24262D] leading-snug">{m.title}</h3>
-                    <p className="text-xs text-[#5E5B55] mt-1 line-clamp-2">{m.description}</p>
-                    <div className="mt-3 text-xs text-[#5E5B55] space-y-1">
+                    <h3 className="rr-title rr-title--small leading-snug">{m.title}</h3>
+                    <p className="rr-body text-xs mt-1 line-clamp-2">{m.description}</p>
+                    <div className="mt-3 rr-body text-xs space-y-1">
                       <span className="block font-medium">{m.date} • {m.time}</span>
                       <span className="block">{m.venue}</span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-3 border-t border-[#D4CFC5]">
+                  <div className="space-y-3 pt-3 border-t border-[var(--rr-border)]">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-[#24262D]">
+                      <span className="text-[11px] font-semibold text-[var(--rr-ink)]">
                         Capacity: {m.capacity || 'Unlimited'}
                       </span>
                       <button
@@ -1200,7 +1200,7 @@ export const AdminDashboard: React.FC = () => {
                             void deleteMeetup(m.id);
                           }
                         }}
-                        className="p-1.5 rounded-lg text-red-700 hover:bg-[#F47B49]/15 transition-colors"
+                        className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)] transition-colors"
                         title="Delete meetup"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -1223,7 +1223,7 @@ export const AdminDashboard: React.FC = () => {
                             setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to update meetup.' });
                           }
                         }}
-                        className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold glass-button-secondary cursor-pointer"
+                        className="rr-btn rr-btn--outline text-[11px]"
                       >
                         {m.isPublished === false ? 'Publish' : 'Unpublish'}
                       </button>
@@ -1239,7 +1239,7 @@ export const AdminDashboard: React.FC = () => {
                               setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to update meetup.' });
                             }
                           }}
-                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold glass-button-secondary cursor-pointer"
+                          className="rr-btn rr-btn--outline text-[11px]"
                         >
                           Reopen
                         </button>
@@ -1256,7 +1256,7 @@ export const AdminDashboard: React.FC = () => {
                               setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to cancel meetup.' });
                             }
                           }}
-                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-red-700 border border-[#F47B49]/45 bg-[#F47B49]/15/70 cursor-pointer"
+                          className="rr-btn rr-btn--outline text-[11px] text-[var(--rr-terracotta)] border-[var(--rr-terracotta)]"
                         >
                           Cancel event
                         </button>
@@ -1276,20 +1276,20 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 flex-1 flex-wrap">
               <div className="relative flex-1 min-w-[200px] max-w-sm">
-                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[var(--rr-muted)]" />
                 <input
                   type="text"
                   placeholder="Search attendee by name or email..."
                   value={regSearch}
                   onChange={(e) => setRegSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl glass-input text-xs"
+                  className="rr-input pl-9 text-xs"
                 />
               </div>
 
               <select
                 value={regMeetupFilter}
                 onChange={(e) => setRegMeetupFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl glass-input text-xs"
+                className="rr-input text-xs"
               >
                 <option value="all">All Gatherings</option>
                 {meetups.map(m => (
@@ -1300,22 +1300,22 @@ export const AdminDashboard: React.FC = () => {
 
             <button
               onClick={handleExportRegistrationsCSV}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
+              className="rr-btn self-start sm:self-auto"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV</span>
             </button>
           </div>
 
-          <div className="glass-card rounded-2xl overflow-hidden border-[#D8CBFF]/25">
+          <div className="rr-panel overflow-hidden">
             {filteredRegistrations.length === 0 ? (
-              <div className="p-12 text-center text-xs text-[#5E5B55]">
+              <div className="rr-empty text-xs text-[var(--rr-muted)]">
                 No attendee registrations recorded yet.
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#24262D]/5 text-[#5E5B55] border-b border-[#D4CFC5] font-semibold">
+                <table className="rr-table">
+                  <thead className="border-b border-[var(--rr-border)]">
                     <tr>
                       <th className="p-3.5">Attendee</th>
                       <th className="p-3.5">Contact</th>
@@ -1325,36 +1325,36 @@ export const AdminDashboard: React.FC = () => {
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#D4CFC5]">
+                  <tbody className="divide-y divide-[var(--rr-border)]">
                     {filteredRegistrations.map(r => (
-                      <tr key={r.id} className="hover:bg-white/40 transition-colors">
-                        <td className="p-3.5 font-semibold text-[#24262D]">
+                      <tr key={r.id} className="hover:bg-[var(--rr-paper)] transition-colors">
+                        <td className="p-3.5 font-semibold text-[var(--rr-ink)]">
                           {r.name}
                           {r.message && (
-                            <span className="block text-[11px] font-normal text-[#5E5B55] italic line-clamp-1">
+                            <span className="block text-[11px] font-normal text-[var(--rr-muted)] italic line-clamp-1">
                               "{r.message}"
                             </span>
                           )}
                         </td>
                         <td className="p-3.5">
                           <span className="block">{r.email}</span>
-                          {r.phone && <span className="block text-[11px] text-[#5E5B55]">{r.phone}</span>}
+                          {r.phone && <span className="block text-[11px] text-[var(--rr-muted)]">{r.phone}</span>}
                         </td>
-                        <td className="p-3.5 text-[#24262D] font-medium">
+                        <td className="p-3.5 text-[var(--rr-ink)] font-medium">
                           {r.meetupTitle || 'Community Gathering'}
                         </td>
                         <td className="p-3.5">
                           <select
                             value={r.status}
                             onChange={(e) => void updateRegistrationStatus(r.id, e.target.value as Registration['status'])}
-                            className="px-2 py-1 rounded-lg text-xs font-semibold glass-input"
+                            className="rr-input text-xs min-h-0 py-1"
                           >
                             <option value="new">New</option>
                             <option value="contacted">Contacted</option>
                             <option value="resolved">Confirmed</option>
                           </select>
                         </td>
-                        <td className="p-3.5 text-[11px] text-[#5E5B55]">
+                        <td className="p-3.5 text-[11px] text-[var(--rr-muted)]">
                           {new Date(r.createdAt).toLocaleDateString()}
                         </td>
                         <td className="p-3.5 text-right">
@@ -1364,7 +1364,7 @@ export const AdminDashboard: React.FC = () => {
                                 void deleteRegistration(r.id);
                               }
                             }}
-                            className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
+                            className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1383,12 +1383,12 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'gallery' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#24262D]">
+            <h3 className="rr-title rr-title--small">
               Community Photography ({gallery.length})
             </h3>
             <button
               onClick={() => setShowGalleryModal(true)}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="rr-btn"
             >
               <Plus className="w-4 h-4" />
               <span>Add Photograph</span>
@@ -1403,25 +1403,25 @@ export const AdminDashboard: React.FC = () => {
               const imageSrc = isSafeGalleryImageSource(resolvedSrc) ? resolvedSrc : fallbackSrc;
 
               return (
-                <div key={item.id} className="glass-card rounded-2xl overflow-hidden group relative">
-                  <div className="aspect-square bg-[#24262D] flex items-center justify-center">
+                <div key={item.id} className="rr-panel overflow-hidden group relative">
+                  <div className="rr-image aspect-square flex items-center justify-center">
                     {imageSrc ? (
-                      <img src={imageSrc} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={imageSrc} alt={item.title} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="px-3 text-center text-[11px] text-[#C9C2B6]">
+                      <span className="px-3 text-center text-[11px] text-[var(--rr-muted)]">
                         {isStoragePath(item.imageUrl) ? 'Secure preview unavailable' : 'No preview available'}
                       </span>
                     )}
                   </div>
                   <div className="p-3 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#24262D] truncate">{item.title}</span>
+                    <span className="font-semibold text-[var(--rr-ink)] truncate">{item.title}</span>
                     <button
                       onClick={() => {
                         if (confirm(`Delete photograph "${item.title}"?`)) {
                           void deleteGalleryItem(item.id);
                         }
                       }}
-                      className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
+                      className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1437,12 +1437,12 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'reels' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#24262D]">
+            <h3 className="rr-title rr-title--small">
               Sequential Meetup Reels ({reels.length})
             </h3>
             <button
               onClick={() => setShowReelUploadModal(true)}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="rr-btn"
             >
               <UploadCloud className="w-4 h-4" />
               <span>Upload Reel</span>
@@ -1451,15 +1451,15 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reels.map((reel, idx) => (
-              <div key={reel.id} className="glass-card rounded-2xl p-5 space-y-4 flex flex-col justify-between border-[#D8CBFF]/25">
+              <div key={reel.id} className="rr-panel p-5 space-y-4 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#F47B49]">Reel #{reel.order}</span>
+                  <span className="rr-meta text-[var(--rr-terracotta)]">Reel #{reel.order}</span>
                   <button
                     onClick={() => void togglePublishReel(reel.id)}
-                    className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase ${
+                    className={`rr-meta px-2.5 py-1 border border-[var(--rr-border)] ${
                       reel.published ?? reel.isPublished
-                        ? 'bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE]'
-                        : 'bg-[#F7F3EB] text-[#5E5B55]'
+                        ? 'bg-[var(--rr-sage)] text-[var(--rr-forest)] border-[var(--rr-brass)]'
+                        : 'bg-[var(--rr-paper)] text-[var(--rr-muted)]'
                     }`}
                   >
                     {reel.published ?? reel.isPublished ? 'Published' : 'Draft'}
@@ -1467,16 +1467,16 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-serif text-base font-bold text-[#24262D]">{reel.title}</h4>
-                  {reel.caption && <p className="text-xs text-[#5E5B55] mt-1 line-clamp-2">{reel.caption}</p>}
+                  <h4 className="rr-title rr-title--small text-base">{reel.title}</h4>
+                  {reel.caption && <p className="rr-body text-xs mt-1 line-clamp-2">{reel.caption}</p>}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#D4CFC5]">
+                <div className="flex items-center justify-between pt-3 border-t border-[var(--rr-border)]">
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleMoveReel(idx, 'up')}
                       disabled={idx === 0}
-                      className="p-1 rounded hover:bg-white/60 disabled:opacity-30"
+                      className="p-2 rr-touch border border-[var(--rr-border)] hover:bg-[var(--rr-sage)] disabled:opacity-30"
                       title="Move up"
                     >
                       <ArrowUp className="w-4 h-4" />
@@ -1484,7 +1484,7 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       onClick={() => handleMoveReel(idx, 'down')}
                       disabled={idx === reels.length - 1}
-                      className="p-1 rounded hover:bg-white/60 disabled:opacity-30"
+                      className="p-2 rr-touch border border-[var(--rr-border)] hover:bg-[var(--rr-sage)] disabled:opacity-30"
                       title="Move down"
                     >
                       <ArrowDown className="w-4 h-4" />
@@ -1497,7 +1497,7 @@ export const AdminDashboard: React.FC = () => {
                         void deleteReel(reel.id);
                       }
                     }}
-                    className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
+                    className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1512,17 +1512,17 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'announcements' && (
         <div className="space-y-6">
           {adminFeedback && (
-            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-[#C7EFDE]/45 border-[#C7EFDE] text-[#24262D]' : 'bg-[#F47B49]/15 border-[#F47B49]/45 text-[#24262D]'}`}>
+            <div className={`rr-alert text-xs ${adminFeedback.type === 'success' ? 'rr-alert--success' : ''}`}>
               {adminFeedback.message}
             </div>
           )}
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#24262D]">
+            <h3 className="rr-title rr-title--small">
               Live Notices & Announcements ({announcements.length})
             </h3>
             <button
               onClick={() => { setAdminFeedback(null); setShowAnnModal(true); }}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="rr-btn"
             >
               <Plus className="w-4 h-4" />
               <span>Create Announcement</span>
@@ -1531,26 +1531,26 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="space-y-4">
             {announcements.length === 0 ? (
-              <div className="glass-card p-12 text-center text-xs text-[#5E5B55] rounded-2xl">
+              <div className="rr-empty text-xs text-[var(--rr-muted)]">
                 No active announcements published yet.
               </div>
             ) : (
               announcements.map(ann => (
-                <div key={ann.id} className="glass-card p-5 rounded-2xl flex items-start justify-between gap-4">
+                <div key={ann.id} className="rr-panel p-5 flex items-start justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-base text-[#24262D]">{ann.title}</span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ann.isPublished ? 'bg-[#C7EFDE]/45 text-[#24262D]' : 'bg-[#F7F3EB] text-[#24262D]'}`}>
+                      <span className="rr-title rr-title--small text-base">{ann.title}</span>
+                      <span className={`rr-meta px-2 py-1 border border-[var(--rr-border)] ${ann.isPublished ? 'bg-[var(--rr-sage)] text-[var(--rr-forest)]' : 'bg-[var(--rr-paper)] text-[var(--rr-muted)]'}`}>
                         {ann.isPublished ? 'Active' : 'Draft'}
                       </span>
                     </div>
-                    <p className="text-xs text-[#5E5B55] leading-relaxed">{ann.content}</p>
+                    <p className="rr-body text-xs">{ann.content}</p>
                     {ann.actionUrl && isSafeExternalUrl(ann.actionUrl) ? (
-                      <a href={ann.actionUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#24262D] hover:underline font-semibold block mt-1">
+                      <a href={ann.actionUrl} target="_blank" rel="noopener noreferrer" className="rr-link text-xs min-h-0 font-semibold mt-1">
                         Action Link: {ann.actionUrl}
                       </a>
                     ) : ann.actionUrl ? (
-                      <span className="text-xs text-[#24262D] font-semibold block mt-1">
+                      <span className="text-xs text-[var(--rr-ink)] font-semibold block mt-1">
                         Action page: {ann.actionUrl}
                       </span>
                     ) : null}
@@ -1561,7 +1561,7 @@ export const AdminDashboard: React.FC = () => {
                         void deleteAnnouncement(ann.id);
                       }
                     }}
-                    className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
+                    className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1577,18 +1577,18 @@ export const AdminDashboard: React.FC = () => {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[var(--rr-muted)]" />
               <input
                 type="text"
                 placeholder="Search journal pieces by title or author..."
                 value={articleSearch}
                 onChange={(e) => setArticleSearch(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl glass-input text-xs"
+                className="rr-input pl-9 text-xs"
               />
             </div>
             <button
               onClick={() => setShowArticleModal(true)}
-              className="glass-button px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="rr-btn"
             >
               <Plus className="w-4 h-4" />
               <span>Write Journal Piece</span>
@@ -1597,25 +1597,25 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArticles.map(a => (
-              <div key={a.id} className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border-[#D8CBFF]/25">
+              <div key={a.id} className="rr-panel p-5 flex flex-col justify-between space-y-4">
                 <div>
-                  <div className="flex items-center justify-between text-[11px] text-[#5E5B55] mb-1">
+                  <div className="flex items-center justify-between text-[11px] text-[var(--rr-muted)] mb-1">
                     <span>{a.category}</span>
-                    <span className="uppercase font-bold text-[#24262D]">{a.language}</span>
+                    <span className="uppercase font-bold text-[var(--rr-forest)]">{a.language}</span>
                   </div>
-                  <h4 className="font-serif text-lg font-bold text-[#24262D] leading-snug">{a.title}</h4>
-                  <p className="text-xs text-[#5E5B55] mt-1 line-clamp-3">{a.excerpt}</p>
+                  <h4 className="rr-title rr-title--small leading-snug">{a.title}</h4>
+                  <p className="rr-body text-xs mt-1 line-clamp-3">{a.excerpt}</p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#D4CFC5] text-xs">
-                  <span className="text-[#5E5B55]">By {a.author}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[var(--rr-border)] text-xs">
+                  <span className="text-[var(--rr-muted)]">By {a.author}</span>
                   <button
                     onClick={() => {
                       if (confirm(`Delete article "${a.title}"?`)) {
                         void deleteArticle(a.id);
                       }
                     }}
-                    className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
+                    className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1637,20 +1637,20 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 flex-1 flex-wrap">
               <div className="relative flex-1 min-w-[200px] max-w-sm">
-                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[var(--rr-muted)]" />
                 <input
                   type="text"
                   placeholder="Search inquiries by name or email..."
                   value={enqSearch}
                   onChange={(e) => setEnqSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl glass-input text-xs"
+                  className="rr-input pl-9 text-xs"
                 />
               </div>
 
               <select
                 value={enqTypeFilter}
                 onChange={(e) => setEnqTypeFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl glass-input text-xs"
+                className="rr-input text-xs"
               >
                 <option value="all">All Inquiry Types</option>
                 <option value="contact">General Contact</option>
@@ -1663,16 +1663,16 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="space-y-4">
             {filteredEnquiries.length === 0 ? (
-              <div className="glass-card p-12 text-center text-xs text-[#5E5B55] rounded-2xl">
+              <div className="rr-empty text-xs text-[var(--rr-muted)]">
                 No inquiries matching the selected criteria.
               </div>
             ) : (
               filteredEnquiries.map(enq => (
-                <div key={enq.id} className="glass-card p-5 rounded-2xl space-y-3 border-[#D8CBFF]/25">
+                <div key={enq.id} className="rr-panel p-5 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-base text-[#24262D]">{enq.name}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#24262D]/10 text-[#24262D]">
+                      <span className="rr-title rr-title--small text-base">{enq.name}</span>
+                      <span className="rr-meta px-2 py-1 bg-[var(--rr-sage)] text-[var(--rr-forest)] border border-[var(--rr-brass)]">
                         {enq.type.replace('_', ' ')}
                       </span>
                     </div>
@@ -1681,7 +1681,7 @@ export const AdminDashboard: React.FC = () => {
                       <select
                         value={enq.status}
                         onChange={(e) => void updateEnquiryStatus(enq.id, e.target.value as Enquiry['status'])}
-                        className="px-2.5 py-1 rounded-lg text-xs font-semibold glass-input"
+                        className="rr-input text-xs min-h-0 py-1"
                       >
                         <option value="new">New</option>
                         <option value="contacted">Contacted</option>
@@ -1694,19 +1694,19 @@ export const AdminDashboard: React.FC = () => {
                             void deleteEnquiry(enq.id);
                           }
                         }}
-                        className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
+                        className="p-2 rr-touch text-[var(--rr-terracotta)] border border-transparent hover:border-[var(--rr-border)]"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#5E5B55] leading-relaxed bg-white/50 p-3 rounded-xl border border-[#D4CFC5]">
+                  <p className="rr-body text-xs bg-[var(--rr-ivory)] p-3 border border-[var(--rr-border)]">
                     {enq.message}
                   </p>
 
-                  <div className="text-[11px] text-[#5E5B55] flex items-center justify-between pt-1">
-                    <span>Email: <a href={`mailto:${enq.email}`} className="text-[#24262D] font-medium hover:underline">{enq.email}</a> {enq.phone && `• Phone: ${enq.phone}`}</span>
+                  <div className="text-[11px] text-[var(--rr-muted)] flex items-center justify-between pt-1">
+                    <span>Email: <a href={`mailto:${enq.email}`} className="text-[var(--rr-forest)] font-medium underline underline-offset-2">{enq.email}</a> {enq.phone && `• Phone: ${enq.phone}`}</span>
                     <span>Received: {new Date(enq.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -1719,17 +1719,17 @@ export const AdminDashboard: React.FC = () => {
       {/* --- TAB 10: USER & ROLE MANAGEMENT (ADMIN ONLY) --- */}
       {activeTab === 'users' && adminRole === 'admin' && (
         <div className="space-y-6">
-          <div className="glass-card p-6 rounded-2xl space-y-4 border-[#D8CBFF]/25">
-            <h3 className="font-serif text-lg font-bold text-[#24262D]">
+          <div className="rr-panel p-6 space-y-5">
+            <h3 className="rr-title rr-title--small">
               Team Members & Role-Based Permissions
             </h3>
-            <p className="text-xs text-[#5E5B55] leading-relaxed">
+            <p className="rr-body text-xs">
               Staff roles are governed by PostgreSQL Row-Level Security triggers. Only verified administrators can promote or adjust community staff designations.
             </p>
 
             <div className="overflow-x-auto pt-2">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-[#24262D]/5 text-[#5E5B55] border-b border-[#D4CFC5] font-semibold">
+              <table className="rr-table">
+                <thead className="border-b border-[var(--rr-border)]">
                   <tr>
                     <th className="p-3.5">Staff Email</th>
                     <th className="p-3.5">Designation</th>
@@ -1737,18 +1737,18 @@ export const AdminDashboard: React.FC = () => {
                     <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#D4CFC5]">
+                <tbody className="divide-y divide-[var(--rr-border)]">
                   {staffProfiles.map(p => (
-                    <tr key={p.id} className="hover:bg-white/40">
-                      <td className="p-3.5 font-semibold text-[#24262D]">{p.email}</td>
-                      <td className="p-3.5 text-[#5E5B55]">{p.designation || 'Staff Member'}</td>
+                    <tr key={p.id} className="hover:bg-[var(--rr-paper)]">
+                      <td className="p-3.5 font-semibold text-[var(--rr-ink)]">{p.email}</td>
+                      <td className="p-3.5 text-[var(--rr-muted)]">{p.designation || 'Staff Member'}</td>
                       <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        <span className={`rr-meta px-2 py-1 border border-[var(--rr-border)] ${
                           p.role === 'admin'
-                            ? 'bg-[#24262D] text-white'
+                            ? 'bg-[var(--rr-forest)] text-[var(--rr-on-dark)] border-[var(--rr-forest)]'
                             : p.role === 'editor'
-                              ? 'bg-[#FFD8C1] text-[#24262D]'
-                              : 'bg-[#F7F3EB] text-[#24262D]'
+                              ? 'bg-[var(--rr-brass)]/25 text-[var(--rr-ink)] border-[var(--rr-brass)]'
+                              : 'bg-[var(--rr-paper)] text-[var(--rr-muted)]'
                         }`}>
                           {p.role || 'Unassigned'}
                         </span>
@@ -1762,7 +1762,7 @@ export const AdminDashboard: React.FC = () => {
                                 void updateStaffProfile(p.id, { role: newRole });
                               }
                             }}
-                            className="text-xs font-semibold text-[#24262D] hover:underline cursor-pointer"
+                            className="rr-meta text-[var(--rr-ink)] hover:underline cursor-pointer"
                           >
                             {p.role === 'editor' ? 'Revoke Access' : 'Assign Editor'}
                           </button>
@@ -1781,47 +1781,47 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'media' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
+            <div className="rr-panel p-6 space-y-3 border-[var(--rr-border)]">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#24262D]">roa-reels</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFD8C1]/45 text-[#24262D] border border-[#FFD8C1] uppercase">
+                <span className="rr-title rr-title--small text-base">roa-reels</span>
+                <span className="rr-meta px-2 py-1 bg-[var(--rr-brass)]/20 text-[var(--rr-ink)] border border-[var(--rr-brass)]">
                   Private Bucket
                 </span>
               </div>
-              <p className="text-xs text-[#5E5B55] leading-relaxed">
-                Stores community video reels (up to 500MB). RLS permits streaming of published reels via exact path equality.
+              <p className="rr-body text-xs">
+                Stores community video reels (up to 100 MB). RLS permits streaming of published reels via exact path equality.
               </p>
-              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
+              <div className="text-[11px] text-[var(--rr-muted)] pt-2 border-t border-[var(--rr-border)]">
                 Allowed MIME: video/mp4, video/webm, video/quicktime
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
+            <div className="rr-panel p-6 space-y-3 border-[var(--rr-border)]">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#24262D]">roa-gallery</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
+                <span className="rr-title rr-title--small text-base">roa-gallery</span>
+                <span className="rr-meta px-2 py-1 bg-[var(--rr-sage)] text-[var(--rr-forest)] border border-[var(--rr-brass)]">
                   Public CDN
                 </span>
               </div>
-              <p className="text-xs text-[#5E5B55] leading-relaxed">
+              <p className="rr-body text-xs">
                 Original community photographs (up to 20MB). Delivered via Supabase Global CDN.
               </p>
-              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
+              <div className="text-[11px] text-[var(--rr-muted)] pt-2 border-t border-[var(--rr-border)]">
                 Allowed MIME: image/webp, image/jpeg, image/png
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
+            <div className="rr-panel p-6 space-y-3 border-[var(--rr-border)]">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#24262D]">roa-thumbnails</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
+                <span className="rr-title rr-title--small text-base">roa-thumbnails</span>
+                <span className="rr-meta px-2 py-1 bg-[var(--rr-sage)] text-[var(--rr-forest)] border border-[var(--rr-brass)]">
                   Public CDN
                 </span>
               </div>
-              <p className="text-xs text-[#5E5B55] leading-relaxed">
+              <p className="rr-body text-xs">
                 Fast-loading image and video poster thumbnails (up to 10MB).
               </p>
-              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
+              <div className="text-[11px] text-[var(--rr-muted)] pt-2 border-t border-[var(--rr-border)]">
                 Allowed MIME: image/webp, image/jpeg, image/png
               </div>
             </div>
@@ -1831,89 +1831,89 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 1: CREATE MEETUP --- */}
       {showMeetupModal && (
-        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-serif text-2xl font-bold text-[#24262D]">
+        <div className="fixed inset-0 z-50 bg-[var(--rr-dark)]/80 flex items-center justify-center p-4">
+          <div className="rr-panel max-w-2xl w-full p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+            <h3 className="rr-title rr-title--small">
               Schedule New Community Gathering
             </h3>
 
             <form onSubmit={handleCreateMeetup} className="space-y-4 text-xs">
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="block font-semibold text-[#24262D] mb-1">Meetup Title</label>
+                  <label className="rr-label block mb-2">Meetup Title</label>
                   <input
                     type="text"
                     required
                     value={mTitle}
                     onChange={(e) => setMTitle(e.target.value)}
                     placeholder="e.g. Chapter 15 — Reading Under the Banyan"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Edition Tag</label>
+                  <label className="rr-label block mb-2">Edition Tag</label>
                   <input
                     type="text"
                     value={mEdition}
                     onChange={(e) => setMEdition(e.target.value)}
                     placeholder="e.g. Chapter 15"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Date String</label>
+                  <label className="rr-label block mb-2">Date String</label>
                   <input
                     type="text"
                     required
                     value={mDate}
                     onChange={(e) => setMDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Time Label</label>
+                  <label className="rr-label block mb-2">Time Label</label>
                   <input
                     type="text"
                     required
                     value={mTime}
                     onChange={(e) => setMTime(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Venue Name</label>
+                  <label className="rr-label block mb-2">Venue Name</label>
                   <input
                     type="text"
                     required
                     value={mVenue}
                     onChange={(e) => setMVenue(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Address / Landmark</label>
+                  <label className="rr-label block mb-2">Address / Landmark</label>
                   <input
                     type="text"
                     value={mAddress}
                     onChange={(e) => setMAddress(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Registration Status</label>
+                  <label className="rr-label block mb-2">Registration Status</label>
                   <select
                     value={mStatus}
                     onChange={(e) => setMStatus(e.target.value as Meetup['registrationStatus'])}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   >
                     <option value="open">Open (Accepting RSVPs)</option>
                     <option value="announced">Announced (Upcoming)</option>
@@ -1923,38 +1923,38 @@ export const AdminDashboard: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Capacity Limit</label>
+                  <label className="rr-label block mb-2">Capacity Limit</label>
                   <input
                     type="number"
                     value={mCapacity}
                     onChange={(e) => setMCapacity(e.target.value)}
                     placeholder="e.g. 40"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Featured Image URL</label>
+                  <label className="rr-label block mb-2">Featured Image URL</label>
                   <input
                     type="text"
                     value={mImage}
                     onChange={(e) => setMImage(e.target.value)}
                     placeholder="/images/enhanced/community/meetup-card-1.webp"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Custom RSVP / Form URL</label>
+                  <label className="rr-label block mb-2">Custom RSVP / Form URL</label>
                   <input
                     type="url"
                     value={mRegUrl}
                     onChange={(e) => setMRegUrl(e.target.value)}
                     placeholder="https://… (optional — leave blank if not confirmed)"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
-                  <p className="mt-1 text-[11px] text-[#5E5B55]">
+                  <p className="mt-1 text-[11px] text-[var(--rr-muted)]">
                     Only a confirmed http(s) link is shown as a registration destination. Leave blank to ask readers to contact us instead.
                   </p>
                 </div>
@@ -1967,9 +1967,9 @@ export const AdminDashboard: React.FC = () => {
                     id="mIsPublished"
                     checked={mIsPublished}
                     onChange={(e) => setMIsPublished(e.target.checked)}
-                    className="rounded text-[#24262D] focus:ring-[#24262D]"
+                    className="accent-[var(--rr-forest)]"
                   />
-                  <label htmlFor="mIsPublished" className="font-semibold text-[#24262D] cursor-pointer">
+                  <label htmlFor="mIsPublished" className="font-medium text-[var(--rr-ink)] cursor-pointer">
                     Publish meetup (visible to public and eligible for member notifications)
                   </label>
                 </div>
@@ -1979,37 +1979,37 @@ export const AdminDashboard: React.FC = () => {
                     id="mIsUpcoming"
                     checked={mIsUpcoming}
                     onChange={(e) => setMIsUpcoming(e.target.checked)}
-                    className="rounded text-[#24262D] focus:ring-[#24262D]"
+                    className="accent-[var(--rr-forest)]"
                   />
-                  <label htmlFor="mIsUpcoming" className="font-semibold text-[#24262D] cursor-pointer">
+                  <label htmlFor="mIsUpcoming" className="font-medium text-[var(--rr-ink)] cursor-pointer">
                     Mark as upcoming highlight (derived automatically from date, publish, and cancellation state)
                   </label>
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#24262D] mb-1">Description</label>
+                <label className="rr-label block mb-2">Description</label>
                 <textarea
                   rows={3}
                   required
                   value={mDesc}
                   onChange={(e) => setMDesc(e.target.value)}
                   placeholder="Gathering theme, reading rhythm, and instructions for readers..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--rr-border)]">
                 <button
                   type="button"
                   onClick={() => setShowMeetupModal(false)}
-                  className="glass-button-secondary px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="rr-btn rr-btn--outline"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="glass-button px-5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="rr-btn"
                 >
                   Save Meetup
                 </button>
@@ -2021,54 +2021,54 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 2: CREATE ARTICLE --- */}
       {showArticleModal && (
-        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-serif text-2xl font-bold text-[#24262D]">
+        <div className="fixed inset-0 z-50 bg-[var(--rr-dark)]/80 flex items-center justify-center p-4">
+          <div className="rr-panel max-w-2xl w-full p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
+            <h3 className="rr-title rr-title--small">
               Publish New Journal Piece
             </h3>
 
             <form onSubmit={handleCreateArticle} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-[#24262D] mb-1">Article Title</label>
+                <label className="rr-label block mb-2">Article Title</label>
                 <input
                   type="text"
                   required
                   value={aTitle}
                   onChange={(e) => setATitle(e.target.value)}
                   placeholder="e.g. The Architecture of Quietude in Aurangabad"
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Author Name</label>
+                  <label className="rr-label block mb-2">Author Name</label>
                   <input
                     type="text"
                     required
                     value={aAuthor}
                     onChange={(e) => setAAuthor(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Author Role / City Tag</label>
+                  <label className="rr-label block mb-2">Author Role / City Tag</label>
                   <input
                     type="text"
                     value={aRole}
                     onChange={(e) => setARole(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Category</label>
+                  <label className="rr-label block mb-2">Category</label>
                   <select
                     value={aCategory}
                     onChange={(e) => setACategory(e.target.value as JournalCategory)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   >
                     {CATEGORIES.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
@@ -2076,11 +2076,11 @@ export const AdminDashboard: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Language</label>
+                  <label className="rr-label block mb-2">Language</label>
                   <select
                     value={aLang}
                     onChange={(e) => setALang(e.target.value as Language)}
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   >
                     <option value="en">English</option>
                     <option value="hi">Hindi (हिन्दी)</option>
@@ -2092,61 +2092,61 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Estimated Reading Time (mins)</label>
+                  <label className="rr-label block mb-2">Estimated Reading Time (mins)</label>
                   <input
                     type="text"
                     value={aReadTime}
                     onChange={(e) => setAReadTime(e.target.value)}
                     placeholder="5"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#24262D] mb-1">Cover Image Path / URL</label>
+                  <label className="rr-label block mb-2">Cover Image Path / URL</label>
                   <input
                     type="text"
                     value={aCover}
                     onChange={(e) => setACover(e.target.value)}
                     placeholder="/images/enhanced/gallery/roa-019-2026-11-05.webp"
-                    className="w-full px-3 py-2 rounded-xl glass-input"
+                    className="rr-input"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#24262D] mb-1">Short Excerpt</label>
+                <label className="rr-label block mb-2">Short Excerpt</label>
                 <textarea
                   rows={2}
                   value={aExcerpt}
                   onChange={(e) => setAExcerpt(e.target.value)}
                   placeholder="One or two sentences summarizing the piece..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#24262D] mb-1">Full Article Content</label>
+                <label className="rr-label block mb-2">Full Article Content</label>
                 <textarea
                   rows={6}
                   required
                   value={aContent}
                   onChange={(e) => setAContent(e.target.value)}
                   placeholder="Full essay or reflections..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--rr-border)]">
                 <button
                   type="button"
                   onClick={() => setShowArticleModal(false)}
-                  className="glass-button-secondary px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="rr-btn rr-btn--outline"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="glass-button px-5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="rr-btn"
                 >
                   Publish to Journal
                 </button>
@@ -2158,18 +2158,18 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 3: ADD GALLERY ITEM --- */}
       {showGalleryModal && (
-        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-[var(--rr-dark)]/80 flex items-center justify-center p-4">
+          <div className="rr-panel max-w-lg w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#24262D]">Add Community Photograph</h3>
-              <p className="mt-1 text-[11px] text-[#5E5B55] leading-relaxed">
+              <h3 className="rr-title rr-title--small">Add Community Photograph</h3>
+              <p className="mt-1 text-[11px] text-[var(--rr-muted)] leading-relaxed">
                 Upload a JPEG, PNG or WebP image. The original and an optimized thumbnail are stored privately.
               </p>
             </div>
 
             <form onSubmit={handleCreateGallery} className="space-y-4 text-xs" aria-busy={gIsUploading}>
               <div>
-                <label htmlFor="gallery-image-file" className="block font-semibold mb-1">
+                <label htmlFor="gallery-image-file" className="rr-label block">
                   Image File
                 </label>
                 <input
@@ -2178,15 +2178,15 @@ export const AdminDashboard: React.FC = () => {
                   accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
                   onChange={(e) => void handleGalleryFileChange(e)}
                   disabled={gIsUploading || gIsValidating}
-                  className="w-full text-xs file:mr-3 file:rounded-xl file:border-0 file:bg-[#24262D] file:px-3 file:py-2 file:text-white file:text-xs file:font-semibold hover:file:bg-[#24262D] disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full text-xs file:mr-3 file:border-0 file:bg-[var(--rr-forest)] file:px-3 file:py-2 file:text-[var(--rr-on-dark)] file:text-xs file:font-semibold hover:file:bg-[var(--rr-terracotta)] disabled:opacity-60 disabled:cursor-not-allowed"
                 />
-                <p className="mt-1.5 text-[11px] text-[#5E5B55]">
+                <p className="mt-1.5 text-[11px] text-[var(--rr-muted)]">
                   JPEG, PNG or WebP · maximum 20 MB · one image per upload
                 </p>
               </div>
 
               {gPreviewUrl && (
-                <div className="rounded-2xl overflow-hidden border border-[#D4CFC5] bg-[#24262D]">
+                <div className="rr-image overflow-hidden border border-[var(--rr-border)]">
                   <img
                     src={gPreviewUrl}
                     alt="Selected photograph preview"
@@ -2196,28 +2196,28 @@ export const AdminDashboard: React.FC = () => {
               )}
 
               {gFile && (
-                <p className="text-[11px] text-[#24262D] break-all">
+                <p className="text-[11px] text-[var(--rr-ink)] break-all">
                   <span className="font-semibold">{gFile.name}</span>
-                  <span className="text-[#5E5B55]"> · {(gFile.size / (1024 * 1024)).toFixed(2)} MB</span>
+                  <span className="text-[var(--rr-muted)]"> · {(gFile.size / (1024 * 1024)).toFixed(2)} MB</span>
                 </p>
               )}
 
               {gIsValidating && (
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-white/70 border border-[#D4CFC5] text-[#5E5B55]">
-                  <div className="w-3.5 h-3.5 border-2 border-[#24262D] border-t-transparent rounded-full animate-spin" />
+                <div className="rr-alert flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 border-2 border-[var(--rr-forest)] border-t-transparent rounded-full animate-spin" />
                   <span>Validating image…</span>
                 </div>
               )}
 
               {gError && (
-                <div role="alert" className="p-3 rounded-xl bg-[#F47B49]/15 border border-[#F47B49]/45 text-[#24262D] flex items-start gap-2">
+                <div role="alert" className="rr-alert flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{gError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block font-semibold mb-1">Title</label>
+                <label className="rr-label block">Title</label>
                 <input
                   type="text"
                   required
@@ -2226,12 +2226,12 @@ export const AdminDashboard: React.FC = () => {
                   onChange={(e) => setGTitle(e.target.value)}
                   placeholder="e.g. Readers gathered under the trees"
                   disabled={gIsUploading}
-                  className="w-full px-3 py-2 rounded-xl glass-input disabled:opacity-60"
+                  className="rr-input disabled:opacity-60"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Caption / Venue Details (Optional)</label>
+                <label className="rr-label block">Caption / Venue Details (Optional)</label>
                 <textarea
                   rows={2}
                   maxLength={1000}
@@ -2239,27 +2239,27 @@ export const AdminDashboard: React.FC = () => {
                   onChange={(e) => setGCaption(e.target.value)}
                   placeholder="e.g. Siddharth Garden reading session"
                   disabled={gIsUploading}
-                  className="w-full px-3 py-2 rounded-xl glass-input disabled:opacity-60"
+                  className="rr-input disabled:opacity-60"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--rr-border)]">
                 <button
                   type="button"
                   onClick={closeGalleryModal}
                   disabled={gIsUploading}
-                  className="glass-button-secondary px-4 py-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rr-btn rr-btn--outline disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={gIsUploading || gIsValidating}
-                  className="glass-button px-4 py-2 rounded-xl flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="rr-btn disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {gIsUploading ? (
                     <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3.5 h-3.5 border-2 border-[var(--rr-on-dark)] border-t-transparent rounded-full animate-spin" />
                       <span>Uploading…</span>
                     </>
                   ) : (
@@ -2277,40 +2277,40 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 4: CREATE ANNOUNCEMENT --- */}
       {showAnnModal && (
-        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#24262D]">Publish Notice / Announcement</h3>
+        <div className="fixed inset-0 z-50 bg-[var(--rr-dark)]/80 flex items-center justify-center p-4">
+          <div className="rr-panel max-w-lg w-full p-6 space-y-5">
+            <h3 className="rr-title rr-title--small">Publish Notice / Announcement</h3>
             <form onSubmit={handleCreateAnnouncement} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold mb-1">Headline</label>
+                <label className="rr-label block">Headline</label>
                 <input
                   type="text"
                   required
                   value={annTitle}
                   onChange={(e) => setAnnTitle(e.target.value)}
                   placeholder="e.g. Monsoon Reading Gathering Announced"
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
               <div>
-                <label className="block font-semibold mb-1">Notice Content</label>
+                <label className="rr-label block">Notice Content</label>
                 <textarea
                   rows={4}
                   required
                   value={annContent}
                   onChange={(e) => setAnnContent(e.target.value)}
                   placeholder="Full announcement text..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
               <div>
-                <label className="block font-semibold mb-1">Action URL (Optional)</label>
+                <label className="rr-label block">Action URL (Optional)</label>
                 <input
                   type="url"
                   value={annUrl}
                   onChange={(e) => setAnnUrl(e.target.value)}
                   placeholder="https://..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -2319,15 +2319,15 @@ export const AdminDashboard: React.FC = () => {
                   id="annIsPublishedModal"
                   checked={annIsPublished}
                   onChange={(e) => setAnnIsPublished(e.target.checked)}
-                  className="rounded text-[#24262D] focus:ring-[#24262D]"
+                  className="accent-[var(--rr-forest)]"
                 />
-                <label htmlFor="annIsPublishedModal" className="font-semibold text-[#24262D] cursor-pointer">
+                <label htmlFor="annIsPublishedModal" className="font-medium text-[var(--rr-ink)] cursor-pointer">
                   Publish now (eligible for automatic member notification on publish)
                 </label>
               </div>
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
-                <button type="button" onClick={() => setShowAnnModal(false)} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
-                <button type="submit" className="glass-button px-4 py-2 rounded-xl">{annIsPublished ? 'Publish Announcement' : 'Save Draft'}</button>
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--rr-border)]">
+                <button type="button" onClick={() => setShowAnnModal(false)} className="rr-btn rr-btn--outline">Cancel</button>
+                <button type="submit" className="rr-btn">{annIsPublished ? 'Publish Announcement' : 'Save Draft'}</button>
               </div>
             </form>
           </div>
@@ -2336,12 +2336,12 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 5: UPLOAD REEL --- */}
       {showReelUploadModal && (
-        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#24262D]">Upload Meetup Video Reel</h3>
+        <div className="fixed inset-0 z-50 bg-[var(--rr-dark)]/80 flex items-center justify-center p-4">
+          <div className="rr-panel max-w-lg w-full p-6 space-y-5">
+            <h3 className="rr-title rr-title--small">Upload Meetup Video Reel</h3>
             <form onSubmit={handleUploadReel} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold mb-1">Select Video File (.mp4, .webm)</label>
+                <label className="rr-label block">Select Video File (.mp4, .webm)</label>
                 <input
                   type="file"
                   accept="video/mp4,video/webm"
@@ -2352,46 +2352,46 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               {reelVideoPreviewUrl && (
-                <div className="aspect-[9/16] max-h-60 rounded-xl overflow-hidden bg-black mx-auto">
+                <div className="rr-image aspect-[9/16] max-h-60 mx-auto">
                   <video src={reelVideoPreviewUrl} controls className="w-full h-full object-contain" />
                 </div>
               )}
 
               <div>
-                <label className="block font-semibold mb-1">Reel Title</label>
+                <label className="rr-label block">Reel Title</label>
                 <input
                   type="text"
                   required
                   value={reelTitle}
                   onChange={(e) => setReelTitle(e.target.value)}
                   placeholder="e.g. Readers of Aurangabad — Chapter 12 Highlights"
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Caption</label>
+                <label className="rr-label block">Caption</label>
                 <textarea
                   rows={2}
                   value={reelCaption}
                   onChange={(e) => setReelCaption(e.target.value)}
                   placeholder="Short description..."
-                  className="w-full px-3 py-2 rounded-xl glass-input"
+                  className="rr-input"
                 />
               </div>
 
               {isUploadingReel && (
                 <div className="space-y-1">
-                  <div className="w-full bg-[#D4CFC5] rounded-full h-2">
-                    <div className="bg-[#24262D] h-2 rounded-full transition-all duration-200" style={{ width: `${reelUploadProgress}%` }} />
+                  <div className="w-full bg-[var(--rr-border)] h-1">
+                    <div className="bg-[var(--rr-forest)] h-1 transition-all duration-200" style={{ width: `${reelUploadProgress}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#5E5B55] block text-right">{reelUploadProgress}% processing...</span>
+                  <span className="text-[10px] text-[var(--rr-muted)] block text-right">{reelUploadProgress}% processing...</span>
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
-                <button type="button" onClick={() => { setShowReelUploadModal(false); resetReelUploadState(); }} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
-                <button type="submit" disabled={isUploadingReel} className="glass-button px-4 py-2 rounded-xl">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--rr-border)]">
+                <button type="button" onClick={() => { setShowReelUploadModal(false); resetReelUploadState(); }} className="rr-btn rr-btn--outline">Cancel</button>
+                <button type="submit" disabled={isUploadingReel} className="rr-btn">
                   {isUploadingReel ? 'Processing...' : 'Upload Reel'}
                 </button>
               </div>

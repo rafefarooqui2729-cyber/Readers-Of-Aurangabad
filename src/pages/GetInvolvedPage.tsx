@@ -20,7 +20,6 @@ import {
   FilterButton,
   FormField,
   PageHero,
-  PaperPanel,
   SectionHeading,
 } from '../components/ui';
 
@@ -129,7 +128,7 @@ export const GetInvolvedPage: React.FC = () => {
       : 'Are you a local café, independent bookstore, college literary club, or cultural institution in Aurangabad? Let’s organize a joint gathering.';
 
   return (
-    <div className="paper-grain overflow-hidden pb-16">
+    <div className="rr-home">
       <PageHero
         image="/images/enhanced/gallery/roa-060-2026-11-05.webp"
         alt="Readers exchanging books at an Aurangabad gathering"
@@ -138,27 +137,26 @@ export const GetInvolvedPage: React.FC = () => {
         lead="A reading movement flourishes through the hands that lay out mats, share books, and welcome strangers."
       />
 
-      <div className="space-y-12 sm:space-y-16">
-        {/* Quick ways in */}
-        <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
+      {/* Quick ways in — two numbered entries in an editorial ledger. */}
+      <section className="rr-section" aria-label="Start here">
+        <div className="rr-container">
           <SectionHeading
             eyebrow="Start here"
             title="Two easy ways to join in"
             description="Follow the announcements, or come and sit with us at the next gathering."
           />
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
-              <span className="flex h-12 w-12 items-center justify-center border border-[#F47B49]/30 text-[#F47B49]">
-                <InstagramIcon className="h-6 w-6" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                Join the conversation online
-              </h3>
-              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                Follow our Instagram for gathering announcements, venue updates, book excerpts,
-                and community spotlights.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-10 border-t border-[color:var(--rr-border)]">
+            <article className="grid gap-7 border-b border-[color:var(--rr-border)] py-9 lg:grid-cols-[4rem_minmax(0,1fr)_auto] lg:items-start lg:gap-12">
+              <span className="rr-meta pt-1 text-[color:var(--rr-brass)]">01</span>
+              <div className="max-w-2xl">
+                <InstagramIcon className="h-6 w-6 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+                <h3 className="rr-title rr-title--compact mt-5">Join the conversation online</h3>
+                <p className="rr-body mt-4">
+                  Follow our Instagram for gathering announcements, venue updates, book excerpts,
+                  and community spotlights.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3 lg:pt-1">
                 <Button
                   asAnchor
                   href={siteConfig.instagramUrl}
@@ -166,9 +164,9 @@ export const GetInvolvedPage: React.FC = () => {
                   rel="noopener noreferrer"
                   className="px-4 py-2 text-xs"
                 >
-                  <InstagramIcon className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                  <InstagramIcon className="h-3.5 w-3.5" aria-hidden="true" />
                   Follow {siteConfig.instagramHandle}
-                  <ExternalLink className="ml-2 h-3 w-3" aria-hidden="true" />
+                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
                 </Button>
                 <Button
                   asAnchor
@@ -178,24 +176,23 @@ export const GetInvolvedPage: React.FC = () => {
                   rel="noopener noreferrer"
                   className="px-4 py-2 text-xs"
                 >
-                  <MessageCircle className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                  <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
                   Join the WhatsApp group
                 </Button>
               </div>
-            </PaperPanel>
+            </article>
 
-            <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
-              <span className="flex h-12 w-12 items-center justify-center border border-[#5E5B55]/30 text-[#5E5B55]">
-                <BookOpen className="h-6 w-6" aria-hidden="true" />
-              </span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                Attend a gathering
-              </h3>
-              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                Gatherings are free and open to all. Join our WhatsApp group to hear about the next
-                chapter and confirm your plans.
-              </p>
-              <div className="mt-6">
+            <article className="grid gap-7 border-b border-[color:var(--rr-border)] py-9 lg:grid-cols-[4rem_minmax(0,1fr)_auto] lg:items-start lg:gap-12">
+              <span className="rr-meta pt-1 text-[color:var(--rr-brass)]">02</span>
+              <div className="max-w-2xl">
+                <BookOpen className="h-6 w-6 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+                <h3 className="rr-title rr-title--compact mt-5">Attend a gathering</h3>
+                <p className="rr-body mt-4">
+                  Gatherings are free and open to all. Join our WhatsApp group to hear about the next
+                  chapter and confirm your plans.
+                </p>
+              </div>
+              <div className="lg:pt-1">
                 {upcomingMeetup && upcomingMeetup.registrationStatus === 'open' && registrationUrl ? (
                   <Button
                     asAnchor
@@ -205,7 +202,7 @@ export const GetInvolvedPage: React.FC = () => {
                     className="px-4 py-2 text-xs"
                   >
                     RSVP for the next chapter
-                    <ExternalLink className="ml-2 h-3.5 w-3.5" aria-hidden="true" />
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </Button>
                 ) : upcomingMeetup && upcomingMeetup.registrationStatus === 'open' ? (
                   <Button
@@ -216,237 +213,237 @@ export const GetInvolvedPage: React.FC = () => {
                     rel="noopener noreferrer"
                     className="px-4 py-2 text-xs"
                   >
-                    <MessageCircle className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                    <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
                     Ask on WhatsApp
                   </Button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setCurrentPage('gatherings')}
-                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#F47B49] underline underline-offset-4"
+                    className="rr-link"
                   >
                     Check the gathering archive
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 )}
               </div>
-            </PaperPanel>
+            </article>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Enquiry form */}
-        <section className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-none p-6 sm:p-10">
-            <SectionHeading
-              eyebrow="Offer a hand"
-              title="Connect your passion with the circle"
-              description="Choose how you would like to participate and tell us a little about yourself."
-              center
-            />
+      {/* Enquiry form */}
+      <section className="rr-section rr-section--line" aria-label="Offer a hand">
+        <div className="rr-container max-w-4xl">
+          <SectionHeading
+            eyebrow="Offer a hand"
+            title="Connect your passion with the circle"
+            description="Choose how you would like to participate and tell us a little about yourself."
+            center
+          />
 
-            <div
-              className="mt-8 grid grid-cols-1 gap-2 sm:grid-cols-3"
-              role="group"
-              aria-label="How would you like to help?"
+          <div
+            className="rr-filter-row mt-10 justify-center"
+            role="group"
+            aria-label="How would you like to help?"
+          >
+            <FilterButton active={activeTab === 'volunteer'} onClick={() => selectTab('volunteer')}>
+              Volunteer
+            </FilterButton>
+            <FilterButton
+              active={activeTab === 'book_donation'}
+              onClick={() => selectTab('book_donation')}
             >
-              <FilterButton active={activeTab === 'volunteer'} onClick={() => selectTab('volunteer')}>
-                Volunteer
-              </FilterButton>
-              <FilterButton
-                active={activeTab === 'book_donation'}
-                onClick={() => selectTab('book_donation')}
-              >
-                Donate books
-              </FilterButton>
-              <FilterButton
-                active={activeTab === 'collaboration'}
-                onClick={() => selectTab('collaboration')}
-              >
-                Collaborate
-              </FilterButton>
+              Donate books
+            </FilterButton>
+            <FilterButton
+              active={activeTab === 'collaboration'}
+              onClick={() => selectTab('collaboration')}
+            >
+              Collaborate
+            </FilterButton>
+          </div>
+
+          <p className="rr-alert mt-8">{callout}</p>
+
+          <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="mt-8 space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <FormField id="involved-name" label="Full name" required invalid={errorField === 'name'}>
+                <input
+                  id="involved-name"
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  aria-invalid={errorField === 'name' || undefined}
+                  aria-describedby={errorField === 'name' ? 'involved-form-error' : undefined}
+                  className={fieldClasses}
+                />
+              </FormField>
+              <FormField id="involved-email" label="Email address" required invalid={errorField === 'email'}>
+                <input
+                  id="involved-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  aria-invalid={errorField === 'email' || undefined}
+                  aria-describedby={errorField === 'email' ? 'involved-form-error' : undefined}
+                  className={fieldClasses}
+                />
+              </FormField>
             </div>
 
-            <p className="mt-6 border-l-4 border-[#C7EFDE] bg-[#F7F3EB] px-4 py-3 font-sans text-xs leading-relaxed text-[#5E5B55] dark:bg-[#24262D] dark:text-[#D4CFC5]">
-              {callout}
+            <FormField id="involved-phone" label="WhatsApp / phone (optional)">
+              <input
+                id="involved-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98XXX XXXXX"
+                className={fieldClasses}
+              />
+            </FormField>
+
+            {activeTab === 'volunteer' ? (
+              <FormField id="volunteer-skills" label="How would you like to help?">
+                <input
+                  id="volunteer-skills"
+                  type="text"
+                  value={volunteerSkills}
+                  onChange={(e) => setVolunteerSkills(e.target.value)}
+                  placeholder="Event photography, park coordination, poster design"
+                  className={fieldClasses}
+                />
+              </FormField>
+            ) : null}
+
+            {activeTab === 'book_donation' ? (
+              <FormField id="book-details" label="Approximate quantity & genres">
+                <input
+                  id="book-details"
+                  type="text"
+                  value={bookDetails}
+                  onChange={(e) => setBookDetails(e.target.value)}
+                  placeholder="15 Marathi novels and 10 English paperbacks"
+                  className={fieldClasses}
+                />
+              </FormField>
+            ) : null}
+
+            {activeTab === 'collaboration' ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <FormField id="collab-org" label="Organization / café name">
+                  <input
+                    id="collab-org"
+                    type="text"
+                    value={collabOrg}
+                    onChange={(e) => setCollabOrg(e.target.value)}
+                    placeholder="Your organization"
+                    className={fieldClasses}
+                  />
+                </FormField>
+                <FormField id="collab-type" label="Partner category">
+                  <select
+                    id="collab-type"
+                    value={collabType}
+                    onChange={(e) => setCollabType(e.target.value)}
+                    className={fieldClasses}
+                  >
+                    <option value="Café / Venue Partner">Café / Venue Partner</option>
+                    <option value="Bookstore / Publisher">Bookstore / Publisher</option>
+                    <option value="College / University Society">College / University Society</option>
+                    <option value="Cultural / Literary NGO">Cultural / Literary NGO</option>
+                  </select>
+                </FormField>
+              </div>
+            ) : null}
+
+            <FormField id="involved-message" label="Your message" required invalid={errorField === 'message'}>
+              <textarea
+                id="involved-message"
+                rows={4}
+                required
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tell us a little about yourself and why you would like to help..."
+                aria-invalid={errorField === 'message' || undefined}
+                aria-describedby={errorField === 'message' ? 'involved-form-error' : undefined}
+                className={fieldClasses}
+              />
+            </FormField>
+
+            <div className="flex items-start gap-3 border-t border-[color:var(--rr-border)] pt-6">
+              <input
+                id="get-involved-consent"
+                type="checkbox"
+                required
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                aria-invalid={errorField === 'consent' || undefined}
+                aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
+                className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[color:var(--rr-terracotta)]"
+              />
+              <label
+                htmlFor="get-involved-consent"
+                className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[color:var(--rr-muted)]"
+              >
+                {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
+                <span className="text-[color:var(--rr-terracotta)]">*</span>
+              </label>
+            </div>
+
+            {errorMessage ? (
+              <p
+                id="involved-form-error"
+                role="alert"
+                aria-live="assertive"
+                className="rr-alert"
+              >
+                {errorMessage}
+              </p>
+            ) : null}
+
+            {successMessage ? (
+              <div
+                role="status"
+                aria-live="polite"
+                className="rr-alert rr-alert--success flex items-center gap-2"
+              >
+                <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{successMessage}</span>
+              </div>
+            ) : null}
+
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? (
+                <span>Submitting your note...</span>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" aria-hidden="true" />
+                  Submit expression of interest
+                </>
+              )}
+            </Button>
+          </form>
+        </div>
+      </section>
+
+      <section className="rr-cta-band" aria-label="A community reading sanctuary">
+        <div className="rr-container rr-cta-band__inner">
+          <div>
+            <HandHeart className="h-6 w-6 text-[color:var(--rr-brass)]" aria-hidden="true" />
+            <h2 className="rr-cta-band__title">A community reading sanctuary</h2>
+            <p className="rr-cta-band__copy">
+              Readers of Aurangabad is free and community-sustained. Our hopes for the future include
+              an open-access book shelf, shared reading badges, and literary walks across historic
+              Aurangabad.
             </p>
-
-            <form onSubmit={handleSubmit} aria-busy={isSubmitting} className="mt-8 space-y-5">
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <FormField id="involved-name" label="Full name" required invalid={errorField === 'name'}>
-                  <input
-                    id="involved-name"
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your name"
-                    aria-invalid={errorField === 'name' || undefined}
-                    aria-describedby={errorField === 'name' ? 'involved-form-error' : undefined}
-                    className={fieldClasses}
-                  />
-                </FormField>
-                <FormField id="involved-email" label="Email address" required invalid={errorField === 'email'}>
-                  <input
-                    id="involved-email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    aria-invalid={errorField === 'email' || undefined}
-                    aria-describedby={errorField === 'email' ? 'involved-form-error' : undefined}
-                    className={fieldClasses}
-                  />
-                </FormField>
-              </div>
-
-              <FormField id="involved-phone" label="WhatsApp / phone (optional)">
-                <input
-                  id="involved-phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98XXX XXXXX"
-                  className={fieldClasses}
-                />
-              </FormField>
-
-              {activeTab === 'volunteer' ? (
-                <FormField id="volunteer-skills" label="How would you like to help?">
-                  <input
-                    id="volunteer-skills"
-                    type="text"
-                    value={volunteerSkills}
-                    onChange={(e) => setVolunteerSkills(e.target.value)}
-                    placeholder="Event photography, park coordination, poster design"
-                    className={fieldClasses}
-                  />
-                </FormField>
-              ) : null}
-
-              {activeTab === 'book_donation' ? (
-                <FormField id="book-details" label="Approximate quantity & genres">
-                  <input
-                    id="book-details"
-                    type="text"
-                    value={bookDetails}
-                    onChange={(e) => setBookDetails(e.target.value)}
-                    placeholder="15 Marathi novels and 10 English paperbacks"
-                    className={fieldClasses}
-                  />
-                </FormField>
-              ) : null}
-
-              {activeTab === 'collaboration' ? (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <FormField id="collab-org" label="Organization / café name">
-                    <input
-                      id="collab-org"
-                      type="text"
-                      value={collabOrg}
-                      onChange={(e) => setCollabOrg(e.target.value)}
-                      placeholder="Your organization"
-                      className={fieldClasses}
-                    />
-                  </FormField>
-                  <FormField id="collab-type" label="Partner category">
-                    <select
-                      id="collab-type"
-                      value={collabType}
-                      onChange={(e) => setCollabType(e.target.value)}
-                      className={fieldClasses}
-                    >
-                      <option value="Café / Venue Partner">Café / Venue Partner</option>
-                      <option value="Bookstore / Publisher">Bookstore / Publisher</option>
-                      <option value="College / University Society">College / University Society</option>
-                      <option value="Cultural / Literary NGO">Cultural / Literary NGO</option>
-                    </select>
-                  </FormField>
-                </div>
-              ) : null}
-
-              <FormField id="involved-message" label="Your message" required invalid={errorField === 'message'}>
-                <textarea
-                  id="involved-message"
-                  rows={4}
-                  required
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tell us a little about yourself and why you would like to help..."
-                  aria-invalid={errorField === 'message' || undefined}
-                  aria-describedby={errorField === 'message' ? 'involved-form-error' : undefined}
-                  className={fieldClasses}
-                />
-              </FormField>
-
-              <div className="flex items-start gap-3">
-                <input
-                  id="get-involved-consent"
-                  type="checkbox"
-                  required
-                  checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                  aria-invalid={errorField === 'consent' || undefined}
-                  aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
-                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#F47B49]"
-                />
-                <label
-                  htmlFor="get-involved-consent"
-                  className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]"
-                >
-                  {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
-                  <span className="text-[#F47B49]">*</span>
-                </label>
-              </div>
-
-              {errorMessage ? (
-                <p
-                  id="involved-form-error"
-                  role="alert"
-                  aria-live="assertive"
-                  className="border border-[#F47B49]/40 bg-[#F47B49]/10 p-3 font-sans text-xs text-[#F47B49]"
-                >
-                  {errorMessage}
-                </p>
-              ) : null}
-
-              {successMessage ? (
-                <div
-                  role="status"
-                  aria-live="polite"
-                  className="flex items-center gap-2 border border-[#5E5B55]/40 bg-[#24262D]/10 p-3 font-sans text-xs text-[#5E5B55] dark:text-[#D4CFC5]"
-                >
-                  <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-                  <span>{successMessage}</span>
-                </div>
-              ) : null}
-
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? (
-                  <span>Submitting your note...</span>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Submit expression of interest
-                  </>
-                )}
-              </Button>
-            </form>
-          </PaperPanel>
-        </section>
-
-        <section className="mx-auto max-w-3xl px-5 pb-4 text-center sm:px-8">
-          <HandHeart className="mx-auto h-7 w-7 text-[#F47B49]" aria-hidden="true" />
-          <h3 className="mt-4 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-            A community reading sanctuary
-          </h3>
-          <p className="mx-auto mt-3 max-w-xl font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-            Readers of Aurangabad is free and community-sustained. Our hopes for the future include
-            an open-access book shelf, shared reading badges, and literary walks across historic
-            Aurangabad.
-          </p>
-        </section>
-      </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

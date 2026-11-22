@@ -11,17 +11,10 @@ export const Eyebrow: React.FC<EyebrowProps> = ({
   color = 'neem',
   className = '',
 }) => {
-  const colorClasses = {
-    neem: 'text-[#5E5B55] dark:text-[#C9C4BA]',
-    clay: 'text-[#F47B49]',
-    marigold: 'text-[#F47B49] dark:text-[#FFD8C1]',
-  };
+  const tone = color === 'neem' ? 'rr-eyebrow--muted' : color === 'marigold' ? 'rr-eyebrow--light' : '';
 
   return (
-    <span
-      className={`inline-flex items-center text-[11px] sm:text-[12px] font-semibold tracking-[0.16em] uppercase ${colorClasses[color]} ${className}`}
-    >
-      <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+    <span className={`rr-eyebrow ${tone} ${className}`.trim()}>
       {children}
     </span>
   );

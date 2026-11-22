@@ -50,49 +50,49 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#24262D]/12 bg-[#F7F3EB]/95 backdrop-blur-md dark:border-[#F7F3EB]/12 dark:bg-[#1F2128]/95">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-[76px] items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 border-b border-[color:var(--rr-border)] bg-[color:var(--rr-paper)]/95 backdrop-blur-sm">
+      <div className="rr-container">
+        <div className="flex h-[82px] items-center justify-between gap-4">
           <button
             onClick={() => handleNavClick('home')}
             className="group flex min-w-0 items-center gap-3 text-left cursor-pointer"
             aria-label="Readers of Aurangabad Home"
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#24262D] bg-[#FFFDF8] p-0.5 shadow-[var(--mh20-shadow-sm)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:shadow-[var(--mh20-shadow-sm)]">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-[color:var(--rr-border)] bg-[color:var(--rr-ivory)] p-0.5">
               <img
                 src="/brand/logo.png"
                 alt="Readers of Aurangabad logo"
                 className="h-full w-full object-cover"
               />
-            </div>
-            <div className="min-w-0">
-              <span className="block truncate font-display text-[1.05rem] uppercase leading-none tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] sm:text-[1.2rem]">
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate font-display text-[1.1rem] uppercase leading-none tracking-[-0.02em] text-[color:var(--rr-ink)] sm:text-[1.3rem]">
                 Readers of Aurangabad
               </span>
-              <span className="mt-1 block font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#F47B49]">
-                MH20 · Reading Movement
+              <span className="rr-meta mt-1.5 block text-[color:var(--rr-forest)]">
+                MH20 · City Reading Collective
               </span>
-            </div>
+            </span>
           </button>
 
-          <nav className="hidden items-center gap-1 lg:flex" aria-label="Main Navigation">
+          <nav className="hidden items-center lg:flex" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const isActive = currentPage === link.key;
               return (
                 <button
                   key={link.key}
                   onClick={() => handleNavClick(link.key)}
-                  className={`relative min-h-[44px] min-w-[44px] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer ${
+                  className={`relative min-h-[44px] px-3 py-2 font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em] transition-colors cursor-pointer ${
                     isActive
-                      ? 'text-[#24262D] dark:text-[#F7F3EB]'
-                      : 'text-[#5E5B55] hover:text-[#24262D] dark:text-[#D4CFC5] dark:hover:text-[#F7F3EB]'
+                      ? 'text-[color:var(--rr-forest)]'
+                      : 'text-[color:var(--rr-muted)] hover:text-[color:var(--rr-ink)]'
                   }`}
                 >
                   <span>{link.label}</span>
                   {isActive && (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute inset-x-2 bottom-1 h-[3px] bg-[#F47B49]"
+                      className="absolute inset-x-3 bottom-1 h-px bg-[color:var(--rr-terracotta)]"
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
@@ -101,20 +101,20 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="hidden items-center gap-2 border-l border-[color:var(--rr-border)] pl-3 lg:flex">
             <ThemeToggle />
 
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
+                className="rr-touch inline-flex items-center gap-1.5 border border-[color:var(--rr-border)] px-2.5 py-2 text-[color:var(--rr-ink)] transition-colors hover:border-[color:var(--rr-brass)] cursor-pointer"
                 title="Change language"
                 aria-label="Select language"
                 aria-expanded={langDropdownOpen}
               >
                 <Globe className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>{lang}</span>
+                <span className="rr-meta">{lang}</span>
               </button>
 
               <AnimatePresence>
@@ -124,21 +124,21 @@ export const Navbar: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className={`absolute mt-2 w-40 border-2 border-[#24262D] bg-[#FFFDF8] p-1 shadow-[var(--mh20-shadow)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:shadow-[var(--mh20-shadow)] z-50 ${isRTL ? 'left-0' : 'right-0'}`}
+                    className={`absolute mt-2 w-40 border border-[color:var(--rr-border)] bg-[color:var(--rr-paper)] p-1 z-50 ${isRTL ? 'left-0' : 'right-0'}`}
                   >
                     {languages.map((l) => (
                       <button
                         key={l.code}
                         type="button"
                         onClick={() => handleLanguageSelect(l.code)}
-                        className={`flex w-full min-h-[40px] items-center justify-between px-3 py-2 text-left text-xs font-bold transition-colors cursor-pointer ${
+                        className={`flex w-full min-h-[40px] items-center justify-between border-b border-[color:var(--rr-border)] px-3 py-2 text-left text-xs transition-colors last:border-b-0 cursor-pointer ${
                           lang === l.code
-                            ? 'bg-[#24262D] text-[#F7F3EB]'
-                            : 'text-[#24262D] hover:bg-[#C7EFDE] dark:text-[#F7F3EB] dark:hover:bg-[#C7EFDE] dark:hover:text-[#24262D]'
+                            ? 'text-[color:var(--rr-terracotta)]'
+                            : 'text-[color:var(--rr-ink)] hover:text-[color:var(--rr-forest)]'
                         }`}
                       >
                         <span>{l.nativeName}</span>
-                        <span className="font-mono text-[10px] uppercase opacity-70">{l.code}</span>
+                        <span className="rr-meta text-[9px] opacity-70">{l.code}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -166,32 +166,32 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => { void (isAdmin ? logoutAdmin() : logoutMember()); }}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
+                className="rr-touch inline-flex items-center gap-1.5 border border-[color:var(--rr-border)] px-2.5 py-2 text-[color:var(--rr-ink)] transition-colors hover:border-[color:var(--rr-brass)] cursor-pointer"
                 title="Signed in"
               >
                 <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Sign out</span>
+                <span className="rr-meta">Sign out</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => setMemberSignInOpen(true)}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
+                className="rr-touch inline-flex items-center gap-1.5 border border-[color:var(--rr-border)] px-2.5 py-2 text-[color:var(--rr-ink)] transition-colors hover:border-[color:var(--rr-brass)] cursor-pointer"
               >
                 <User className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Member</span>
+                <span className="rr-meta">Member</span>
               </button>
             )}
 
             <button
               type="button"
               onClick={() => handleNavClick('admin')}
-              className={`flex min-h-[44px] min-w-[44px] items-center justify-center border-2 transition-colors cursor-pointer ${
+              className={`rr-touch flex h-11 w-11 items-center justify-center border transition-colors cursor-pointer ${
                 currentPage === 'admin'
-                  ? 'border-[#24262D] bg-[#24262D] text-[#F7F3EB]'
+                  ? 'border-[color:var(--rr-forest)] bg-[color:var(--rr-forest)] text-[color:var(--rr-on-dark)]'
                   : isAdmin
-                  ? 'border-[#24262D] bg-[#C7EFDE] text-[#24262D]'
-                  : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
+                  ? 'border-[color:var(--rr-brass)] bg-[color:var(--rr-sage)] text-[color:var(--rr-forest)]'
+                  : 'border-[color:var(--rr-border)] text-[color:var(--rr-muted)] hover:border-[color:var(--rr-brass)] hover:text-[color:var(--rr-forest)]'
               }`}
               title={isAdmin ? 'Admin Portal (Authenticated)' : 'Admin Portal'}
               aria-label="Admin Portal"
@@ -202,7 +202,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => handleNavClick('contact')}
-              className="flex min-h-[44px] items-center justify-center border-2 border-[#24262D] bg-[#F47B49] px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-[0.1em] text-white shadow-[var(--mh20-shadow-sm)] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] cursor-pointer"
+              className="rr-btn"
             >
               {t.nav.joinCommunity}
             </button>
@@ -228,12 +228,12 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center border-2 border-[#24262D] bg-[#FFFDF8] text-[#24262D] shadow-[var(--mh20-shadow-sm)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)]"
+              className="rr-touch flex h-11 w-11 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-ink)]"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
@@ -246,39 +246,42 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: shouldReduceMotion ? 0.1 : 0.22, ease: 'easeInOut' }}
-              className="overflow-hidden border-t-2 border-[#24262D] py-5 dark:border-[#F7F3EB]/25 lg:hidden"
+              className="overflow-hidden border-t border-[color:var(--rr-border)] py-5 lg:hidden"
             >
-              <nav className="flex flex-col gap-2" aria-label="Mobile Navigation">
+              <nav className="flex flex-col" aria-label="Mobile Navigation">
                 {navLinks.map((link) => (
                   <button
                     key={link.key}
                     type="button"
                     onClick={() => handleNavClick(link.key)}
-                    className={`min-h-[48px] w-full border-2 px-4 py-3 text-left font-display text-xl uppercase tracking-[-0.01em] transition-colors ${
+                    className={`rr-touch flex min-h-[48px] w-full items-center justify-between border-b border-[color:var(--rr-border)] px-1 py-3 text-left font-display text-xl uppercase tracking-tight transition-colors ${
                       currentPage === link.key
-                        ? 'border-[#24262D] bg-[#24262D] text-[#F7F3EB]'
-                        : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
+                        ? 'text-[color:var(--rr-terracotta)]'
+                        : 'text-[color:var(--rr-ink)]'
                     }`}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    {currentPage === link.key && (
+                      <span className="h-px w-6 bg-[color:var(--rr-terracotta)]" aria-hidden="true" />
+                    )}
                   </button>
                 ))}
               </nav>
 
-              <div className="mt-5 border-t-2 border-[#24262D]/20 pt-4 dark:border-[#F7F3EB]/20">
-                <span className="mb-2 block px-1 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#5E5B55] dark:text-[#D4CFC5]">
+              <div className="mt-6">
+                <span className="rr-meta mb-3 block text-[color:var(--rr-muted)]">
                   Language
                 </span>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 border-l border-t border-[color:var(--rr-border)]">
                   {languages.map((l) => (
                     <button
                       key={l.code}
                       type="button"
                       onClick={() => handleLanguageSelect(l.code)}
-                      className={`min-h-[44px] border-2 px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] ${
+                      className={`rr-touch border-b border-r border-[color:var(--rr-border)] px-3 py-2 text-xs ${
                         lang === l.code
-                          ? 'border-[#24262D] bg-[#F47B49] text-white'
-                          : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
+                          ? 'bg-[color:var(--rr-forest)] text-[color:var(--rr-on-dark)]'
+                          : 'text-[color:var(--rr-ink)]'
                       }`}
                     >
                       {l.nativeName}
@@ -287,11 +290,11 @@ export const Navbar: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 space-y-2">
+              <div className="mt-6 space-y-2">
                 <button
                   type="button"
                   onClick={() => handleNavClick('contact')}
-                  className="flex min-h-[48px] w-full items-center justify-center border-2 border-[#24262D] bg-[#F47B49] font-sans text-sm font-bold uppercase tracking-[0.08em] text-white shadow-[var(--mh20-shadow-sm)]"
+                  className="rr-btn w-full"
                 >
                   {t.nav.joinCommunity}
                 </button>
@@ -304,7 +307,7 @@ export const Navbar: React.FC = () => {
                       else void logoutMember();
                       setMobileMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#24262D] bg-[#FFFDF8] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]"
+                    className="rr-btn rr-btn--outline w-full"
                   >
                     <LogOut className="h-4 w-4" aria-hidden="true" />
                     <span>Sign out</span>
@@ -316,7 +319,7 @@ export const Navbar: React.FC = () => {
                       setMemberSignInOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#24262D] bg-[#FFFDF8] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]"
+                    className="rr-btn rr-btn--outline w-full"
                   >
                     <User className="h-4 w-4" aria-hidden="true" />
                     <span>Member sign in</span>
@@ -326,7 +329,7 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleNavClick('admin')}
-                  className="flex min-h-[44px] w-full items-center justify-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#5E5B55] underline underline-offset-4 dark:text-[#D4CFC5]"
+                  className="rr-link w-full justify-center"
                 >
                   <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{t.nav.admin}</span>

@@ -27,12 +27,12 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
       document.documentElement.classList.add('dark');
       document.documentElement.setAttribute('data-theme', 'dark');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#24262D');
+      if (meta) meta.setAttribute('content', '#171717');
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.setAttribute('data-theme', 'light');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#F7F3EB');
+      if (meta) meta.setAttribute('content', '#F5F4EF');
     }
   }, [theme]);
 
@@ -48,12 +48,12 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
       document.documentElement.classList.add('dark');
       document.documentElement.setAttribute('data-theme', 'dark');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#24262D');
+      if (meta) meta.setAttribute('content', '#171717');
     } else {
       document.documentElement.classList.remove('dark');
       document.documentElement.setAttribute('data-theme', 'light');
       const meta = document.getElementById('meta-theme-color');
-      if (meta) meta.setAttribute('content', '#F7F3EB');
+      if (meta) meta.setAttribute('content', '#F5F4EF');
     }
   };
 
@@ -62,7 +62,7 @@ export const ThemeToggle: React.FC<{ className?: string }> = ({ className = '' }
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
-      className={`min-h-[44px] min-w-[44px] p-2.5 rounded-none border-2 border-[#24262D] dark:border-[#F7F3EB]/35 text-[#24262D] dark:text-[#F7F3EB] bg-[#FFFDF8] dark:bg-[#24262D] shadow-[var(--mh20-shadow-sm)] dark:shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] hover:text-[#24262D] transition-colors cursor-pointer flex items-center justify-center focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F47B49] ${className}`}
+      className={`rr-btn rr-btn--outline min-w-[44px] !px-3 ${className}`.trim()}
     >
       {theme === 'light' ? (
         <Moon className="w-4 h-4" aria-hidden="true" />

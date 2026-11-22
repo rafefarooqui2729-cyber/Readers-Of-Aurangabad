@@ -59,7 +59,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-2 sm:p-6"
+      className="p3-modal-overlay fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-2 sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -71,137 +71,114 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         aria-modal="true"
         aria-label={article.title}
         tabIndex={-1}
-        className="p3-modal-surface p3-article-modal glass-modal rounded-none max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-[var(--mh20-shadow-lg)] relative border-white/75"
+        className="p3-modal-surface p3-article-modal rr-modal flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden"
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16, scale: shouldReduceMotion ? 1 : 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 10, scale: shouldReduceMotion ? 1 : 0.985 }}
         transition={{ duration: shouldReduceMotion ? 0.01 : 0.28, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Control Bar */}
-        <div className="p3-modal-header px-6 py-4 border-b border-white/40 glass-nav flex items-center justify-between sticky top-0 z-20">
+        <div className="p3-modal-header glass-nav sticky top-0 z-20 flex items-center justify-between border-b border-[color:var(--rr-border)] px-5 py-3 sm:px-7">
           <button
             onClick={dismiss}
-            className="p3-text-action flex items-center gap-1.5 text-xs font-semibold text-[#5E5B55] hover:text-[#24262D] transition-colors"
+            className="p3-text-action rr-link cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             <span>Back to Journal</span>
           </button>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setBookmarked(!bookmarked)}
-              className={`p3-icon-button p-2 rounded-none border transition-colors ${
+              className={`p3-icon-button rr-touch flex h-10 w-10 items-center justify-center border transition-colors ${
                 bookmarked
-                  ? 'bg-[#F7F3EB] text-[#24262D] border-[#24262D]/30'
-                  : 'text-[#5E5B55] border-[#24262D] hover:bg-white'
+                  ? 'border-[color:var(--rr-terracotta)] text-[color:var(--rr-terracotta)]'
+                  : 'border-[color:var(--rr-border)] text-[color:var(--rr-muted)] hover:text-[color:var(--rr-forest)]'
               }`}
               title="Bookmark for later"
             >
-              <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
+              <Bookmark className={`h-4 w-4 ${bookmarked ? 'fill-current' : ''}`} />
             </button>
 
             <button
               onClick={handleShare}
-              className="p3-secondary-action flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#24262D] text-xs font-medium text-[#5E5B55] hover:bg-white transition-colors"
+              className="p3-secondary-action rr-btn rr-btn--outline cursor-pointer"
               title="Share piece"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-[#F47B49]" /> : <Share2 className="w-3.5 h-3.5" />}
+              {copied ? <Check className="h-3.5 w-3.5 text-[color:var(--rr-terracotta)]" /> : <Share2 className="h-3.5 w-3.5" />}
               <span>{copied ? 'Link Copied!' : 'Share'}</span>
             </button>
 
             <button
               onClick={dismiss}
-              className="p3-icon-button p3-modal-close p-2 rounded-none text-[#5E5B55] hover:text-[#24262D] hover:bg-white border border-transparent hover:border-[#24262D] transition-colors"
+              className="p3-icon-button p3-modal-close rr-touch flex h-10 w-10 items-center justify-center border border-transparent text-[color:var(--rr-muted)] hover:border-[color:var(--rr-border)] hover:text-[color:var(--rr-ink)] transition-colors"
               aria-label="Close"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Article Scroll Body */}
         <div
-          className="p3-modal-body p3-reading-body p-6 sm:p-10 overflow-y-auto"
+          className="p3-modal-body p3-reading-body overflow-y-auto p-6 sm:p-10"
           dir={isUrdu ? 'rtl' : 'ltr'}
         >
-          {/* Article Header Meta */}
-          <div className="space-y-4 mb-8 pb-8 border-b border-[#24262D]">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wider bg-[#FFFDF8] text-[#F47B49] border border-[#24262D]">
+          <div className="mb-8 space-y-4 border-b border-[color:var(--rr-border)] pb-8">
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="rr-meta border border-[color:var(--rr-border)] bg-[color:var(--rr-sage)] px-3 py-1.5 text-[color:var(--rr-forest)]">
                 {article.category}
               </span>
-              <span className="text-xs text-[#5E5B55] uppercase tracking-wider">
+              <span className="rr-meta text-[color:var(--rr-muted)]">
                 Language: {article.language.toUpperCase()}
               </span>
             </div>
 
-            <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.2] ${
-              isUrdu
-                ? 'font-urdu leading-[2.1] text-right'
-                : isHindi
-                ? 'font-hindi leading-[1.45]'
-                : 'font-serif'
-            }`}>
+            <h2 className={`rr-title ${isUrdu ? 'font-urdu text-right leading-[2.1]' : isHindi ? 'font-hindi leading-[1.45]' : ''}`}>
               {article.title}
             </h2>
 
-            <p className={`text-base sm:text-lg text-[#5E5B55] leading-relaxed ${
-              isUrdu
-                ? 'font-urdu text-right text-lg leading-[2.1]'
-                : isHindi
-                ? 'font-hindi leading-[1.7]'
-                : 'italic font-serif'
-            }`}>
+            <p className={`max-w-2xl border-l border-[color:var(--rr-brass)] pl-5 font-display text-lg italic leading-relaxed text-[color:var(--rr-muted)] ${isUrdu ? 'font-urdu text-right leading-[2.1]' : isHindi ? 'font-hindi leading-[1.7]' : ''}`}>
               "{article.excerpt}"
             </p>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#5E5B55]">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[color:var(--rr-border)] pt-5 text-[color:var(--rr-muted)]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-none bg-[#24262D] flex items-center justify-center text-[#F7F3EB] font-serif font-bold text-sm">
+                <span className="flex h-10 w-10 items-center justify-center bg-[color:var(--rr-forest)] font-display font-semibold text-sm text-[color:var(--rr-on-dark)]">
                   {article.author.charAt(0)}
-                </div>
+                </span>
                 <div>
-                  <span className="block font-medium text-sm text-[#24262D]">{article.author}</span>
+                  <span className="block text-sm font-semibold text-[color:var(--rr-ink)]">{article.author}</span>
                   {article.authorRole && (
-                    <span className="block text-[11px] text-[#F47B49]">{article.authorRole}</span>
+                    <span className="rr-meta mt-0.5 block text-[color:var(--rr-terracotta)]">{article.authorRole}</span>
                   )}
                 </div>
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{article.publishedDate}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{article.readingTime} min read</span>
-                </div>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="rr-meta">{article.publishedDate}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="rr-meta">{article.readingTime} min read</span>
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Featured Image */}
           {article.coverImage && (
-            <div className="mb-8 rounded-none overflow-hidden border border-[#24262D] shadow-[var(--mh20-shadow-sm)]">
+            <div className="rr-image mb-8 overflow-hidden border border-[color:var(--rr-border)]">
               <img
                 src={article.coverImage}
                 alt={article.title}
                 loading="lazy"
-                className="w-full h-56 sm:h-72 md:h-96 object-cover object-[center_20%]"
+                className="h-56 w-full object-cover object-[center_20%] sm:h-72 md:h-96"
               />
             </div>
           )}
 
-          {/* Article Full Body Typography */}
-          <div className={`prose max-w-none text-[#24262D] text-base sm:text-lg leading-[1.85] space-y-6 ${
-            isUrdu
-              ? 'text-right font-urdu text-xl leading-[2.2]'
-              : isHindi
-              ? 'font-hindi text-base sm:text-lg leading-[1.85]'
-              : 'font-serif'
-          }`}>
+          <div className={`roa-prose max-w-none space-y-6 text-[color:var(--rr-ink)] ${isUrdu ? 'text-right font-urdu text-xl leading-[2.2]' : isHindi ? 'font-hindi text-base leading-[1.85]' : ''}`}>
             {article.content.split('\n\n').map((paragraph, index) => (
               <p key={index} className={isUrdu ? 'text-right' : 'text-justify sm:text-left'}>
                 {paragraph}
@@ -209,13 +186,12 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             ))}
           </div>
 
-          {/* Tags */}
           {article.tags && article.tags.length > 0 && (
-            <div className="mt-10 pt-6 border-t border-[#24262D] flex flex-wrap gap-2">
+            <div className="mt-10 flex flex-wrap gap-2 border-t border-[color:var(--rr-border)] pt-6">
               {article.tags.map((tag, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-[#5E5B55] border border-[#24262D]"
+                  className="rr-meta border border-[color:var(--rr-border)] px-2.5 py-1.5 text-[color:var(--rr-muted)]"
                 >
                   #{tag}
                 </span>
@@ -223,26 +199,25 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </div>
           )}
 
-          {/* Related Articles in Journal */}
           {relatedArticles.length > 0 && (
-            <div className="mt-12 pt-8 border-t border-[#24262D]">
-              <h3 className="font-serif text-xl font-bold text-[#24262D] mb-4">
+            <div className="mt-12 border-t border-[color:var(--rr-border)] pt-8">
+              <h3 className="rr-title rr-title--small mb-5 text-[color:var(--rr-ink)]">
                 More Reflections from the Journal
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {relatedArticles.map((rel) => (
                   <div
                     key={rel.id}
                     onClick={() => onSelectArticle(rel)}
-                    className="p-4 rounded-none bg-white border border-[#24262D] hover:border-[#F47B49] transition-all cursor-pointer group"
+                    className="cursor-pointer border border-[color:var(--rr-border)] p-4 transition-colors hover:border-[color:var(--rr-brass)]"
                   >
-                    <span className="text-[10px] font-semibold text-[#F47B49] uppercase tracking-wider block mb-1">
+                    <span className="rr-meta mb-2 block text-[color:var(--rr-terracotta)]">
                       {rel.category}
                     </span>
-                    <h4 className="font-serif font-bold text-sm text-[#24262D] group-hover:text-[#24262D] transition-colors line-clamp-2">
+                    <h4 className="font-display text-lg font-semibold leading-tight text-[color:var(--rr-ink)] line-clamp-2">
                       {rel.title}
                     </h4>
-                    <p className="text-xs text-[#5E5B55] mt-2">
+                    <p className="rr-meta mt-2 text-[color:var(--rr-muted)]">
                       By {rel.author} · {rel.readingTime} min read
                     </p>
                   </div>
@@ -253,15 +228,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
         </div>
 
-        {/* Sticky Reading Bar */}
-        <div className="p3-modal-actions p-3 bg-white border-t border-[#24262D] text-center text-xs text-[#5E5B55] flex items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#24262D]" />
-            <span>Readers of Aurangabad Journal</span>
-          </div>
+        <div className="p3-modal-actions flex items-center justify-between gap-4 border-t border-[color:var(--rr-border)] bg-[color:var(--rr-paper)] px-5 py-3 sm:px-7">
+          <span className="rr-meta flex items-center gap-2 text-[color:var(--rr-muted)]">
+            <BookOpen className="h-4 w-4 text-[color:var(--rr-forest)]" aria-hidden="true" />
+            Readers of Aurangabad Journal
+          </span>
           <button
             onClick={dismiss}
-            className="p3-text-action text-[#24262D] font-semibold hover:underline"
+            className="p3-text-action rr-link cursor-pointer"
           >
             Close Reader
           </button>

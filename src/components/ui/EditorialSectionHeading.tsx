@@ -16,12 +16,12 @@ export const EditorialSectionHeading: React.FC<EditorialSectionHeadingProps> = (
   action,
   className = '',
 }) => (
-  <div className={`flex flex-col gap-5 border-b border-[color:var(--mh20-line)] pb-7 md:flex-row md:items-end md:justify-between ${className}`.trim()}>
-    <div>
-      <p className="ed-kicker">{eyebrow}</p>
-      <h2 className="ed-title">{title}</h2>
-      {description ? <p className="ed-lede mt-4">{description}</p> : null}
+  <div className={`rr-section-head ${className}`.trim()}>
+    <div className="rr-section-head__copy">
+      <p className="rr-eyebrow">{eyebrow}</p>
+      <h2 className="rr-title rr-title--compact mt-4">{title}</h2>
+      {description ? <p className="rr-lede mt-4">{description}</p> : null}
     </div>
-    {action ? <div className="shrink-0">{action}</div> : null}
+    {action ? <div className="rr-section-head__action">{action}</div> : null}
   </div>
 );

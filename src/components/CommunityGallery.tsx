@@ -6,7 +6,7 @@ import { useApp } from '../context/AppContext';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 import type { GalleryItem } from '../types';
 
-// â”€â”€â”€ Editorial Category System â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Editorial Category System ───────────────────────────────────────────────
 type GalleryCategory = 'all' | 'reading-together' | 'meetup-moments' | 'community-portraits' | 'behind-the-scenes';
 
 const CATEGORY_LABELS: Record<GalleryCategory, string> = {
@@ -111,7 +111,7 @@ function toGalleryEnrichedImage(
   };
 }
 
-// â”€â”€â”€ Lightbox â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Lightbox ────────────────────────────────────────────────────────────────
 interface LightboxProps {
   images: EnrichedImage[];
   current: number;
@@ -165,45 +165,39 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Backdrop */}
       <div
-        className="p3-modal-backdrop absolute inset-0 bg-[#24262D]/92 backdrop-blur-md"
+        className="p3-modal-backdrop absolute inset-0"
         onClick={dismiss}
       />
 
-      {/* Close */}
       <button
         onClick={dismiss}
-        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
+        className="p3-icon-button p3-modal-close absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center border-[color:var(--rr-border)] bg-[color:var(--rr-dark)] text-[color:var(--rr-on-dark)] hover:text-[color:var(--rr-brass)] transition-colors"
         aria-label="Close lightbox"
       >
-        <X className="w-5 h-5" />
+        <X className="h-5 w-5" />
       </button>
 
-      {/* Counter */}
-      <div className="p3-lightbox-counter absolute top-5 left-5 z-10 glass-pill px-3 py-1 text-xs font-semibold text-[#F7F3EB]">
+      <div className="p3-lightbox-counter absolute left-5 top-5 z-10 rr-meta border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/85 px-3 py-1.5 text-[color:var(--rr-on-dark)]">
         {current + 1} / {images.length}
       </div>
 
-      {/* Nav Left */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 flex h-11 w-11 items-center justify-center border-[color:var(--rr-border)] bg-[color:var(--rr-dark)] text-[color:var(--rr-on-dark)] hover:text-[color:var(--rr-brass)] transition-colors"
         aria-label="Previous"
       >
-        <ChevronLeft className="w-5 h-5" />
+        <ChevronLeft className="h-5 w-5" />
       </button>
 
-      {/* Nav Right */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 flex h-11 w-11 items-center justify-center border-[color:var(--rr-border)] bg-[color:var(--rr-dark)] text-[color:var(--rr-on-dark)] hover:text-[color:var(--rr-brass)] transition-colors"
         aria-label="Next"
       >
-        <ChevronRight className="w-5 h-5" />
+        <ChevronRight className="h-5 w-5" />
       </button>
 
-      {/* Image */}
       <AnimatePresence mode="wait">
         <motion.div
           key={img.id}
@@ -211,16 +205,15 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{ duration: 0.3 }}
-          className="p3-lightbox-frame relative z-10 max-w-5xl max-h-[85vh] w-full px-16"
+          className="p3-lightbox-frame relative z-10 max-h-[85vh] w-full max-w-5xl px-16"
         >
           <img
             src={img.gallery || img.web}
             alt={img.alt}
-            className="w-full h-full object-contain max-h-[80vh] rounded-none shadow-[var(--mh20-shadow-lg)]"
+            className="h-full max-h-[78vh] w-full border border-[color:var(--rr-border)] object-contain"
           />
-          {/* Category chip */}
-          <div className="mt-3 flex items-center gap-2">
-            <span className="p3-lightbox-caption text-xs font-semibold uppercase tracking-widest text-[#C7EFDE]">
+          <div className="mt-4 flex items-center gap-3 border-t border-[color:var(--rr-border)] pt-3">
+            <span className="p3-lightbox-caption rr-meta text-[color:var(--rr-brass)]">
               {CATEGORY_LABELS[img.editorialCategory]}
             </span>
           </div>
@@ -230,7 +223,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
   );
 };
 
-// â”€â”€â”€ Main Gallery Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Main Gallery Component ─────────────────────────────────────────────────
 interface CommunityGalleryProps {
   /** If true, show a compact 18-image preview grid (for homepage) */
   compact?: boolean;
@@ -350,8 +343,7 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Category Filter Pills */}
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="rr-filter-row justify-center border-b border-[color:var(--rr-border)] pb-5">
         {categories.map(cat => (
           <motion.button
             key={cat}
@@ -359,11 +351,8 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
             onClick={() => handleCategoryChange(cat)}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
-            className={`inline-flex min-h-[44px] items-center px-4 py-2 rounded-none text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer border ${
-              activeCategory === cat
-                ? 'bg-[#24262D] text-[#F7F3EB] border-[#24262D] shadow-[var(--mh20-shadow-sm)]'
-                : 'glass-pill text-[#5E5B55] hover:text-[#24262D] border-[#D4CFC5]/60'
-            }`}
+            aria-pressed={activeCategory === cat}
+            className="rr-filter cursor-pointer"
           >
             {CATEGORY_LABELS[cat]}
             {activeCategory === cat && (
@@ -375,20 +364,19 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
         ))}
       </div>
 
-      {/* Editorial Masonry Columns */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeCategory}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
         >
           {visible.map((img, idx) => (
             <motion.div
               key={img.id}
               variants={itemVariants}
-              className="break-inside-avoid relative overflow-hidden rounded-none bg-[#24262D] border border-white/10 group cursor-pointer"
+              className="rr-panel group cursor-pointer p-1.5"
               onClick={() => openLightbox(idx)}
               role="button"
               tabIndex={0}
@@ -402,44 +390,49 @@ export const CommunityGallery: React.FC<CommunityGalleryProps> = ({
               whileHover={{ scale: shouldReduceMotion ? 1 : 1.015 }}
               transition={{ duration: 0.25 }}
             >
-              {/* Image */}
-              <img
-                src={img.thumbnail || img.web}
-                alt={img.alt}
-                loading="lazy"
-                decoding="async"
-                className={`w-full h-auto object-cover object-center ${shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}`}
-              />
-
-              {/* Hover Overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-t from-[#24262D]/80 via-[#24262D]/20 to-transparent opacity-0 group-hover:opacity-100 ${shouldReduceMotion ? '' : 'transition-opacity duration-350'} flex flex-col justify-end p-4`}>
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-[#C7EFDE] mb-1">
+              <div className="rr-image relative aspect-[4/5] overflow-hidden bg-[color:var(--rr-forest)]">
+                <img
+                  src={img.thumbnail || img.web}
+                  alt={img.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className={`h-full w-full object-cover object-center ${shouldReduceMotion ? '' : 'transition-transform duration-700 ease-out group-hover:scale-[1.04]'}`}
+                />
+                <div className={`absolute inset-0 flex flex-col justify-end bg-[color:var(--rr-dark)]/70 p-4 opacity-0 group-hover:opacity-100 ${shouldReduceMotion ? '' : 'transition-opacity duration-300'}`}>
+                  <span className="rr-meta mb-2 text-[color:var(--rr-brass)]">
+                    {CATEGORY_LABELS[img.editorialCategory]}
+                  </span>
+                  <span className="flex h-8 w-8 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-on-dark)]">
+                    <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2 px-1 pb-0.5 pt-2">
+                <span className="rr-meta text-[color:var(--rr-muted)]">
                   {CATEGORY_LABELS[img.editorialCategory]}
                 </span>
-                <div className="w-6 h-6 rounded-none bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <ZoomIn className="w-3 h-3 text-white" />
-                </div>
+                <span className="rr-meta text-[color:var(--rr-terracotta)]">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
               </div>
             </motion.div>
           ))}
         </motion.div>
       </AnimatePresence>
 
-      {/* Load More / View All */}
       {visibleCount < filtered.length && (
-        <div className="text-center pt-4">
+        <div className="pt-3 text-center">
           <motion.button
             onClick={() => setVisibleCount(prev => prev + 12)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="glass-button px-8 py-3 rounded-none text-sm font-semibold cursor-pointer"
+            className="rr-btn rr-btn--outline cursor-pointer"
           >
             Load More ({filtered.length - visibleCount} remaining)
           </motion.button>
         </div>
       )}
 
-      {/* Lightbox */}
       <AnimatePresence>
         {lightboxIndex !== null && (
           <Lightbox

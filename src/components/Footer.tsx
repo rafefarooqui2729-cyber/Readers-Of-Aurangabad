@@ -34,42 +34,41 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-[#24262D] bg-[#24262D] pb-12 pt-14 text-[#F7F3EB] dark:border-[#F7F3EB]/15">
-      <div className="absolute left-0 top-0 h-2 w-full bg-[#F47B49]" aria-hidden="true" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-10 border-b border-[#F7F3EB]/15 pb-10 md:grid-cols-2 lg:grid-cols-12">
-          <div className="space-y-6 lg:col-span-5">
+    <footer className="border-t border-[color:var(--rr-border)] bg-[color:var(--rr-dark)] text-[color:var(--rr-on-dark)]">
+      <div className="rr-container">
+        <div className="grid grid-cols-1 gap-10 border-b border-[color:var(--rr-border)] py-14 md:grid-cols-2 lg:grid-cols-12 lg:gap-0">
+          <div className="space-y-7 lg:col-span-5 lg:border-r lg:border-[color:var(--rr-border)] lg:pr-10">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 shrink-0 border-2 border-[#F7F3EB] bg-[#F7F3EB] p-0.5">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center border border-[color:var(--rr-brass)] bg-[color:var(--rr-paper)] p-1">
                 <img
                   src="/brand/logo.png"
                   alt="Readers of Aurangabad"
                   className="h-full w-full object-cover"
                 />
-              </div>
-              <div>
-                <span className="block font-display text-2xl uppercase leading-none tracking-[-0.02em] text-[#F7F3EB]">
+              </span>
+              <span className="block">
+                <span className="block font-display text-2xl uppercase leading-none tracking-[-0.02em]">
                   Readers of Aurangabad
                 </span>
-                <span className="mt-1 block font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#C7EFDE]">
-                  MH20 · Local Reading Movement
+                <span className="rr-meta mt-2 block text-[color:var(--rr-brass)]">
+                  MH20 · City Reading Collective
                 </span>
-              </div>
+              </span>
             </div>
 
-            <p className="max-w-md border-l-4 border-[#F47B49] pl-4 font-serif text-lg italic leading-relaxed text-[#F7F3EB]/92">
-              Quiet mornings, physical books, open courtyards, and conversations across Marathi, Urdu, Hindi, and English in Aurangabad.
+            <p className="max-w-md border-l border-[color:var(--rr-brass)] pl-5 font-display text-lg italic leading-relaxed text-[color:var(--rr-on-dark)]/85">
+              Real books, real people, real conversations — across Marathi, Urdu, Hindi, and English in Chhatrapati Sambhajinagar.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
               <a
                 href={siteConfig.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F7F3EB] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F7F3EB] transition-colors hover:bg-[#C7EFDE] hover:text-[#24262D]"
+                className="rr-touch inline-flex items-center gap-2 text-[color:var(--rr-on-dark)]/85 transition-colors hover:text-[color:var(--rr-brass)]"
               >
                 <InstagramIcon className="h-4 w-4" />
-                <span>{siteConfig.instagramHandle}</span>
+                <span className="rr-meta">{siteConfig.instagramHandle}</span>
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
 
@@ -77,33 +76,33 @@ export const Footer: React.FC = () => {
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F7F3EB] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F7F3EB] transition-colors hover:bg-[#C7EFDE] hover:text-[#24262D]"
+                className="rr-touch inline-flex items-center gap-2 text-[color:var(--rr-on-dark)]/85 transition-colors hover:text-[color:var(--rr-brass)]"
               >
                 <MessageCircle className="h-4 w-4" />
-                <span>WhatsApp Group</span>
+                <span className="rr-meta">WhatsApp Group</span>
                 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
 
               <a
                 href={`mailto:${siteConfig.email}`}
-                className="inline-flex min-h-[44px] items-center gap-2 border-2 border-[#F7F3EB] bg-transparent px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#F7F3EB] transition-colors hover:bg-[#C7EFDE] hover:text-[#24262D]"
+                className="rr-touch inline-flex items-center gap-2 text-[color:var(--rr-on-dark)]/85 transition-colors hover:text-[color:var(--rr-brass)]"
               >
                 <Mail className="h-4 w-4" />
-                <span>{siteConfig.email}</span>
+                <span className="rr-meta">{siteConfig.email}</span>
               </a>
-
-              <div className="inline-flex min-h-[44px] items-center gap-1.5 border-2 border-[#F7F3EB]/50 px-4 py-2 font-sans text-xs font-medium text-[#F7F3EB]/85">
-                <MapPin className="h-4 w-4 text-[#C7EFDE]" />
-                <span>{siteConfig.locationLine}</span>
-              </div>
             </div>
+
+            <p className="rr-meta flex items-center gap-2 text-[color:var(--rr-on-dark)]/60">
+              <MapPin className="h-3.5 w-3.5 text-[color:var(--rr-brass)]" aria-hidden="true" />
+              {siteConfig.locationLine}
+            </p>
           </div>
 
-          <div className="space-y-4 lg:col-span-3">
-            <h3 className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#C7EFDE]">
-              Navigation
+          <div className="lg:col-span-3 lg:border-r lg:border-[color:var(--rr-border)] lg:px-8">
+            <h3 className="rr-meta mb-5 text-[color:var(--rr-brass)]">
+              Explore
             </h3>
-            <ul className="space-y-2 font-sans text-sm">
+            <ul className="border-t border-[color:var(--rr-border)]">
               {[
                 { key: 'home' as PageRoute, label: t.nav.home },
                 { key: 'gatherings' as PageRoute, label: t.nav.gatherings },
@@ -112,21 +111,21 @@ export const Footer: React.FC = () => {
                 { key: 'story' as PageRoute, label: t.nav.story },
                 { key: 'get-involved' as PageRoute, label: t.nav.getInvolved },
               ].map((item) => (
-                <li key={item.key}>
+                <li key={item.key} className="border-b border-[color:var(--rr-border)]">
                   <button
                     type="button"
                     onClick={() => handleNav(item.key)}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center py-1 text-left text-[#F7F3EB]/85 transition-colors hover:text-[#C7EFDE] hover:underline underline-offset-4 cursor-pointer"
+                    className="rr-touch inline-flex min-w-[44px] items-center py-1 text-left text-sm text-[color:var(--rr-on-dark)]/80 transition-colors hover:text-[color:var(--rr-brass)] cursor-pointer"
                   >
                     {item.label}
                   </button>
                 </li>
               ))}
-              <li>
+              <li className="border-b border-[color:var(--rr-border)]">
                 <button
                   type="button"
                   onClick={() => handleNav('admin')}
-                  className="inline-flex min-h-[44px] items-center gap-1 py-1 text-left font-bold text-[#C7EFDE] hover:underline underline-offset-4 cursor-pointer"
+                  className="rr-touch inline-flex min-w-[44px] items-center gap-1.5 py-1 text-left text-sm font-bold text-[color:var(--rr-brass)] transition-colors hover:text-[color:var(--rr-on-dark)] cursor-pointer"
                 >
                   <span>{t.nav.admin}</span>
                   <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -135,14 +134,16 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          <div className="flex flex-col items-start justify-between space-y-6 sm:items-end lg:col-span-4">
-            <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-0 sm:!rotate-[-4deg]" />
+          <div className="flex flex-col gap-8 lg:col-span-4 lg:pl-10">
+            <div className="[&_.rr-imprint__meta]:text-[color:var(--rr-brass)] [&_.rr-imprint__name]:text-[color:var(--rr-on-dark)] [&_.rr-imprint__rule]:bg-[color:var(--rr-brass)] [&_.rr-imprint__year]:text-[color:var(--rr-brass)]">
+              <Stamp year={siteConfig.establishedYear} size="md" />
+            </div>
 
-            <div className="space-y-2 sm:text-right">
-              <span className="block font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#F47B49]">
+            <div className="border-t border-[color:var(--rr-border)] pt-6">
+              <h3 className="rr-meta text-[color:var(--rr-brass)]">
                 Community standards
-              </span>
-              <p className="max-w-xs text-xs leading-relaxed text-[#F7F3EB]/75">
+              </h3>
+              <p className="mt-3 max-w-xs text-xs leading-relaxed text-[color:var(--rr-on-dark)]/70">
                 Quiet hours during reading, respect across languages and viewpoints, no commercial promotion or gatekeeping.
               </p>
               <a
@@ -161,7 +162,7 @@ export const Footer: React.FC = () => {
                   e.preventDefault();
                   handleCodeOfConduct();
                 }}
-                className="inline-flex min-h-[44px] items-center font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#C7EFDE] underline underline-offset-4"
+                className="rr-touch mt-3 inline-flex items-center border-b border-[color:var(--rr-brass)] text-xs font-bold uppercase tracking-[0.1em] text-[color:var(--rr-brass)] transition-colors hover:text-[color:var(--rr-on-dark)]"
               >
                 Read our Code of Conduct →
               </a>
@@ -169,12 +170,15 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 pt-8 font-sans text-xs text-[#F7F3EB]/70 sm:flex-row">
+        <div className="flex flex-col items-start justify-between gap-3 py-7 text-xs text-[color:var(--rr-on-dark)]/60 sm:flex-row sm:items-center">
           <p>
             © {CURRENT_YEAR} Readers of Aurangabad (MH20). {siteConfig.footer.copyrightText}
           </p>
-          <p className="text-[#F7F3EB]">
-            Grounded in <span className="font-bold text-[#C7EFDE]">Aurangabad (Chhatrapati Sambhajinagar), Maharashtra</span>
+          <p className="text-[color:var(--rr-on-dark)]/80">
+            Grounded in{' '}
+            <span className="font-bold text-[color:var(--rr-brass)]">
+              Aurangabad (Chhatrapati Sambhajinagar), Maharashtra
+            </span>
           </p>
         </div>
       </div>

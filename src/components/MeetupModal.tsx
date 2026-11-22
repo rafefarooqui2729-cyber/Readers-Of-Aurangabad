@@ -50,7 +50,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
     // was left as "open".
     if (meetup.registrationStatus !== 'cancelled' && !isMeetupUpcoming(meetup)) {
       return (
-        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-none text-xs font-semibold bg-[#FFFDF8] text-[#5E5B55] border border-[#24262D]">
+        <span className="rr-meta inline-flex items-center border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-on-dark)]/80">
           Past Gathering Archive
         </span>
       );
@@ -59,32 +59,32 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
     switch (meetup.registrationStatus) {
       case 'open':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none text-xs font-semibold bg-[#F7F3EB] text-[#24262D] border border-[#24262D]/20">
-            <span className={`w-2 h-2 rounded-none bg-[#24262D] ${shouldReduceMotion ? '' : 'animate-pulse'}`}></span>
+          <span className="rr-meta inline-flex items-center gap-1.5 border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-on-dark)]">
+            <span className={`h-1.5 w-1.5 bg-[color:var(--rr-brass)] ${shouldReduceMotion ? '' : 'animate-pulse'}`} aria-hidden="true"></span>
             Registrations Open
           </span>
         );
       case 'closed':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-none text-xs font-semibold bg-[#F7F3EB] text-[#24262D]">
+          <span className="rr-meta inline-flex items-center border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-on-dark)]/80">
             Registration Closed
           </span>
         );
       case 'announced':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-none text-xs font-semibold bg-[#FFD8C1]/45 text-[#24262D] border border-[#FFD8C1]">
+          <span className="rr-meta inline-flex items-center border border-[color:var(--rr-brass)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-brass)]">
             Announced
           </span>
         );
       case 'cancelled':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-none text-xs font-semibold bg-[#F47B49]/15 text-[#24262D] border border-[#F47B49]/45">
+          <span className="rr-meta inline-flex items-center border border-[color:var(--rr-terracotta)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-terracotta)]">
             Event Cancelled
           </span>
         );
       case 'past':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-none text-xs font-semibold bg-[#FFFDF8] text-[#5E5B55] border border-[#24262D]">
+          <span className="rr-meta inline-flex items-center border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/70 px-2.5 py-1 text-[color:var(--rr-on-dark)]/80">
             Past Gathering Archive
           </span>
         );
@@ -93,7 +93,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      className="p3-modal-overlay fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -105,104 +105,92 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
         aria-modal="true"
         aria-label={meetup.title}
         tabIndex={-1}
-        className="p3-modal-surface p3-meetup-modal glass-modal rounded-none max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-[var(--mh20-shadow-lg)] relative border-white/75"
+        className="p3-modal-surface p3-meetup-modal rr-modal flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden"
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16, scale: shouldReduceMotion ? 1 : 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 10, scale: shouldReduceMotion ? 1 : 0.985 }}
         transition={{ duration: shouldReduceMotion ? 0.01 : 0.28, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header Image */}
-        <div className="p3-modal-header relative h-60 w-full shrink-0 overflow-hidden bg-[#24262D]">
+        <div className="p3-modal-header relative h-56 w-full shrink-0 overflow-hidden bg-[color:var(--rr-dark)]">
           <img
             src={meetup.featuredImage}
             alt={meetup.title}
-            className="w-full h-full object-cover object-[center_20%] opacity-90"
+            className="h-full w-full object-cover object-[center_20%] opacity-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#24262D]/80 via-[#24262D]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--rr-dark)] via-[color:var(--rr-dark)]/40 to-transparent" aria-hidden="true" />
 
           <button
             onClick={dismiss}
-            className="p3-icon-button p3-modal-close absolute top-4 right-4 z-20 p-2 rounded-none bg-[#24262D]/45 text-white hover:bg-[#24262D]/70 transition-colors backdrop-blur-sm"
+            className="p3-icon-button p3-modal-close absolute right-4 top-4 z-20 flex h-11 w-11 items-center justify-center border border-[color:var(--rr-border)] bg-[color:var(--rr-dark)]/70 text-[color:var(--rr-on-dark)] hover:text-[color:var(--rr-brass)] transition-colors"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
 
-          <div className="absolute bottom-4 left-6 right-6">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="absolute bottom-5 left-6 right-6">
+            <div className="mb-3 flex flex-wrap items-center gap-2">
               {meetup.edition && (
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider bg-[#F47B49] text-white">
+                <span className="rr-meta border border-[color:var(--rr-brass)] bg-[color:var(--rr-brass)] px-2 py-1 text-[color:var(--rr-dark)]">
                   {meetup.edition}
                 </span>
               )}
               {getStatusBadge()}
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-snug">
+            <h2 className="rr-title rr-title--compact text-[color:var(--rr-on-dark)]">
               {meetup.title}
             </h2>
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="p3-modal-body p-6 sm:p-8 overflow-y-auto space-y-6">
-
-          {/* Key Logistical Metadata */}
-          <div className="p3-modal-meta grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-4 rounded-none border border-[#24262D]">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-none bg-[#FFFDF8] flex items-center justify-center text-[#24262D] border border-[#24262D]">
-                <Calendar className="w-4 h-4" />
-              </div>
+        <div className="p3-modal-body space-y-7 overflow-y-auto p-6 sm:p-8">
+          <div className="p3-modal-meta grid grid-cols-1 border border-[color:var(--rr-border)] sm:grid-cols-2">
+            <div className="flex items-center gap-3 border-b border-[color:var(--rr-border)] p-4 sm:border-b-0 sm:border-r">
+              <Calendar className="h-4 w-4 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-[#5E5B55] font-semibold block">Date</span>
-                <span className="text-sm font-medium text-[#24262D]">{meetup.date}</span>
+                <span className="rr-meta block text-[color:var(--rr-muted)]">Date</span>
+                <span className="mt-1 block text-sm font-semibold text-[color:var(--rr-ink)]">{meetup.date}</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-none bg-[#FFFDF8] flex items-center justify-center text-[#24262D] border border-[#24262D]">
-                <Clock className="w-4 h-4" />
-              </div>
+            <div className="flex items-center gap-3 p-4">
+              <Clock className="h-4 w-4 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-[#5E5B55] font-semibold block">Time</span>
-                <span className="text-sm font-medium text-[#24262D]">{meetup.time}</span>
+                <span className="rr-meta block text-[color:var(--rr-muted)]">Time</span>
+                <span className="mt-1 block text-sm font-semibold text-[color:var(--rr-ink)]">{meetup.time}</span>
               </div>
             </div>
 
-            <div className="sm:col-span-2 flex items-start gap-3 pt-1 border-t border-[#FFFDF8]">
-              <div className="w-9 h-9 rounded-none bg-[#FFFDF8] flex items-center justify-center text-[#F47B49] border border-[#24262D] shrink-0 mt-0.5">
-                <MapPin className="w-4 h-4" />
-              </div>
+            <div className="flex items-start gap-3 border-t border-[color:var(--rr-border)] p-4 sm:col-span-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
               <div>
-                <span className="text-[11px] uppercase tracking-wider text-[#5E5B55] font-semibold block">Venue</span>
-                <span className="text-sm font-medium text-[#24262D]">{meetup.venue}</span>
+                <span className="rr-meta block text-[color:var(--rr-muted)]">Venue</span>
+                <span className="mt-1 block text-sm font-semibold text-[color:var(--rr-ink)]">{meetup.venue}</span>
                 {meetup.address && (
-                  <p className="text-xs text-[#5E5B55] mt-0.5">{meetup.address}</p>
+                  <p className="rr-body mt-0.5 text-xs">{meetup.address}</p>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Description */}
           <div>
-            <h3 className="font-serif text-lg font-semibold text-[#24262D] mb-2">
+            <h3 className="rr-title rr-title--small mb-3 text-[color:var(--rr-ink)]">
               About This Gathering
             </h3>
-            <p className="text-sm text-[#5E5B55] leading-relaxed whitespace-pre-line">
+            <p className="rr-body whitespace-pre-line text-sm">
               {meetup.description}
             </p>
           </div>
 
-          {/* Meetup Activities Agenda */}
           {meetup.activities && meetup.activities.length > 0 && (
             <div>
-              <h3 className="font-serif text-lg font-semibold text-[#24262D] mb-3">
+              <h3 className="rr-title rr-title--small mb-3 text-[color:var(--rr-ink)]">
                 Flow of the Gathering
               </h3>
-              <div className="space-y-2">
+              <div className="border-t border-[color:var(--rr-border)]">
                 {meetup.activities.map((act, idx) => (
-                  <div key={idx} className="flex items-center gap-3 text-sm text-[#24262D] bg-[#FFFDF8] p-2.5 rounded-none border border-[#24262D]">
-                    <CheckCircle className="w-4 h-4 text-[#24262D] shrink-0" />
+                  <div key={idx} className="flex items-center gap-3 border-b border-[color:var(--rr-border)] py-2.5 text-sm text-[color:var(--rr-ink)]">
+                    <CheckCircle className="h-4 w-4 shrink-0 text-[color:var(--rr-forest)]" aria-hidden="true" />
                     <span>{act}</span>
                   </div>
                 ))}
@@ -210,31 +198,29 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
             </div>
           )}
 
-          {/* Highlights / What to bring */}
           {meetup.highlights && (
-            <div className="bg-[#F7F3EB]/60 border border-[#24262D]/20 p-4 rounded-none flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-[#24262D] shrink-0 mt-0.5" />
-              <div className="text-xs text-[#24262D]">
-                <strong className="block font-semibold mb-0.5">Guidelines & What to Bring:</strong>
+            <div className="rr-alert flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+              <div className="text-xs text-[color:var(--rr-ink)]">
+                <strong className="mb-0.5 block font-bold">Guidelines &amp; What to Bring:</strong>
                 <p className="leading-relaxed">{meetup.highlights}</p>
               </div>
             </div>
           )}
 
-          {/* Event Photo Highlights */}
           {meetup.photos && meetup.photos.length > 0 && (
             <div>
-              <h3 className="font-serif text-lg font-semibold text-[#24262D] mb-3">
+              <h3 className="rr-title rr-title--small mb-3 text-[color:var(--rr-ink)]">
                 Memories from this Meetup
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {meetup.photos.map((photo, i) => (
                   <img
                     key={i}
                     src={photo}
                     alt={`Meetup memory ${i + 1}`}
                     loading="lazy"
-                    className="w-full h-24 sm:h-28 object-cover object-[center_20%] rounded-none border border-[#24262D]"
+                    className="h-24 w-full border border-[color:var(--rr-border)] object-cover object-[center_20%] sm:h-28"
                   />
                 ))}
               </div>
@@ -242,20 +228,19 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
           )}
         </div>
 
-        {/* Modal Action Footer */}
-        <div className="p3-modal-actions p-4 sm:p-6 bg-white border-t border-[#24262D] flex items-center justify-between gap-3">
+        <div className="p3-modal-actions flex items-center justify-between gap-3 border-t border-[color:var(--rr-border)] bg-[color:var(--rr-paper)] p-4 sm:p-5">
           <button
             onClick={handleShare}
-            className="p3-secondary-action flex items-center gap-1.5 px-3 py-2 rounded-none text-xs font-medium text-[#5E5B55] hover:bg-[#FFFDF8] transition-colors border border-[#24262D]"
+            className="p3-secondary-action rr-btn rr-btn--outline cursor-pointer"
           >
-            <Share2 className="w-4 h-4" />
+            <Share2 className="h-4 w-4" aria-hidden="true" />
             <span>Share</span>
           </button>
 
           <div className="flex items-center gap-2">
             <button
               onClick={dismiss}
-              className="p3-text-action px-4 py-2 rounded-none text-xs font-medium text-[#5E5B55] hover:bg-[#FFFDF8] transition-colors"
+              className="p3-text-action rr-link cursor-pointer"
             >
               Close
             </button>
@@ -265,23 +250,23 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                 href={registrationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#F47B49] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
+                className="p3-primary-action rr-btn cursor-pointer"
               >
                 <span>Register now</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
             ) : isMeetupUpcoming(meetup) && meetup.registrationStatus === 'open' ? (
               <a
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#F47B49] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
+                className="p3-primary-action rr-btn cursor-pointer"
               >
                 <span>Ask on WhatsApp</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
             ) : (
-              <span className="p3-status-chip px-4 py-2 text-xs font-medium text-[#5E5B55] bg-[#F7F3EB] rounded-none">
+              <span className="p3-status-chip rr-meta px-3 py-2 text-[color:var(--rr-muted)]">
                 {meetup.registrationStatus === 'past'
                   ? 'Past Event'
                   : meetup.registrationStatus === 'cancelled'

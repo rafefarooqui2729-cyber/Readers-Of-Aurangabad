@@ -11,25 +11,26 @@ interface BentoCardProps {
 }
 
 const surfaces: Record<BentoSurface, string> = {
-  paper: 'ed-card--paper',
-  lavender: 'ed-card--lavender',
-  peach: 'ed-card--peach',
-  mint: 'ed-card--mint',
-  blue: 'ed-card--blue',
-  dark: 'ed-card--dark',
+  paper: 'rr-panel--plain',
+  lavender: '',
+  peach: '',
+  mint: 'rr-panel--sage',
+  blue: '',
+  dark: 'rr-panel--forest',
 };
 
-/** A reusable editorial bento tile with an optional restrained tape detail. */
+/**
+ * Compatibility panel primitive. The old scrapbook surface names now map to
+ * plain reading-room editorial surfaces so existing callers stay compatible.
+ */
 export const BentoCard: React.FC<BentoCardProps> = ({
   surface = 'paper',
   label,
-  tape = false,
   className = '',
   children,
 }) => (
-  <article className={`ed-card ${surfaces[surface]} ${className}`.trim()}>
-    {tape ? <span className="ed-tape" aria-hidden="true" /> : null}
-    {label ? <p className="ed-card__label">{label}</p> : null}
+  <article className={`rr-panel ${surfaces[surface]} ${className}`.trim()}>
+    {label ? <p className="rr-eyebrow rr-eyebrow--small">{label}</p> : null}
     {children}
   </article>
 );

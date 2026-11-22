@@ -73,7 +73,7 @@ export const MemberSignInModal: React.FC<MemberSignInModalProps> = ({
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-[60] bg-[#24262D]/70 backdrop-blur-sm flex items-center justify-center p-4"
+      className="p3-modal-overlay fixed inset-0 z-[60] flex items-center justify-center p-4"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}
@@ -82,53 +82,53 @@ export const MemberSignInModal: React.FC<MemberSignInModalProps> = ({
         ref={surfaceRef}
         initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.98 }}
         animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
-        className="p3-modal-surface p3-signin-modal w-full max-w-md rounded-3xl glass-modal border border-[#24262D]/15 p-6 sm:p-7 relative"
+        className="p3-modal-surface p3-signin-modal rr-modal relative w-full max-w-md p-6 sm:p-8"
         role="dialog"
         aria-modal="true"
         aria-label="Member sign in"
         tabIndex={-1}
       >
-        <button type="button" onClick={dismiss} className="p3-icon-button p3-modal-close absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-[#F7F3EB] flex items-center justify-center cursor-pointer" aria-label="Close">
-          <X className="w-4 h-4 text-[#5E5B55]" />
+        <button type="button" onClick={dismiss} className="p3-icon-button p3-modal-close rr-touch absolute right-4 top-4 flex h-10 w-10 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-muted)] hover:text-[color:var(--rr-ink)] cursor-pointer" aria-label="Close">
+          <X className="h-4 w-4" />
         </button>
 
         <div className="pr-8">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#24262D]">
-            <Sparkles className="w-3.5 h-3.5 text-[#F47B49]" />
+          <span className="rr-eyebrow">
+            <Sparkles className="h-3.5 w-3.5 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
             Member notifications
           </span>
-          <h2 className="font-serif text-2xl font-bold text-[#24262D] mt-2">Sign in to your community account</h2>
-          <p className="text-sm text-[#5E5B55] mt-1.5">Receive meetup and announcement updates, and keep your notification read state synced across devices.</p>
+          <h2 className="rr-title rr-title--compact mt-5 text-[color:var(--rr-ink)]">Sign in to your community account</h2>
+          <p className="rr-body mt-3 text-sm">Receive meetup and announcement updates, and keep your notification read state synced across devices.</p>
         </div>
 
-        <div className="mt-5 flex gap-2">
-          <button type="button" onClick={() => setMode('magic')} className={`p3-segmented-button flex-1 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer ${mode === 'magic' ? 'glass-button' : 'glass-button-secondary'}`}>Email link</button>
-          <button type="button" onClick={() => setMode('password')} className={`p3-segmented-button flex-1 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer ${mode === 'password' ? 'glass-button' : 'glass-button-secondary'}`}>Password</button>
+        <div className="rr-filter-row mt-6 border-b border-[color:var(--rr-border)] pb-4">
+          <button type="button" onClick={() => setMode('magic')} aria-pressed={mode === 'magic'} className="rr-filter flex-1 cursor-pointer">Email link</button>
+          <button type="button" onClick={() => setMode('password')} aria-pressed={mode === 'password'} className="rr-filter flex-1 cursor-pointer">Password</button>
         </div>
 
-        <form onSubmit={submit} className="p3-form mt-4 space-y-3">
-          <label className="block">
-            <span className="text-xs font-semibold text-[#24262D]">Email</span>
-            <div className="mt-1 relative">
-              <Mail className="w-4 h-4 text-[#5E5B55] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="p3-input w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm" placeholder="you@example.com" />
-            </div>
+        <form onSubmit={submit} className="p3-form mt-5 space-y-4">
+          <label className="rr-field block">
+            <span className="rr-label">Email</span>
+            <span className="relative block">
+              <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--rr-muted)]" aria-hidden="true" />
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="p3-input rr-input pl-9" placeholder="you@example.com" />
+            </span>
           </label>
 
           {mode === 'password' && (
-            <label className="block">
-              <span className="text-xs font-semibold text-[#24262D]">Password</span>
-              <div className="mt-1 relative">
-                <Lock className="w-4 h-4 text-[#5E5B55] absolute left-3 top-1/2 -translate-y-1/2" />
-                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="p3-input w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm" placeholder="Your password" />
-              </div>
+            <label className="rr-field block">
+              <span className="rr-label">Password</span>
+              <span className="relative block">
+                <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--rr-muted)]" aria-hidden="true" />
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="p3-input rr-input pl-9" placeholder="Your password" />
+              </span>
             </label>
           )}
 
-          {error && <p className="p3-form-error text-xs text-red-700 bg-[#F47B49]/15 border border-[#F47B49]/45 rounded-xl px-3 py-2">{error}</p>}
-          {success && <p className="p3-form-success text-xs text-green-800 bg-green-50 border border-green-200 rounded-xl px-3 py-2">{success}</p>}
+          {error && <p className="p3-form-error rr-alert text-xs" role="alert">{error}</p>}
+          {success && <p className="p3-form-success rr-alert rr-alert--success text-xs">{success}</p>}
 
-          <button type="submit" disabled={loading} className="p3-form-submit w-full glass-button px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer disabled:opacity-60">
+          <button type="submit" disabled={loading} className="p3-form-submit rr-btn w-full cursor-pointer disabled:opacity-60">
             {loading ? 'Please wait…' : mode === 'magic' ? 'Send secure sign-in link' : 'Sign in'}
           </button>
 
@@ -137,7 +137,7 @@ export const MemberSignInModal: React.FC<MemberSignInModalProps> = ({
               type="button"
               onClick={requestReset}
               disabled={loading || !email.trim()}
-              className="p3-text-action w-full text-xs text-[#5E5B55] hover:text-[#24262D] py-1 cursor-pointer disabled:opacity-60"
+              className="p3-text-action rr-link w-full justify-center py-1 text-xs cursor-pointer disabled:opacity-60"
             >
               Forgot password?
             </button>

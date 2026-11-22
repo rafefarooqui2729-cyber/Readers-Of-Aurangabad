@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { siteConfig } from '../content/siteConfig';
 import { ArrowRight, Compass, ExternalLink, Feather, Heart, MapPin, Sparkles, Users } from 'lucide-react';
 import { scrollToTop } from '../utils/scroll';
-import { Button, PageHero, PaperPanel, SectionHeading } from '../components/ui';
+import { Button, PageHero, SectionHeading } from '../components/ui';
 
 const tenets = [
   {
@@ -93,7 +93,7 @@ export const OurStoryPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="paper-grain overflow-hidden pb-16">
+    <div className="rr-home">
       <PageHero
         image="/images/enhanced/gallery/roa-006-2026-11-05.webp"
         srcSet="/images/enhanced/mobile/roa-006-2026-11-05-mobile.webp 1080w, /images/enhanced/gallery/roa-006-2026-11-05.webp 2400w"
@@ -102,46 +102,42 @@ export const OurStoryPage: React.FC = () => {
         alt="Readers of Aurangabad gathered outdoors"
         eyebrow="The origin of the movement"
         title="Our Story"
-        lead="Every movement begins with a simple thought — and ours began in the city of centuries."
+        lead="A simple idea in a city full of stories: make reading something people do together again."
       />
 
-      <div className="space-y-12 sm:space-y-16">
-        <section className="mx-auto max-w-4xl px-5 pt-10 text-center sm:px-8">
-          <p className="font-serif text-lg italic leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5] sm:text-xl">
-            In a city full of centuries-old stories, we wanted to create a space where people could discover
-            the joy of reading together.
-          </p>
-        </section>
-
-        <section className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-none p-6 sm:p-10">
-            <div className="space-y-7 font-serif text-base leading-[1.85] text-[#24262D] dark:text-[#F7F3EB] sm:text-lg">
-              <p className="text-xl font-bold leading-snug sm:text-2xl">
+      {/* Prologue — a quiet, off-centre opening rather than a centred card. */}
+      <section className="rr-section" aria-label="How the collective began">
+        <div className="rr-container grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-4">
+            <p className="rr-eyebrow">Prologue · MH20</p>
+            <p className="rr-quote mt-8 lg:pr-6">
+              In a city full of centuries-old stories, we wanted to create a space where people could discover the joy of reading together.
+            </p>
+          </div>
+          <div className="border-t border-[color:var(--rr-border)] pt-8 lg:col-span-8 lg:border-l lg:border-t-0 lg:py-0 lg:pl-12">
+            <div className="roa-prose max-w-[62ch]">
+              <p className="text-xl font-semibold leading-snug sm:text-2xl">
                 Not another platform telling people which books to read. Not another community limited by
                 genres or languages.
               </p>
               <p>
                 Just a simple, enduring idea:{' '}
-                <strong className="text-[#F47B49] dark:text-[#C7EFDE]">
+                <strong className="text-[color:var(--rr-terracotta)]">
                   bring readers together, create meaningful real-world experiences, and make reading a part
                   of everyday life again.
                 </strong>
               </p>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div className="border border-[#24262D]/15 bg-[#F7F3EB] p-5 dark:border-[#F7F3EB]/15 dark:bg-[#24262D]">
-                  <span className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#F47B49] dark:text-[#C7EFDE]">
-                    The reality we saw
-                  </span>
-                  <p className="font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
+              <div className="my-8 grid gap-6 border-y border-[color:var(--rr-border)] py-7 sm:grid-cols-2 sm:gap-10">
+                <div>
+                  <p className="rr-meta text-[color:var(--rr-terracotta)]">The reality we saw</p>
+                  <p className="rr-body mt-3">
                     Screens had colonised our free time, bookshops were thinning, and solitary readers had
                     nowhere to share their joy without commercial pressure or academic judgment.
                   </p>
                 </div>
-                <div className="border border-[#5E5B55]/25 bg-[#F7F3EB] p-5 dark:border-[#C7EFDE]/25 dark:bg-[#24262D]">
-                  <span className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E5B55] dark:text-[#D4CFC5]">
-                    The sanctuary we built
-                  </span>
-                  <p className="font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
+                <div>
+                  <p className="rr-meta text-[color:var(--rr-terracotta)]">The sanctuary we built</p>
+                  <p className="rr-body mt-3">
                     An open space under trees and across friendly venues where anyone can bring whatever
                     they are reading, sit quietly for an hour, and make an authentic human connection.
                   </p>
@@ -158,178 +154,177 @@ export const OurStoryPage: React.FC = () => {
                 invite you to sit down, open a book, breathe, and belong.
               </p>
             </div>
-          </PaperPanel>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+      {/* What we stand for — ruled ledger, not a card grid. */}
+      <section className="rr-section rr-section--line" aria-label="Mission, vision and values">
+        <div className="rr-container">
           <SectionHeading
             eyebrow="What we stand for"
             title="Mission, vision, and values"
             description="A reading community built on welcome, curiosity, and the simple pleasure of being together."
           />
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {tenets.map((tenet) => {
+          <div className="mt-10 grid gap-px border border-[color:var(--rr-border)] bg-[color:var(--rr-border)] md:grid-cols-3">
+            {tenets.map((tenet, index) => {
               const Icon = tenet.icon;
               return (
-                <article
-                  key={tenet.title}
-                  className="border border-[#24262D]/20 bg-[#FFFDF8] p-6 dark:border-[#F7F3EB]/20 dark:bg-[#24262D]"
-                >
-                  <span className="flex h-11 w-11 items-center justify-center border border-[#F47B49]/30 text-[#F47B49] dark:border-[#C7EFDE]/40 dark:text-[#C7EFDE]">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 font-display text-xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                    {tenet.title}
-                  </h3>
-                  <p className="mt-3 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                    {tenet.text}
+                <article key={tenet.title} className="bg-[color:var(--rr-paper)] p-7 sm:p-9">
+                  <Icon className="h-5 w-5 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+                  <p className="rr-meta mt-7 text-[color:var(--rr-muted)]">
+                    {String(index + 1).padStart(2, '0')} / 03
                   </p>
+                  <h3 className="rr-title rr-title--small mt-3">{tenet.title}</h3>
+                  <p className="rr-body mt-4">{tenet.text}</p>
                 </article>
               );
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-none p-6 sm:p-10">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-center">
-              <div className="md:col-span-4">
-                <img
-                  src="/images/community/founder-abdul-rafe-2026.jpeg"
-                  alt="Abdul Rafe Farooqui, founder of Readers of Aurangabad"
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[4/5] w-full border border-[#24262D]/20 object-cover object-[center_15%] dark:border-[#F7F3EB]/20"
-                />
-                <h2 className="mt-4 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                  Abdul Rafe Farooqui
-                </h2>
-                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#F47B49] dark:text-[#C7EFDE]">
-                  Founder, Readers of Aurangabad
-                </p>
-                <p className="mt-2 flex items-center gap-1.5 font-sans text-xs text-[#5E5B55] dark:text-[#D4CFC5]">
-                  <MapPin className="h-3.5 w-3.5 text-[#5E5B55] dark:text-[#D4CFC5]" aria-hidden="true" />
-                  {siteConfig.locationLine}
-                </p>
-              </div>
-
-              <div className="space-y-5 md:col-span-8">
-                <p className="flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#F47B49] dark:text-[#C7EFDE]">
-                  <Feather className="h-4 w-4" aria-hidden="true" />
-                  From the founder&rsquo;s journal
-                </p>
-                <blockquote className="border-l-4 border-[#C7EFDE] pl-5 font-serif text-lg italic leading-relaxed text-[#24262D] dark:text-[#F7F3EB] sm:text-xl">
-                  We are carving out a public sanctuary where a teenager reading manga sits beside a retired
-                  schoolmaster reading Marathi prose, and where no one asks for credentials before welcoming
-                  you to the circle.
-                </blockquote>
-                <p className="font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                  Abdul Rafe started Readers of Aurangabad with a simple conviction: readers in the city did
-                  not lack curiosity — they needed an unhurried, genuine space to gather. That belief continues
-                  to shape every gathering, every open book, and every conversation over chai.
-                </p>
-                <a
-                  href={siteConfig.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#24262D] underline underline-offset-4 hover:text-[#F47B49] dark:text-[#F7F3EB] dark:hover:text-[#C7EFDE]"
-                >
-                  Follow {siteConfig.instagramHandle} on Instagram
-                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              </div>
+      {/* Founder — portrait opposite the founder's own words. */}
+      <section className="rr-section rr-section--line" aria-label="From the founder">
+        <div className="rr-container grid gap-10 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <div className="rr-image aspect-[4/5] w-full">
+              <img
+                src="/images/community/founder-abdul-rafe-2026.jpeg"
+                alt="Abdul Rafe Farooqui, founder of Readers of Aurangabad"
+                loading="lazy"
+                decoding="async"
+                className="object-[center_15%]"
+              />
+              <span className="rr-image-label">The founder · {siteConfig.establishedYear}</span>
             </div>
-          </PaperPanel>
-        </section>
+            <h2 className="rr-title rr-title--small mt-6">Abdul Rafe Farooqui</h2>
+            <p className="rr-meta mt-2 text-[color:var(--rr-terracotta)]">Founder, Readers of Aurangabad</p>
+            <p className="rr-body mt-3 flex items-center gap-2 text-xs">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              {siteConfig.locationLine}
+            </p>
+          </div>
+          <div className="lg:col-span-7 lg:pl-8">
+            <p className="rr-eyebrow">
+              <Feather className="h-3.5 w-3.5" aria-hidden="true" />
+              From the founder&rsquo;s journal
+            </p>
+            <blockquote className="rr-quote mt-8">
+              We are carving out a public sanctuary where a teenager reading manga sits beside a retired
+              schoolmaster reading Marathi prose, and where no one asks for credentials before welcoming
+              you to the circle.
+            </blockquote>
+            <p className="rr-body mt-8 max-w-[58ch]">
+              Abdul Rafe started Readers of Aurangabad with a simple conviction: readers in the city did
+              not lack curiosity — they needed an unhurried, genuine space to gather. That belief continues
+              to shape every gathering, every open book, and every conversation over chai.
+            </p>
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rr-link mt-8"
+            >
+              Follow {siteConfig.instagramHandle} on Instagram
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </section>
 
-        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+      {/* Photographic chronicle — an asymmetric photo essay. */}
+      <section className="rr-section rr-section--line" aria-label="Photographic chronicle">
+        <div className="rr-container">
           <SectionHeading
             eyebrow="Photographic chronicle"
             title="Moments that define the movement"
             description="Authentic snapshots from park lawns and public courtyards in Aurangabad."
           />
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {moments.map((moment) => (
-              <article
+          <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-12">
+            {moments.map((moment, index) => (
+              <figure
                 key={moment.title}
-                className="border border-[#24262D]/20 bg-[#FFFDF8] dark:border-[#F7F3EB]/20 dark:bg-[#24262D]"
+                className={`${index === 0 ? 'lg:col-span-7' : 'lg:col-span-5'} min-w-0`}
               >
-                <img
-                  src={moment.image}
-                  alt={moment.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="h-56 w-full object-cover object-[center_25%] sm:h-64"
-                />
-                <div className="p-5">
-                  <h3 className="font-display text-lg font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                    {moment.title}
-                  </h3>
-                  <p className="mt-2 font-sans text-xs leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                    {moment.text}
-                  </p>
+                <div className={`rr-image ${index === 0 ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+                  <img
+                    src={moment.image}
+                    alt={moment.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="object-[center_25%]"
+                  />
                 </div>
-              </article>
+                <figcaption className="mt-5 border-t border-[color:var(--rr-border)] pt-4">
+                  <p className="rr-meta text-[color:var(--rr-terracotta)]">
+                    {String(index + 1).padStart(2, '0')} · From the archive
+                  </p>
+                  <h3 className="rr-title rr-title--small mt-2">{moment.title}</h3>
+                  <p className="rr-body mt-2 text-sm">{moment.text}</p>
+                </figcaption>
+              </figure>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="code-of-conduct" className="mx-auto max-w-5xl scroll-mt-24 px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-none p-6 sm:p-10">
-            <SectionHeading
-              eyebrow="Community standards"
-              title="Code of Conduct"
-              description="How we look after one another so reading stays welcoming for everyone."
-            />
-            <ul className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {conduct.map((item) => (
-                <li
-                  key={item.title}
-                  className="border border-[#24262D]/15 bg-[#FFFDF8] p-5 dark:border-[#F7F3EB]/20 dark:bg-[#24262D]"
-                >
-                  <h3 className="font-display text-base font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 font-sans text-xs leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                    {item.text}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </PaperPanel>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-          <PaperPanel className="rounded-none p-6 sm:p-10">
-            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-              <div className="max-w-2xl">
-                <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#F47B49] dark:text-[#C7EFDE]">
-                  Community stewardship
-                </p>
-                <h2 className="mt-2 font-display text-3xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
-                  Run by readers
-                </h2>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
-                  Founder Abdul Rafe Farooqui anchors the vision. The rest is shaped by readers who bring a
-                  book, a mat, a suggestion, or simply a willingness to help the circle feel welcome.
-                </p>
-              </div>
-              <Button
-                type="button"
-                onClick={() => {
-                  setCurrentPage('get-involved');
-                  scrollToTop();
-                }}
-                className="shrink-0"
+      {/* Code of conduct — the stable deep-link target is preserved. */}
+      <section
+        id="code-of-conduct"
+        className="rr-section rr-section--line scroll-mt-24"
+        aria-label="Code of Conduct"
+      >
+        <div className="rr-container">
+          <SectionHeading
+            eyebrow="Community standards"
+            title="Code of Conduct"
+            description="How we look after one another so reading stays welcoming for everyone."
+          />
+          <ul className="mt-10 grid gap-x-12 md:grid-cols-2">
+            {conduct.map((item, index) => (
+              <li
+                key={item.title}
+                className="border-t border-[color:var(--rr-border)] py-6"
               >
-                <Users className="mr-2 h-4 w-4" aria-hidden="true" />
-                Volunteer with us
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-              </Button>
-            </div>
-          </PaperPanel>
-        </section>
-      </div>
+                <p className="rr-meta text-[color:var(--rr-brass)]">
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3 className="rr-title rr-title--small mt-3">{item.title}</h3>
+                <p className="rr-body mt-2 text-sm">{item.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Stewardship — closing forest invitation. */}
+      <section className="rr-cta-band" aria-label="Run by readers">
+        <div className="rr-container rr-cta-band__inner">
+          <div>
+            <p className="rr-eyebrow rr-eyebrow--light">Community stewardship</p>
+            <h2 className="rr-cta-band__title">Run by readers</h2>
+            <p className="rr-cta-band__copy">
+              Founder Abdul Rafe Farooqui anchors the vision. The rest is shaped by readers who bring a
+              book, a mat, a suggestion, or simply a willingness to help the circle feel welcome.
+            </p>
+          </div>
+          <div className="rr-cta-band__actions">
+            <Button
+              type="button"
+              onClick={() => {
+                setCurrentPage('get-involved');
+                scrollToTop();
+              }}
+              variant="outline-marigold"
+            >
+              <Users className="h-4 w-4" aria-hidden="true" />
+              Volunteer with us
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

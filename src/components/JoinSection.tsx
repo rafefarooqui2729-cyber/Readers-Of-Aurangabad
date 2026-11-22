@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MessageCircle, Check, ArrowRight } from 'lucide-react';
+import { InstagramIcon } from './Icons';
 import { Stamp } from './ui/Stamp';
 import { Button } from './ui/Button';
 import { Eyebrow } from './ui/Eyebrow';
@@ -66,77 +67,87 @@ export const JoinSection: React.FC = () => {
     }
   };
 
-  const inputClassName =
-    'w-full bg-[#24262D] border-2 border-[#F7F3EB]/35 text-[#F7F3EB] placeholder-[#D4CFC5] rounded-none px-4 py-3 text-sm focus:outline-none focus:border-[#C7EFDE] focus:shadow-[4px_4px_0_rgba(199,239,222,0.45)]';
-
   return (
     <section
       id="join-community"
-      className="relative overflow-hidden border-y-[3px] border-[#24262D] bg-[#24262D] py-16 text-[#F7F3EB] sm:py-24 dark:border-[#C7EFDE]"
+      className="rr-section border-y border-[color:var(--rr-brass)] bg-[color:var(--rr-forest)] text-[color:var(--rr-on-dark)]"
       aria-label="Join Readers of Aurangabad"
     >
-      <div className="absolute left-0 top-0 h-2 w-full bg-[#F47B49]" aria-hidden="true" />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
-          <div className="space-y-6 lg:col-span-6">
-            <div className="flex flex-wrap items-start gap-4">
-              <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-0" />
-              <div>
-                <Eyebrow color="marigold">MH20 invitation</Eyebrow>
-                <h2 className="mt-2 font-display text-4xl uppercase leading-[0.92] tracking-[-0.03em] text-[#F7F3EB] sm:text-5xl">
-                  Pull up a chair. Bring a book.
+      <div className="rr-container">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="space-y-7 lg:col-span-6">
+            <div className="flex flex-wrap items-start gap-6">
+              <div className="[&_.rr-imprint__meta]:text-[color:var(--rr-brass)] [&_.rr-imprint__name]:text-[color:var(--rr-on-dark)] [&_.rr-imprint__rule]:bg-[color:var(--rr-brass)] [&_.rr-imprint__year]:text-[color:var(--rr-brass)]">
+                <Stamp year={siteConfig.establishedYear} size="md" />
+              </div>
+              <div className="min-w-0">
+                <Eyebrow color="marigold">MH20 / Open invite</Eyebrow>
+                <h2 className="rr-title rr-title--compact mt-4 max-w-[16ch] text-[color:var(--rr-on-dark)]">
+                  Bring a book.<br />Meet your people.
                 </h2>
               </div>
             </div>
 
-            <p className="max-w-xl border-l-4 border-[#C7EFDE] pl-4 font-serif text-lg italic leading-relaxed text-[#F7F3EB]/92">
-              Readers of Aurangabad is free, volunteer-run, and open to anyone who loves physical
-              books and real conversation. No gatekeeping, no compulsory reading list, no speed tests.
+            <p className="max-w-xl border-l border-[color:var(--rr-brass)] pl-5 font-display text-lg italic leading-relaxed text-[color:var(--rr-on-dark)]/85">
+              Readers of Aurangabad is free, volunteer-run, and open to anyone who wants to read in good company. No gatekeeping, no compulsory reading list, no pressure.
             </p>
 
-            <div className="pt-2">
+            <div className="border-t border-[color:var(--rr-border)] pt-6">
               <a
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center gap-3 border-2 border-[#F7F3EB] bg-[#25D366] px-6 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.06em] text-white shadow-[var(--mh20-shadow-sm)] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)]"
+                className="rr-btn rr-btn--brass"
               >
-                <MessageCircle className="h-5 w-5" aria-hidden="true" />
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
                 <span>Join via WhatsApp</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-              <span className="mt-3 block text-xs text-[#D4CFC5]">
-                Meetup locations, timings, and community updates.
-              </span>
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <span className="rr-meta text-[color:var(--rr-on-dark)]/55">
+                  Meetup locations, timings, and community updates.
+                </span>
+                <a
+                  href={siteConfig.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rr-touch inline-flex items-center gap-2 border-b border-[color:var(--rr-brass)] text-[color:var(--rr-on-dark)]/85 transition-colors hover:text-[color:var(--rr-brass)]"
+                >
+                  <InstagramIcon className="h-3.5 w-3.5" />
+                  <span className="rr-meta">{siteConfig.instagramHandle}</span>
+                </a>
+              </div>
             </div>
           </div>
 
           <div className="lg:col-span-6">
-            <div className="border-2 border-[#F7F3EB]/30 bg-[#24262D] p-6 shadow-[var(--mh20-shadow-lg)] sm:p-8">
-              <h3 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#F7F3EB]">
-                Introduce yourself
-              </h3>
-              <p className="mt-2 text-sm text-[#D4CFC5]">
-                Share a few details and we&apos;ll help you find the next chapter.
-              </p>
+            <div className="rr-panel bg-[color:var(--rr-paper)] p-6 text-[color:var(--rr-ink)] sm:p-9">
+              <div className="border-b border-[color:var(--rr-border)] pb-5">
+                <h3 className="rr-title rr-title--small text-[color:var(--rr-ink)]">
+                  Introduce yourself
+                </h3>
+                <p className="rr-body mt-2">
+                  Share a few details and we&apos;ll help you find the next chapter.
+                </p>
+              </div>
 
               {submitted ? (
-                <div className="mt-6 border-2 border-[#C7EFDE] bg-[#24262D] p-6 text-center">
-                  <div className="mx-auto flex h-11 w-11 items-center justify-center border-2 border-[#24262D] bg-[#C7EFDE] text-[#24262D]">
-                    <Check className="h-6 w-6" aria-hidden="true" />
-                  </div>
-                  <h4 className="mt-4 font-display text-xl uppercase tracking-[-0.02em] text-[#F7F3EB]">
+                <div className="rr-panel rr-panel--sage mt-6 p-7 text-center">
+                  <span className="mx-auto flex h-11 w-11 items-center justify-center bg-[color:var(--rr-forest)] text-[color:var(--rr-on-dark)]">
+                    <Check className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h4 className="rr-title rr-title--small mt-5 text-[color:var(--rr-forest)]">
                     Welcome to the circle
                   </h4>
-                  <p className="mt-2 text-sm text-[#D4CFC5]">
+                  <p className="rr-body mx-auto mt-2 max-w-sm">
                     We&apos;ve received your details. Watch for an invite to an upcoming gathering.
                   </p>
-                  <Button variant="primary" onClick={() => setSubmitted(false)} className="mt-4">
+                  <Button variant="primary" onClick={() => setSubmitted(false)} className="mt-5">
                     Send another message
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                   <div className="hidden" aria-hidden="true">
                     <label htmlFor="website_hp">Leave this empty</label>
                     <input
@@ -150,9 +161,9 @@ export const JoinSection: React.FC = () => {
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="join-name" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
-                      Your name <span className="text-[#F47B49]">*</span>
+                  <div className="rr-field">
+                    <label htmlFor="join-name" className="rr-label">
+                      Your name <span className="text-[color:var(--rr-terracotta)]">*</span>
                     </label>
                     <input
                       id="join-name"
@@ -161,13 +172,13 @@ export const JoinSection: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Asim Khan, Aditi Joshi"
-                      className={inputClassName}
+                      className="rr-input"
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="join-contact" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
-                      Phone or Instagram <span className="text-[#F47B49]">*</span>
+                  <div className="rr-field">
+                    <label htmlFor="join-contact" className="rr-label">
+                      Phone or Instagram <span className="text-[color:var(--rr-terracotta)]">*</span>
                     </label>
                     <input
                       id="join-contact"
@@ -176,12 +187,12 @@ export const JoinSection: React.FC = () => {
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                       placeholder="e.g. +91 98765 43210 or @reader_handle"
-                      className={inputClassName}
+                      className="rr-input"
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="join-genres" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
+                  <div className="rr-field">
+                    <label htmlFor="join-genres" className="rr-label">
                       Favourite genres or current book (optional)
                     </label>
                     <input
@@ -190,31 +201,31 @@ export const JoinSection: React.FC = () => {
                       value={genres}
                       onChange={(e) => setGenres(e.target.value)}
                       placeholder="e.g. Marathi history, Urdu poetry, sci-fi, philosophy"
-                      className={inputClassName}
+                      className="rr-input"
                     />
                   </div>
 
-                  <label className="flex cursor-pointer items-start gap-3 pt-1">
+                  <label className="flex cursor-pointer items-start gap-3 border-t border-[color:var(--rr-border)] pt-5">
                     <input
                       type="checkbox"
                       required
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-1 h-4 w-4 shrink-0 accent-[#F47B49]"
+                      className="mt-1 h-4 w-4 shrink-0 accent-[color:var(--rr-terracotta)]"
                     />
-                    <span className="text-xs leading-relaxed text-[#D4CFC5]">
+                    <span className="rr-body text-xs">
                       I agree that Readers of Aurangabad may use my details to contact me about
                       upcoming reading meetups and community gatherings.
                     </span>
                   </label>
 
                   {error ? (
-                    <p className="border-2 border-[#F47B49] bg-[#24262D] px-3 py-2 text-xs text-[#FFD8C1]">
+                    <p className="rr-alert text-xs" role="alert">
                       {error}
                     </p>
                   ) : null}
 
-                  <Button type="submit" variant="primary" disabled={loading} className="mt-2 w-full">
+                  <Button type="submit" variant="primary" disabled={loading} className="mt-1 w-full">
                     {loading ? 'Submitting…' : 'Join Readers of Aurangabad'}
                   </Button>
                 </form>

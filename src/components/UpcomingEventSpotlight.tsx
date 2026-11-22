@@ -60,11 +60,11 @@ const Digit: React.FC<{ value: string; reduceMotion: boolean }> = ({ value, redu
 };
 
 const CountdownUnit: React.FC<{ label: string; value: number; reduceMotion: boolean }> = ({ label, value, reduceMotion }) => (
-  <div className="min-w-0 px-1.5 py-2 sm:px-3 sm:py-2.5 text-center">
-    <div className="font-serif text-lg sm:text-xl lg:text-2xl font-semibold text-[#24262D] leading-none">
+  <div className="min-w-0 px-2 py-3 text-center sm:px-4">
+    <div className="font-display text-2xl leading-none text-[color:var(--rr-forest)] sm:text-3xl">
       <Digit value={pad(value)} reduceMotion={reduceMotion} />
     </div>
-    <div className="mt-1 text-[8px] sm:text-[9px] uppercase tracking-[0.12em] text-[#5E5B55] font-semibold">{label}</div>
+    <div className="rr-meta mt-2 text-[color:var(--rr-muted)]">{label}</div>
   </div>
 );
 
@@ -110,47 +110,49 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
       whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="cine-scene relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+      className="rr-container rr-section--tight"
       aria-label="Upcoming event and latest announcement"
     >
-      <div className="cine-layer cine-layer--raised rounded-md border border-[#24262D]/15 bg-[#F7F3EB] shadow-[0_20px_60px_rgba(28,27,26,0.08)] overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-          <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10">
-            <div className="inline-flex items-center gap-2 rounded-none border border-[#24262D]/15 bg-white/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#24262D]">
-              <Sparkles className="w-3.5 h-3.5 text-[#F47B49]" />
-              <span>Next Community Gathering</span>
+      <div className="rr-panel overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12">
+          <div className="p-6 sm:p-9 lg:col-span-7 lg:p-11">
+            <div className="flex items-center gap-3">
+              <Sparkles className="h-3.5 w-3.5 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+              <span className="rr-eyebrow">Next Community Gathering</span>
             </div>
 
             {meetup ? (
-              <div className="mt-5 space-y-5">
+              <div className="mt-7 space-y-7">
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.05]">
+                  <h2 className="rr-title rr-title--compact text-[color:var(--rr-ink)]">
                     {meetup.title}
                   </h2>
                   {meetup.edition && (
-                    <p className="mt-2 text-sm sm:text-base font-medium text-[#24262D]">{meetup.edition}</p>
+                    <p className="rr-meta mt-3 text-[color:var(--rr-terracotta)]">{meetup.edition}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[#5E5B55]">
-                  <div className="flex items-start gap-2.5">
-                    <Calendar className="w-4 h-4 mt-0.5 text-[#F47B49]" />
+                <div className="grid grid-cols-1 gap-0 border-y border-[color:var(--rr-border)] sm:grid-cols-2 sm:gap-0">
+                  <div className="flex items-start gap-3 border-b border-[color:var(--rr-border)] py-4 sm:border-b-0 sm:border-r sm:pr-6">
+                    <Calendar className="mt-0.5 h-4 w-4 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
                     <div>
-                      <div className="font-semibold text-[#24262D]">{meetup.date}</div>
-                      <div>{meetup.time}</div>
+                      <span className="rr-meta block text-[color:var(--rr-muted)]">Date &amp; time</span>
+                      <span className="mt-1 block text-sm font-semibold text-[color:var(--rr-ink)]">{meetup.date}</span>
+                      <span className="rr-body text-xs">{meetup.time}</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 mt-0.5 text-[#F47B49]" />
+                  <div className="flex items-start gap-3 py-4 sm:pl-6">
+                    <MapPin className="mt-0.5 h-4 w-4 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
                     <div>
-                      <div className="font-semibold text-[#24262D]">{meetup.venue}</div>
-                      {meetup.address && <div>{meetup.address}</div>}
+                      <span className="rr-meta block text-[color:var(--rr-muted)]">Venue</span>
+                      <span className="mt-1 block text-sm font-semibold text-[color:var(--rr-ink)]">{meetup.venue}</span>
+                      {meetup.address && <span className="rr-body block text-xs">{meetup.address}</span>}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#5E5B55] font-semibold mb-3">
+                  <p className="rr-meta mb-3 text-[color:var(--rr-muted)]">
                     {!hasValidDate
                       ? 'Date to be confirmed'
                       : isLiveOrPast
@@ -158,15 +160,15 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                       : 'Countdown to gathering'}
                   </p>
                   {!hasValidDate ? (
-                    <div className="rounded-none border border-[#24262D]/15 bg-white/70 px-5 py-4 text-[#24262D] font-medium">
+                    <div className="rr-panel rr-panel--plain border border-[color:var(--rr-border)] px-5 py-4 rr-body">
                       The date for this gathering is yet to be confirmed. Check the gathering archive for updates.
                     </div>
                   ) : isLiveOrPast ? (
-                    <div className="rounded-none border border-[#24262D]/15 bg-white/70 px-5 py-4 text-[#24262D] font-medium">
+                    <div className="rr-panel rr-panel--plain border border-[color:var(--rr-border)] px-5 py-4 rr-body">
                       This gathering is happening now or its scheduled start time has arrived. Check details for the latest update.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-4 w-full max-w-[340px] overflow-hidden rounded-none border border-[#24262D]/15 bg-white/70 divide-x divide-[#24262D]/10 shadow-[var(--mh20-shadow-sm)]" role="timer" aria-live="polite">
+                    <div className="grid grid-cols-4 border-y border-[color:var(--rr-border)]" role="timer" aria-live="polite">
                       <CountdownUnit label="Days" value={timeLeft.days} reduceMotion={shouldReduceMotion} />
                       <CountdownUnit label="Hours" value={timeLeft.hours} reduceMotion={shouldReduceMotion} />
                       <CountdownUnit label="Minutes" value={timeLeft.minutes} reduceMotion={shouldReduceMotion} />
@@ -175,20 +177,17 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <button
-                    onClick={() => onViewEvent(meetup)}
-                    className="glass-button px-5 py-3 rounded-none text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-[var(--mh20-shadow-sm)]"
-                  >
+                <div className="rr-event-actions pt-1">
+                  <button onClick={() => onViewEvent(meetup)} className="rr-btn cursor-pointer">
                     <span>View details</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
                   {registrationUrl && meetup.registrationStatus === 'open' ? (
                     <a
                       href={registrationUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass-button-secondary px-5 py-3 rounded-none text-sm font-semibold cursor-pointer"
+                      className="rr-btn rr-btn--outline"
                     >
                       Register now
                     </a>
@@ -197,7 +196,7 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                       href={siteConfig.whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass-button-secondary px-5 py-3 rounded-none text-sm font-semibold cursor-pointer"
+                      className="rr-btn rr-btn--outline"
                     >
                       Ask on WhatsApp
                     </a>
@@ -205,38 +204,35 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="mt-5 space-y-5">
-                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.05]">
+              <div className="mt-7 space-y-6">
+                <h2 className="rr-title rr-title--compact text-[color:var(--rr-ink)]">
                   Our next chapter is being prepared
                 </h2>
-                <p className="text-base sm:text-lg text-[#5E5B55] leading-relaxed max-w-2xl">
+                <p className="rr-lede">
                   There isn&apos;t a confirmed upcoming meetup on the calendar right now. Stay close — new gatherings, reading circles, and community moments are announced here as soon as they&apos;re ready.
                 </p>
-                <button
-                  onClick={onViewGatherings}
-                  className="glass-button px-5 py-3 rounded-none text-sm font-semibold inline-flex items-center gap-2 cursor-pointer"
-                >
-                  <Calendar className="w-4 h-4" />
+                <button onClick={onViewGatherings} className="rr-btn cursor-pointer">
+                  <Calendar className="h-4 w-4" aria-hidden="true" />
                   <span>Explore gatherings</span>
                 </button>
               </div>
             )}
           </div>
 
-          <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-[#24262D]/70 bg-white/45 p-6 sm:p-8 lg:p-10">
-            <div className="flex items-center gap-2 text-[#24262D] font-semibold text-xs uppercase tracking-[0.18em]">
-              <Bell className="w-4 h-4" />
-              <span>Latest Community Announcement</span>
+          <div className="border-t border-[color:var(--rr-border)] bg-[color:var(--rr-sage)] p-6 sm:p-9 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-11">
+            <div className="flex items-center gap-3">
+              <Bell className="h-4 w-4 text-[color:var(--rr-forest)]" aria-hidden="true" />
+              <span className="rr-eyebrow">From the Noticeboard</span>
             </div>
 
             {announcement ? (
               <div
                 id={announcementTargetDomId(announcement.id)}
-                className="mt-5 space-y-4 scroll-mt-24"
+                className="mt-7 space-y-5 scroll-mt-24"
               >
-                <div className="flex items-center gap-2 text-xs text-[#5E5B55]">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>
+                <div className="flex items-center gap-2 text-[color:var(--rr-muted)]">
+                  <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                  <span className="rr-meta">
                     Published {new Date(announcement.publishedAt || announcement.createdAt).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'long',
@@ -244,24 +240,26 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                     })}
                   </span>
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D] leading-tight">
+                <h3 className="rr-title rr-title--small text-[color:var(--rr-ink)]">
                   {announcement.title}
                 </h3>
-                <p className="text-sm sm:text-base text-[#5E5B55] leading-relaxed whitespace-pre-line">
+                <p className="rr-body whitespace-pre-line text-sm">
                   {announcementPreview}
                 </p>
                 <button
                   onClick={onViewAnnouncement}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#24262D] hover:text-[#F47B49] transition-colors cursor-pointer"
+                  className="rr-link cursor-pointer"
                 >
                   <span>View full announcement</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </button>
               </div>
             ) : (
-              <div className="mt-5 space-y-3">
-                <h3 className="font-serif text-2xl font-bold text-[#24262D]">No new announcements yet</h3>
-                <p className="text-sm sm:text-base text-[#5E5B55] leading-relaxed">
+              <div className="rr-empty mt-7">
+                <h3 className="rr-title rr-title--small text-[color:var(--rr-ink)]">
+                  No new announcements yet
+                </h3>
+                <p className="rr-body mt-2 max-w-xs">
                   When the community shares an update, you&apos;ll see it here alongside the next gathering.
                 </p>
               </div>

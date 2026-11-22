@@ -6,35 +6,19 @@ interface StampProps {
   className?: string;
 }
 
+/** Quiet typographic imprint — not a sticker or decorative stamp. */
 export const Stamp: React.FC<StampProps> = ({
   year = '2024',
   size = 'md',
   className = '',
-}) => {
-  const sizeClasses = {
-    sm: 'w-24 h-24 text-[9px]',
-    md: 'w-32 h-32 text-[10px]',
-    lg: 'w-40 h-40 text-[12px]',
-  };
-
-  return (
-    <div
-      aria-label={`Community stamp: Readers of Aurangabad, Established ${year}`}
-      className={`relative inline-flex items-center justify-center rounded-none border-[3px] border-[#24262D] bg-[#C7EFDE] p-2 text-center select-none rotate-[-6deg] transition-transform duration-200 hover:rotate-[-2deg] shadow-[var(--mh20-shadow)] ${sizeClasses[size]} ${className}`}
-    >
-      <div className="flex flex-col items-center justify-center font-sans uppercase tracking-widest text-[#24262D] dark:text-[#24262D] leading-tight">
-        <span className="text-[0.75em] font-bold tracking-[0.22em]">
-          MH20 READING
-        </span>
-        <span className="font-display text-[1.05em] my-1 tracking-[0.04em] px-1 text-center leading-[0.95]">
-          READERS OF
-          <br />
-          AURANGABAD
-        </span>
-        <span className="text-[0.8em] font-bold tracking-[0.18em] border-t-2 border-[#24262D] pt-1 mt-1">
-          EST. {year}
-        </span>
-      </div>
-    </div>
-  );
-};
+}) => (
+  <div
+    aria-label={`Reading-room imprint: Readers of Aurangabad, Established ${year}`}
+    className={`rr-imprint rr-imprint--${size} ${className}`.trim()}
+  >
+    <span className="rr-imprint__meta">Aurangabad · MH20</span>
+    <span className="rr-imprint__name">Readers of Aurangabad</span>
+    <span className="rr-imprint__rule" aria-hidden="true" />
+    <span className="rr-imprint__year">Established {year}</span>
+  </div>
+);

@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>Readers of Aurangabad | Building a Reading Community in MH20</title>
-    <meta name="title" content="Readers of Aurangabad | Building a Reading Community in MH20" />
-    <meta name="description" content="Discover Readers of Aurangabad, a community bringing people together through books, reading meetups, conversations, and stories. Join the reading movement in MH20." />
-    <meta name="author" content="Abdul Rafe Farooqui" />
+    <title>Readers of Aurangabad | The City Reading Collective</title>
+    <meta name="title" content="Readers of Aurangabad | The City Reading Collective" />
+    <meta name="description" content="Readers of Aurangabad is a contemporary reading community in MH20. Bring a book, meet people, and be part of real offline reading meetups in Chhatrapati Sambhajinagar." />
+    <meta name="author" content="Readers of Aurangabad" />
     <link rel="canonical" href="https://readersofaurangabad.com/" />
     <script>
       // Prevent Vercel preview deployments from competing with canonical production domain
@@ -24,33 +24,32 @@
     <!-- Open Graph / Social Sharing -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://readersofaurangabad.com/" />
-    <meta property="og:title" content="Readers of Aurangabad | Building a Reading Community in MH20" />
-    <meta property="og:description" content="A reading movement in Aurangabad bringing people, books, ideas, and stories together. Making reading a part of everyday life again." />
-    <meta property="og:image" content="https://readersofaurangabad.com/images/edited/hero/hero-main-desktop.webp" />
+    <meta property="og:title" content="Readers of Aurangabad | The City Reading Collective" />
+    <meta property="og:description" content="A contemporary reading community in Aurangabad (MH20). Real people, real books, real conversations." />
+    <meta property="og:image" content="https://readersofaurangabad.com/images/enhanced/hero/roa-group-hero-clean.webp" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://readersofaurangabad.com/" />
-    <meta property="twitter:title" content="Readers of Aurangabad | Building a Reading Community in MH20" />
-    <meta property="twitter:description" content="A reading movement in Aurangabad bringing people, books, ideas, and stories together. Making reading a part of everyday life again." />
-    <meta property="twitter:image" content="https://readersofaurangabad.com/images/edited/hero/hero-main-desktop.webp" />
+    <meta property="twitter:title" content="Readers of Aurangabad | The City Reading Collective" />
+    <meta property="twitter:description" content="A contemporary reading community in Aurangabad (MH20). Real people, real books, real conversations." />
+    <meta property="twitter:image" content="https://readersofaurangabad.com/images/enhanced/hero/roa-group-hero-clean.webp" />
 
-    <!-- Google Fonts: Fraunces (editorial display), DM Sans (body/UI), Cormorant Garamond (loader/regional editorial), regional scripts -->
+    <!-- Fonts: Archivo Black display, DM Sans interface, Fraunces editorial contrast, regional scripts. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- One theme-color tag, driven by the same roa-theme preference as the rest of the UI. -->
-    <meta name="theme-color" content="#F7F3EB" id="meta-theme-color" />
+    <meta name="theme-color" content="#F5F4EF" id="meta-theme-color" />
     <script>
-      (function() {
+      (function () {
         try {
           var saved = localStorage.getItem('roa-theme');
           var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.classList.toggle('dark', isDark);
           document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
           var meta = document.getElementById('meta-theme-color');
-          if (meta) meta.setAttribute('content', isDark ? '#1F2128' : '#F7F3EB');
+          if (meta) meta.setAttribute('content', isDark ? '#171717' : '#F5F4EF');
         } catch (e) {}
       })();
     </script>
@@ -84,335 +83,84 @@
     </script>
 
     <style>
-/* Initial Full-Screen Novel Loader */
-#initial-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #F7F3EB;
-  color: #24262D;
-  transition: opacity 0.45s ease;
-}
-
-html.dark #initial-loader,
-html[data-theme="dark"] #initial-loader {
-  background: #1F2128;
-  color: #F7F3EB;
-}
-
-.init-book-stage {
-  width: 360px;
-  height: 240px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  perspective: 1500px;
-  perspective-origin: 50% 45%;
-}
-
-.init-book-cover {
-  position: relative;
-  width: 330px;
-  height: 215px;
-  background: #2E251B;
-  border-radius: 5px;
-  transform-style: preserve-3d;
-  transform: rotateX(10deg);
-  box-shadow:
-    0 16px 36px -6px rgba(28, 27, 26, 0.28),
-    0 6px 14px -2px rgba(28, 27, 26, 0.18),
-    inset 0 0 0 1px rgba(184, 139, 74, 0.35);
-}
-
-.init-page-edge {
-  position: absolute;
-  top: 6px;
-  bottom: 6px;
-  width: 154px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.init-page-edge-left {
-  left: 6px;
-  border-radius: 4px 1px 1px 4px;
-  background: repeating-linear-gradient(to bottom, #E5D9C4 0px, #FAF4E7 1.5px, #DFD1BA 3px);
-  box-shadow: inset -3px 0 6px 0 rgba(69, 82, 64, 0.1), -2px 0 0 0 #D5C5AC, -4px 0 0 0 #C4B296;
-}
-
-.init-page-edge-right {
-  right: 6px;
-  border-radius: 1px 4px 4px 1px;
-  background: repeating-linear-gradient(to bottom, #E5D9C4 0px, #FAF4E7 1.5px, #DFD1BA 3px);
-  box-shadow: inset 3px 0 6px 0 rgba(69, 82, 64, 0.1), 2px 0 0 0 #D5C5AC, 4px 0 0 0 #C4B296;
-}
-
-.init-page-static {
-  position: absolute;
-  top: 8px;
-  bottom: 8px;
-  width: 152px;
-  background: linear-gradient(135deg, #FFFDF8 0%, #FAF5EA 60%, #F5EDE0 100%);
-  border: 1px solid #E4DAC7;
-  overflow: hidden;
-  z-index: 2;
-  padding: 10px 11px 8px 11px;
-  font-family: "Fraunces", Georgia, serif;
-  box-sizing: border-box;
-}
-
-.init-page-static-left {
-  left: 8px;
-  border-radius: 3px 1px 1px 3px;
-  box-shadow: inset -10px 0 16px 0 rgba(70, 55, 35, 0.08);
-}
-
-.init-page-static-right {
-  right: 8px;
-  border-radius: 1px 3px 3px 1px;
-  box-shadow: inset 10px 0 16px 0 rgba(70, 55, 35, 0.08);
-}
-
-.init-page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 5.5px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: #B88B4A;
-  text-transform: uppercase;
-  border-bottom: 0.5px solid rgba(184, 139, 74, 0.3);
-  padding-bottom: 3px;
-  margin-bottom: 5px;
-}
-
-.init-prose {
-  font-size: 7.2px;
-  line-height: 1.45;
-  color: #2D2721;
-  margin-bottom: 4px;
-  text-align: justify;
-}
-
-.init-turning-leaf {
-  position: absolute;
-  top: 8px;
-  bottom: 8px;
-  left: 50%;
-  width: 152px;
-  transform-origin: left center;
-  transform-style: preserve-3d;
-  pointer-events: none;
-  animation: initPageTurn 3.3s cubic-bezier(0.38, 0.04, 0.22, 1) infinite;
-}
-
-.init-leaf-1 { animation-delay: 0s; z-index: 13; }
-.init-leaf-2 { animation-delay: 1.1s; z-index: 12; }
-.init-leaf-3 { animation-delay: 2.2s; z-index: 11; }
-
-.init-leaf-face {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border: 1px solid #DFD5C2;
-  padding: 10px 11px 8px 11px;
-  font-family: "Fraunces", Georgia, serif;
-  box-sizing: border-box;
-}
-
-.init-leaf-front {
-  border-radius: 1px 4px 4px 1px;
-  background: linear-gradient(140deg, #FFFEFA 0%, #FAF5EA 65%, #F4ECE0 100%);
-  box-shadow: 2px 0 6px 0 rgba(50, 40, 25, 0.12), inset -6px 0 12px 0 rgba(70, 55, 35, 0.05);
-}
-
-.init-leaf-back {
-  transform: rotateY(180deg);
-  border-radius: 4px 1px 1px 4px;
-  background: linear-gradient(220deg, #FAF4E8 0%, #F5ECE0 65%, #EFE4D2 100%);
-  box-shadow: -2px 0 6px 0 rgba(50, 40, 25, 0.1), inset 6px 0 12px 0 rgba(70, 55, 35, 0.06);
-}
-
-.init-book-spine {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 8px;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, #3A2C1D 0%, #7A5E3A 25%, #B88B4A 50%, #7A5E3A 75%, #3A2C1D 100%);
-  border-radius: 1px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
-  z-index: 30;
-}
-
-.init-branding {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin-top: 24px;
-  user-select: none;
-}
-
-.init-title {
-  font-family: "Fraunces", Georgia, serif;
-  font-size: 26px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #1C1B1A;
-  margin: 0;
-}
-
-.init-subtitle {
-  font-family: "DM Sans", system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: #77736D;
-  margin: 0;
-}
-
-@keyframes initPageTurn {
-  0%, 6% {
-    transform: rotateY(0deg) skewY(0deg) scaleY(1) translateZ(0px);
-    box-shadow: 2px 1px 6px rgba(45, 35, 20, 0.1);
-  }
-  15% {
-    transform: rotateY(-18deg) skewY(2deg) scaleY(0.985) translateZ(5px);
-    box-shadow: 6px 3px 12px rgba(45, 35, 20, 0.16);
-  }
-  32% {
-    transform: rotateY(-62deg) skewY(4deg) scaleY(0.965) translateZ(15px);
-    box-shadow: 10px 8px 22px rgba(40, 30, 15, 0.22);
-  }
-  50% {
-    transform: rotateY(-95deg) skewY(1deg) scaleY(0.96) translateZ(18px);
-    box-shadow: 4px 10px 24px rgba(40, 30, 15, 0.2);
-  }
-  68% {
-    transform: rotateY(-136deg) skewY(-3.5deg) scaleY(0.975) translateZ(12px);
-    box-shadow: -6px 6px 16px rgba(40, 30, 15, 0.16);
-  }
-  82% {
-    transform: rotateY(-172deg) skewY(-0.8deg) scaleY(0.992) translateZ(3px);
-    box-shadow: -3px 2px 8px rgba(40, 30, 15, 0.1);
-  }
-  90%, 100% {
-    transform: rotateY(-180deg) skewY(0deg) scaleY(1) translateZ(0px);
-    box-shadow: -1px 1px 4px rgba(40, 30, 15, 0.08);
-  }
-}
-
-@media (max-width: 480px) {
-  .init-book-stage {
-    transform: scale(0.82);
-    margin-bottom: -15px;
-  }
-  .init-title { font-size: 22px; }
-  .init-subtitle { font-size: 10px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .init-turning-leaf {
-    animation: none !important;
-    display: none !important;
-  }
-}
-
-/* Match the pre-React surface to the saved theme so the loader never flashes a second palette. */
-html.dark body,
-html[data-theme="dark"] body {
-  background: #1F2128;
-  color: #F7F3EB;
-}
-
-html.dark .init-title,
-html[data-theme="dark"] .init-title { color: #F4F0E8; }
-
-html.dark .init-subtitle,
-html[data-theme="dark"] .init-subtitle { color: #B8B2A8; }
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background: #F5F4EF;
+        color: #171717;
+        transition: opacity 0.35s ease;
+        font-family: 'DM Sans', system-ui, sans-serif;
+      }
+      html.dark #initial-loader,
+      html[data-theme="dark"] #initial-loader {
+        background: #171717;
+        color: #F5F4EF;
+      }
+      .init-mark {
+        width: min(92vw, 520px);
+        padding: 1.5rem 0;
+        border-top: 2px solid #171717;
+        border-bottom: 2px solid #171717;
+        text-align: left;
+      }
+      html.dark .init-mark, html[data-theme="dark"] .init-mark { border-color: #F5F4EF; }
+      .init-overline {
+        display: block;
+        color: #315BFF;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+      .init-title {
+        margin: 0.75rem 0 0.25rem;
+        font-family: 'Archivo Black', 'Arial Black', sans-serif;
+        font-size: clamp(2.4rem, 8vw, 4.2rem);
+        font-weight: 400;
+        line-height: 0.92;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+      }
+      .init-subtitle {
+        margin: 0.75rem 0 0;
+        color: #666660;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      html.dark .init-subtitle, html[data-theme="dark"] .init-subtitle { color: #A8A8A0; }
+      .init-line {
+        width: 64px;
+        height: 3px;
+        margin-top: 1.5rem;
+        background: #315BFF;
+        transform-origin: left center;
+        animation: initRule 1.4s ease-in-out infinite;
+      }
+      @keyframes initRule {
+        0%, 100% { transform: scaleX(0.35); opacity: 0.5; }
+        50% { transform: scaleX(1); opacity: 1; }
+      }
+      html.dark body, html[data-theme="dark"] body { background: #171717; color: #F5F4EF; }
+      @media (prefers-reduced-motion: reduce) { .init-line { animation: none; transform: scaleX(1); opacity: 1; } }
     </style>
   </head>
-  <body class="bg-[#F7F3EB] text-[#24262D] antialiased selection:bg-[#FFD8C1] selection:text-[#24262D]">
-    <!-- Initial Loading Screen (Visible immediately before JS execution) -->
+  <body class="bg-[#F5F4EF] text-[#171717] antialiased">
     <div id="initial-loader" role="status" aria-live="polite" aria-label="Loading Readers of Aurangabad">
-      <div class="init-book-stage" aria-hidden="true">
-        <div class="init-book-cover">
-          <div class="init-page-edge init-page-edge-left"></div>
-          <div class="init-page-edge init-page-edge-right"></div>
-
-          <div class="init-page-static init-page-static-left">
-            <div class="init-page-header">
-              <span>CHAPTER III</span>
-              <span>42</span>
-            </div>
-            <p class="init-prose">The morning light filtered through the ancient windowpanes, casting long amber shapes across the worn wooden floor. She opened the volume with gentle care, as if every printed sentence were an invitation to a quieter, more thoughtful world.</p>
-          </div>
-
-          <div class="init-page-static init-page-static-right">
-            <div class="init-page-header">
-              <span>43</span>
-              <span>READERS OF MH20</span>
-            </div>
-            <p class="init-prose">"Every honest book is an open doorway," he said, turning to the window where the morning breeze stirred the banyan leaves. "You need only the quiet courage to cross the threshold and let another mind speak to your own."</p>
-          </div>
-
-          <!-- Turning Sheets -->
-          <div class="init-turning-leaf init-leaf-1">
-            <div class="init-leaf-face init-leaf-front">
-              <div class="init-page-header"><span>45</span><span>READERS OF AURANGABAD</span></div>
-              <p class="init-prose">Between the lines lived truths too delicate for noisy conversation, wrapped in cadence and rhythm like raw silk around glass.</p>
-            </div>
-            <div class="init-leaf-face init-leaf-back">
-              <div class="init-page-header"><span>COMMUNITY</span><span>44</span></div>
-              <p class="init-prose">He walked slowly between the tall shelves, trailing a finger along cracked leather bindings. Each volume whispered of journeys postponed.</p>
-            </div>
-          </div>
-
-          <div class="init-turning-leaf init-leaf-2">
-            <div class="init-leaf-face init-leaf-front">
-              <div class="init-page-header"><span>47</span><span>GATHERINGS</span></div>
-              <p class="init-prose">The circle of readers sat together in companionable silence, strangers united by the simple joy of an open book under the garden trees.</p>
-            </div>
-            <div class="init-leaf-face init-leaf-back">
-              <div class="init-page-header"><span>OUR STORY</span><span>46</span></div>
-              <p class="init-prose">Twilight softened the city skyline, painting the horizon in shades of warm amber. One by one, the books gently closed.</p>
-            </div>
-          </div>
-
-          <div class="init-turning-leaf init-leaf-3">
-            <div class="init-leaf-face init-leaf-front">
-              <div class="init-page-header"><span>49</span><span>THE JOURNAL</span></div>
-              <p class="init-prose">Ink pressed into paper carries more than mere words; it preserves the heartbeat of a community striving for understanding.</p>
-            </div>
-            <div class="init-leaf-face init-leaf-back">
-              <div class="init-page-header"><span>REFLECTIONS</span><span>48</span></div>
-              <p class="init-prose">She placed the volume gently back on the table. The world had not shifted on its axis, but she had changed.</p>
-            </div>
-          </div>
-
-          <div class="init-book-spine"></div>
-        </div>
-      </div>
-      <div class="init-branding">
-        <h2 class="init-title">Readers of Aurangabad</h2>
-        <p class="init-subtitle">A space for readers.</p>
+      <div class="init-mark">
+        <span class="init-overline">MH20 / Chhatrapati Sambhajinagar</span>
+        <h2 class="init-title">Read.<br>Meet.<br>Repeat.</h2>
+        <p class="init-subtitle">Readers of Aurangabad</p>
+        <span class="init-line" aria-hidden="true"></span>
       </div>
     </div>
 
-    <!-- React Application Mount Point -->
     <div id="root"></div>
-
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

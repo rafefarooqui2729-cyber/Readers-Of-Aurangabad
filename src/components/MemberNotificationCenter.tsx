@@ -104,14 +104,14 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
           }
           setOpen(v => !v);
         }}
-        className="relative glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
+        className="rr-touch relative flex h-11 w-11 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-ink)] transition-colors hover:border-[color:var(--rr-brass)] cursor-pointer"
         aria-label={isAuthenticated ? 'Open notifications' : 'Sign in for notifications'}
         aria-expanded={open}
         aria-haspopup="dialog"
       >
-        <Bell className="h-5 w-5 text-[color:var(--text-muted)] dark:text-[#C7EFDE]" />
+        <Bell className="h-5 w-5" aria-hidden="true" />
         {isAuthenticated && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F47B49] text-white text-[10px] font-bold flex items-center justify-center border border-white">
+          <span className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center border border-[color:var(--rr-paper)] bg-[color:var(--rr-terracotta)] px-1 text-[10px] font-bold text-[color:var(--rr-on-dark)]">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -126,14 +126,14 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? undefined : { opacity: 0, y: 6, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="p3-popover-surface absolute right-0 mt-3 w-[min(92vw,380px)] rounded-2xl glass-modal border border-[#24262D]/15 shadow-[var(--mh20-shadow-lg)] overflow-hidden z-50"
+            className="rr-modal absolute right-0 z-50 mt-3 w-[min(92vw,380px)] overflow-hidden"
             role="dialog"
             aria-label="Member notifications"
           >
-            <div className="p3-popover-header flex items-center justify-between px-4 py-3 border-b border-[#D4CFC5]/80 bg-white/70">
+            <div className="flex items-center justify-between gap-3 border-b border-[color:var(--rr-border)] bg-[color:var(--rr-paper)] px-4 py-3">
               <div>
-                <h3 className="font-serif text-lg font-bold text-[#24262D]">Notifications</h3>
-                <p className="text-[11px] text-[#5E5B55]">
+                <h3 className="rr-title rr-title--small text-[color:var(--rr-ink)]">Notifications</h3>
+                <p className="rr-meta mt-1 text-[color:var(--rr-muted)]">
                   {isMember ? 'Community updates for your member account' : 'Signed in'}
                 </p>
               </div>
@@ -142,64 +142,64 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
                   <button
                     type="button"
                     onClick={() => void onMarkAllRead()}
-                    className="p3-text-action px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#24262D] hover:bg-[#F7F3EB] flex items-center gap-1.5 cursor-pointer"
+                    className="p3-text-action rr-link cursor-pointer"
                     title="Mark all as read"
                   >
-                    <CheckCheck className="w-3.5 h-3.5" />
+                    <CheckCheck className="h-3.5 w-3.5" />
                     <span>Mark all</span>
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={() => dismiss()}
-                  className="p3-icon-button w-8 h-8 rounded-lg hover:bg-[#F7F3EB] flex items-center justify-center cursor-pointer"
+                  className="p3-icon-button rr-touch flex h-9 w-9 items-center justify-center border border-[color:var(--rr-border)] text-[color:var(--rr-muted)] hover:text-[color:var(--rr-ink)] cursor-pointer"
                   aria-label="Close notifications"
                 >
-                  <X className="w-4 h-4 text-[#5E5B55]" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
-            <div className="p3-popover-body max-h-[70vh] overflow-y-auto p-2.5 bg-[#F7F3EB]/70">
+            <div className="p3-popover-body max-h-[70vh] overflow-y-auto bg-[color:var(--rr-ivory)] p-2.5">
               {loading ? (
-                <div className="px-4 py-10 text-center text-sm text-[#5E5B55]">Loading notifications…</div>
+                <div className="px-4 py-10 text-center rr-body">Loading notifications…</div>
               ) : sorted.length === 0 ? (
-                <div className="px-4 py-10 text-center">
-                  <Bell className="w-8 h-8 text-[#D4CFC5] mx-auto mb-2" />
-                  <p className="font-medium text-[#24262D]">No notifications yet</p>
-                  <p className="text-xs text-[#5E5B55] mt-1">When new meetups or announcements are published, they&apos;ll appear here.</p>
+                <div className="rr-empty">
+                  <Bell className="mx-auto mb-3 h-8 w-8 text-[color:var(--rr-muted)]" aria-hidden="true" />
+                  <p className="font-semibold text-[color:var(--rr-ink)]">No notifications yet</p>
+                  <p className="rr-body mt-1 max-w-xs text-xs">When new meetups or announcements are published, they&apos;ll appear here.</p>
                 </div>
               ) : (
-                <ul className="space-y-2">
+                <ul className="border-t border-[color:var(--rr-border)]">
                   {sorted.map((n) => {
                     const meta = typeMeta(n.type);
                     const Icon = meta.icon;
                     const unread = !n.readAt;
                     return (
-                      <li key={n.id}>
+                      <li key={n.id} className="border-b border-[color:var(--rr-border)]">
                         <button
                           type="button"
                           onClick={() => void handleClick(n)}
-                          className={`p3-notification-item w-full text-left rounded-xl border px-3.5 py-3 transition-colors cursor-pointer ${
+                          className={`p3-notification-item w-full cursor-pointer border-l-2 px-3.5 py-3 text-left transition-colors ${
                             unread
-                              ? 'bg-white border-[#D4CFC5] shadow-sm'
-                              : 'bg-white/60 border-transparent hover:border-[#D4CFC5]'
+                              ? 'border-l-[color:var(--rr-terracotta)] bg-[color:var(--rr-paper)]'
+                              : 'border-l-transparent bg-transparent hover:bg-[color:var(--rr-paper)]'
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${unread ? 'bg-[#C7EFDE] text-[#24262D]' : 'bg-[#F7F3EB] text-[#5E5B55]'}`}>
-                              <Icon className="w-4 h-4" />
-                            </div>
+                            <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center border ${unread ? 'border-[color:var(--rr-border)] bg-[color:var(--rr-sage)] text-[color:var(--rr-forest)]' : 'border-[color:var(--rr-border)] text-[color:var(--rr-muted)]'}`}>
+                              <Icon className="h-4 w-4" aria-hidden="true" />
+                            </span>
                             <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 mb-0.5">
-                                <span className="text-[10px] uppercase tracking-wider font-semibold text-[#5E5B55]">{meta.label}</span>
-                                {unread && <span className="w-2 h-2 rounded-full bg-[#F47B49]" aria-label="Unread" />}
+                              <div className="mb-1 flex items-center gap-2">
+                                <span className="rr-meta text-[color:var(--rr-muted)]">{meta.label}</span>
+                                {unread && <span className="h-1.5 w-1.5 bg-[color:var(--rr-terracotta)]" aria-label="Unread" />}
                               </div>
-                              <p className="font-semibold text-sm text-[#24262D] leading-snug">{n.title}</p>
-                              <p className="text-xs text-[#5E5B55] mt-1 leading-relaxed">{n.message}</p>
-                              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#5E5B55]">
-                                <Clock className="w-3 h-3" />
-                                <time dateTime={n.createdAt}>
+                              <p className="text-sm font-semibold leading-snug text-[color:var(--rr-ink)]">{n.title}</p>
+                              <p className="rr-body mt-1 text-xs leading-relaxed">{n.message}</p>
+                              <div className="mt-2 flex items-center gap-1.5 text-[color:var(--rr-muted)]">
+                                <Clock className="h-3 w-3" aria-hidden="true" />
+                                <time dateTime={n.createdAt} className="rr-meta text-[10px]">
                                   {new Date(n.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
                                 </time>
                               </div>

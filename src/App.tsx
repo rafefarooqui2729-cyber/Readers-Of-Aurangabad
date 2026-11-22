@@ -98,26 +98,17 @@ class PageErrorBoundary extends React.Component<PageErrorBoundaryProps, PageErro
       if (this.props.suppressError) return null;
 
       return (
-        <div className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-16 text-center">
-          <div className="max-w-md border border-[#24262D]/20 dark:border-[#F7F3EB]/25 bg-[#FFFDF8] dark:bg-[#2B2E36] p-8 shadow-[var(--mh20-shadow-lg)]">
-            <div className="w-14 h-14 mx-auto mb-5 border border-[#24262D]/20 bg-[#C7EFDE] flex items-center justify-center">
-              <svg className="w-7 h-7 text-[#24262D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-            </div>
-            <h2 className="font-display text-2xl tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] mb-2">
-              Unable to load this page
-            </h2>
-            <p className="text-sm text-[#5E5B55] dark:text-[#D4CFC5] mb-6">
-              Something went wrong while loading. Please check your connection and try again.
-            </p>
-            <button
-              onClick={this.handleRetry}
-              className="min-h-[46px] px-6 py-2.5 border border-[#F47B49] bg-[#F47B49] text-white text-sm font-semibold tracking-[0.04em] shadow-[var(--mh20-shadow-sm)] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] transition-transform cursor-pointer"
-            >
-              Try again
-            </button>
-          </div>
+        <div className="rr-empty min-h-[50vh]">
+          <svg className="h-8 w-8 text-[color:var(--rr-terracotta)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <h2 className="rr-title rr-title--compact mt-4">Unable to load this page</h2>
+          <p className="rr-body mt-3 text-sm">
+            Something went wrong while loading. Please check your connection and try again.
+          </p>
+          <button type="button" onClick={this.handleRetry} className="rr-btn mt-6">
+            Try again
+          </button>
         </div>
       );
     }
@@ -191,13 +182,13 @@ const AppContent: React.FC = () => {
   }, [isPageLoading]);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#F7F3EB] dark:bg-[#1F2128] text-[#24262D] dark:text-[#F7F3EB] transition-colors duration-200">
+    <div className="relative flex min-h-screen flex-col bg-[color:var(--rr-ivory)] text-[color:var(--rr-ink)] transition-colors duration-200">
       <PaperGrain />
 
       {/* Accessible Skip-to-Content Link */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[#F47B49] focus:text-white focus:font-semibold focus:rounded focus:border focus:border-[#24262D] focus:outline-none"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[120] focus:min-h-[44px] focus:border focus:border-[color:var(--rr-border)] focus:bg-[color:var(--rr-forest)] focus:px-4 focus:py-2.5 focus:text-[color:var(--rr-on-dark)] focus:no-underline"
       >
         Skip to main content
       </a>
@@ -257,23 +248,21 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F3EB] dark:bg-[#1F2128]"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[color:var(--rr-ivory)]"
           >
-            <div className="text-center px-6 max-w-md border border-[#24262D]/20 dark:border-[#F7F3EB]/25 bg-[#FFFDF8] dark:bg-[#2B2E36] p-8 shadow-[var(--mh20-shadow-lg)]">
-              <div className="w-14 h-14 mx-auto mb-5 border border-[#24262D]/20 bg-[#C7EFDE] flex items-center justify-center">
-                <svg className="w-7 h-7 text-[#24262D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="rr-panel max-w-md px-6 py-8 text-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-[color:var(--rr-border)] bg-[color:var(--rr-sage)]">
+                <svg className="h-7 w-7 text-[color:var(--rr-forest)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                 </svg>
               </div>
-              <h2 className="font-display text-2xl tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] mb-2">
-                Page could not be loaded
-              </h2>
-              <p className="text-sm text-[#5E5B55] dark:text-[#D4CFC5] mb-6">
+              <h2 className="rr-title rr-title--compact mb-2">Page could not be loaded</h2>
+              <p className="rr-body mb-6 text-sm">
                 We were unable to load this page. Please check your network connection and try again.
               </p>
               <button
                 onClick={retryFailedNavigation}
-                className="min-h-[46px] px-6 py-2.5 border border-[#F47B49] bg-[#F47B49] text-white text-sm font-semibold tracking-[0.04em] shadow-[var(--mh20-shadow-sm)] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] transition-transform cursor-pointer"
+                className="rr-btn"
               >
                 Try again
               </button>

@@ -3,15 +3,14 @@ import { useApp } from '../context/AppContext';
 import {
   ArrowRight,
   Calendar,
-  MapPin,
   Clock,
-  Compass,
-  Coffee,
-  Users,
-  Feather,
+  MapPin,
   ChevronRight,
   Sparkles,
   BookOpen,
+  Users,
+  MessageCircle,
+  ArrowUpRight,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FeaturedAnnouncementReel } from '../components/FeaturedAnnouncementReel';
@@ -21,7 +20,7 @@ import { UpcomingEventSpotlight } from '../components/UpcomingEventSpotlight';
 import { JoinSection } from '../components/JoinSection';
 import { StatBlock } from '../components/ui/StatBlock';
 import { QuoteCard } from '../components/ui/QuoteCard';
-import { BentoCard, EditorialSectionHeading, Stamp } from '../components/ui';
+import { EditorialSectionHeading } from '../components/ui';
 import { FeaturedBookCard } from '../components/FeaturedBookCard';
 import { readingList } from '../content/books';
 import { scrollToTop } from '../utils/scroll';
@@ -56,20 +55,36 @@ export const HomePage: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
   const [fullAnnouncementId, setFullAnnouncementId] = React.useState<string | null>(null);
   const [announcementsNow] = React.useState(() => Date.now());
-  const upcomingMeetups = useMemo(() => {
-    return meetups
-      .filter(m => isMeetupUpcoming(m))
-      .sort((a, b) => getMeetupStartMs(a) - getMeetupStartMs(b));
-  }, [meetups]);
-  const nearestUpcomingMeetup = upcomingMeetups[0] || null;
-  const latestAnnouncement = useMemo(() => {
-    return [...announcements]
-      .filter(a => a.isPublished && (!a.expiresAt || new Date(a.expiresAt).getTime() >= announcementsNow))
-      .sort((a, b) => new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())[0] || null;
-  }, [announcements, announcementsNow]);
-  const announcementTargetId = announcementNavigationId || (
-    typeof window === 'undefined' ? null : getAnnouncementNavigationId(window.location.search)
+
+  const upcomingMeetups = useMemo(
+    () =>
+      meetups
+        .filter((meetup) => isMeetupUpcoming(meetup))
+        .sort((a, b) => getMeetupStartMs(a) - getMeetupStartMs(b)),
+    [meetups],
   );
+  const nearestUpcomingMeetup = upcomingMeetups[0] || null;
+
+  const latestAnnouncement = useMemo(
+    () =>
+      [...announcements]
+        .filter(
+          (announcement) =>
+            announcement.isPublished &&
+            (!announcement.expiresAt ||
+              new Date(announcement.expiresAt).getTime() >= announcementsNow),
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.publishedAt || b.createdAt).getTime() -
+            new Date(a.publishedAt || a.createdAt).getTime(),
+        )[0] || null,
+    [announcements, announcementsNow],
+  );
+
+  const announcementTargetId =
+    announcementNavigationId ||
+    (typeof window === 'undefined' ? null : getAnnouncementNavigationId(window.location.search));
   const announcementToShow = (
     announcementTargetId
       ? findActiveAnnouncementById(announcements, announcementTargetId, announcementsNow)
@@ -83,7 +98,7 @@ export const HomePage: React.FC = () => {
   const dismissFullAnnouncement = useModalEscapeDismiss(
     Boolean(fullAnnouncement),
     () => setFullAnnouncementId(null),
-    fullAnnouncementSurfaceRef
+    fullAnnouncementSurfaceRef,
   );
 
   React.useEffect(() => {
@@ -92,7 +107,7 @@ export const HomePage: React.FC = () => {
     const target = findActiveAnnouncementById(
       announcements,
       announcementNavigationId,
-      announcementsNow
+      announcementsNow,
     );
     if (!target) {
       clearAnnouncementNavigation(announcementNavigationId);
@@ -126,611 +141,471 @@ export const HomePage: React.FC = () => {
     isPageLoading,
     shouldReduceMotion,
   ]);
-  const featuredArticle = articles.find(a => a.featured) || articles[0];
+
+  const featuredArticle = articles.find((article) => article.featured) || articles[0];
   const recentArticles = articles.slice(0, 3);
 
-  const easeCurve = [0.16, 1, 0.3, 1] as const;
-
-  const stagger = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.1 } },
-  };
-
-  const staggerItem = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 18 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeCurve } },
+  const goTo = (page: 'story' | 'gatherings' | 'community' | 'journal' | 'contact' | 'get-involved') => {
+    setCurrentPage(page);
+    scrollToTop();
   };
 
   return (
-    <div className="paper-grain overflow-hidden bg-[#F7F3EB] text-[#24262D]">
+    <div className="rr-home">
+      {/* Identity strip */}
+      <div className="rr-masthead">
+        <div className="rr-container rr-masthead__inner">
+          <span>MH20 / Chhatrapati Sambhajinagar</span>
+          <span className="rr-masthead__center">Read. Meet. Repeat.</span>
+          <span>Est. {siteConfig.establishedYear}</span>
+        </div>
+      </div>
 
-      {/* 1. EDITORIAL HERO — real community photograph on a warm-paper spread */}
-      <section className="ed-section pb-8 pt-5 sm:pt-8" aria-label="Readers of Aurangabad community hero">
+      {/* Signature hero */}
+      <section className="rr-home-hero" aria-label="Readers of Aurangabad — City Reading Collective">
+        <div className="rr-home-hero__media">
+          <picture>
+            <source media="(max-width: 640px)" srcSet="/images/enhanced/mobile/roa-hero-mobile.webp" />
+            <source media="(min-width: 1441px)" srcSet="/images/enhanced/hero/roa-hero-4k-master.webp" />
+            <source media="(min-width: 641px)" srcSet="/images/enhanced/hero/roa-group-hero-clean.webp" />
+            <img
+              src="/images/enhanced/hero/roa-group-hero-clean.webp"
+              alt="Readers of Aurangabad gathered for an outdoor reading meetup"
+              width={2560}
+              height={1260}
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
+          <span className="rr-image-label">Real meetups · Real readers · MH20</span>
+        </div>
+
         <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
-          className="ed-hero"
+          className="rr-home-hero__copy"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.65, ease: [0.16, 1, 0.3, 1] }}
         >
-          <motion.div variants={staggerItem}>
-            <BentoCard surface="paper" tape className="h-full">
-              <div className="flex min-h-full flex-col justify-between gap-10">
-                <div>
-                  <p className="ed-kicker">MH20 · Aurangabad</p>
-                  <h1 className="mt-4 font-display text-[clamp(2.6rem,6.2vw,5.1rem)] leading-[0.94] tracking-[-0.04em] text-[#24262D]">
-                    Readers of<br />
-                    <span className="text-[#F47B49]">Aurangabad</span>
-                  </h1>
-                  <p className="mt-5 max-w-xl font-serif text-lg italic leading-relaxed text-[#5E5B55] sm:text-xl">
-                    {t.hero.headline}
-                  </p>
-                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#5E5B55] sm:text-base">
-                    {t.hero.supporting}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <motion.button
-                    type="button"
-                    whileHover={shouldReduceMotion ? undefined : { x: 3 }}
-                    whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                    onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
-                    className="inline-flex min-h-[46px] items-center gap-2 rounded bg-[#F47B49] px-5 py-2.5 font-sans text-sm font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638] cursor-pointer"
-                  >
-                    <span>{t.hero.ctaPrimary}</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </motion.button>
-                  <motion.button
-                    type="button"
-                    whileHover={shouldReduceMotion ? undefined : { x: 3 }}
-                    whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                    onClick={() => { setCurrentPage('story'); scrollToTop(); }}
-                    className="inline-flex min-h-[46px] items-center gap-2 rounded border border-[#24262D]/25 bg-[#FFFDF8] px-5 py-2.5 font-sans text-sm font-semibold text-[#24262D] transition-colors hover:border-[#F47B49] hover:bg-[#FFD8C1] cursor-pointer"
-                  >
-                    {t.hero.ctaSecondary}
-                  </motion.button>
-                  <span className="ml-auto hidden font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[#5E5B55] sm:block">
-                    Est. {siteConfig.establishedYear}
-                  </span>
-                </div>
-              </div>
-            </BentoCard>
-          </motion.div>
-
-          <motion.div variants={staggerItem} className="ed-hero__media">
-            <picture className="absolute inset-0 block h-full w-full">
-              <source media="(max-width: 640px)" srcSet="/images/enhanced/mobile/roa-hero-mobile.webp" />
-              <source media="(min-width: 1441px)" srcSet="/images/enhanced/hero/roa-hero-4k-master.webp" />
-              <source media="(min-width: 641px)" srcSet="/images/enhanced/hero/roa-group-hero-clean.webp" />
-              <img
-                src="/images/enhanced/hero/roa-group-hero-clean.webp"
-                alt="Readers of Aurangabad community gathered outdoors"
-                className="h-full w-full object-cover object-[48%_50%] sm:object-[50%_50%] lg:object-[50%_48%]"
-                width={2560}
-                height={1260}
-                fetchPriority="high"
-                decoding="async"
-              />
-            </picture>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#24262D]/55 via-transparent to-transparent" aria-hidden="true" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-              <div className="rounded bg-[#F7F3EB]/95 px-3 py-2 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#24262D] shadow-[var(--mh20-shadow-sm)]">
-                Community album · MH20
-              </div>
-              <Stamp year={siteConfig.establishedYear} size="sm" className="hidden sm:inline-flex" />
-            </div>
-          </motion.div>
+          <p className="rr-eyebrow">City Reading Collective</p>
+          <h1 className="rr-home-hero__title">
+            Read.<br />
+            <em>Meet.</em><br />
+            Repeat.
+          </h1>
+          <p className="rr-home-hero__lead">
+            Aurangabad's offline reading community. Bring a book, find your people, and make reading part of city life.
+          </p>
+          <p className="rr-body rr-home-hero__support">
+            {t.hero.supporting}
+          </p>
+          <div className="rr-home-hero__actions">
+            <button type="button" className="rr-btn" onClick={() => goTo('get-involved')}>
+              {t.hero.ctaPrimary}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <button type="button" className="rr-link" onClick={() => goTo('gatherings')}>
+              See gatherings
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+          <p className="rr-home-hero__footnote">
+            Readers of Aurangabad · MH20 · Est. {siteConfig.establishedYear}
+          </p>
         </motion.div>
       </section>
 
-      {/* 1b. PROOF STRIP — community figures kept exactly as recorded */}
-      <section className="ed-section pb-4" aria-label="Community statistics">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
-          className="ed-grid sm:grid-cols-2"
-        >
-          {communityStats.map((stat, index) => (
-            <motion.div key={stat.id} variants={staggerItem}>
-              <BentoCard surface={index === 0 ? 'mint' : 'peach'} label="From our records">
-                <StatBlock value={stat.value} suffix={stat.suffix} label={stat.label} />
-              </BentoCard>
-            </motion.div>
+      {/* Stats */}
+      <section className="rr-proof-band" aria-label="Community statistics">
+        <div className="rr-container rr-stat-grid rr-stat-grid--four">
+          {communityStats.map((stat) => (
+            <StatBlock key={stat.id} value={stat.value} suffix={stat.suffix} label={stat.label} />
           ))}
-        </motion.div>
+        </div>
       </section>
 
-      {/* 2. EDITORIAL SPREAD — the movement in its own words */}
-      <section className="ed-section py-8 sm:py-10" aria-label="The Aurangabad Reading Movement">
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px', amount: 0.2 }}
-          transition={{ duration: shouldReduceMotion ? 0.2 : 0.75, ease: easeCurve }}
-          className="ed-grid ed-grid--bento"
-        >
-          <BentoCard surface="paper" label="The Aurangabad Reading Movement" className="ed-span-3">
-            <h2 className="ed-title max-w-none">{t.intro.heading}</h2>
-            <p className="ed-lede mt-4">{t.intro.subheading}</p>
-            <span className="mt-6 block h-px w-full bg-[#24262D]/12" aria-hidden="true" />
-            <motion.blockquote
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, delay: shouldReduceMotion ? 0 : 0.1, ease: easeCurve }}
-              className="mt-6 font-serif text-lg italic leading-relaxed text-[#24262D] sm:text-xl"
-            >
+      {/* Intro */}
+      <section className="rr-section rr-intro" aria-label="What this is">
+        <div className="rr-container rr-intro__grid">
+          <div className="rr-intro__copy">
+            <p className="rr-eyebrow">What this is</p>
+            <h2 className="rr-title">A reading culture,<br />built in public.</h2>
+            <p className="rr-lede mt-5">
+              Readers of Aurangabad is a real offline community where people show up with books, read together, and talk across languages, genres, and generations.
+            </p>
+            <blockquote className="rr-intro__quote">
               “{t.intro.body}”
-            </motion.blockquote>
-          </BentoCard>
-
-          <div className="ed-span-3 overflow-hidden rounded-lg border border-[#24262D]/12 bg-[#CFE3FA] shadow-[var(--mh20-shadow-sm)]">
+            </blockquote>
+            <button type="button" className="rr-link mt-6" onClick={() => goTo('story')}>
+              Read our story <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="rr-intro__media rr-image">
             <img
               src="/images/enhanced/community/community-banner-wide.webp"
-              alt="Readers of Aurangabad gathered together"
+              alt="Readers of Aurangabad community at a gathering"
               loading="lazy"
-              className="h-full min-h-[260px] w-full object-cover object-center"
             />
+            <span className="rr-image-label">From the community archive</span>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* 2b. READING DESK — real recommendations already in the repository */}
-      <section className="ed-section py-8 sm:py-10" aria-label="From the reading desk">
-        <EditorialSectionHeading
-          eyebrow="From the reading desk"
-          title="Books moving through the circle."
-          description="Recommendations and reading notes shared by readers in Aurangabad."
-        />
-        <div className="ed-grid ed-grid--bento mt-8">
-          <FeaturedBookCard className="ed-span-4" />
-          <BentoCard surface="mint" label="Also on the reading list" className="ed-span-2">
-            <div className="space-y-4">
-              {readingList.map((book) => (
-                <div key={book.id} className="flex gap-3 border-b border-[#24262D]/12 pb-4 last:border-0 last:pb-0">
-                  <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-[#F47B49]" aria-hidden="true" />
+      {/* Upcoming gatherings */}
+      <section className="rr-section rr-section--line" aria-label={t.gatherings.upcomingHeading}>
+        <div className="rr-container">
+          <EditorialSectionHeading
+            eyebrow="On the calendar"
+            title={t.gatherings.upcomingHeading}
+            description={t.gatherings.upcomingSub}
+            action={
+              <button type="button" className="rr-link" onClick={() => goTo('gatherings')}>
+                {t.gatherings.viewAllGatherings} <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            }
+          />
+
+          {upcomingMeetups.length > 0 ? (
+            <div className="rr-event-list">
+              {upcomingMeetups.slice(0, 3).map((meetup) => {
+                const registrationUrl = getSafeRegistrationUrl(meetup);
+                const canRegister = meetup.registrationStatus === 'open' && registrationUrl;
+                return (
+                  <article key={meetup.id} className="rr-event-row">
+                    <div className="rr-event-date">
+                      {meetup.date}
+                      <span>{meetup.edition || 'Meetup'}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="rr-event-title">{meetup.title}</h3>
+                      <div className="rr-event-meta">
+                        <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" aria-hidden="true" />{meetup.date}</span>
+                        <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{meetup.time}</span>
+                        <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" aria-hidden="true" />{meetup.venue}</span>
+                      </div>
+                    </div>
+                    <div className="rr-event-actions">
+                      <button type="button" className="rr-link" onClick={() => setSelectedMeetup(meetup)}>
+                        Details
+                      </button>
+                      {canRegister ? (
+                        <a
+                          href={registrationUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rr-btn"
+                        >
+                          RSVP free <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <a
+                          href={siteConfig.whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rr-btn rr-btn--outline"
+                        >
+                          Ask on WhatsApp
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rr-empty mt-8">
+              <Sparkles className="h-6 w-6 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+              <h3 className="rr-title rr-title--small mt-3">Next meetup coming soon.</h3>
+              <p className="rr-lede mt-3">{t.gatherings.emptyUpcoming}</p>
+              <a
+                href={siteConfig.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rr-link mt-4"
+              >
+                Follow {siteConfig.instagramHandle} <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* What happens */}
+      <section className="rr-section rr-section--line" aria-label="What happens at a meetup">
+        <div className="rr-container">
+          <EditorialSectionHeading
+            eyebrow="How it works"
+            title="Bring a book. Stay for the people."
+            description="Simple format, real connection. No gatekeeping, no performance — just reading in good company."
+          />
+          <div className="rr-principles">
+            {[
+              { num: '01', title: 'Show up', desc: 'Bring whatever you’re reading — novel, poetry, textbook, manga. All books belong here.', icon: BookOpen },
+              { num: '02', title: 'Read together', desc: 'A quiet shared reading hour. Phones down, pages open, city noise fading out.', icon: Users },
+              { num: '03', title: 'Talk if you want', desc: 'Share a line, a thought, or just listen. Conversations happen naturally after reading.', icon: MessageCircle },
+              { num: '04', title: 'Come back', desc: 'The point isn’t one perfect meetup. It’s a rhythm: read, meet, repeat.', icon: Sparkles },
+            ].map(({ num, title, desc, icon: Icon }) => (
+              <article key={num} className="rr-principle">
+                <span className="rr-principle__num">{num}</span>
+                <Icon className="h-5 w-5 text-[color:var(--rr-terracotta)]" aria-hidden="true" />
+                <h3 className="rr-title rr-title--small mt-5">{title}</h3>
+                <p className="rr-body mt-3">{desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Spotlight */}
+      <section className="rr-section rr-section--tight" aria-label="Featured gathering">
+        <div className="rr-container">
+          <UpcomingEventSpotlight
+            key={nearestUpcomingMeetup?.id ?? nearestUpcomingMeetup?.startsAt ?? 'no-upcoming-meetup'}
+            meetup={nearestUpcomingMeetup}
+            announcement={announcementToShow}
+            onViewEvent={(meetup) => setSelectedMeetup(meetup)}
+            onViewAnnouncement={() => {
+              if (announcementToShow) setFullAnnouncementId(announcementToShow.id);
+            }}
+            onViewGatherings={() => goTo('gatherings')}
+          />
+        </div>
+      </section>
+
+      {/* Reading desk */}
+      <section className="rr-section rr-section--line" aria-label="From the reading desk">
+        <div className="rr-container">
+          <EditorialSectionHeading
+            eyebrow="On the desk"
+            title="What we're reading."
+            description="Books moving through the circle — recommendations, notes, and things worth picking up."
+          />
+          <div className="rr-reading-desk">
+            <FeaturedBookCard />
+            <div className="rr-reading-list">
+              <p className="rr-meta text-[color:var(--rr-terracotta)]">Also on the list</p>
+              {readingList.map((book, index) => (
+                <div key={book.id} className="rr-reading-list__item">
+                  <span className="rr-reading-list__index">{String(index + 1).padStart(2, '0')}</span>
+                  <BookOpen className="h-4 w-4 text-[color:var(--rr-brass)]" aria-hidden="true" />
                   <div>
-                    <h3 className="font-display text-base font-semibold leading-snug text-[#24262D]">{book.title}</h3>
-                    <p className="mt-0.5 text-xs text-[#5E5B55]">{book.author}</p>
+                    <h3 className="font-display text-lg leading-tight">{book.title}</h3>
+                    <p className="rr-body mt-0.5 text-xs">{book.author}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </BentoCard>
+          </div>
         </div>
       </section>
 
-      {/* ---
-          4. FEATURED ANNOUNCEMENT REEL
-          --- */}
-      {/* Upcoming event countdown + latest announcement */}
-      <section className="ed-section relative py-6 sm:py-8">
-        <UpcomingEventSpotlight
-          key={nearestUpcomingMeetup?.id ?? nearestUpcomingMeetup?.startsAt ?? 'no-upcoming-meetup'}
-          meetup={nearestUpcomingMeetup}
-          announcement={announcementToShow}
-          onViewEvent={(meetup) => setSelectedMeetup(meetup)}
-          onViewAnnouncement={() => {
-            if (announcementToShow) setFullAnnouncementId(announcementToShow.id);
-          }}
-          onViewGatherings={() => {
-            setCurrentPage('gatherings');
-            scrollToTop();
-          }}
-        />
-      </section>
-
-      <div className="ed-section pb-8">
+      {/* Media */}
+      <div className="rr-container rr-media-stack">
         <FeaturedAnnouncementReel />
-      </div>
-
-      {/* ---
-          5. REEL COLLECTION
-          --- */}
-      <div className="ed-section pb-8">
         <ReelCollectionSection />
       </div>
 
-      {/* ---
-          6. OUR PHILOSOPHY — pastel bento notes
-          --- */}
-      <section className="ed-section py-10 sm:py-12" aria-label={t.philosophy.heading}>
-        <EditorialSectionHeading
-          eyebrow="Why we gather"
-          title={t.philosophy.heading}
-          description={t.philosophy.subheading}
-          action={
-            <p className="rounded border border-[#24262D]/15 bg-[#FFD8C1] px-4 py-2 font-serif text-sm italic text-[#24262D]">
-              No boundaries of RELIGION | LANGUAGES | AGES
-            </p>
-          }
-        />
-
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
-          className="ed-grid ed-grid--bento mt-8"
-        >
-          {[
-            { icon: <Users className="h-5 w-5" />, title: t.philosophy.p1Title, desc: t.philosophy.p1Desc, num: '01', label: 'Shared Experience', surface: 'lavender' as const },
-            { icon: <Compass className="h-5 w-5" />, title: t.philosophy.p2Title, desc: t.philosophy.p2Desc, num: '02', label: 'Open Intellect', surface: 'peach' as const },
-            { icon: <Feather className="h-5 w-5" />, title: t.philosophy.p3Title, desc: t.philosophy.p3Desc, num: '03', label: 'Empathy & Voice', surface: 'mint' as const },
-            { icon: <Coffee className="h-5 w-5" />, title: t.philosophy.p4Title, desc: t.philosophy.p4Desc, num: '04', label: 'Real Bonds', surface: 'blue' as const },
-          ].map((card) => (
-            <motion.div key={card.num} variants={staggerItem} className="ed-span-3">
-              <BentoCard surface={card.surface} label={`${card.num} · ${card.label}`}>
-                <span className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded border border-[#24262D]/20 bg-[#FFFDF8]/70 text-[#F47B49]">
-                  {card.icon}
-                </span>
-                <h3 className="ed-card__title">{card.title}</h3>
-                <p className="ed-card__body mt-3">{card.desc}</p>
-              </BentoCard>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
-      {/* ---
-          7. UPCOMING GATHERINGS
-          --- */}
-      <section className="ed-section py-10 sm:py-12" aria-label={t.gatherings.upcomingHeading}>
-        <EditorialSectionHeading
-          eyebrow="On the calendar"
-          title={t.gatherings.upcomingHeading}
-          description={t.gatherings.upcomingSub}
-          action={
-            <button
-              onClick={() => { setCurrentPage('gatherings'); scrollToTop(); }}
-              className="p4-touch-target inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
-            >
-              <span>{t.gatherings.viewAllGatherings}</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          }
-        />
-
-        {upcomingMeetups.length > 0 ? (
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            className="ed-grid ed-grid--bento mt-8"
-          >
-            {upcomingMeetups.slice(0, 3).map((meetup) => (
-              <motion.article
-                key={meetup.id}
-                variants={staggerItem}
-                whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="ed-card ed-span-2 flex flex-col"
-              >
-                {meetup.featuredImage && (
-                  <div className="relative mb-5 h-44 overflow-hidden rounded bg-[#24262D]">
-                    <img
-                      src={meetup.featuredImage}
-                      alt={meetup.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover object-[center_20%] transition-transform duration-500 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#24262D]/60 to-transparent" aria-hidden="true" />
-                    <span className="absolute left-3 top-3 rounded bg-[#D8CBFF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#24262D]">
-                      {meetup.edition || 'Meetup'}
-                    </span>
-                  </div>
-                )}
-
-                <p className="ed-card__label">{meetup.date}</p>
-                <h3 className="ed-card__title">{meetup.title}</h3>
-                <div className="mt-4 flex flex-col gap-1.5 text-xs text-[#5E5B55]">
-                  <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{meetup.date}</span>
-                  <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{meetup.time}</span>
-                  <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{meetup.venue}</span>
-                </div>
-
-                <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#24262D]/12 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMeetup(meetup)}
-                    className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[#5E5B55] transition-colors hover:text-[#F47B49] cursor-pointer"
-                  >
-                    View Details
-                  </button>
-                  {meetup.registrationStatus === 'open' && getSafeRegistrationUrl(meetup) ? (
-                    <a
-                      href={getSafeRegistrationUrl(meetup)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded bg-[#F47B49] px-4 py-2 text-xs font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
-                    >
-                      <span>RSVP Free</span>
-                      <ArrowRight className="h-3 w-3" />
-                    </a>
-                  ) : (
-                    <a
-                      href={siteConfig.whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded bg-[#F47B49] px-4 py-2 text-xs font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
-                    >
-                      <span>Ask on WhatsApp</span>
-                      <ArrowRight className="h-3 w-3" />
-                    </a>
-                  )}
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-        ) : (
-          <BentoCard surface="paper" label="Next chapter" className="mx-auto mt-8 max-w-2xl text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded border border-[#24262D]/15 bg-[#FFD8C1] text-[#F47B49]">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <h3 className="ed-card__title">Next Chapter in the Making</h3>
-            <p className="ed-card__body mt-3 font-serif italic">“{t.gatherings.emptyUpcoming}”</p>
-            <a
-              href={siteConfig.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-[#F47B49] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.04em] text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
-            >
-              <span>Follow {siteConfig.instagramHandle} for Announcements</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          </BentoCard>
-        )}
-      </section>
-
-      {/* ---
-          8. COMMUNITY GALLERY — real photographs, editorial rhythm
-          --- */}
-      <section className="ed-section py-10 sm:py-12" aria-label={t.community.galleryTitle}>
-        <EditorialSectionHeading
-          eyebrow="Real photographs & authentic moments"
-          title={t.community.galleryTitle}
-          description="Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky."
-          action={
-            <button
-              onClick={() => { setCurrentPage('community'); scrollToTop(); }}
-              className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
-            >
-              <span>Explore full archive</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          }
-        />
-        <div className="mt-8">
-          <CommunityGallery compact={true} />
+      {/* Gallery */}
+      <section className="rr-section rr-section--line" aria-label={t.community.galleryTitle}>
+        <div className="rr-container">
+          <EditorialSectionHeading
+            eyebrow="Through the lens"
+            title="Real moments. Real people."
+            description="Photos from actual Readers of Aurangabad meetups — no stock, no staging."
+            action={
+              <button type="button" className="rr-link" onClick={() => goTo('community')}>
+                Explore community <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            }
+          />
+          <div className="mt-8">
+            <CommunityGallery compact />
+          </div>
         </div>
       </section>
 
-      {/* ---
-          8b. FOUNDER'S NOTE — a pull-quote from our published reflection
-          --- */}
+      {/* Voice / founder */}
       {memberVoices.length > 0 && (
-        <section className="ed-section py-10 sm:py-12" aria-label="A note from our founder">
-          <EditorialSectionHeading eyebrow="From our founder" title="Why we gather." />
-          <div className="ed-grid ed-grid--bento mt-8">
-            {memberVoices.map((voice, index) => (
-              <BentoCard
-                key={voice.id}
-                surface={index === 0 ? 'peach' : 'lavender'}
-                label="From the journal"
-                className="ed-span-6"
-              >
+        <section className="rr-section rr-section--line" aria-label="From the founder">
+          <div className="rr-container">
+            <EditorialSectionHeading eyebrow="From the founder" title="Why we keep showing up." />
+            <div className="rr-voices mt-8">
+              {memberVoices.map((voice) => (
                 <QuoteCard
+                  key={voice.id}
                   quote={voice.quote}
                   memberName={voice.memberName}
                   joinYear={voice.joinYear}
                   location={voice.location}
                 />
-              </BentoCard>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* ---
-          8c. THE TEAM — people behind Readers of Aurangabad
-          --- */}
+      {/* Team */}
       {teamMembers.length > 0 && (
-        <section className="ed-section py-10 sm:py-12" aria-label="The team">
-          <EditorialSectionHeading eyebrow="The circle" title="People who make it happen." />
-          <div className="ed-grid mt-8 sm:grid-cols-2 lg:grid-cols-4">
-            {teamMembers.map((member, index) => (
-              <motion.div
-                key={member.id}
-                whileHover={shouldReduceMotion ? undefined : { y: -3 }}
-                transition={{ duration: 0.2 }}
-              >
-                <BentoCard
-                  surface={(['lavender', 'mint', 'blue', 'paper'] as const)[index % 4]}
-                  className="flex h-full flex-col items-center text-center"
-                >
-                  <div className="mb-4 h-20 w-20 shrink-0 overflow-hidden rounded border border-[#24262D]/20 bg-[#FFFDF8] sm:h-24 sm:w-24">
+        <section className="rr-section rr-section--line" aria-label="The team">
+          <div className="rr-container">
+            <EditorialSectionHeading eyebrow="The people" title="The circle behind the collective." />
+            <div className="rr-team-grid">
+              {teamMembers.map((member) => (
+                <article key={member.id} className="rr-person">
+                  <div className="rr-person__photo">
                     {member.photoUrl ? (
-                      <img
-                        src={member.photoUrl}
-                        alt={member.name}
-                        className="h-full w-full object-cover object-top"
-                        loading="lazy"
-                      />
+                      <img src={member.photoUrl} alt={member.name} loading="lazy" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center">
-                        <Users className="h-8 w-8 text-[#5E5B55]/40" />
-                      </div>
+                      <Users className="h-8 w-8 text-[color:var(--rr-muted)]" aria-hidden="true" />
                     )}
                   </div>
-                  <h3 className="font-display text-base font-semibold leading-snug text-[#24262D]">{member.name}</h3>
-                  <p className="mt-1 font-sans text-xs text-[#5E5B55]">{member.role}</p>
-                </BentoCard>
-              </motion.div>
-            ))}
+                  <h3 className="rr-person__name">{member.name}</h3>
+                  <p className="rr-person__role">{member.role}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* ---
-          8d. JOIN SECTION — Warm community invitation with form
-          --- */}
       <JoinSection />
 
-      {/* ---
-          9. JOURNAL PREVIEW
-          --- */}
-      <section className="ed-section py-10 sm:py-12" aria-label={t.journal.heading}>
-        <EditorialSectionHeading
-          eyebrow="Words & reflections"
-          title={t.journal.heading}
-          description={t.journal.subheading}
-          action={
-            <button
-              onClick={() => { setCurrentPage('journal'); scrollToTop(); }}
-              className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
-            >
-              <span>Browse All Articles</span>
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          }
-        />
-
-        <div className="ed-grid ed-grid--bento mt-8 items-start">
-          {/* Featured article */}
-          {featuredArticle && (
-            <motion.article
-              whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => setSelectedArticle(featuredArticle)}
-              className="ed-card ed-span-4 cursor-pointer"
-            >
-              <div className="relative mb-6 h-64 overflow-hidden rounded bg-[#24262D] sm:h-72">
-                <img
-                  src={featuredArticle.coverImage}
-                  alt={featuredArticle.title}
-                  className="h-full w-full object-cover object-[center_25%] transition-transform duration-500 ease-out"
-                />
-                <span className="absolute left-4 top-4 rounded bg-[#D8CBFF] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-[#24262D]">
-                  Featured Reflection
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-[#5E5B55]">
-                <span className="font-semibold uppercase text-[#F47B49]">{featuredArticle.category}</span>
-                <span>·</span>
-                <span>{featuredArticle.readingTime} {t.journal.readTime}</span>
-              </div>
-              <h3 className="ed-card__title mt-3">{featuredArticle.title}</h3>
-              <p className="ed-card__body mt-4">{featuredArticle.excerpt}</p>
-              <div className="mt-6 flex items-center justify-between border-t border-[#24262D]/12 pt-4 text-xs text-[#5E5B55]">
-                <span>By {featuredArticle.author}</span>
-                <span className="flex items-center gap-1 font-semibold text-[#24262D]">
-                  {t.journal.readArticle} <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </div>
-            </motion.article>
-          )}
-
-          {/* Secondary articles */}
-          <div className="ed-span-2 space-y-4">
-            {recentArticles.filter(a => a.id !== featuredArticle?.id).map((article) => (
-              <motion.article
-                key={article.id}
-                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
-                transition={{ duration: 0.2 }}
-                onClick={() => setSelectedArticle(article)}
-                className="ed-card cursor-pointer"
+      {/* Journal preview */}
+      <section className="rr-section rr-section--line" aria-label={t.journal.heading}>
+        <div className="rr-container">
+          <EditorialSectionHeading
+            eyebrow="Journal"
+            title="Words from the community."
+            description="Essays, reflections, poetry, and reading notes from Aurangabad and beyond."
+            action={
+              <button type="button" className="rr-link" onClick={() => goTo('journal')}>
+                Browse all writing <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            }
+          />
+          <div className="rr-journal-grid">
+            {featuredArticle && (
+              <article
+                className="rr-journal-feature"
+                onClick={() => setSelectedArticle(featuredArticle)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    setSelectedArticle(featuredArticle);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Read ${featuredArticle.title}`}
               >
-                <div className="flex gap-4">
-                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded bg-[#24262D]">
-                    <img
-                      src={article.coverImage}
-                      alt={article.title}
-                      className="h-full w-full object-cover object-[center_20%]"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1.5" dir={article.language === 'ur' ? 'rtl' : 'ltr'} lang={article.language}>
-                    <span className={`block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#F47B49] ${article.language === 'ur' ? 'text-right' : ''}`}>
-                      {article.category} · {article.language.toUpperCase()}
+                <div className="rr-journal-feature__image rr-image">
+                  <img src={featuredArticle.coverImage} alt={featuredArticle.title} loading="lazy" />
+                  <span className="rr-image-label">Featured</span>
+                </div>
+                <div className="rr-journal-feature__copy">
+                  <p className="rr-meta text-[color:var(--rr-terracotta)]">
+                    {featuredArticle.category} · {featuredArticle.readingTime} {t.journal.readTime}
+                  </p>
+                  <h3 className="rr-title rr-title--small mt-3">{featuredArticle.title}</h3>
+                  <p className="rr-body mt-3">{featuredArticle.excerpt}</p>
+                  <div className="rr-journal-feature__foot">
+                    <span>By {featuredArticle.author}</span>
+                    <span className="inline-flex items-center gap-1">
+                      {t.journal.readArticle} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
-                    <h4 className={`line-clamp-2 font-display text-base font-semibold text-[#24262D] ${
-                      article.language === 'ur'
-                        ? 'p4-urdu-card-heading font-urdu text-right text-lg leading-[2.3]'
-                        : article.language === 'hi' || article.language === 'mr'
-                        ? 'font-hindi leading-[1.6]'
-                        : 'leading-snug'
-                    }`}>
-                      {article.title}
-                    </h4>
-                    <div className={`flex items-center gap-2 pt-1 text-[11px] text-[#5E5B55] ${article.language === 'ur' ? 'justify-end' : ''}`}>
-                      <span>{article.author}</span>
-                      <span>·</span>
-                      <span>{article.readingTime} min</span>
-                    </div>
                   </div>
                 </div>
-              </motion.article>
-            ))}
+              </article>
+            )}
 
-            <BentoCard surface="blue" label="Submit to the journal" className="space-y-2">
-              <h4 className="font-display text-base font-semibold text-[#24262D]">Have a story or essay to submit?</h4>
-              <p className="text-xs leading-relaxed text-[#5E5B55]">
-                We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
-              </p>
-              <button
-                onClick={() => { setCurrentPage('contact'); scrollToTop(); }}
-                className="inline-flex min-h-[44px] items-center gap-1 pt-1 text-xs font-semibold text-[#5E5B55] transition-colors hover:text-[#F47B49] cursor-pointer"
-              >
-                <span>Submit to Journal</span>
-                <ChevronRight className="h-3.5 w-3.5" />
+            <div className="rr-journal-list">
+              {recentArticles
+                .filter((article) => article.id !== featuredArticle?.id)
+                .map((article) => (
+                  <article
+                    key={article.id}
+                    className="rr-journal-item"
+                    onClick={() => setSelectedArticle(article)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedArticle(article);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Read ${article.title}`}
+                  >
+                    <div className="rr-journal-item__thumb rr-image">
+                      <img src={article.coverImage} alt="" loading="lazy" />
+                    </div>
+                    <div dir={article.language === 'ur' ? 'rtl' : 'ltr'} lang={article.language}>
+                      <p className="rr-meta text-[color:var(--rr-terracotta)]">
+                        {article.category} · {article.language.toUpperCase()}
+                      </p>
+                      <h4
+                        className={`mt-1 font-display text-lg leading-tight ${
+                          article.language === 'ur'
+                            ? 'p4-urdu-card-heading font-urdu text-right leading-[2.1]'
+                            : article.language === 'hi' || article.language === 'mr'
+                              ? 'font-hindi leading-relaxed'
+                              : ''
+                        }`}
+                      >
+                        {article.title}
+                      </h4>
+                      <p className="rr-body mt-1 text-xs">
+                        {article.author} · {article.readingTime} min
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              <button type="button" className="rr-journal-submit" onClick={() => goTo('contact')}>
+                <span className="rr-meta text-[color:var(--rr-terracotta)]">Submit writing</span>
+                <span className="mt-2 block font-display text-xl">Got something to say?</span>
+                <span className="rr-body mt-2 block text-xs">
+                  Reader stories, poems, essays, and critiques in English, Hindi, Urdu, and Marathi.
+                </span>
+                <span className="rr-link mt-3">Write to us <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
               </button>
-            </BentoCard>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ---
-          10. COMMUNITY CTA — a dark scrapbook endpaper
-          --- */}
-      <section className="ed-section py-8 sm:py-10" aria-label="Join Readers of Aurangabad">
-        <BentoCard surface="dark" label="Every reader deserves a place" tape className="ed-card--cta">
-          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="lg:col-span-8">
-              <h2 className="font-display text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.1] tracking-[-0.03em] text-[#F7F3EB]">
-                Whether you read every day or are just beginning, there is a place for you here.
-              </h2>
-              <p className="mt-5 max-w-2xl font-sans text-sm leading-relaxed text-[#F7F3EB]/75 sm:text-base">
-                No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
-              <motion.button
-                whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
-                onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
-                className="inline-flex min-h-[46px] items-center rounded bg-[#F47B49] px-6 py-3 text-sm font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638] cursor-pointer"
-              >
-                Become a Part of Us
-              </motion.button>
-              <a
-                href={siteConfig.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-[46px] items-center rounded border border-[#F7F3EB]/30 bg-[#C7EFDE] px-6 py-3 text-sm font-semibold text-[#24262D] transition-colors hover:bg-[#F7F3EB]"
-              >
-                {siteConfig.instagramHandle}
-              </a>
-            </div>
+      {/* Closing CTA */}
+      <section className="rr-cta-band" aria-label="Join Readers of Aurangabad">
+        <div className="rr-container rr-cta-band__inner">
+          <div>
+            <p className="rr-eyebrow rr-eyebrow--light">MH20 / Open to all</p>
+            <h2 className="rr-cta-band__title">
+              Read.<br />
+              Meet.<br />
+              Repeat.
+            </h2>
+            <p className="rr-cta-band__copy">
+              No fees. No gatekeeping. Just books, people, and real conversations in Chhatrapati Sambhajinagar.
+            </p>
           </div>
-        </BentoCard>
+          <div className="rr-cta-band__actions">
+            <button type="button" className="rr-btn rr-btn--brass" onClick={() => goTo('get-involved')}>
+              Join the collective <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rr-btn rr-btn--light"
+            >
+              {siteConfig.instagramHandle}
+            </a>
+          </div>
+        </div>
       </section>
 
-
+      {/* Full announcement dialog */}
       {fullAnnouncement && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#24262D]/80 p-3 backdrop-blur-md sm:p-6"
+          className="rr-modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -742,9 +617,9 @@ export const HomePage: React.FC = () => {
             aria-modal="true"
             aria-labelledby="full-announcement-title"
             tabIndex={-1}
-            className="relative my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#24262D]/20 bg-[#F7F3EB] p-6 shadow-[var(--mh20-shadow-lg)] sm:p-9"
-            initial={{ opacity: 0, y: 14, scale: 0.99 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
+            className="rr-modal rr-modal--news"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             onClick={(event) => event.stopPropagation()}
           >
@@ -752,38 +627,27 @@ export const HomePage: React.FC = () => {
               type="button"
               onClick={dismissFullAnnouncement}
               aria-label="Close announcement"
-              className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded border border-[#24262D]/15 text-2xl text-[#5E5B55] transition-colors hover:bg-[#FFD8C1]"
+              className="rr-modal__close"
             >
               <span aria-hidden="true">×</span>
             </button>
-
             <div className="mb-6 pr-10">
-              <p className="ed-kicker">Latest Community Announcement</p>
-              <p className="mt-2 text-sm text-[#5E5B55]">
-                Published {new Date(
-                  fullAnnouncement.publishedAt || fullAnnouncement.createdAt
-                ).toLocaleDateString('en-IN', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+              <p className="rr-eyebrow">Community announcement</p>
+              <p className="rr-body mt-2 text-xs">
+                Published{' '}
+                {new Date(fullAnnouncement.publishedAt || fullAnnouncement.createdAt).toLocaleDateString(
+                  'en-IN',
+                  { day: 'numeric', month: 'long', year: 'numeric' },
+                )}
               </p>
             </div>
-
-            <h2
-              id="full-announcement-title"
-              className="mb-5 font-display text-2xl font-semibold leading-tight text-[#24262D] sm:text-3xl"
-            >
+            <h2 id="full-announcement-title" className="rr-title rr-title--compact">
               {fullAnnouncement.title}
             </h2>
-
-            <div className="whitespace-pre-wrap break-words text-base leading-8 text-[#5E5B55]">
-              {fullAnnouncement.content}
-            </div>
+            <div className="rr-modal__prose whitespace-pre-wrap break-words">{fullAnnouncement.content}</div>
           </motion.div>
         </motion.div>
       )}
-
     </div>
   );
 };
