@@ -50,7 +50,7 @@ const AnnouncementFeature: React.FC = () => {
   return (
     <section className="grid items-center gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-4 md:pr-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#F47B49] shadow-sm backdrop-blur-xl">
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#24262D]/15 bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#F47B49] shadow-sm backdrop-blur-xl">
           <span className="w-2 h-2 rounded-full bg-[#24262D]" />
           Announcement
         </div>
@@ -63,7 +63,7 @@ const AnnouncementFeature: React.FC = () => {
       </div>
 
       <div className="mx-auto w-full max-w-[360px]">
-        <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-white/60 bg-[#24262D] shadow-[0_24px_70px_rgba(28,27,26,.18)]">
+        <div className="relative aspect-[9/16] overflow-hidden rounded-md border border-[#D8CBFF]/25 bg-[#24262D] shadow-[0_24px_70px_rgba(28,27,26,.18)]">
           {failed ? <VideoFallback /> : (
             <video
               ref={videoRef}
@@ -191,7 +191,7 @@ const ReelPlaylist: React.FC<{ entries: ReelPlaylistEntry[] }> = ({ entries }) =
 
   return (
     <div className="mx-auto w-full max-w-[420px]">
-      <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-[#D4CFC5] bg-[#24262D] shadow-[0_20px_60px_rgba(36,38,45,.14)]">
+      <div className="relative aspect-[9/16] overflow-hidden rounded-md border border-[#D4CFC5] bg-[#24262D] shadow-[0_20px_60px_rgba(36,38,45,.14)]">
         <video
           ref={currentRef}
           key={current.filename}

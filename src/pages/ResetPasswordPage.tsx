@@ -134,7 +134,7 @@ export const ResetPasswordPage: React.FC = () => {
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-16 paper-grain">
       <motion.div
         {...cardMotion}
-        className="p3-recovery-card glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-white/60 shadow-2xl"
+        className="p3-recovery-card glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-[#D8CBFF]/25 shadow-[var(--mh20-shadow-lg)]"
       >
         <div className="w-12 h-12 rounded-2xl bg-[#24262D]/10 flex items-center justify-center mb-5">
           <ShieldCheck className="w-6 h-6 text-[#24262D]" />

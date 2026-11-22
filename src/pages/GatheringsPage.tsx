@@ -92,7 +92,7 @@ export const GatheringsPage: React.FC = () => {
       <div className="space-y-12 sm:space-y-16">
         {/* Readers Group */}
         <section id="readers-group" className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
-          <PaperPanel className="border-l-[6px] border-l-[#25D366] p-6 sm:p-8">
+          <PaperPanel className="border-l-[6px] border-l-[#F47B49] p-6 sm:p-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#F47B49]">

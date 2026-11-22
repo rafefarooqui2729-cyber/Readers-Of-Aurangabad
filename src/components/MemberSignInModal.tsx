@@ -73,7 +73,7 @@ export const MemberSignInModal: React.FC<MemberSignInModalProps> = ({
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+      className="p3-modal-overlay fixed inset-0 z-[60] bg-[#24262D]/70 backdrop-blur-sm flex items-center justify-center p-4"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}
@@ -82,7 +82,7 @@ export const MemberSignInModal: React.FC<MemberSignInModalProps> = ({
         ref={surfaceRef}
         initial={shouldReduceMotion ? false : { opacity: 0, y: 12, scale: 0.98 }}
         animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
-        className="p3-modal-surface p3-signin-modal w-full max-w-md rounded-3xl glass-modal border border-white/70 p-6 sm:p-7 relative"
+        className="p3-modal-surface p3-signin-modal w-full max-w-md rounded-3xl glass-modal border border-[#24262D]/15 p-6 sm:p-7 relative"
         role="dialog"
         aria-modal="true"
         aria-label="Member sign in"

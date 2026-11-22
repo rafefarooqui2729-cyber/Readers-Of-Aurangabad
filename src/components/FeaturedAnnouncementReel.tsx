@@ -259,7 +259,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
               )}
 
               {hasError && (
-                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#24262D] px-6 text-center text-[#24262D]">
+                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#24262D] px-6 text-center text-[#F7F3EB]">
                   <p className="font-semibold">Announcement reel unavailable</p>
                   <p className="mt-1 text-sm text-white/70">The announcement video file could not be loaded.</p>
                 </div>
@@ -267,14 +267,14 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
 
               {/* Top Glass Badge */}
               <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
-                <span className="glass-pill px-3 py-1 rounded-none text-[11px] font-medium tracking-widest text-[#FFFDF8] uppercase bg-black/40 border-white/20 flex items-center gap-1.5 shadow-[var(--mh20-shadow-sm)]">
+                <span className="glass-pill px-3 py-1 rounded-none text-[11px] font-medium tracking-widest text-[#FFFDF8] uppercase bg-[#24262D]/45 border-white/20 flex items-center gap-1.5 shadow-[var(--mh20-shadow-sm)]">
                   <span className="w-2 h-2 rounded-none bg-[#C7EFDE]" />
                   ANNOUNCEMENT
                 </span>
 
                 {/* Duration indicator */}
                 {duration > 0 && (
-                  <span className="glass-pill px-2.5 py-0.5 rounded-none text-[11px] font-mono text-white/90 bg-black/40 border-white/10">
+                  <span className="glass-pill px-2.5 py-0.5 rounded-none text-[11px] font-mono text-white/90 bg-[#24262D]/45 border-white/10">
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 )}
@@ -355,7 +355,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
             </p>
 
             {/* Community Focus Callout */}
-            <div className="inline-flex items-center gap-3.5 px-4 py-3 rounded-none glass-card border-white/60">
+            <div className="inline-flex items-center gap-3.5 px-4 py-3 rounded-none glass-card border-[#D8CBFF]/25">
               <span className="w-2.5 h-2.5 rounded-none bg-[#5E5B55] shrink-0" />
               <div>
                 <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-[#5E5B55] block">

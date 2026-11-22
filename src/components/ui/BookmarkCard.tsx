@@ -18,7 +18,7 @@ export const BookmarkCard: React.FC<BookmarkCardProps> = ({
     <motion.div
       whileHover={shouldReduceMotion ? undefined : { y: -2 }}
       transition={{ duration: 0.2 }}
-      className={`relative bg-[#FFFDF8] dark:bg-[#24262D] border-2 border-[#24262D] dark:border-[#384F7A] text-[#24262D] dark:text-[#F7F3EB] rounded-[6px] p-6 sm:p-8 overflow-visible ${className}`}
+      className={`relative bg-[#FFFDF8] dark:bg-[#24262D] border-2 border-[#24262D] dark:border-[#D8CBFF]/30 text-[#24262D] dark:text-[#F7F3EB] rounded-[6px] p-6 sm:p-8 overflow-visible ${className}`}
     >
       {/* Hanging Clay Ribbon with V-cut bottom (clip-path polygon) */}
       <div

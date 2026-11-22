@@ -189,9 +189,9 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
       <div 
-        className="bg-[#F7F3EB] border border-[#D4CFC5] rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative"
+        className="bg-[#F7F3EB] border border-[#D4CFC5] rounded-md max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-[var(--mh20-shadow-lg)] relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
@@ -224,7 +224,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
           {/* Main Video & Timeline Player */}
           <div className="bg-[#24262D] rounded-2xl overflow-hidden border border-[#24262D] p-4 text-white space-y-4">
             
-            <div className="relative max-h-72 flex items-center justify-center bg-black/50 rounded-xl overflow-hidden">
+            <div className="relative max-h-72 flex items-center justify-center bg-[#24262D]/70 rounded-xl overflow-hidden">
               <video
                 ref={videoRef}
                 src={activeVideoSrc}
@@ -238,7 +238,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
               {/* Play / Pause Overlay Button */}
               <button
                 onClick={togglePlay}
-                className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center transition-all backdrop-blur-sm"
+                className="absolute inset-0 m-auto w-14 h-14 rounded-full bg-[#24262D]/70 hover:bg-[#24262D]/80 flex items-center justify-center transition-all backdrop-blur-sm"
               >
                 {isPlaying ? <Pause className="w-6 h-6 text-white" /> : <Play className="w-6 h-6 text-white ml-1" />}
               </button>
@@ -280,7 +280,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                 <button
                   onClick={handleAutoExtract}
                   disabled={isExtracting}
-                  className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#24262D] text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#F47B49] text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{isExtracting ? extractStatus : 'Auto-Extract 5 Key Frames'}</span>
@@ -348,7 +348,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
           {/* Feedback banner */}
           {successMsg && (
             <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-900 text-xs flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+              <CheckCircle className="w-4 h-4 text-[#F47B49] shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -419,19 +419,19 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                         <button
                           onClick={() => toggleFrameSelect(frame.id)}
                           className={`absolute top-2 left-2 w-6 h-6 rounded-md flex items-center justify-center transition-colors shadow-sm ${
-                            isSelected ? 'bg-[#24262D] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
+                            isSelected ? 'bg-[#24262D] text-white' : 'bg-[#F7F3EB]/80 text-transparent hover:text-[#5E5B55]'
                           }`}
                         >
                           <Check className="w-4 h-4 stroke-[3]" />
                         </button>
 
                         {/* Timestamp Pill */}
-                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold bg-black/70 text-white backdrop-blur-xs">
+                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold bg-[#24262D]/80 text-[#F7F3EB] backdrop-blur-xs">
                           {frame.formattedTimestamp}
                         </div>
 
                         {/* Quick Action Overlay */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
+                        <div className="absolute inset-0 bg-[#24262D]/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
                           <button
                             onClick={() => downloadFrame(frame)}
                             className="p-2 rounded-lg bg-white text-[#24262D] hover:bg-[#D4CFC5] transition-colors shadow"

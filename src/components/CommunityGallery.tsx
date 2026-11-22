@@ -174,7 +174,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       {/* Close */}
       <button
         onClick={dismiss}
-        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-white transition-colors"
+        className="p3-icon-button p3-modal-close absolute top-5 right-5 z-10 w-10 h-10 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
         aria-label="Close lightbox"
       >
         <X className="w-5 h-5" />
@@ -188,7 +188,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       {/* Nav Left */}
       <button
         onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute left-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
         aria-label="Previous"
       >
         <ChevronLeft className="w-5 h-5" />
@@ -197,7 +197,7 @@ const Lightbox: React.FC<LightboxProps> = ({ images, current, onClose, onNext, o
       {/* Nav Right */}
       <button
         onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-white transition-colors"
+        className="p3-icon-button p3-lightbox-nav absolute right-4 z-20 w-11 h-11 rounded-none glass-dark flex items-center justify-center text-[#F7F3EB] hover:text-[#F47B49] transition-colors"
         aria-label="Next"
       >
         <ChevronRight className="w-5 h-5" />

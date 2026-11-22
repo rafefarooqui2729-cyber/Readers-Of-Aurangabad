@@ -113,7 +113,7 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
       className="cine-scene relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
       aria-label="Upcoming event and latest announcement"
     >
-      <div className="cine-layer cine-layer--raised rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(250,248,245,0.96),rgba(235,240,233,0.92))] shadow-[0_20px_60px_rgba(28,27,26,0.08)] overflow-hidden">
+      <div className="cine-layer cine-layer--raised rounded-md border border-[#24262D]/15 bg-[#F7F3EB] shadow-[0_20px_60px_rgba(28,27,26,0.08)] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
           <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10">
             <div className="inline-flex items-center gap-2 rounded-none border border-[#24262D]/15 bg-white/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#24262D]">

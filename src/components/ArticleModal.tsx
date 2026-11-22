@@ -59,7 +59,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-md flex items-center justify-center p-2 sm:p-6"
+      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-2 sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -106,7 +106,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               className="p3-secondary-action flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#24262D] text-xs font-medium text-[#5E5B55] hover:bg-white transition-colors"
               title="Share piece"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Share2 className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-[#F47B49]" /> : <Share2 className="w-3.5 h-3.5" />}
               <span>{copied ? 'Link Copied!' : 'Share'}</span>
             </button>
 
@@ -158,7 +158,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#5E5B55]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-none bg-[#24262D] flex items-center justify-center text-[#24262D] font-serif font-bold text-sm">
+                <div className="w-10 h-10 rounded-none bg-[#24262D] flex items-center justify-center text-[#F7F3EB] font-serif font-bold text-sm">
                   {article.author.charAt(0)}
                 </div>
                 <div>

@@ -753,7 +753,7 @@ export const AdminDashboard: React.FC = () => {
   if (!isAdmin) {
     return (
       <div className="min-h-[85vh] flex items-center justify-center px-4 py-16 paper-grain">
-        <div className="glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-white/60 shadow-2xl">
+        <div className="glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-[#D8CBFF]/25 shadow-[var(--mh20-shadow-lg)]">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#24262D] via-[#F47B49] to-[#FFD8C1]" />
 
           <div className="text-center space-y-3 mb-8">
@@ -953,7 +953,7 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'registrations'
               ? 'glass-button'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-[#F7F3EB] text-gray-500 cursor-not-allowed'
+                ? 'opacity-60 bg-[#F7F3EB] text-[#5E5B55] cursor-not-allowed'
                 : 'glass-button-secondary'
           }`}
         >
@@ -1029,7 +1029,7 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'enquiries'
               ? 'glass-button'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-[#F7F3EB] text-gray-500 cursor-not-allowed'
+                ? 'opacity-60 bg-[#F7F3EB] text-[#5E5B55] cursor-not-allowed'
                 : 'glass-button-secondary'
           }`}
         >
@@ -1104,7 +1104,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Quick Shortcuts & Permissions Banner */}
-          <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4 border border-white/60">
+          <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4 border border-[#D8CBFF]/25">
             <h3 className="font-serif text-lg font-bold text-[#24262D]">
               System Operational Status
             </h3>
@@ -1161,7 +1161,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMeetups.map(m => (
-              <div key={m.id} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border-white/60">
+              <div key={m.id} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border-[#D8CBFF]/25">
                 <div className="relative h-40 bg-[#24262D]">
                   <img src={m.featuredImage} alt={m.title} className="w-full h-full object-cover opacity-85" />
                   <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
@@ -1307,7 +1307,7 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </div>
 
-          <div className="glass-card rounded-2xl overflow-hidden border-white/60">
+          <div className="glass-card rounded-2xl overflow-hidden border-[#D8CBFF]/25">
             {filteredRegistrations.length === 0 ? (
               <div className="p-12 text-center text-xs text-[#5E5B55]">
                 No attendee registrations recorded yet.
@@ -1451,7 +1451,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reels.map((reel, idx) => (
-              <div key={reel.id} className="glass-card rounded-2xl p-5 space-y-4 flex flex-col justify-between border-white/60">
+              <div key={reel.id} className="glass-card rounded-2xl p-5 space-y-4 flex flex-col justify-between border-[#D8CBFF]/25">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#F47B49]">Reel #{reel.order}</span>
                   <button
@@ -1459,7 +1459,7 @@ export const AdminDashboard: React.FC = () => {
                     className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase ${
                       reel.published ?? reel.isPublished
                         ? 'bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE]'
-                        : 'bg-[#F7F3EB] text-gray-600'
+                        : 'bg-[#F7F3EB] text-[#5E5B55]'
                     }`}
                   >
                     {reel.published ?? reel.isPublished ? 'Published' : 'Draft'}
@@ -1597,7 +1597,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArticles.map(a => (
-              <div key={a.id} className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border-white/60">
+              <div key={a.id} className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border-[#D8CBFF]/25">
                 <div>
                   <div className="flex items-center justify-between text-[11px] text-[#5E5B55] mb-1">
                     <span>{a.category}</span>
@@ -1668,7 +1668,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             ) : (
               filteredEnquiries.map(enq => (
-                <div key={enq.id} className="glass-card p-5 rounded-2xl space-y-3 border-white/60">
+                <div key={enq.id} className="glass-card p-5 rounded-2xl space-y-3 border-[#D8CBFF]/25">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span className="font-serif font-bold text-base text-[#24262D]">{enq.name}</span>
@@ -1719,7 +1719,7 @@ export const AdminDashboard: React.FC = () => {
       {/* --- TAB 10: USER & ROLE MANAGEMENT (ADMIN ONLY) --- */}
       {activeTab === 'users' && adminRole === 'admin' && (
         <div className="space-y-6">
-          <div className="glass-card p-6 rounded-2xl space-y-4 border-white/60">
+          <div className="glass-card p-6 rounded-2xl space-y-4 border-[#D8CBFF]/25">
             <h3 className="font-serif text-lg font-bold text-[#24262D]">
               Team Members & Role-Based Permissions
             </h3>
@@ -1781,7 +1781,7 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'media' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
+            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
               <div className="flex items-center justify-between">
                 <span className="font-serif font-bold text-base text-[#24262D]">roa-reels</span>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFD8C1]/45 text-[#24262D] border border-[#FFD8C1] uppercase">
@@ -1796,7 +1796,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
+            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
               <div className="flex items-center justify-between">
                 <span className="font-serif font-bold text-base text-[#24262D]">roa-gallery</span>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
@@ -1811,7 +1811,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
+            <div className="glass-card p-6 rounded-2xl space-y-3 border-[#D8CBFF]/25">
               <div className="flex items-center justify-between">
                 <span className="font-serif font-bold text-base text-[#24262D]">roa-thumbnails</span>
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
@@ -1831,7 +1831,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 1: CREATE MEETUP --- */}
       {showMeetupModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="font-serif text-2xl font-bold text-[#24262D]">
               Schedule New Community Gathering
@@ -2021,7 +2021,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 2: CREATE ARTICLE --- */}
       {showArticleModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="font-serif text-2xl font-bold text-[#24262D]">
               Publish New Journal Piece
@@ -2158,7 +2158,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 3: ADD GALLERY ITEM --- */}
       {showGalleryModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div>
               <h3 className="font-serif text-xl font-bold text-[#24262D]">Add Community Photograph</h3>
@@ -2277,7 +2277,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 4: CREATE ANNOUNCEMENT --- */}
       {showAnnModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
             <h3 className="font-serif text-xl font-bold text-[#24262D]">Publish Notice / Announcement</h3>
             <form onSubmit={handleCreateAnnouncement} className="space-y-4 text-xs">
@@ -2336,7 +2336,7 @@ export const AdminDashboard: React.FC = () => {
 
       {/* --- MODAL 5: UPLOAD REEL --- */}
       {showReelUploadModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
             <h3 className="font-serif text-xl font-bold text-[#24262D]">Upload Meetup Video Reel</h3>
             <form onSubmit={handleUploadReel} className="space-y-4 text-xs">

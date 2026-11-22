@@ -137,7 +137,7 @@ export const OurStoryPage: React.FC = () => {
                     nowhere to share their joy without commercial pressure or academic judgment.
                   </p>
                 </div>
-                <div className="border border-[#5E5B55]/25 bg-[#F7F3EB] p-5 dark:border-[#8BA890]/25 dark:bg-[#24262D]">
+                <div className="border border-[#5E5B55]/25 bg-[#F7F3EB] p-5 dark:border-[#C7EFDE]/25 dark:bg-[#24262D]">
                   <span className="mb-2 block font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E5B55] dark:text-[#D4CFC5]">
                     The sanctuary we built
                   </span>

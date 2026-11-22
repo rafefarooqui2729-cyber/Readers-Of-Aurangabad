@@ -93,7 +93,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
   return (
     <motion.div
-      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      className="p3-modal-overlay fixed inset-0 z-50 overflow-y-auto bg-[#24262D]/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -123,7 +123,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
 
           <button
             onClick={dismiss}
-            className="p3-icon-button p3-modal-close absolute top-4 right-4 z-20 p-2 rounded-none bg-black/40 text-white hover:bg-black/70 transition-colors backdrop-blur-sm"
+            className="p3-icon-button p3-modal-close absolute top-4 right-4 z-20 p-2 rounded-none bg-[#24262D]/45 text-white hover:bg-[#24262D]/70 transition-colors backdrop-blur-sm"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -265,7 +265,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                 href={registrationUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#24262D] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
+                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#F47B49] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
               >
                 <span>Register now</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -275,7 +275,7 @@ export const MeetupModal: React.FC<MeetupModalProps> = ({ meetup, onClose }) => 
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#24262D] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
+                className="p3-primary-action inline-flex items-center gap-2 bg-[#24262D] hover:bg-[#F47B49] text-white px-5 py-2.5 rounded-none text-xs font-semibold transition-all shadow-[var(--mh20-shadow-sm)]"
               >
                 <span>Ask on WhatsApp</span>
                 <ExternalLink className="w-3.5 h-3.5" />

@@ -126,7 +126,7 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
             animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
             exit={shouldReduceMotion ? undefined : { opacity: 0, y: 6, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="p3-popover-surface absolute right-0 mt-3 w-[min(92vw,380px)] rounded-2xl glass-modal border border-white/70 shadow-2xl overflow-hidden z-50"
+            className="p3-popover-surface absolute right-0 mt-3 w-[min(92vw,380px)] rounded-2xl glass-modal border border-[#24262D]/15 shadow-[var(--mh20-shadow-lg)] overflow-hidden z-50"
             role="dialog"
             aria-label="Member notifications"
           >

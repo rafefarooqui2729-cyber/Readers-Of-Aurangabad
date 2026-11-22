@@ -162,7 +162,7 @@ export const InstagramMediaLibrary: React.FC = () => {
               <h3 className="font-serif text-xl font-bold text-[#24262D]">
                 Instagram Media Library
               </h3>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F7F3EB] text-[#24262D] border border-gray-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F7F3EB] text-[#24262D] border border-[#24262D]/15">
                 Live sync unavailable
               </span>
             </div>
@@ -183,7 +183,7 @@ export const InstagramMediaLibrary: React.FC = () => {
           <button
             onClick={handleLoadSampleMedia}
             disabled={isSyncing}
-            className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#24262D] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#F47B49] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? 'Loading...' : 'Load Sample Media'}</span>
@@ -357,13 +357,13 @@ export const InstagramMediaLibrary: React.FC = () => {
                           setSelectedItemIds(next);
                         }}
                         className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors shadow-sm ${
-                          isSelected ? 'bg-[#24262D] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
+                          isSelected ? 'bg-[#24262D] text-white' : 'bg-[#F7F3EB]/80 text-transparent hover:text-[#5E5B55]'
                         }`}
                       >
                         <Check className="w-4 h-4 stroke-[3]" />
                       </button>
 
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/70 text-white backdrop-blur-xs flex items-center gap-1">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#24262D]/80 text-[#F7F3EB] backdrop-blur-xs flex items-center gap-1">
                         {isVideo ? <Play className="w-3 h-3 fill-current" /> : item.mediaType === 'CAROUSEL_ALBUM' ? <Layers className="w-3 h-3" /> : null}
                         <span>{item.mediaType}</span>
                       </span>
@@ -381,7 +381,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
                     {/* Primary Button Overlay for Video Frame Extractor */}
                     {isVideo && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute inset-0 bg-[#24262D]/45 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => setActiveExtractorMedia(item)}
                           className="inline-flex items-center gap-2 bg-[#F7F3EB] hover:bg-white text-[#24262D] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg hover:scale-105 cursor-pointer"
@@ -511,7 +511,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
       {/* Assign Media to Site Section Modal */}
       {showAssignModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#24262D]/75 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="paper-card max-w-md w-full p-6 rounded-3xl bg-white border border-[#D4CFC5] space-y-4">
             <h3 className="font-serif text-xl font-bold text-[#24262D]">
               Use Media on Website

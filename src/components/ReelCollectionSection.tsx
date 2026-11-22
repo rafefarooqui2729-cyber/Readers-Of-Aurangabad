@@ -241,7 +241,7 @@ const toggleMute = () => {
   if (availableReels.length === 0) {
     return (
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="rounded-none border border-[#24262D] bg-[#24262D] px-5 py-8 text-center text-[#24262D]">
+        <div className="rounded-none border border-[#24262D] bg-[#24262D] px-5 py-8 text-center text-[#F7F3EB]">
           <AlertCircle className="mx-auto mb-2 h-6 w-6" />
           <p className="font-semibold">Reels unavailable</p>
           <p className="mt-1 text-sm text-white/70">The published video files could not be loaded.</p>
