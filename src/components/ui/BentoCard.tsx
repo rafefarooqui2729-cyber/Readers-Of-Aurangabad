@@ -21,7 +21,7 @@ const surfaces: Record<BentoSurface, string> = {
 
 /**
  * Compatibility panel primitive. The old scrapbook surface names now map to
- * plain reading-room editorial surfaces so existing callers stay compatible.
+ * plain City Reading Collective surfaces so existing callers stay compatible.
  */
 export const BentoCard: React.FC<BentoCardProps> = ({
   surface = 'paper',

@@ -1,4 +1,4 @@
 import React from 'react';
 
-/** Intentionally inert: the reading-room identity uses clean paper, not texture overlays. */
+/** Intentionally inert: the City Reading Collective identity uses clean surfaces, not texture overlays. */
 export const PaperGrain: React.FC = () => null;
