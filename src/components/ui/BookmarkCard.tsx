@@ -18,11 +18,11 @@ export const BookmarkCard: React.FC<BookmarkCardProps> = ({
     <motion.div
       whileHover={shouldReduceMotion ? undefined : { y: -2 }}
       transition={{ duration: 0.2 }}
-      className={`relative bg-[#FFF8EA] dark:bg-[#243557] border-2 border-[#1B2A49] dark:border-[#384F7A] text-[#1B2A49] dark:text-[#F4ECDD] rounded-[6px] p-6 sm:p-8 overflow-visible ${className}`}
+      className={`relative bg-[#FFFDF8] dark:bg-[#24262D] border-2 border-[#24262D] dark:border-[#384F7A] text-[#24262D] dark:text-[#F7F3EB] rounded-[6px] p-6 sm:p-8 overflow-visible ${className}`}
     >
       {/* Hanging Clay Ribbon with V-cut bottom (clip-path polygon) */}
       <div
-        className="absolute -top-3 right-6 sm:right-8 w-8 sm:w-9 h-14 bg-[#A8431F] text-[#F4ECDD] flex items-start justify-center pt-1.5 shadow-sm select-none z-10"
+        className="absolute -top-3 right-6 sm:right-8 w-8 sm:w-9 h-14 bg-[#F47B49] text-[#F7F3EB] flex items-start justify-center pt-1.5 shadow-sm select-none z-10"
         style={{
           clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%)',
         }}

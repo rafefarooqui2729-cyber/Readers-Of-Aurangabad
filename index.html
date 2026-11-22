@@ -35,13 +35,13 @@
     <meta property="twitter:description" content="A reading movement in Aurangabad bringing people, books, ideas, and stories together. Making reading a part of everyday life again." />
     <meta property="twitter:image" content="https://readersofaurangabad.com/images/edited/hero/hero-main-desktop.webp" />
 
-    <!-- Google Fonts: Archivo Black (Display), DM Sans (Body/UI), Cormorant Garamond (Editorial), regional scripts -->
+    <!-- Google Fonts: Fraunces (editorial display), DM Sans (body/UI), Cormorant Garamond (loader/regional editorial), regional scripts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- One theme-color tag, driven by the same roa-theme preference as the rest of the UI. -->
-    <meta name="theme-color" content="#F4F0E8" id="meta-theme-color" />
+    <meta name="theme-color" content="#F7F3EB" id="meta-theme-color" />
     <script>
       (function() {
         try {
@@ -50,7 +50,7 @@
           document.documentElement.classList.toggle('dark', isDark);
           document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
           var meta = document.getElementById('meta-theme-color');
-          if (meta) meta.setAttribute('content', isDark ? '#171717' : '#F4F0E8');
+          if (meta) meta.setAttribute('content', isDark ? '#1F2128' : '#F7F3EB');
         } catch (e) {}
       })();
     </script>
@@ -78,7 +78,7 @@
         "addressCountry": "IN"
       },
       "sameAs": [
-        "https://instagram.com/books.toread._"
+        "https://www.instagram.com/readers.of.aurangabad/"
       ]
     }
     </script>
@@ -93,15 +93,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #F4F0E8;
-  color: #171717;
+  background: #F7F3EB;
+  color: #24262D;
   transition: opacity 0.45s ease;
 }
 
 html.dark #initial-loader,
 html[data-theme="dark"] #initial-loader {
-  background: #171717;
-  color: #F4F0E8;
+  background: #1F2128;
+  color: #F7F3EB;
 }
 
 .init-book-stage {
@@ -332,8 +332,8 @@ html[data-theme="dark"] #initial-loader {
 /* Match the pre-React surface to the saved theme so the loader never flashes a second palette. */
 html.dark body,
 html[data-theme="dark"] body {
-  background: #171717;
-  color: #F4F0E8;
+  background: #1F2128;
+  color: #F7F3EB;
 }
 
 html.dark .init-title,
@@ -343,7 +343,7 @@ html.dark .init-subtitle,
 html[data-theme="dark"] .init-subtitle { color: #B8B2A8; }
     </style>
   </head>
-  <body class="bg-[#F4F0E8] text-[#171717] antialiased selection:bg-[#F4512C]/25 selection:text-[#171717]">
+  <body class="bg-[#F7F3EB] text-[#24262D] antialiased selection:bg-[#FFD8C1] selection:text-[#24262D]">
     <!-- Initial Loading Screen (Visible immediately before JS execution) -->
     <div id="initial-loader" role="status" aria-live="polite" aria-label="Loading Readers of Aurangabad">
       <div class="init-book-stage" aria-hidden="true">

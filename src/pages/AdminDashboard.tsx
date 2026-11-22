@@ -754,23 +754,23 @@ export const AdminDashboard: React.FC = () => {
     return (
       <div className="min-h-[85vh] flex items-center justify-center px-4 py-16 paper-grain">
         <div className="glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-white/60 shadow-2xl">
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#455240] via-[#8D5B4C] to-[#B88B4A]" />
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#24262D] via-[#F47B49] to-[#FFD8C1]" />
 
           <div className="text-center space-y-3 mb-8">
-            <div className="w-14 h-14 rounded-2xl glass-dark mx-auto flex items-center justify-center text-[#B88B4A] shadow-inner">
+            <div className="w-14 h-14 rounded-2xl glass-dark mx-auto flex items-center justify-center text-[#FFD8C1] shadow-inner">
               <Lock className="w-7 h-7" />
             </div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1B1A]">
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D]">
               Staff Sign In
             </h1>
-            <p className="text-xs text-[#595550] leading-relaxed max-w-xs mx-auto">
+            <p className="text-xs text-[#5E5B55] leading-relaxed max-w-xs mx-auto">
               Authorized portal for Founders and Community Leads of Readers of Aurangabad.
             </p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#1C1B1A] mb-1.5">
+              <label className="block text-xs font-semibold text-[#24262D] mb-1.5">
                 Staff Email Address
               </label>
               <input
@@ -785,13 +785,13 @@ export const AdminDashboard: React.FC = () => {
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-semibold text-[#1C1B1A]">
+                <label className="block text-xs font-semibold text-[#24262D]">
                   Password
                 </label>
                 <button
                   type="button"
                   onClick={handleResetPassword}
-                  className="text-[11px] text-[#455240] hover:underline font-medium cursor-pointer"
+                  className="text-[11px] text-[#24262D] hover:underline font-medium cursor-pointer"
                 >
                   Forgot password?
                 </button>
@@ -807,14 +807,14 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {loginError && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-[#F47B49]/15 border border-[#F47B49]/45 text-[#24262D] text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                 <span>{loginError}</span>
               </div>
             )}
 
             {resetMessage && (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-[#C7EFDE]/45 border border-[#C7EFDE] text-[#24262D] text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                 <span>{resetMessage}</span>
               </div>
@@ -836,8 +836,8 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#E8E2D5] text-center">
-            <span className="text-[11px] text-[#8C857B] block">
+          <div className="mt-8 pt-6 border-t border-[#D4CFC5] text-center">
+            <span className="text-[11px] text-[#5E5B55] block">
               Protected by PostgreSQL Row-Level Security & Role Anti-Tamper Engine
             </span>
           </div>
@@ -851,10 +851,10 @@ export const AdminDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 paper-grain">
 
       {/* Top Identity & Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#E8E2D5]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#D4CFC5]">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#455240] text-white flex items-center gap-1.5">
+            <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#24262D] text-white flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{adminRole === 'admin' ? 'Founder (Admin)' : 'Community Lead (Editor)'}</span>
             </span>
@@ -862,24 +862,24 @@ export const AdminDashboard: React.FC = () => {
             {/* Supabase Database Connection Badge */}
             <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
               isDbConnected
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                : 'bg-amber-50 text-amber-800 border-amber-200'
+                ? 'bg-[#C7EFDE]/45 text-[#24262D] border-[#C7EFDE]'
+                : 'bg-[#FFD8C1]/45 text-[#24262D] border-[#FFD8C1]'
             }`}>
               <Database className="w-3 h-3" />
               <span>{isDbConnected ? 'Supabase Live' : 'Local Fallback'}</span>
             </span>
 
             {currentUserDesignation && (
-              <span className="text-xs text-[#595550] italic font-serif">
+              <span className="text-xs text-[#5E5B55] italic font-serif">
                 "{currentUserDesignation}"
               </span>
             )}
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1B1A]">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D]">
             Administrative Portal
           </h1>
-          <p className="text-xs text-[#595550]">
-            Signed in as <span className="font-semibold text-[#1C1B1A]">{currentUserEmail}</span>
+          <p className="text-xs text-[#5E5B55]">
+            Signed in as <span className="font-semibold text-[#24262D]">{currentUserEmail}</span>
           </p>
         </div>
 
@@ -920,7 +920,7 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-1.5 border-b border-[#E8E2D5] pb-3 text-xs font-semibold overflow-x-auto">
+      <div className="flex items-center gap-1.5 border-b border-[#D4CFC5] pb-3 text-xs font-semibold overflow-x-auto">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
@@ -953,14 +953,14 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'registrations'
               ? 'glass-button'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-gray-100 text-gray-500 cursor-not-allowed'
+                ? 'opacity-60 bg-[#F7F3EB] text-gray-500 cursor-not-allowed'
                 : 'glass-button-secondary'
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
           <span>{adminRole === 'admin' ? `Registrations (${registrations.length})` : 'Registrations'}</span>
           {newRegistrationsCount > 0 && adminRole === 'admin' && (
-            <span className="w-4 h-4 rounded-full bg-[#8D5B4C] text-white text-[10px] flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#F47B49] text-white text-[10px] flex items-center justify-center">
               {newRegistrationsCount}
             </span>
           )}
@@ -1029,14 +1029,14 @@ export const AdminDashboard: React.FC = () => {
             activeTab === 'enquiries'
               ? 'glass-button'
               : adminRole !== 'admin'
-                ? 'opacity-60 bg-gray-100 text-gray-500 cursor-not-allowed'
+                ? 'opacity-60 bg-[#F7F3EB] text-gray-500 cursor-not-allowed'
                 : 'glass-button-secondary'
           }`}
         >
           {adminRole !== 'admin' ? <Lock className="w-3.5 h-3.5" /> : <Inbox className="w-3.5 h-3.5" />}
           <span>{adminRole === 'admin' ? `Inquiries (${enquiries.length})` : 'Inquiries'}</span>
           {newEnquiriesCount > 0 && adminRole === 'admin' && (
-            <span className="w-4 h-4 rounded-full bg-[#8D5B4C] text-white text-[10px] flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#F47B49] text-white text-[10px] flex items-center justify-center">
               {newEnquiriesCount}
             </span>
           )}
@@ -1071,33 +1071,33 @@ export const AdminDashboard: React.FC = () => {
         <div className="space-y-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Total Gatherings</span>
-              <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">{meetups.length}</span>
-              <span className="text-xs text-[#455240] block mt-1">
+              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Total Gatherings</span>
+              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{meetups.length}</span>
+              <span className="text-xs text-[#24262D] block mt-1">
                 {meetups.filter(m => isMeetupUpcoming(m)).length} upcoming scheduled
               </span>
             </div>
 
             <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Registrations</span>
-              <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">
+              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Registrations</span>
+              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">
                 {adminRole === 'admin' ? registrations.length : 'Protected (Admin)'}
               </span>
-              <span className="text-xs text-[#8D5B4C] block mt-1">
+              <span className="text-xs text-[#F47B49] block mt-1">
                 {adminRole === 'admin' ? `${newRegistrationsCount} new attendees` : 'Founder Access Only'}
               </span>
             </div>
 
             <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Journal Articles</span>
-              <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">{articles.length}</span>
-              <span className="text-xs text-[#455240] block mt-1">Published community writings</span>
+              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Journal Articles</span>
+              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{articles.length}</span>
+              <span className="text-xs text-[#24262D] block mt-1">Published community writings</span>
             </div>
 
             <div className="glass-card p-6 rounded-2xl">
-              <span className="text-xs uppercase tracking-wider text-[#8C857B] font-semibold block">Meetup Reels</span>
-              <span className="font-serif text-3xl font-bold text-[#1C1B1A] block mt-1">{reels.length}</span>
-              <span className="text-xs text-[#455240] block mt-1">
+              <span className="text-xs uppercase tracking-wider text-[#5E5B55] font-semibold block">Meetup Reels</span>
+              <span className="font-serif text-3xl font-bold text-[#24262D] block mt-1">{reels.length}</span>
+              <span className="text-xs text-[#24262D] block mt-1">
                 {reels.filter(r => r.published ?? r.isPublished).length} published
               </span>
             </div>
@@ -1105,22 +1105,22 @@ export const AdminDashboard: React.FC = () => {
 
           {/* Quick Shortcuts & Permissions Banner */}
           <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-4 border border-white/60">
-            <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-lg font-bold text-[#24262D]">
               System Operational Status
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-xl bg-white/70 border border-[#E8E2D5] space-y-2">
-                <span className="font-semibold text-[#1C1B1A] block">Current Access Tier</span>
-                <p className="text-[#595550] leading-relaxed">
+              <div className="p-4 rounded-xl bg-white/70 border border-[#D4CFC5] space-y-2">
+                <span className="font-semibold text-[#24262D] block">Current Access Tier</span>
+                <p className="text-[#5E5B55] leading-relaxed">
                   {adminRole === 'admin'
                     ? 'Founder / Full Administrator: You have unrestricted access to manage meetups, gallery images, articles, video reels, attendee registration PII, contact enquiries, and staff roles.'
                     : 'Community Lead / Editor: You can publish and curate meetups, reels, gallery items, and articles. Attendee registrations and member inquiries are strictly protected and hidden.'}
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/70 border border-[#E8E2D5] space-y-2">
-                <span className="font-semibold text-[#1C1B1A] block">Supabase Backend Link</span>
-                <p className="text-[#595550] leading-relaxed">
+              <div className="p-4 rounded-xl bg-white/70 border border-[#D4CFC5] space-y-2">
+                <span className="font-semibold text-[#24262D] block">Supabase Backend Link</span>
+                <p className="text-[#5E5B55] leading-relaxed">
                   {isDbConnected
                     ? 'Connected to Supabase project rtjulebzjiwbnizqwxjn. Row-Level Security policies are actively enforced server-side.'
                     : 'Operating in local client fallback mode. Once you execute the migration in Supabase SQL Editor, click "Sync DB" above to link live data.'}
@@ -1135,13 +1135,13 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'meetups' && (
         <div className="space-y-6">
           {adminFeedback && (
-            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-[#C7EFDE]/45 border-[#C7EFDE] text-[#24262D]' : 'bg-[#F47B49]/15 border-[#F47B49]/45 text-[#24262D]'}`}>
               {adminFeedback.message}
             </div>
           )}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#8C857B]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
               <input
                 type="text"
                 placeholder="Search meetups by title or venue..."
@@ -1162,18 +1162,18 @@ export const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMeetups.map(m => (
               <div key={m.id} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border-white/60">
-                <div className="relative h-40 bg-[#1C1B1A]">
+                <div className="relative h-40 bg-[#24262D]">
                   <img src={m.featuredImage} alt={m.title} className="w-full h-full object-cover opacity-85" />
                   <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
                     {m.edition && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#8D5B4C] text-white uppercase">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F47B49] text-white uppercase">
                         {m.edition}
                       </span>
                     )}
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/90 text-[#1C1B1A] uppercase">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/90 text-[#24262D] uppercase">
                       {m.registrationStatus}
                     </span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${m.isPublished === false ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${m.isPublished === false ? 'bg-[#D4CFC5] text-[#24262D]' : 'bg-[#C7EFDE] text-[#24262D]'}`}>
                       {m.isPublished === false ? 'Draft' : 'Published'}
                     </span>
                   </div>
@@ -1181,17 +1181,17 @@ export const AdminDashboard: React.FC = () => {
 
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="font-serif text-lg font-bold text-[#1C1B1A] leading-snug">{m.title}</h3>
-                    <p className="text-xs text-[#595550] mt-1 line-clamp-2">{m.description}</p>
-                    <div className="mt-3 text-xs text-[#8C857B] space-y-1">
+                    <h3 className="font-serif text-lg font-bold text-[#24262D] leading-snug">{m.title}</h3>
+                    <p className="text-xs text-[#5E5B55] mt-1 line-clamp-2">{m.description}</p>
+                    <div className="mt-3 text-xs text-[#5E5B55] space-y-1">
                       <span className="block font-medium">{m.date} • {m.time}</span>
                       <span className="block">{m.venue}</span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 pt-3 border-t border-[#E8E2D5]">
+                  <div className="space-y-3 pt-3 border-t border-[#D4CFC5]">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-[#455240]">
+                      <span className="text-[11px] font-semibold text-[#24262D]">
                         Capacity: {m.capacity || 'Unlimited'}
                       </span>
                       <button
@@ -1200,7 +1200,7 @@ export const AdminDashboard: React.FC = () => {
                             void deleteMeetup(m.id);
                           }
                         }}
-                        className="p-1.5 rounded-lg text-red-700 hover:bg-red-50 transition-colors"
+                        className="p-1.5 rounded-lg text-red-700 hover:bg-[#F47B49]/15 transition-colors"
                         title="Delete meetup"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -1256,7 +1256,7 @@ export const AdminDashboard: React.FC = () => {
                               setAdminFeedback({ type: 'error', message: error instanceof Error ? error.message : 'Failed to cancel meetup.' });
                             }
                           }}
-                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-red-700 border border-red-200 bg-red-50/70 cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-red-700 border border-[#F47B49]/45 bg-[#F47B49]/15/70 cursor-pointer"
                         >
                           Cancel event
                         </button>
@@ -1276,7 +1276,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 flex-1 flex-wrap">
               <div className="relative flex-1 min-w-[200px] max-w-sm">
-                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#8C857B]" />
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
                 <input
                   type="text"
                   placeholder="Search attendee by name or email..."
@@ -1309,13 +1309,13 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="glass-card rounded-2xl overflow-hidden border-white/60">
             {filteredRegistrations.length === 0 ? (
-              <div className="p-12 text-center text-xs text-[#8C857B]">
+              <div className="p-12 text-center text-xs text-[#5E5B55]">
                 No attendee registrations recorded yet.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#1C1B1A]/5 text-[#595550] border-b border-[#E8E2D5] font-semibold">
+                  <thead className="bg-[#24262D]/5 text-[#5E5B55] border-b border-[#D4CFC5] font-semibold">
                     <tr>
                       <th className="p-3.5">Attendee</th>
                       <th className="p-3.5">Contact</th>
@@ -1325,22 +1325,22 @@ export const AdminDashboard: React.FC = () => {
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E8E2D5]">
+                  <tbody className="divide-y divide-[#D4CFC5]">
                     {filteredRegistrations.map(r => (
                       <tr key={r.id} className="hover:bg-white/40 transition-colors">
-                        <td className="p-3.5 font-semibold text-[#1C1B1A]">
+                        <td className="p-3.5 font-semibold text-[#24262D]">
                           {r.name}
                           {r.message && (
-                            <span className="block text-[11px] font-normal text-[#595550] italic line-clamp-1">
+                            <span className="block text-[11px] font-normal text-[#5E5B55] italic line-clamp-1">
                               "{r.message}"
                             </span>
                           )}
                         </td>
                         <td className="p-3.5">
                           <span className="block">{r.email}</span>
-                          {r.phone && <span className="block text-[11px] text-[#8C857B]">{r.phone}</span>}
+                          {r.phone && <span className="block text-[11px] text-[#5E5B55]">{r.phone}</span>}
                         </td>
-                        <td className="p-3.5 text-[#455240] font-medium">
+                        <td className="p-3.5 text-[#24262D] font-medium">
                           {r.meetupTitle || 'Community Gathering'}
                         </td>
                         <td className="p-3.5">
@@ -1354,7 +1354,7 @@ export const AdminDashboard: React.FC = () => {
                             <option value="resolved">Confirmed</option>
                           </select>
                         </td>
-                        <td className="p-3.5 text-[11px] text-[#8C857B]">
+                        <td className="p-3.5 text-[11px] text-[#5E5B55]">
                           {new Date(r.createdAt).toLocaleDateString()}
                         </td>
                         <td className="p-3.5 text-right">
@@ -1364,7 +1364,7 @@ export const AdminDashboard: React.FC = () => {
                                 void deleteRegistration(r.id);
                               }
                             }}
-                            className="p-1 rounded text-red-700 hover:bg-red-50"
+                            className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1383,7 +1383,7 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'gallery' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-lg font-bold text-[#24262D]">
               Community Photography ({gallery.length})
             </h3>
             <button
@@ -1404,7 +1404,7 @@ export const AdminDashboard: React.FC = () => {
 
               return (
                 <div key={item.id} className="glass-card rounded-2xl overflow-hidden group relative">
-                  <div className="aspect-square bg-[#1C1B1A] flex items-center justify-center">
+                  <div className="aspect-square bg-[#24262D] flex items-center justify-center">
                     {imageSrc ? (
                       <img src={imageSrc} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
@@ -1414,14 +1414,14 @@ export const AdminDashboard: React.FC = () => {
                     )}
                   </div>
                   <div className="p-3 flex items-center justify-between text-xs">
-                    <span className="font-semibold text-[#1C1B1A] truncate">{item.title}</span>
+                    <span className="font-semibold text-[#24262D] truncate">{item.title}</span>
                     <button
                       onClick={() => {
                         if (confirm(`Delete photograph "${item.title}"?`)) {
                           void deleteGalleryItem(item.id);
                         }
                       }}
-                      className="p-1 rounded text-red-700 hover:bg-red-50"
+                      className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1437,7 +1437,7 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'reels' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-lg font-bold text-[#24262D]">
               Sequential Meetup Reels ({reels.length})
             </h3>
             <button
@@ -1453,13 +1453,13 @@ export const AdminDashboard: React.FC = () => {
             {reels.map((reel, idx) => (
               <div key={reel.id} className="glass-card rounded-2xl p-5 space-y-4 flex flex-col justify-between border-white/60">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#8D5B4C]">Reel #{reel.order}</span>
+                  <span className="text-xs font-bold text-[#F47B49]">Reel #{reel.order}</span>
                   <button
                     onClick={() => void togglePublishReel(reel.id)}
                     className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase ${
                       reel.published ?? reel.isPublished
-                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE]'
+                        : 'bg-[#F7F3EB] text-gray-600'
                     }`}
                   >
                     {reel.published ?? reel.isPublished ? 'Published' : 'Draft'}
@@ -1467,11 +1467,11 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-serif text-base font-bold text-[#1C1B1A]">{reel.title}</h4>
-                  {reel.caption && <p className="text-xs text-[#595550] mt-1 line-clamp-2">{reel.caption}</p>}
+                  <h4 className="font-serif text-base font-bold text-[#24262D]">{reel.title}</h4>
+                  {reel.caption && <p className="text-xs text-[#5E5B55] mt-1 line-clamp-2">{reel.caption}</p>}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#E8E2D5]">
+                <div className="flex items-center justify-between pt-3 border-t border-[#D4CFC5]">
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleMoveReel(idx, 'up')}
@@ -1497,7 +1497,7 @@ export const AdminDashboard: React.FC = () => {
                         void deleteReel(reel.id);
                       }
                     }}
-                    className="p-1.5 rounded text-red-700 hover:bg-red-50"
+                    className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1512,12 +1512,12 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'announcements' && (
         <div className="space-y-6">
           {adminFeedback && (
-            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            <div className={`p-3 rounded-xl border text-xs ${adminFeedback.type === 'success' ? 'bg-[#C7EFDE]/45 border-[#C7EFDE] text-[#24262D]' : 'bg-[#F47B49]/15 border-[#F47B49]/45 text-[#24262D]'}`}>
               {adminFeedback.message}
             </div>
           )}
           <div className="flex items-center justify-between">
-            <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-lg font-bold text-[#24262D]">
               Live Notices & Announcements ({announcements.length})
             </h3>
             <button
@@ -1531,7 +1531,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="space-y-4">
             {announcements.length === 0 ? (
-              <div className="glass-card p-12 text-center text-xs text-[#8C857B] rounded-2xl">
+              <div className="glass-card p-12 text-center text-xs text-[#5E5B55] rounded-2xl">
                 No active announcements published yet.
               </div>
             ) : (
@@ -1539,18 +1539,18 @@ export const AdminDashboard: React.FC = () => {
                 <div key={ann.id} className="glass-card p-5 rounded-2xl flex items-start justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-base text-[#1C1B1A]">{ann.title}</span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ann.isPublished ? 'bg-emerald-50 text-emerald-800' : 'bg-gray-100 text-gray-700'}`}>
+                      <span className="font-serif font-bold text-base text-[#24262D]">{ann.title}</span>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${ann.isPublished ? 'bg-[#C7EFDE]/45 text-[#24262D]' : 'bg-[#F7F3EB] text-[#24262D]'}`}>
                         {ann.isPublished ? 'Active' : 'Draft'}
                       </span>
                     </div>
-                    <p className="text-xs text-[#595550] leading-relaxed">{ann.content}</p>
+                    <p className="text-xs text-[#5E5B55] leading-relaxed">{ann.content}</p>
                     {ann.actionUrl && isSafeExternalUrl(ann.actionUrl) ? (
-                      <a href={ann.actionUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#455240] hover:underline font-semibold block mt-1">
+                      <a href={ann.actionUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#24262D] hover:underline font-semibold block mt-1">
                         Action Link: {ann.actionUrl}
                       </a>
                     ) : ann.actionUrl ? (
-                      <span className="text-xs text-[#455240] font-semibold block mt-1">
+                      <span className="text-xs text-[#24262D] font-semibold block mt-1">
                         Action page: {ann.actionUrl}
                       </span>
                     ) : null}
@@ -1561,7 +1561,7 @@ export const AdminDashboard: React.FC = () => {
                         void deleteAnnouncement(ann.id);
                       }
                     }}
-                    className="p-1.5 rounded text-red-700 hover:bg-red-50"
+                    className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1577,7 +1577,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#8C857B]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
               <input
                 type="text"
                 placeholder="Search journal pieces by title or author..."
@@ -1599,23 +1599,23 @@ export const AdminDashboard: React.FC = () => {
             {filteredArticles.map(a => (
               <div key={a.id} className="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border-white/60">
                 <div>
-                  <div className="flex items-center justify-between text-[11px] text-[#8C857B] mb-1">
+                  <div className="flex items-center justify-between text-[11px] text-[#5E5B55] mb-1">
                     <span>{a.category}</span>
-                    <span className="uppercase font-bold text-[#455240]">{a.language}</span>
+                    <span className="uppercase font-bold text-[#24262D]">{a.language}</span>
                   </div>
-                  <h4 className="font-serif text-lg font-bold text-[#1C1B1A] leading-snug">{a.title}</h4>
-                  <p className="text-xs text-[#595550] mt-1 line-clamp-3">{a.excerpt}</p>
+                  <h4 className="font-serif text-lg font-bold text-[#24262D] leading-snug">{a.title}</h4>
+                  <p className="text-xs text-[#5E5B55] mt-1 line-clamp-3">{a.excerpt}</p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-[#E8E2D5] text-xs">
-                  <span className="text-[#8C857B]">By {a.author}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#D4CFC5] text-xs">
+                  <span className="text-[#5E5B55]">By {a.author}</span>
                   <button
                     onClick={() => {
                       if (confirm(`Delete article "${a.title}"?`)) {
                         void deleteArticle(a.id);
                       }
                     }}
-                    className="p-1 rounded text-red-700 hover:bg-red-50"
+                    className="p-1 rounded text-red-700 hover:bg-[#F47B49]/15"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1637,7 +1637,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 flex-1 flex-wrap">
               <div className="relative flex-1 min-w-[200px] max-w-sm">
-                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#8C857B]" />
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-[#5E5B55]" />
                 <input
                   type="text"
                   placeholder="Search inquiries by name or email..."
@@ -1663,7 +1663,7 @@ export const AdminDashboard: React.FC = () => {
 
           <div className="space-y-4">
             {filteredEnquiries.length === 0 ? (
-              <div className="glass-card p-12 text-center text-xs text-[#8C857B] rounded-2xl">
+              <div className="glass-card p-12 text-center text-xs text-[#5E5B55] rounded-2xl">
                 No inquiries matching the selected criteria.
               </div>
             ) : (
@@ -1671,8 +1671,8 @@ export const AdminDashboard: React.FC = () => {
                 <div key={enq.id} className="glass-card p-5 rounded-2xl space-y-3 border-white/60">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-base text-[#1C1B1A]">{enq.name}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#455240]/10 text-[#455240]">
+                      <span className="font-serif font-bold text-base text-[#24262D]">{enq.name}</span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-[#24262D]/10 text-[#24262D]">
                         {enq.type.replace('_', ' ')}
                       </span>
                     </div>
@@ -1694,19 +1694,19 @@ export const AdminDashboard: React.FC = () => {
                             void deleteEnquiry(enq.id);
                           }
                         }}
-                        className="p-1.5 rounded text-red-700 hover:bg-red-50"
+                        className="p-1.5 rounded text-red-700 hover:bg-[#F47B49]/15"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#595550] leading-relaxed bg-white/50 p-3 rounded-xl border border-[#E8E2D5]">
+                  <p className="text-xs text-[#5E5B55] leading-relaxed bg-white/50 p-3 rounded-xl border border-[#D4CFC5]">
                     {enq.message}
                   </p>
 
-                  <div className="text-[11px] text-[#8C857B] flex items-center justify-between pt-1">
-                    <span>Email: <a href={`mailto:${enq.email}`} className="text-[#455240] font-medium hover:underline">{enq.email}</a> {enq.phone && `• Phone: ${enq.phone}`}</span>
+                  <div className="text-[11px] text-[#5E5B55] flex items-center justify-between pt-1">
+                    <span>Email: <a href={`mailto:${enq.email}`} className="text-[#24262D] font-medium hover:underline">{enq.email}</a> {enq.phone && `• Phone: ${enq.phone}`}</span>
                     <span>Received: {new Date(enq.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -1720,16 +1720,16 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'users' && adminRole === 'admin' && (
         <div className="space-y-6">
           <div className="glass-card p-6 rounded-2xl space-y-4 border-white/60">
-            <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-lg font-bold text-[#24262D]">
               Team Members & Role-Based Permissions
             </h3>
-            <p className="text-xs text-[#595550] leading-relaxed">
+            <p className="text-xs text-[#5E5B55] leading-relaxed">
               Staff roles are governed by PostgreSQL Row-Level Security triggers. Only verified administrators can promote or adjust community staff designations.
             </p>
 
             <div className="overflow-x-auto pt-2">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#1C1B1A]/5 text-[#595550] border-b border-[#E8E2D5] font-semibold">
+                <thead className="bg-[#24262D]/5 text-[#5E5B55] border-b border-[#D4CFC5] font-semibold">
                   <tr>
                     <th className="p-3.5">Staff Email</th>
                     <th className="p-3.5">Designation</th>
@@ -1737,18 +1737,18 @@ export const AdminDashboard: React.FC = () => {
                     <th className="p-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E8E2D5]">
+                <tbody className="divide-y divide-[#D4CFC5]">
                   {staffProfiles.map(p => (
                     <tr key={p.id} className="hover:bg-white/40">
-                      <td className="p-3.5 font-semibold text-[#1C1B1A]">{p.email}</td>
-                      <td className="p-3.5 text-[#595550]">{p.designation || 'Staff Member'}</td>
+                      <td className="p-3.5 font-semibold text-[#24262D]">{p.email}</td>
+                      <td className="p-3.5 text-[#5E5B55]">{p.designation || 'Staff Member'}</td>
                       <td className="p-3.5">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                           p.role === 'admin'
-                            ? 'bg-[#455240] text-white'
+                            ? 'bg-[#24262D] text-white'
                             : p.role === 'editor'
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-gray-100 text-gray-700'
+                              ? 'bg-[#FFD8C1] text-[#24262D]'
+                              : 'bg-[#F7F3EB] text-[#24262D]'
                         }`}>
                           {p.role || 'Unassigned'}
                         </span>
@@ -1762,7 +1762,7 @@ export const AdminDashboard: React.FC = () => {
                                 void updateStaffProfile(p.id, { role: newRole });
                               }
                             }}
-                            className="text-xs font-semibold text-[#455240] hover:underline cursor-pointer"
+                            className="text-xs font-semibold text-[#24262D] hover:underline cursor-pointer"
                           >
                             {p.role === 'editor' ? 'Revoke Access' : 'Assign Editor'}
                           </button>
@@ -1783,45 +1783,45 @@ export const AdminDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#1C1B1A]">roa-reels</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 uppercase">
+                <span className="font-serif font-bold text-base text-[#24262D]">roa-reels</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FFD8C1]/45 text-[#24262D] border border-[#FFD8C1] uppercase">
                   Private Bucket
                 </span>
               </div>
-              <p className="text-xs text-[#595550] leading-relaxed">
+              <p className="text-xs text-[#5E5B55] leading-relaxed">
                 Stores community video reels (up to 500MB). RLS permits streaming of published reels via exact path equality.
               </p>
-              <div className="text-[11px] text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
+              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
                 Allowed MIME: video/mp4, video/webm, video/quicktime
               </div>
             </div>
 
             <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#1C1B1A]">roa-gallery</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase">
+                <span className="font-serif font-bold text-base text-[#24262D]">roa-gallery</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
                   Public CDN
                 </span>
               </div>
-              <p className="text-xs text-[#595550] leading-relaxed">
+              <p className="text-xs text-[#5E5B55] leading-relaxed">
                 Original community photographs (up to 20MB). Delivered via Supabase Global CDN.
               </p>
-              <div className="text-[11px] text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
+              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
                 Allowed MIME: image/webp, image/jpeg, image/png
               </div>
             </div>
 
             <div className="glass-card p-6 rounded-2xl space-y-3 border-white/60">
               <div className="flex items-center justify-between">
-                <span className="font-serif font-bold text-base text-[#1C1B1A]">roa-thumbnails</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase">
+                <span className="font-serif font-bold text-base text-[#24262D]">roa-thumbnails</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#C7EFDE]/45 text-[#24262D] border border-[#C7EFDE] uppercase">
                   Public CDN
                 </span>
               </div>
-              <p className="text-xs text-[#595550] leading-relaxed">
+              <p className="text-xs text-[#5E5B55] leading-relaxed">
                 Fast-loading image and video poster thumbnails (up to 10MB).
               </p>
-              <div className="text-[11px] text-[#8C857B] pt-2 border-t border-[#E8E2D5]">
+              <div className="text-[11px] text-[#5E5B55] pt-2 border-t border-[#D4CFC5]">
                 Allowed MIME: image/webp, image/jpeg, image/png
               </div>
             </div>
@@ -1833,14 +1833,14 @@ export const AdminDashboard: React.FC = () => {
       {showMeetupModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-2xl font-bold text-[#24262D]">
               Schedule New Community Gathering
             </h3>
 
             <form onSubmit={handleCreateMeetup} className="space-y-4 text-xs">
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Meetup Title</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Meetup Title</label>
                   <input
                     type="text"
                     required
@@ -1851,7 +1851,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Edition Tag</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Edition Tag</label>
                   <input
                     type="text"
                     value={mEdition}
@@ -1864,7 +1864,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Date String</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Date String</label>
                   <input
                     type="text"
                     required
@@ -1874,7 +1874,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Time Label</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Time Label</label>
                   <input
                     type="text"
                     required
@@ -1887,7 +1887,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Venue Name</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Venue Name</label>
                   <input
                     type="text"
                     required
@@ -1897,7 +1897,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Address / Landmark</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Address / Landmark</label>
                   <input
                     type="text"
                     value={mAddress}
@@ -1909,7 +1909,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Registration Status</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Registration Status</label>
                   <select
                     value={mStatus}
                     onChange={(e) => setMStatus(e.target.value as Meetup['registrationStatus'])}
@@ -1923,7 +1923,7 @@ export const AdminDashboard: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Capacity Limit</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Capacity Limit</label>
                   <input
                     type="number"
                     value={mCapacity}
@@ -1936,7 +1936,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Featured Image URL</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Featured Image URL</label>
                   <input
                     type="text"
                     value={mImage}
@@ -1946,7 +1946,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Custom RSVP / Form URL</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Custom RSVP / Form URL</label>
                   <input
                     type="url"
                     value={mRegUrl}
@@ -1954,7 +1954,7 @@ export const AdminDashboard: React.FC = () => {
                     placeholder="https://… (optional — leave blank if not confirmed)"
                     className="w-full px-3 py-2 rounded-xl glass-input"
                   />
-                  <p className="mt-1 text-[11px] text-[#8C857B]">
+                  <p className="mt-1 text-[11px] text-[#5E5B55]">
                     Only a confirmed http(s) link is shown as a registration destination. Leave blank to ask readers to contact us instead.
                   </p>
                 </div>
@@ -1967,9 +1967,9 @@ export const AdminDashboard: React.FC = () => {
                     id="mIsPublished"
                     checked={mIsPublished}
                     onChange={(e) => setMIsPublished(e.target.checked)}
-                    className="rounded text-[#455240] focus:ring-[#455240]"
+                    className="rounded text-[#24262D] focus:ring-[#24262D]"
                   />
-                  <label htmlFor="mIsPublished" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                  <label htmlFor="mIsPublished" className="font-semibold text-[#24262D] cursor-pointer">
                     Publish meetup (visible to public and eligible for member notifications)
                   </label>
                 </div>
@@ -1979,16 +1979,16 @@ export const AdminDashboard: React.FC = () => {
                     id="mIsUpcoming"
                     checked={mIsUpcoming}
                     onChange={(e) => setMIsUpcoming(e.target.checked)}
-                    className="rounded text-[#455240] focus:ring-[#455240]"
+                    className="rounded text-[#24262D] focus:ring-[#24262D]"
                   />
-                  <label htmlFor="mIsUpcoming" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                  <label htmlFor="mIsUpcoming" className="font-semibold text-[#24262D] cursor-pointer">
                     Mark as upcoming highlight (derived automatically from date, publish, and cancellation state)
                   </label>
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">Description</label>
+                <label className="block font-semibold text-[#24262D] mb-1">Description</label>
                 <textarea
                   rows={3}
                   required
@@ -1999,7 +1999,7 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
                 <button
                   type="button"
                   onClick={() => setShowMeetupModal(false)}
@@ -2023,13 +2023,13 @@ export const AdminDashboard: React.FC = () => {
       {showArticleModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-2xl w-full p-6 sm:p-8 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">
+            <h3 className="font-serif text-2xl font-bold text-[#24262D]">
               Publish New Journal Piece
             </h3>
 
             <form onSubmit={handleCreateArticle} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">Article Title</label>
+                <label className="block font-semibold text-[#24262D] mb-1">Article Title</label>
                 <input
                   type="text"
                   required
@@ -2042,7 +2042,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Author Name</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Author Name</label>
                   <input
                     type="text"
                     required
@@ -2052,7 +2052,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Author Role / City Tag</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Author Role / City Tag</label>
                   <input
                     type="text"
                     value={aRole}
@@ -2064,7 +2064,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Category</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Category</label>
                   <select
                     value={aCategory}
                     onChange={(e) => setACategory(e.target.value as JournalCategory)}
@@ -2076,7 +2076,7 @@ export const AdminDashboard: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Language</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Language</label>
                   <select
                     value={aLang}
                     onChange={(e) => setALang(e.target.value as Language)}
@@ -2092,7 +2092,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Estimated Reading Time (mins)</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Estimated Reading Time (mins)</label>
                   <input
                     type="text"
                     value={aReadTime}
@@ -2102,7 +2102,7 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-[#1C1B1A] mb-1">Cover Image Path / URL</label>
+                  <label className="block font-semibold text-[#24262D] mb-1">Cover Image Path / URL</label>
                   <input
                     type="text"
                     value={aCover}
@@ -2114,7 +2114,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">Short Excerpt</label>
+                <label className="block font-semibold text-[#24262D] mb-1">Short Excerpt</label>
                 <textarea
                   rows={2}
                   value={aExcerpt}
@@ -2125,7 +2125,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-[#1C1B1A] mb-1">Full Article Content</label>
+                <label className="block font-semibold text-[#24262D] mb-1">Full Article Content</label>
                 <textarea
                   rows={6}
                   required
@@ -2136,7 +2136,7 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
                 <button
                   type="button"
                   onClick={() => setShowArticleModal(false)}
@@ -2161,8 +2161,8 @@ export const AdminDashboard: React.FC = () => {
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div>
-              <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">Add Community Photograph</h3>
-              <p className="mt-1 text-[11px] text-[#595550] leading-relaxed">
+              <h3 className="font-serif text-xl font-bold text-[#24262D]">Add Community Photograph</h3>
+              <p className="mt-1 text-[11px] text-[#5E5B55] leading-relaxed">
                 Upload a JPEG, PNG or WebP image. The original and an optimized thumbnail are stored privately.
               </p>
             </div>
@@ -2178,15 +2178,15 @@ export const AdminDashboard: React.FC = () => {
                   accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
                   onChange={(e) => void handleGalleryFileChange(e)}
                   disabled={gIsUploading || gIsValidating}
-                  className="w-full text-xs file:mr-3 file:rounded-xl file:border-0 file:bg-[#455240] file:px-3 file:py-2 file:text-white file:text-xs file:font-semibold hover:file:bg-[#384332] disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full text-xs file:mr-3 file:rounded-xl file:border-0 file:bg-[#24262D] file:px-3 file:py-2 file:text-white file:text-xs file:font-semibold hover:file:bg-[#24262D] disabled:opacity-60 disabled:cursor-not-allowed"
                 />
-                <p className="mt-1.5 text-[11px] text-[#8C857B]">
+                <p className="mt-1.5 text-[11px] text-[#5E5B55]">
                   JPEG, PNG or WebP · maximum 20 MB · one image per upload
                 </p>
               </div>
 
               {gPreviewUrl && (
-                <div className="rounded-2xl overflow-hidden border border-[#E8E2D5] bg-[#1C1B1A]">
+                <div className="rounded-2xl overflow-hidden border border-[#D4CFC5] bg-[#24262D]">
                   <img
                     src={gPreviewUrl}
                     alt="Selected photograph preview"
@@ -2196,21 +2196,21 @@ export const AdminDashboard: React.FC = () => {
               )}
 
               {gFile && (
-                <p className="text-[11px] text-[#455240] break-all">
+                <p className="text-[11px] text-[#24262D] break-all">
                   <span className="font-semibold">{gFile.name}</span>
-                  <span className="text-[#8C857B]"> · {(gFile.size / (1024 * 1024)).toFixed(2)} MB</span>
+                  <span className="text-[#5E5B55]"> · {(gFile.size / (1024 * 1024)).toFixed(2)} MB</span>
                 </p>
               )}
 
               {gIsValidating && (
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-white/70 border border-[#E8E2D5] text-[#595550]">
-                  <div className="w-3.5 h-3.5 border-2 border-[#455240] border-t-transparent rounded-full animate-spin" />
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-white/70 border border-[#D4CFC5] text-[#5E5B55]">
+                  <div className="w-3.5 h-3.5 border-2 border-[#24262D] border-t-transparent rounded-full animate-spin" />
                   <span>Validating image…</span>
                 </div>
               )}
 
               {gError && (
-                <div role="alert" className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start gap-2">
+                <div role="alert" className="p-3 rounded-xl bg-[#F47B49]/15 border border-[#F47B49]/45 text-[#24262D] flex items-start gap-2">
                   <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{gError}</span>
                 </div>
@@ -2243,7 +2243,7 @@ export const AdminDashboard: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
                 <button
                   type="button"
                   onClick={closeGalleryModal}
@@ -2279,7 +2279,7 @@ export const AdminDashboard: React.FC = () => {
       {showAnnModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">Publish Notice / Announcement</h3>
+            <h3 className="font-serif text-xl font-bold text-[#24262D]">Publish Notice / Announcement</h3>
             <form onSubmit={handleCreateAnnouncement} className="space-y-4 text-xs">
               <div>
                 <label className="block font-semibold mb-1">Headline</label>
@@ -2319,13 +2319,13 @@ export const AdminDashboard: React.FC = () => {
                   id="annIsPublishedModal"
                   checked={annIsPublished}
                   onChange={(e) => setAnnIsPublished(e.target.checked)}
-                  className="rounded text-[#455240] focus:ring-[#455240]"
+                  className="rounded text-[#24262D] focus:ring-[#24262D]"
                 />
-                <label htmlFor="annIsPublishedModal" className="font-semibold text-[#1C1B1A] cursor-pointer">
+                <label htmlFor="annIsPublishedModal" className="font-semibold text-[#24262D] cursor-pointer">
                   Publish now (eligible for automatic member notification on publish)
                 </label>
               </div>
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
                 <button type="button" onClick={() => setShowAnnModal(false)} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
                 <button type="submit" className="glass-button px-4 py-2 rounded-xl">{annIsPublished ? 'Publish Announcement' : 'Save Draft'}</button>
               </div>
@@ -2338,7 +2338,7 @@ export const AdminDashboard: React.FC = () => {
       {showReelUploadModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="glass-modal max-w-lg w-full p-6 rounded-3xl space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">Upload Meetup Video Reel</h3>
+            <h3 className="font-serif text-xl font-bold text-[#24262D]">Upload Meetup Video Reel</h3>
             <form onSubmit={handleUploadReel} className="space-y-4 text-xs">
               <div>
                 <label className="block font-semibold mb-1">Select Video File (.mp4, .webm)</label>
@@ -2382,14 +2382,14 @@ export const AdminDashboard: React.FC = () => {
 
               {isUploadingReel && (
                 <div className="space-y-1">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-[#455240] h-2 rounded-full transition-all duration-200" style={{ width: `${reelUploadProgress}%` }} />
+                  <div className="w-full bg-[#D4CFC5] rounded-full h-2">
+                    <div className="bg-[#24262D] h-2 rounded-full transition-all duration-200" style={{ width: `${reelUploadProgress}%` }} />
                   </div>
-                  <span className="text-[10px] text-[#8C857B] block text-right">{reelUploadProgress}% processing...</span>
+                  <span className="text-[10px] text-[#5E5B55] block text-right">{reelUploadProgress}% processing...</span>
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8E2D5]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D4CFC5]">
                 <button type="button" onClick={() => { setShowReelUploadModal(false); resetReelUploadState(); }} className="glass-button-secondary px-4 py-2 rounded-xl">Cancel</button>
                 <button type="submit" disabled={isUploadingReel} className="glass-button px-4 py-2 rounded-xl">
                   {isUploadingReel ? 'Processing...' : 'Upload Reel'}

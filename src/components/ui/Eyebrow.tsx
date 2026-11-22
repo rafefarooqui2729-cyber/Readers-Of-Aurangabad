@@ -12,16 +12,16 @@ export const Eyebrow: React.FC<EyebrowProps> = ({
   className = '',
 }) => {
   const colorClasses = {
-    neem: 'text-[#6E6960] dark:text-[#B8B2A8]',
-    clay: 'text-[#F4512C]',
-    marigold: 'text-[#171717] dark:text-[#D9F36A]',
+    neem: 'text-[#5E5B55] dark:text-[#C9C4BA]',
+    clay: 'text-[#F47B49]',
+    marigold: 'text-[#F47B49] dark:text-[#FFD8C1]',
   };
 
   return (
     <span
-      className={`inline-flex items-center text-[11px] sm:text-[12px] font-bold tracking-[0.22em] uppercase ${colorClasses[color]} ${className}`}
+      className={`inline-flex items-center text-[11px] sm:text-[12px] font-semibold tracking-[0.16em] uppercase ${colorClasses[color]} ${className}`}
     >
-      <span className="mr-2 inline-block h-2 w-2 bg-current" aria-hidden="true" />
+      <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
       {children}
     </span>
   );

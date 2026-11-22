@@ -7,6 +7,6 @@ export const teamMembers: TeamMember[] = [
     id: 'team-founder',
     name: 'Abdul Rafe Farooqui',
     role: 'Founder',
-    photoUrl: '/images/enhanced/community/founder-portrait.webp',
+    photoUrl: '/images/community/founder-abdul-rafe-2026.jpeg',
   },
 ];

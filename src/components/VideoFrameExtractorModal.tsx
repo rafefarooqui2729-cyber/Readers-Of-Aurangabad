@@ -191,20 +191,20 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
       <div 
-        className="bg-[#FAF8F5] border border-[#E8E2D5] rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative"
+        className="bg-[#F7F3EB] border border-[#D4CFC5] rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="px-6 py-4 border-b border-[#E8E2D5] bg-[#FAF8F5]/90 backdrop-blur-sm flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#D4CFC5] bg-[#F7F3EB]/90 backdrop-blur-sm flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#EBF0E9] text-[#455240] flex items-center justify-center border border-[#455240]/20">
+            <div className="w-9 h-9 rounded-xl bg-[#C7EFDE] text-[#24262D] flex items-center justify-center border border-[#24262D]/20">
               <Camera className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-serif text-xl font-bold text-[#1C1B1A]">
+              <h2 className="font-serif text-xl font-bold text-[#24262D]">
                 Video Frame Extraction Studio
               </h2>
-              <span className="text-xs text-[#8C857B]">
+              <span className="text-xs text-[#5E5B55]">
                 Extract original resolution photographs from Instagram Reel
               </span>
             </div>
@@ -212,7 +212,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-[#595550] hover:text-[#1C1B1A] hover:bg-white border border-transparent hover:border-[#E8E2D5] transition-colors"
+            className="p-2 rounded-xl text-[#5E5B55] hover:text-[#24262D] hover:bg-white border border-transparent hover:border-[#D4CFC5] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -222,7 +222,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
         <div className="p-6 overflow-y-auto space-y-6">
           
           {/* Main Video & Timeline Player */}
-          <div className="bg-[#1C1B1A] rounded-2xl overflow-hidden border border-[#363330] p-4 text-white space-y-4">
+          <div className="bg-[#24262D] rounded-2xl overflow-hidden border border-[#24262D] p-4 text-white space-y-4">
             
             <div className="relative max-h-72 flex items-center justify-center bg-black/50 rounded-xl overflow-hidden">
               <video
@@ -246,9 +246,9 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
             {/* Timeline Scrubber */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs text-[#B4ADA2]">
+              <div className="flex items-center justify-between text-xs text-[#D4CFC5]">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-[#B88B4A]" />
+                  <Clock className="w-3.5 h-3.5 text-[#FFD8C1]" />
                   <span>Current: <strong>{formatVideoTime(currentTime)}</strong></span>
                 </div>
                 <span>Total: {formatVideoTime(duration)}</span>
@@ -261,26 +261,26 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                 step={0.05}
                 value={currentTime}
                 onChange={handleScrub}
-                className="w-full h-2 bg-[#363330] rounded-lg appearance-none cursor-pointer accent-[#B88B4A]"
+                className="w-full h-2 bg-[#24262D] rounded-lg appearance-none cursor-pointer accent-[#FFD8C1]"
               />
             </div>
 
             {/* Video Controls Action Strip */}
-            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#363330]">
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#24262D]">
               
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCaptureCurrent}
-                  className="inline-flex items-center gap-1.5 bg-[#FAF8F5] text-[#1C1B1A] hover:bg-[#E8E2D5] px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-1.5 bg-[#F7F3EB] text-[#24262D] hover:bg-[#D4CFC5] px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer"
                 >
-                  <Camera className="w-3.5 h-3.5 text-[#455240]" />
+                  <Camera className="w-3.5 h-3.5 text-[#24262D]" />
                   <span>Capture This Exact Frame</span>
                 </button>
 
                 <button
                   onClick={handleAutoExtract}
                   disabled={isExtracting}
-                  className="inline-flex items-center gap-1.5 bg-[#455240] hover:bg-[#2E372B] text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#24262D] text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all shadow-sm cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{isExtracting ? extractStatus : 'Auto-Extract 5 Key Frames'}</span>
@@ -289,12 +289,12 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
               <div className="flex items-center gap-3 text-xs">
                 {/* Format selection: JPG / WebP */}
-                <div className="flex items-center gap-1.5 bg-[#2A2826] px-2.5 py-1 rounded-xl border border-[#363330]">
-                  <span className="text-[#B4ADA2]">Format:</span>
+                <div className="flex items-center gap-1.5 bg-[#24262D] px-2.5 py-1 rounded-xl border border-[#24262D]">
+                  <span className="text-[#D4CFC5]">Format:</span>
                   <button
                     onClick={() => setFormat('image/jpeg')}
                     className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-                      format === 'image/jpeg' ? 'bg-[#FAF8F5] text-[#1C1B1A]' : 'text-[#B4ADA2]'
+                      format === 'image/jpeg' ? 'bg-[#F7F3EB] text-[#24262D]' : 'text-[#D4CFC5]'
                     }`}
                   >
                     JPG
@@ -302,7 +302,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                   <button
                     onClick={() => setFormat('image/webp')}
                     className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-                      format === 'image/webp' ? 'bg-[#FAF8F5] text-[#1C1B1A]' : 'text-[#B4ADA2]'
+                      format === 'image/webp' ? 'bg-[#F7F3EB] text-[#24262D]' : 'text-[#D4CFC5]'
                     }`}
                   >
                     WebP
@@ -319,7 +319,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-xs text-[#B88B4A] hover:underline flex items-center gap-1"
+                  className="text-xs text-[#FFD8C1] hover:underline flex items-center gap-1"
                   title="Upload original video file from your phone or PC for 100% unrestricted extraction"
                 >
                   <Upload className="w-3.5 h-3.5" />
@@ -333,8 +333,8 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
           {/* CORS / Access Warning with Solution */}
           {corsWarning && (
-            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="p-4 rounded-2xl bg-[#FFD8C1]/45 border border-[#FFD8C1] text-[#24262D] text-xs flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-[#F47B49] shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <strong>Instagram CDN Cross-Origin Restriction:</strong>
                 <p>
@@ -355,12 +355,12 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
 
           {/* Extracted Frames Gallery */}
           <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E2D5] pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D4CFC5] pb-3">
               <div>
-                <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">
+                <h3 className="font-serif text-lg font-bold text-[#24262D]">
                   Extracted Image Frames ({extractedFrames.length})
                 </h3>
-                <span className="text-xs text-[#8C857B]">
+                <span className="text-xs text-[#5E5B55]">
                   Select frames to download or save as standalone photographs in your website library.
                 </span>
               </div>
@@ -369,7 +369,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                 <div className="flex items-center gap-2">
                   <button
                     onClick={selectAllFrames}
-                    className="px-3 py-1.5 rounded-lg border border-[#E8E2D5] text-xs font-semibold text-[#595550] hover:bg-white"
+                    className="px-3 py-1.5 rounded-lg border border-[#D4CFC5] text-xs font-semibold text-[#5E5B55] hover:bg-white"
                   >
                     {selectedFrameIds.size === extractedFrames.length ? 'Deselect All' : 'Select All'}
                   </button>
@@ -377,7 +377,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                   <button
                     onClick={downloadSelected}
                     disabled={selectedFrameIds.size === 0}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E8E2D5] text-xs font-semibold text-[#1C1B1A] hover:bg-[#FAF8F5] disabled:opacity-40"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#D4CFC5] text-xs font-semibold text-[#24262D] hover:bg-[#F7F3EB] disabled:opacity-40"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download ({selectedFrameIds.size})</span>
@@ -386,7 +386,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                   <button
                     onClick={saveSelectedToLibrary}
                     disabled={selectedFrameIds.size === 0}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#1C1B1A] text-white text-xs font-semibold hover:bg-[#455240] transition-colors disabled:opacity-40 shadow-sm"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#24262D] text-white text-xs font-semibold hover:bg-[#24262D] transition-colors disabled:opacity-40 shadow-sm"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
                     <span>Save to Media Library</span>
@@ -403,12 +403,12 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                     <div
                       key={frame.id}
                       className={`paper-card rounded-xl overflow-hidden border transition-all ${
-                        isSelected 
-                          ? 'ring-2 ring-[#455240] border-[#455240]' 
-                          : 'border-[#E8E2D5]'
+                        isSelected
+                          ? 'ring-2 ring-[#24262D] border-[#24262D]'
+                          : 'border-[#D4CFC5]'
                       }`}
                     >
-                      <div className="relative h-44 bg-[#1C1B1A] group">
+                      <div className="relative h-44 bg-[#24262D] group">
                         <img
                           src={frame.dataUrl}
                           alt={`Extracted at ${frame.formattedTimestamp}`}
@@ -419,7 +419,7 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                         <button
                           onClick={() => toggleFrameSelect(frame.id)}
                           className={`absolute top-2 left-2 w-6 h-6 rounded-md flex items-center justify-center transition-colors shadow-sm ${
-                            isSelected ? 'bg-[#455240] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
+                            isSelected ? 'bg-[#24262D] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
                           }`}
                         >
                           <Check className="w-4 h-4 stroke-[3]" />
@@ -434,14 +434,14 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 p-2">
                           <button
                             onClick={() => downloadFrame(frame)}
-                            className="p-2 rounded-lg bg-white text-[#1C1B1A] hover:bg-[#E8E2D5] transition-colors shadow"
+                            className="p-2 rounded-lg bg-white text-[#24262D] hover:bg-[#D4CFC5] transition-colors shadow"
                             title="Download Frame"
                           >
                             <Download className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => setAsThumbnail(frame)}
-                            className="px-2.5 py-1.5 rounded-lg bg-[#455240] text-white text-[11px] font-semibold hover:bg-[#2E372B] transition-colors shadow"
+                            className="px-2.5 py-1.5 rounded-lg bg-[#24262D] text-white text-[11px] font-semibold hover:bg-[#24262D] transition-colors shadow"
                             title="Use as Video Thumbnail"
                           >
                             Set Thumbnail
@@ -449,9 +449,9 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                         </div>
                       </div>
 
-                      <div className="p-2.5 bg-white text-[11px] text-[#595550] flex items-center justify-between">
+                      <div className="p-2.5 bg-white text-[11px] text-[#5E5B55] flex items-center justify-between">
                         <span>{frame.width}×{frame.height}</span>
-                        <span className="uppercase text-[9px] font-semibold text-[#8D5B4C]">
+                        <span className="uppercase text-[9px] font-semibold text-[#F47B49]">
                           {frame.format.split('/')[1]}
                         </span>
                       </div>
@@ -460,8 +460,8 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
                 })}
               </div>
             ) : (
-              <div className="p-8 text-center bg-white rounded-2xl border border-dashed border-[#E8E2D5] text-xs text-[#8C857B] space-y-2">
-                <Camera className="w-8 h-8 text-[#8C857B] mx-auto opacity-50" />
+              <div className="p-8 text-center bg-white rounded-2xl border border-dashed border-[#D4CFC5] text-xs text-[#5E5B55] space-y-2">
+                <Camera className="w-8 h-8 text-[#5E5B55] mx-auto opacity-50" />
                 <p>No frames extracted yet.</p>
                 <p className="text-[11px]">
                   Use the timeline scrubber above and click <strong>"Capture This Exact Frame"</strong> or click <strong>"Auto-Extract 5 Key Frames"</strong>.
@@ -473,13 +473,13 @@ export const VideoFrameExtractorModal: React.FC<VideoFrameExtractorModalProps> =
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-white border-t border-[#E8E2D5] flex items-center justify-between">
-          <span className="text-xs text-[#8C857B]">
+        <div className="p-4 bg-white border-t border-[#D4CFC5] flex items-center justify-between">
+          <span className="text-xs text-[#5E5B55]">
             All extracted frames preserve native aspect ratios and resolution without distortion.
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl text-xs font-semibold bg-[#1C1B1A] text-white hover:bg-[#455240] transition-colors"
+            className="px-5 py-2 rounded-xl text-xs font-semibold bg-[#24262D] text-white hover:bg-[#24262D] transition-colors"
           >
             Done
           </button>

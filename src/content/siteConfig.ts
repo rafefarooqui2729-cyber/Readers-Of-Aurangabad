@@ -7,8 +7,8 @@ export const siteConfig: SiteConfig = {
   region: 'MH20',
   establishedYear: '2024',
   whatsappUrl: 'https://chat.whatsapp.com/G5iE17e9GSo08B6Bv1s4zS', // [REAL COMMUNITY LINK]
-  instagramHandle: '@books.toread._',
-  instagramUrl: 'https://instagram.com/books.toread._',
+  instagramHandle: '@readers.of.aurangabad',
+  instagramUrl: 'https://www.instagram.com/readers.of.aurangabad/',
   email: 'readersofaurangabad@gmail.com',
   locationLine: 'Aurangabad (MH20), Maharashtra, India',
   hero: {

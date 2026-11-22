@@ -50,7 +50,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b-[3px] border-[#171717] bg-[#F4F0E8]/96 dark:bg-[#171717]/96 backdrop-blur-sm dark:border-[#D9F36A]">
+    <header className="sticky top-0 z-40 border-b border-[#24262D]/12 bg-[#F7F3EB]/95 backdrop-blur-md dark:border-[#F7F3EB]/12 dark:bg-[#1F2128]/95">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[76px] items-center justify-between gap-3">
           <button
@@ -58,7 +58,7 @@ export const Navbar: React.FC = () => {
             className="group flex min-w-0 items-center gap-3 text-left cursor-pointer"
             aria-label="Readers of Aurangabad Home"
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#171717] bg-[#FFFCF5] p-0.5 shadow-[3px_3px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:shadow-[3px_3px_0_#000]">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#24262D] bg-[#FFFDF8] p-0.5 shadow-[var(--mh20-shadow-sm)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:shadow-[var(--mh20-shadow-sm)]">
               <img
                 src="/brand/logo.png"
                 alt="Readers of Aurangabad logo"
@@ -66,10 +66,10 @@ export const Navbar: React.FC = () => {
               />
             </div>
             <div className="min-w-0">
-              <span className="block truncate font-display text-[1.05rem] uppercase leading-none tracking-[-0.02em] text-[#171717] dark:text-[#F4F0E8] sm:text-[1.2rem]">
+              <span className="block truncate font-display text-[1.05rem] uppercase leading-none tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] sm:text-[1.2rem]">
                 Readers of Aurangabad
               </span>
-              <span className="mt-1 block font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#F4512C]">
+              <span className="mt-1 block font-sans text-[10px] font-bold uppercase tracking-[0.2em] text-[#F47B49]">
                 MH20 · Reading Movement
               </span>
             </div>
@@ -82,17 +82,17 @@ export const Navbar: React.FC = () => {
                 <button
                   key={link.key}
                   onClick={() => handleNavClick(link.key)}
-                  className={`relative min-h-[44px] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer ${
+                  className={`relative min-h-[44px] min-w-[44px] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer ${
                     isActive
-                      ? 'text-[#171717] dark:text-[#F4F0E8]'
-                      : 'text-[#4F4A43] hover:text-[#171717] dark:text-[#B8B2A8] dark:hover:text-[#F4F0E8]'
+                      ? 'text-[#24262D] dark:text-[#F7F3EB]'
+                      : 'text-[#5E5B55] hover:text-[#24262D] dark:text-[#D4CFC5] dark:hover:text-[#F7F3EB]'
                   }`}
                 >
                   <span>{link.label}</span>
                   {isActive && (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute inset-x-2 bottom-1 h-[3px] bg-[#F4512C]"
+                      className="absolute inset-x-2 bottom-1 h-[3px] bg-[#F47B49]"
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   )}
@@ -108,7 +108,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
                 title="Change language"
                 aria-label="Select language"
                 aria-expanded={langDropdownOpen}
@@ -124,7 +124,7 @@ export const Navbar: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
-                    className={`absolute mt-2 w-40 border-2 border-[#171717] bg-[#FFFCF5] p-1 shadow-[6px_6px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:shadow-[6px_6px_0_#000] z-50 ${isRTL ? 'left-0' : 'right-0'}`}
+                    className={`absolute mt-2 w-40 border-2 border-[#24262D] bg-[#FFFDF8] p-1 shadow-[var(--mh20-shadow)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:shadow-[var(--mh20-shadow)] z-50 ${isRTL ? 'left-0' : 'right-0'}`}
                   >
                     {languages.map((l) => (
                       <button
@@ -133,8 +133,8 @@ export const Navbar: React.FC = () => {
                         onClick={() => handleLanguageSelect(l.code)}
                         className={`flex w-full min-h-[40px] items-center justify-between px-3 py-2 text-left text-xs font-bold transition-colors cursor-pointer ${
                           lang === l.code
-                            ? 'bg-[#171717] text-[#F4F0E8]'
-                            : 'text-[#171717] hover:bg-[#D9F36A] dark:text-[#F4F0E8] dark:hover:bg-[#D9F36A] dark:hover:text-[#171717]'
+                            ? 'bg-[#24262D] text-[#F7F3EB]'
+                            : 'text-[#24262D] hover:bg-[#C7EFDE] dark:text-[#F7F3EB] dark:hover:bg-[#C7EFDE] dark:hover:text-[#24262D]'
                         }`}
                       >
                         <span>{l.nativeName}</span>
@@ -166,7 +166,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => { void (isAdmin ? logoutAdmin() : logoutMember()); }}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
                 title="Signed in"
               >
                 <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
@@ -176,7 +176,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setMemberSignInOpen(true)}
-                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#171717] bg-[#FFFCF5] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] shadow-[3px_3px_0_#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000] cursor-pointer"
+                className="flex min-h-[44px] items-center gap-1.5 border-2 border-[#24262D] bg-[#FFFDF8] px-3 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)] cursor-pointer"
               >
                 <User className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Member</span>
@@ -188,10 +188,10 @@ export const Navbar: React.FC = () => {
               onClick={() => handleNavClick('admin')}
               className={`flex min-h-[44px] min-w-[44px] items-center justify-center border-2 transition-colors cursor-pointer ${
                 currentPage === 'admin'
-                  ? 'border-[#171717] bg-[#171717] text-[#F4F0E8]'
+                  ? 'border-[#24262D] bg-[#24262D] text-[#F7F3EB]'
                   : isAdmin
-                  ? 'border-[#171717] bg-[#D9F36A] text-[#171717]'
-                  : 'border-[#171717] bg-[#FFFCF5] text-[#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
+                  ? 'border-[#24262D] bg-[#C7EFDE] text-[#24262D]'
+                  : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
               }`}
               title={isAdmin ? 'Admin Portal (Authenticated)' : 'Admin Portal'}
               aria-label="Admin Portal"
@@ -202,7 +202,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => handleNavClick('contact')}
-              className="flex min-h-[44px] items-center justify-center border-2 border-[#171717] bg-[#F4512C] px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-[0.1em] text-white shadow-[4px_4px_0_#171717] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] cursor-pointer"
+              className="flex min-h-[44px] items-center justify-center border-2 border-[#24262D] bg-[#F47B49] px-4 py-2.5 font-sans text-xs font-bold uppercase tracking-[0.1em] text-white shadow-[var(--mh20-shadow-sm)] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] cursor-pointer"
             >
               {t.nav.joinCommunity}
             </button>
@@ -228,7 +228,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center border-2 border-[#171717] bg-[#FFFCF5] text-[#171717] shadow-[3px_3px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:shadow-[3px_3px_0_#000]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center border-2 border-[#24262D] bg-[#FFFDF8] text-[#24262D] shadow-[var(--mh20-shadow-sm)] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:shadow-[var(--mh20-shadow-sm)]"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -246,7 +246,7 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: shouldReduceMotion ? 0.1 : 0.22, ease: 'easeInOut' }}
-              className="overflow-hidden border-t-2 border-[#171717] py-5 dark:border-[#F4F0E8]/25 lg:hidden"
+              className="overflow-hidden border-t-2 border-[#24262D] py-5 dark:border-[#F7F3EB]/25 lg:hidden"
             >
               <nav className="flex flex-col gap-2" aria-label="Mobile Navigation">
                 {navLinks.map((link) => (
@@ -256,8 +256,8 @@ export const Navbar: React.FC = () => {
                     onClick={() => handleNavClick(link.key)}
                     className={`min-h-[48px] w-full border-2 px-4 py-3 text-left font-display text-xl uppercase tracking-[-0.01em] transition-colors ${
                       currentPage === link.key
-                        ? 'border-[#171717] bg-[#171717] text-[#F4F0E8]'
-                        : 'border-[#171717] bg-[#FFFCF5] text-[#171717] hover:bg-[#D9F36A] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
+                        ? 'border-[#24262D] bg-[#24262D] text-[#F7F3EB]'
+                        : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] hover:bg-[#C7EFDE] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
                     }`}
                   >
                     {link.label}
@@ -265,8 +265,8 @@ export const Navbar: React.FC = () => {
                 ))}
               </nav>
 
-              <div className="mt-5 border-t-2 border-[#171717]/20 pt-4 dark:border-[#F4F0E8]/20">
-                <span className="mb-2 block px-1 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#6E6960] dark:text-[#B8B2A8]">
+              <div className="mt-5 border-t-2 border-[#24262D]/20 pt-4 dark:border-[#F7F3EB]/20">
+                <span className="mb-2 block px-1 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#5E5B55] dark:text-[#D4CFC5]">
                   Language
                 </span>
                 <div className="grid grid-cols-2 gap-2">
@@ -277,8 +277,8 @@ export const Navbar: React.FC = () => {
                       onClick={() => handleLanguageSelect(l.code)}
                       className={`min-h-[44px] border-2 px-3 py-2 text-xs font-bold uppercase tracking-[0.08em] ${
                         lang === l.code
-                          ? 'border-[#171717] bg-[#F4512C] text-white'
-                          : 'border-[#171717] bg-[#FFFCF5] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]'
+                          ? 'border-[#24262D] bg-[#F47B49] text-white'
+                          : 'border-[#24262D] bg-[#FFFDF8] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]'
                       }`}
                     >
                       {l.nativeName}
@@ -291,7 +291,7 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleNavClick('contact')}
-                  className="flex min-h-[48px] w-full items-center justify-center border-2 border-[#171717] bg-[#F4512C] font-sans text-sm font-bold uppercase tracking-[0.08em] text-white shadow-[4px_4px_0_#171717]"
+                  className="flex min-h-[48px] w-full items-center justify-center border-2 border-[#24262D] bg-[#F47B49] font-sans text-sm font-bold uppercase tracking-[0.08em] text-white shadow-[var(--mh20-shadow-sm)]"
                 >
                   {t.nav.joinCommunity}
                 </button>
@@ -304,7 +304,7 @@ export const Navbar: React.FC = () => {
                       else void logoutMember();
                       setMobileMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#171717] bg-[#FFFCF5] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#24262D] bg-[#FFFDF8] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]"
                   >
                     <LogOut className="h-4 w-4" aria-hidden="true" />
                     <span>Sign out</span>
@@ -316,7 +316,7 @@ export const Navbar: React.FC = () => {
                       setMemberSignInOpen(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#171717] bg-[#FFFCF5] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8]"
+                    className="flex min-h-[44px] w-full items-center justify-center gap-2 border-2 border-[#24262D] bg-[#FFFDF8] font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#24262D] dark:border-[#F7F3EB]/35 dark:bg-[#2B2E36] dark:text-[#F7F3EB]"
                   >
                     <User className="h-4 w-4" aria-hidden="true" />
                     <span>Member sign in</span>
@@ -326,7 +326,7 @@ export const Navbar: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleNavClick('admin')}
-                  className="flex min-h-[44px] w-full items-center justify-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#4F4A43] underline underline-offset-4 dark:text-[#B8B2A8]"
+                  className="flex min-h-[44px] w-full items-center justify-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#5E5B55] underline underline-offset-4 dark:text-[#D4CFC5]"
                 >
                   <Lock className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{t.nav.admin}</span>

@@ -20,9 +20,9 @@ export const Stamp: React.FC<StampProps> = ({
   return (
     <div
       aria-label={`Community stamp: Readers of Aurangabad, Established ${year}`}
-      className={`relative inline-flex items-center justify-center rounded-none border-[3px] border-[#171717] bg-[#D9F36A] p-2 text-center select-none rotate-[-6deg] transition-transform duration-200 hover:rotate-[-2deg] shadow-[6px_6px_0_#171717] ${sizeClasses[size]} ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-none border-[3px] border-[#24262D] bg-[#C7EFDE] p-2 text-center select-none rotate-[-6deg] transition-transform duration-200 hover:rotate-[-2deg] shadow-[var(--mh20-shadow)] ${sizeClasses[size]} ${className}`}
     >
-      <div className="flex flex-col items-center justify-center font-sans uppercase tracking-widest text-[#171717] leading-tight">
+      <div className="flex flex-col items-center justify-center font-sans uppercase tracking-widest text-[#24262D] dark:text-[#24262D] leading-tight">
         <span className="text-[0.75em] font-bold tracking-[0.22em]">
           MH20 READING
         </span>
@@ -31,7 +31,7 @@ export const Stamp: React.FC<StampProps> = ({
           <br />
           AURANGABAD
         </span>
-        <span className="text-[0.8em] font-bold tracking-[0.18em] border-t-2 border-[#171717] pt-1 mt-1">
+        <span className="text-[0.8em] font-bold tracking-[0.18em] border-t-2 border-[#24262D] pt-1 mt-1">
           EST. {year}
         </span>
       </div>

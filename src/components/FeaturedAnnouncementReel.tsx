@@ -197,7 +197,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
   return (
     <section ref={sectionRef} className="cine-scene relative py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Decorative glass glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-80 bg-[#171717]/10 rounded-none blur-[100px] pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-80 bg-[#24262D]/10 rounded-none blur-[100px] pointer-events-none -z-10" />
 
       {/* Main Glass Card Frame */}
       <motion.div
@@ -205,12 +205,12 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="cine-scene glass-panel rounded-none p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-[8px_8px_0_#171717]"
+        className="cine-scene glass-panel rounded-none p-6 sm:p-10 lg:p-12 relative overflow-hidden shadow-[var(--mh20-shadow-lg)]"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Announcement reel player */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="cine-layer cine-layer--floating relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-none sm:rounded-none overflow-hidden glass-dark border border-white/20 shadow-[8px_8px_0_#171717] group select-none">
+            <div className="cine-layer cine-layer--floating relative w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-none sm:rounded-none overflow-hidden glass-dark border border-white/20 shadow-[var(--mh20-shadow-lg)] group select-none">
 
               {/* Native Video Element with object-contain to ensure the full frame is visible */}
               <video
@@ -231,7 +231,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
               {/* Accessible Placeholder when video is not yet near viewport and no poster image exists */}
               {!isNearViewport && !posterSrc && (
                 <div
-                  className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center cursor-pointer bg-gradient-to-b from-[#1c1f1a] via-[#151714] to-[#0e100d] select-none"
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center cursor-pointer bg-[#24262D] select-none"
                   onClick={togglePlay}
                   role="button"
                   tabIndex={0}
@@ -243,13 +243,13 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                     }
                   }}
                 >
-                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[6px_6px_0_#171717] mb-4 group-hover:scale-110 active:scale-95 transition-transform">
-                    <Play className="w-7 h-7 translate-x-0.5 text-emerald-400" />
+                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[var(--mh20-shadow)] mb-4 group-hover:scale-110 active:scale-95 transition-transform">
+                    <Play className="w-7 h-7 translate-x-0.5 text-[#C7EFDE]" />
                   </div>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 mb-1">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-[#C7EFDE] mb-1">
                     Readers of Aurangabad
                   </span>
-                  <p className="text-base font-editorial text-white/90">
+                  <p className="text-base font-display text-white/90">
                     Community Announcement
                   </p>
                   <p className="text-xs text-white/50 mt-1">
@@ -259,7 +259,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
               )}
 
               {hasError && (
-                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#171717] px-6 text-center text-[#171717]">
+                <div className="absolute inset-0 z-[11] flex flex-col items-center justify-center bg-[#24262D] px-6 text-center text-[#24262D]">
                   <p className="font-semibold">Announcement reel unavailable</p>
                   <p className="mt-1 text-sm text-white/70">The announcement video file could not be loaded.</p>
                 </div>
@@ -267,8 +267,8 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
 
               {/* Top Glass Badge */}
               <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
-                <span className="glass-pill px-3 py-1 rounded-none text-[11px] font-medium tracking-widest text-[#FFFCF5] uppercase bg-black/40 border-white/20 flex items-center gap-1.5 shadow-[3px_3px_0_#171717]">
-                  <span className="w-2 h-2 rounded-none bg-emerald-400" />
+                <span className="glass-pill px-3 py-1 rounded-none text-[11px] font-medium tracking-widest text-[#FFFDF8] uppercase bg-black/40 border-white/20 flex items-center gap-1.5 shadow-[var(--mh20-shadow-sm)]">
+                  <span className="w-2 h-2 rounded-none bg-[#C7EFDE]" />
                   ANNOUNCEMENT
                 </span>
 
@@ -286,7 +286,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                   onClick={togglePlay}
                   className="absolute inset-0 bg-black/35 backdrop-blur-[2px] flex items-center justify-center cursor-pointer transition-opacity z-10"
                 >
-                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[6px_6px_0_#171717] hover:scale-110 active:scale-95 transition-transform">
+                  <div className="w-16 h-16 rounded-none glass-dark-control flex items-center justify-center text-white shadow-[var(--mh20-shadow)] hover:scale-110 active:scale-95 transition-transform">
                     {isEnded ? <RotateCcw className="w-7 h-7" /> : <Play className="w-7 h-7 translate-x-0.5" />}
                   </div>
                 </div>
@@ -301,7 +301,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                   title="Seek"
                 >
                   <div
-                    className="h-full bg-[#F4F0E8] rounded-none transition-all duration-100 relative"
+                    className="h-full bg-[#F7F3EB] rounded-none transition-all duration-100 relative"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -310,7 +310,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                   <button
                     onClick={togglePlay}
                     aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                    className="glass-dark-control w-9 h-9 rounded-none flex items-center justify-center cursor-pointer text-white"
+                    className="glass-dark-control w-11 h-11 rounded-none flex items-center justify-center cursor-pointer text-white"
                   >
                     {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 translate-x-0.5" />}
                   </button>
@@ -319,16 +319,16 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
                     <button
                       onClick={toggleMute}
                       aria-label={isMuted ? 'Unmute' : 'Mute'}
-                      className="glass-dark-control px-3 h-9 rounded-none flex items-center gap-1.5 text-xs text-white cursor-pointer"
+                      className="glass-dark-control px-3 h-11 rounded-none flex items-center gap-1.5 text-xs text-white cursor-pointer"
                     >
                       {isMuted ? (
                         <>
-                          <VolumeX className="w-4 h-4 text-amber-300" />
+                          <VolumeX className="w-4 h-4 text-[#FFD8C1]" />
                           <span className="font-sans font-medium text-[11px]">Unmute</span>
                         </>
                       ) : (
                         <>
-                          <Volume2 className="w-4 h-4 text-emerald-300" />
+                          <Volume2 className="w-4 h-4 text-[#C7EFDE]" />
                           <span className="font-sans font-medium text-[11px]">Mute</span>
                         </>
                       )}
@@ -342,27 +342,27 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
           {/* Right Column: Editorial Glass Content Card */}
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-3">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-editorial font-normal text-[#171717] leading-[1.15]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-normal text-[#24262D] leading-[1.15]">
                 {title}
               </h2>
-              <p className="text-lg sm:text-xl font-editorial italic text-[#171717]">
+              <p className="text-lg sm:text-xl font-display italic text-[#24262D]">
                 {subtitle}
               </p>
             </div>
 
-            <p className="text-[#4F4A43] text-base sm:text-lg leading-relaxed font-sans max-w-xl">
+            <p className="text-[#5E5B55] text-base sm:text-lg leading-relaxed font-sans max-w-xl">
               {description}
             </p>
 
             {/* Community Focus Callout */}
             <div className="inline-flex items-center gap-3.5 px-4 py-3 rounded-none glass-card border-white/60">
-              <span className="w-2.5 h-2.5 rounded-none bg-[#6E6960] shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-none bg-[#5E5B55] shrink-0" />
               <div>
-                <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-[#6E6960] block">
+                <span className="text-[10px] sm:text-[11px] uppercase font-semibold tracking-wider text-[#5E5B55] block">
                   Community Focus
                 </span>
-                <p className="text-xs sm:text-sm font-semibold text-[#171717]">
-                  Weekly Gatherings &amp; Reader Circles
+                <p className="text-xs sm:text-sm font-semibold text-[#24262D]">
+                  Monthly Gatherings &amp; Reader Circles
                 </p>
               </div>
             </div>
@@ -370,7 +370,7 @@ export const FeaturedAnnouncementReel: React.FC<FeaturedAnnouncementReelProps> =
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <button
                 onClick={togglePlay}
-                className="glass-button px-6 py-3 rounded-none text-sm font-medium flex items-center gap-2 cursor-pointer shadow-[4px_4px_0_#171717]"
+                className="glass-button px-6 py-3 rounded-none text-sm font-medium flex items-center gap-2 cursor-pointer shadow-[var(--mh20-shadow-sm)]"
               >
                 {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 <span>{isPlaying ? 'Pause Announcement' : 'Watch Announcement'}</span>

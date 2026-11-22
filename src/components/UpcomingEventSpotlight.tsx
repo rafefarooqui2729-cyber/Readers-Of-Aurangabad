@@ -61,10 +61,10 @@ const Digit: React.FC<{ value: string; reduceMotion: boolean }> = ({ value, redu
 
 const CountdownUnit: React.FC<{ label: string; value: number; reduceMotion: boolean }> = ({ label, value, reduceMotion }) => (
   <div className="min-w-0 px-1.5 py-2 sm:px-3 sm:py-2.5 text-center">
-    <div className="font-serif text-lg sm:text-xl lg:text-2xl font-semibold text-[#171717] leading-none">
+    <div className="font-serif text-lg sm:text-xl lg:text-2xl font-semibold text-[#24262D] leading-none">
       <Digit value={pad(value)} reduceMotion={reduceMotion} />
     </div>
-    <div className="mt-1 text-[8px] sm:text-[9px] uppercase tracking-[0.12em] text-[#6E6960] font-semibold">{label}</div>
+    <div className="mt-1 text-[8px] sm:text-[9px] uppercase tracking-[0.12em] text-[#5E5B55] font-semibold">{label}</div>
   </div>
 );
 
@@ -101,7 +101,7 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
   const announcementPreview = useMemo(() => {
     if (!announcement) return '';
     const text = announcement.content.replace(/\s+/g, ' ').trim();
-    return text.length > 180 ? `${text.slice(0, 177)}â€¦` : text;
+    return text.length > 180 ? `${text.slice(0, 177)}…` : text;
   }, [announcement]);
 
   return (
@@ -116,41 +116,41 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
       <div className="cine-layer cine-layer--raised rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(250,248,245,0.96),rgba(235,240,233,0.92))] shadow-[0_20px_60px_rgba(28,27,26,0.08)] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
           <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10">
-            <div className="inline-flex items-center gap-2 rounded-none border border-[#171717]/15 bg-white/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#171717]">
-              <Sparkles className="w-3.5 h-3.5 text-[#F4512C]" />
+            <div className="inline-flex items-center gap-2 rounded-none border border-[#24262D]/15 bg-white/70 px-3.5 py-1.5 text-xs font-semibold tracking-wide text-[#24262D]">
+              <Sparkles className="w-3.5 h-3.5 text-[#F47B49]" />
               <span>Next Community Gathering</span>
             </div>
 
             {meetup ? (
               <div className="mt-5 space-y-5">
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#171717] leading-[1.05]">
+                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.05]">
                     {meetup.title}
                   </h2>
                   {meetup.edition && (
-                    <p className="mt-2 text-sm sm:text-base font-medium text-[#171717]">{meetup.edition}</p>
+                    <p className="mt-2 text-sm sm:text-base font-medium text-[#24262D]">{meetup.edition}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[#4F4A43]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[#5E5B55]">
                   <div className="flex items-start gap-2.5">
-                    <Calendar className="w-4 h-4 mt-0.5 text-[#F4512C]" />
+                    <Calendar className="w-4 h-4 mt-0.5 text-[#F47B49]" />
                     <div>
-                      <div className="font-semibold text-[#171717]">{meetup.date}</div>
+                      <div className="font-semibold text-[#24262D]">{meetup.date}</div>
                       <div>{meetup.time}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 mt-0.5 text-[#F4512C]" />
+                    <MapPin className="w-4 h-4 mt-0.5 text-[#F47B49]" />
                     <div>
-                      <div className="font-semibold text-[#171717]">{meetup.venue}</div>
+                      <div className="font-semibold text-[#24262D]">{meetup.venue}</div>
                       {meetup.address && <div>{meetup.address}</div>}
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#6E6960] font-semibold mb-3">
+                  <p className="text-xs uppercase tracking-[0.18em] text-[#5E5B55] font-semibold mb-3">
                     {!hasValidDate
                       ? 'Date to be confirmed'
                       : isLiveOrPast
@@ -158,15 +158,15 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                       : 'Countdown to gathering'}
                   </p>
                   {!hasValidDate ? (
-                    <div className="rounded-none border border-[#171717]/15 bg-white/70 px-5 py-4 text-[#171717] font-medium">
+                    <div className="rounded-none border border-[#24262D]/15 bg-white/70 px-5 py-4 text-[#24262D] font-medium">
                       The date for this gathering is yet to be confirmed. Check the gathering archive for updates.
                     </div>
                   ) : isLiveOrPast ? (
-                    <div className="rounded-none border border-[#171717]/15 bg-white/70 px-5 py-4 text-[#171717] font-medium">
+                    <div className="rounded-none border border-[#24262D]/15 bg-white/70 px-5 py-4 text-[#24262D] font-medium">
                       This gathering is happening now or its scheduled start time has arrived. Check details for the latest update.
                     </div>
                   ) : (
-                    <div className="grid grid-cols-4 w-full max-w-[340px] overflow-hidden rounded-none border border-[#171717]/15 bg-white/70 divide-x divide-[#171717]/10 shadow-[3px_3px_0_#171717]" role="timer" aria-live="polite">
+                    <div className="grid grid-cols-4 w-full max-w-[340px] overflow-hidden rounded-none border border-[#24262D]/15 bg-white/70 divide-x divide-[#24262D]/10 shadow-[var(--mh20-shadow-sm)]" role="timer" aria-live="polite">
                       <CountdownUnit label="Days" value={timeLeft.days} reduceMotion={shouldReduceMotion} />
                       <CountdownUnit label="Hours" value={timeLeft.hours} reduceMotion={shouldReduceMotion} />
                       <CountdownUnit label="Minutes" value={timeLeft.minutes} reduceMotion={shouldReduceMotion} />
@@ -178,7 +178,7 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                 <div className="flex flex-wrap items-center gap-3 pt-1">
                   <button
                     onClick={() => onViewEvent(meetup)}
-                    className="glass-button px-5 py-3 rounded-none text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-[4px_4px_0_#171717]"
+                    className="glass-button px-5 py-3 rounded-none text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-[var(--mh20-shadow-sm)]"
                   >
                     <span>View details</span>
                     <ArrowRight className="w-4 h-4" />
@@ -206,11 +206,11 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
               </div>
             ) : (
               <div className="mt-5 space-y-5">
-                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#171717] leading-[1.05]">
+                <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.05]">
                   Our next chapter is being prepared
                 </h2>
-                <p className="text-base sm:text-lg text-[#4F4A43] leading-relaxed max-w-2xl">
-                  There isn&apos;t a confirmed upcoming meetup on the calendar right now. Stay close â€” new gatherings, reading circles, and community moments are announced here as soon as they&apos;re ready.
+                <p className="text-base sm:text-lg text-[#5E5B55] leading-relaxed max-w-2xl">
+                  There isn&apos;t a confirmed upcoming meetup on the calendar right now. Stay close — new gatherings, reading circles, and community moments are announced here as soon as they&apos;re ready.
                 </p>
                 <button
                   onClick={onViewGatherings}
@@ -223,8 +223,8 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
             )}
           </div>
 
-          <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-[#171717]/70 bg-white/45 p-6 sm:p-8 lg:p-10">
-            <div className="flex items-center gap-2 text-[#171717] font-semibold text-xs uppercase tracking-[0.18em]">
+          <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-[#24262D]/70 bg-white/45 p-6 sm:p-8 lg:p-10">
+            <div className="flex items-center gap-2 text-[#24262D] font-semibold text-xs uppercase tracking-[0.18em]">
               <Bell className="w-4 h-4" />
               <span>Latest Community Announcement</span>
             </div>
@@ -234,7 +234,7 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                 id={announcementTargetDomId(announcement.id)}
                 className="mt-5 space-y-4 scroll-mt-24"
               >
-                <div className="flex items-center gap-2 text-xs text-[#6E6960]">
+                <div className="flex items-center gap-2 text-xs text-[#5E5B55]">
                   <Clock className="w-3.5 h-3.5" />
                   <span>
                     Published {new Date(announcement.publishedAt || announcement.createdAt).toLocaleDateString('en-IN', {
@@ -244,15 +244,15 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
                     })}
                   </span>
                 </div>
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#171717] leading-tight">
+                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#24262D] leading-tight">
                   {announcement.title}
                 </h3>
-                <p className="text-sm sm:text-base text-[#4F4A43] leading-relaxed whitespace-pre-line">
+                <p className="text-sm sm:text-base text-[#5E5B55] leading-relaxed whitespace-pre-line">
                   {announcementPreview}
                 </p>
                 <button
                   onClick={onViewAnnouncement}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#171717] hover:text-[#F4512C] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#24262D] hover:text-[#F47B49] transition-colors cursor-pointer"
                 >
                   <span>View full announcement</span>
                   <ArrowRight className="w-4 h-4" />
@@ -260,8 +260,8 @@ export const UpcomingEventSpotlight: React.FC<UpcomingEventSpotlightProps> = ({
               </div>
             ) : (
               <div className="mt-5 space-y-3">
-                <h3 className="font-serif text-2xl font-bold text-[#171717]">No new announcements yet</h3>
-                <p className="text-sm sm:text-base text-[#4F4A43] leading-relaxed">
+                <h3 className="font-serif text-2xl font-bold text-[#24262D]">No new announcements yet</h3>
+                <p className="text-sm sm:text-base text-[#5E5B55] leading-relaxed">
                   When the community shares an update, you&apos;ll see it here alongside the next gathering.
                 </p>
               </div>

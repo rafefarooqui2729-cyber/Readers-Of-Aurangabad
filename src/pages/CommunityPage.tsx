@@ -20,11 +20,11 @@ export const CommunityPage: React.FC = () => {
       />
 
       <div className="space-y-14 sm:space-y-20">
-        {/* Reflections â€” only the founder's documented reflection is published.
+        {/* Reflections — only the founder's documented reflection is published.
             Reader stories are never shown publicly without documented consent. */}
         <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8 sm:pt-14 lg:px-12">
           <SectionHeading
-            eyebrow="01 â€” Reflections from the circle"
+            eyebrow="01 — Reflections from the circle"
             title="Why we gather"
             description="The founder's own reflection on reading together. We feature reader stories only with explicit permission."
           />
@@ -32,14 +32,14 @@ export const CommunityPage: React.FC = () => {
             {memberVoices.map((voice) => (
               <PaperPanel key={voice.id} className="flex h-full flex-col p-6 sm:p-8">
                 <figure className="flex h-full flex-col">
-                  <blockquote className="font-serif text-lg italic leading-relaxed text-[#171717] dark:text-[#F4F0E8] sm:text-xl">
+                  <blockquote className="font-serif text-lg italic leading-relaxed text-[#24262D] dark:text-[#F7F3EB] sm:text-xl">
                     &ldquo;{voice.quote}&rdquo;
                   </blockquote>
-                  <figcaption className="mt-6 border-t border-[#171717]/15 pt-5 dark:border-[#F4F0E8]/15">
-                    <span className="block font-display text-sm font-bold text-[#171717] dark:text-[#F4F0E8]">
+                  <figcaption className="mt-6 border-t border-[#24262D]/15 pt-5 dark:border-[#F7F3EB]/15">
+                    <span className="block font-display text-sm font-bold text-[#24262D] dark:text-[#F7F3EB]">
                       {voice.memberName}
                     </span>
-                    <span className="block font-sans text-[11px] text-[#6E6960] dark:text-[#B8B2A8]">
+                    <span className="block font-sans text-[11px] text-[#5E5B55] dark:text-[#D4CFC5]">
                       {voice.joinYear}
                     </span>
                   </figcaption>
@@ -52,9 +52,9 @@ export const CommunityPage: React.FC = () => {
         {/* Photograph archive */}
         <section className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
           <SectionHeading
-            eyebrow="02 â€” The complete archive"
+            eyebrow="02 — The complete archive"
             title="Community photographs"
-            description="Real moments from our Sunday gatherings â€” browse by category and open any image in full screen."
+            description="Real moments from our gatherings — browse by category and open any image in full screen."
           />
           <div className="mt-8">
             <CommunityGallery compact={false} />
@@ -64,7 +64,7 @@ export const CommunityPage: React.FC = () => {
         {/* Stewards */}
         <section className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-12">
           <SectionHeading
-            eyebrow="03 â€” Humble stewardship"
+            eyebrow="03 — Humble stewardship"
             title="The people behind the circle"
             description="Leadership here means arriving early, laying out the mats, and making room for everyone."
             center
@@ -72,7 +72,7 @@ export const CommunityPage: React.FC = () => {
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
             <PaperPanel className="flex items-start gap-5 p-6 sm:p-8">
               <img
-                src="/images/enhanced/community/founder-portrait.webp"
+                src="/images/community/founder-abdul-rafe-2026.jpeg"
                 alt="Abdul Rafe Farooqui"
                 loading="lazy"
                 className="h-16 w-16 shrink-0 rounded-none object-cover object-[center_15%]"
@@ -82,31 +82,31 @@ export const CommunityPage: React.FC = () => {
                 }}
               />
               <div>
-                <h3 className="font-display text-xl font-bold text-[#171717] dark:text-[#F4F0E8]">
+                <h3 className="font-display text-xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
                   Abdul Rafe Farooqui
                 </h3>
-                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#F4512C]">
+                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#F47B49]">
                   Founder, Readers of Aurangabad
                 </p>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
+                <p className="mt-3 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
                   Began the movement to bring the tactile joy of paperbacks back to Aurangabad&apos;s
                   public spaces. Believes every reader holds a vital perspective.
                 </p>
               </div>
             </PaperPanel>
             <PaperPanel className="flex items-start gap-5 p-6 sm:p-8">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-none border border-[#6E6960]/30 text-[#6E6960]">
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-none border border-[#5E5B55]/30 text-[#5E5B55]">
                 <Users className="h-7 w-7" aria-hidden="true" />
               </span>
               <div>
-                <h3 className="font-display text-xl font-bold text-[#171717] dark:text-[#F4F0E8]">
+                <h3 className="font-display text-xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
                   The community volunteers
                 </h3>
-                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#6E6960]">
+                <p className="mt-1 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-[#5E5B55]">
                   Coordinators &amp; event stewards
                 </p>
-                <p className="mt-3 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
-                  Local students, educators, and readers who arrive early on Sunday mornings to lay
+                <p className="mt-3 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
+                  Local students, educators, and readers who arrive early at gathering venues to lay
                   out mats, welcome first-timers, and keep the space friendly.
                 </p>
               </div>
@@ -116,11 +116,11 @@ export const CommunityPage: React.FC = () => {
 
         {/* Invitation */}
         <section className="mx-auto max-w-3xl px-5 pb-4 text-center sm:px-8">
-          <Heart className="mx-auto h-7 w-7 text-[#F4512C]" aria-hidden="true" />
-          <h3 className="mt-4 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8] sm:text-3xl">
+          <Heart className="mx-auto h-7 w-7 text-[#F47B49]" aria-hidden="true" />
+          <h3 className="mt-4 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB] sm:text-3xl">
             Share your reading journey
           </h3>
-          <p className="mx-auto mt-3 max-w-lg font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
+          <p className="mx-auto mt-3 max-w-lg font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
             Have you attended a meetup or rediscovered books in Aurangabad? We would love to feature
             your story in this archive.
           </p>

@@ -7,6 +7,10 @@ interface PageHeroProps {
   eyebrow: string;
   title: string;
   lead: string;
+  imagePosition?: string;
+  srcSet?: string;
+  sizes?: string;
+  titleSize?: 'default' | 'compact';
   children?: React.ReactNode;
 }
 
@@ -17,37 +21,49 @@ export const PageHero: React.FC<PageHeroProps> = ({
   eyebrow,
   title,
   lead,
+  imagePosition = 'object-[center_25%]',
+  srcSet,
+  sizes,
+  titleSize = 'default',
   children,
 }) => (
   <section
-    className="relative isolate flex min-h-[clamp(420px,58vh,620px)] flex-col justify-end overflow-hidden border-b-[3px] border-[#171717] bg-[#171717]"
+    className="relative isolate flex min-h-[clamp(380px,52vh,560px)] flex-col justify-end overflow-hidden bg-[#24262D]"
     aria-label={title}
   >
     <img
       src={image}
+      srcSet={srcSet}
+      sizes={sizes}
       alt={alt}
-      className="absolute inset-0 h-full w-full object-cover object-[center_25%] grayscale-[0.15] contrast-[1.05]"
+      className={`absolute inset-0 h-full w-full object-cover ${imagePosition} grayscale-[0.08] contrast-[1.02]`}
       fetchPriority="high"
     />
     <div
-      className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/55 to-[#171717]/10"
+      className="absolute inset-0 bg-gradient-to-t from-[#24262D]/95 via-[#24262D]/60 to-[#24262D]/10"
       aria-hidden="true"
     />
     <div
-      className="absolute inset-y-0 left-0 w-2 bg-[#F4512C]"
+      className="absolute inset-y-0 left-0 w-1.5 bg-[#F47B49]"
       aria-hidden="true"
     />
     <div className="relative z-10 mx-auto w-full max-w-7xl px-5 pb-10 sm:px-8 sm:pb-12 lg:px-12">
-      <span className="mb-4 inline-flex border-2 border-[#171717] bg-[#D9F36A] px-3 py-1 font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#171717] shadow-[4px_4px_0_#171717]">
+      <span className="mb-4 inline-flex rounded-full bg-[#FFD8C1] px-3 py-1 font-sans text-[11px] font-semibold tracking-[0.14em] text-[#24262D]">
         MH20 / Aurangabad
       </span>
       <div className="mb-3">
         <Eyebrow color="clay">{eyebrow}</Eyebrow>
       </div>
-      <h1 className="max-w-4xl font-display text-[clamp(2.6rem,7vw,5.2rem)] uppercase leading-[0.92] tracking-[-0.03em] text-[#F4F0E8]">
+      <h1
+        className={
+          titleSize === 'compact'
+            ? 'max-w-3xl font-display text-[clamp(2.1rem,4.5vw,3.6rem)] leading-[1.05] tracking-[-0.025em] text-balance text-[#F7F3EB]'
+            : 'max-w-4xl font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[1.02] tracking-[-0.025em] text-balance text-[#F7F3EB]'
+        }
+      >
         {title}
       </h1>
-      <p className="mt-4 max-w-2xl border-l-4 border-[#F4512C] pl-4 font-serif text-lg italic leading-relaxed text-[#F4F0E8]/92 sm:text-xl">
+      <p className="mt-4 max-w-2xl border-l-2 border-[#F47B49] pl-4 font-serif text-lg italic leading-relaxed text-[#F7F3EB]/90 sm:text-xl">
         {lead}
       </p>
       {children ? <div className="mt-8">{children}</div> : null}
@@ -60,10 +76,10 @@ interface PaperPanelProps {
   className?: string;
 }
 
-/** Warm paper surface with neo-brutalist edge and shadow. */
+/** Warm paper surface used across interior pages. */
 export const PaperPanel: React.FC<PaperPanelProps> = ({ children, className = '' }) => (
   <div
-    className={`border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:border-[#F4F0E8]/25 dark:bg-[#202020] dark:shadow-[6px_6px_0_#000] ${className}`.trim()}
+    className={`rounded-lg border border-[#24262D]/12 bg-[#FFFDF8] shadow-[var(--mh20-shadow-sm)] dark:border-[#F7F3EB]/15 dark:bg-[#2B2E36] ${className}`.trim()}
   >
     {children}
   </div>
@@ -74,6 +90,7 @@ interface SectionHeadingProps {
   title: string;
   description?: string;
   center?: boolean;
+  size?: 'default' | 'compact';
   className?: string;
 }
 
@@ -82,27 +99,34 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   title,
   description,
   center = false,
+  size = 'default',
   className = '',
 }) => (
   <div className={`${center ? 'text-center' : ''} ${className}`.trim()}>
     <Eyebrow color="clay">{eyebrow}</Eyebrow>
-    <h2 className="mt-2 font-display text-3xl uppercase leading-[0.95] tracking-[-0.02em] text-[#171717] dark:text-[#F4F0E8] sm:text-4xl lg:text-5xl">
+    <h2
+      className={
+        size === 'compact'
+          ? 'mt-2 font-display text-2xl leading-[1.12] tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] sm:text-3xl'
+          : 'mt-2 font-display text-3xl leading-[1.1] tracking-[-0.02em] text-[#24262D] dark:text-[#F7F3EB] sm:text-4xl lg:text-5xl'
+      }
+    >
       {title}
     </h2>
     {description ? (
-      <p className={`mt-4 ${center ? 'mx-auto' : ''} max-w-2xl font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6] sm:text-base`}>
+      <p className={`mt-4 ${center ? 'mx-auto' : ''} max-w-2xl font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5] sm:text-base`}>
         {description}
       </p>
     ) : null}
     <span
-      className={`mt-5 block h-[3px] w-20 bg-[#F4512C] ${center ? 'mx-auto' : ''}`}
+      className={`mt-5 block h-[2px] w-16 rounded bg-[#F47B49] ${center ? 'mx-auto' : ''}`}
       aria-hidden="true"
     />
   </div>
 );
 
 export const fieldClasses =
-  'w-full rounded-none border-2 border-[#171717] bg-[#FFFCF5] px-3.5 py-3 font-sans text-sm text-[#171717] placeholder:text-[#6E6960] focus:border-[#F4512C] focus:outline-none focus:ring-0 focus:shadow-[4px_4px_0_rgba(244,81,44,0.2)] dark:border-[#F4F0E8]/30 dark:bg-[#202020] dark:text-[#F4F0E8] dark:placeholder:text-[#9E988F]';
+  'w-full rounded border border-[#24262D]/20 bg-[#FFFDF8] px-3.5 py-3 font-sans text-sm text-[#24262D] placeholder:text-[#5E5B55] focus:border-[#F47B49] focus:outline-none focus:ring-0 focus:shadow-[0_0_0_3px_rgba(244,123,73,0.18)] dark:border-[#F7F3EB]/25 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:placeholder:text-[#D4CFC5]';
 
 interface FormFieldProps {
   id: string;
@@ -124,10 +148,10 @@ export const FormField: React.FC<FormFieldProps> = ({
   <div className={className}>
     <label
       htmlFor={id}
-      className="mb-1.5 block font-sans text-xs font-bold uppercase tracking-[0.08em] text-[#171717] dark:text-[#F4F0E8]"
+      className="mb-1.5 block font-sans text-xs font-semibold tracking-[0.05em] text-[#24262D] dark:text-[#F7F3EB]"
     >
       {label}
-      {required ? <span className="ml-1 text-[#F4512C]">*</span> : null}
+      {required ? <span className="ml-1 text-[#F47B49]">*</span> : null}
     </label>
     {children}
     {invalid ? <span className="sr-only">This field needs attention.</span> : null}
@@ -147,10 +171,10 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
   <button
     type={type}
     aria-pressed={active}
-    className={`min-h-[44px] rounded-none border-2 px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F4512C] ${
+    className={`min-h-[44px] rounded border border-[#24262D]/25 px-4 py-2 font-sans text-xs font-bold uppercase tracking-[0.08em] transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F47B49] ${
       active
-        ? 'border-[#171717] bg-[#F4512C] text-white shadow-[4px_4px_0_#171717]'
-        : 'border-[#171717] bg-[#FFFCF5] text-[#171717] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_#171717] dark:border-[#F4F0E8]/35 dark:bg-[#202020] dark:text-[#F4F0E8] dark:hover:bg-[#D9F36A] dark:hover:text-[#171717]'
+        ? 'border-[#24262D] bg-[#F47B49] text-white shadow-[var(--mh20-shadow-sm)]'
+        : 'border-[#24262D]/25 bg-[#FFFDF8] text-[#24262D] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:border-[#24262D] hover:bg-[#C7EFDE] hover:text-[#24262D] dark:border-[#F7F3EB]/30 dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:hover:bg-[#C7EFDE] dark:hover:text-[#24262D]'
     } ${className}`.trim()}
     {...props}
   />

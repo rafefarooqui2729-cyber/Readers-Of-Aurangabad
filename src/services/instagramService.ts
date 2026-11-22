@@ -35,13 +35,13 @@ export const categorizeInstagramCaption = (caption: string): MediaCategory => {
 };
 
 /**
- * Pre-seeded authentic Instagram content from @readers.of.aurangabad
- * Used to test syncing, frame extraction from reels, and publishing immediately.
+ * Sample content for sync, frame-extraction, and publishing tests.
+ * Engagement counts are intentionally omitted until real API data is connected.
  */
 export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
   {
     id: 'ig-post-101',
-    caption: 'Chapter 14 Sunday Morning Sanctuary under the trees of Aurangabad. When 35 strangers sit together in total silence with their favourite paperbacks, magic happens. #ReadersOfAurangabad #ReadersOfMH20 #Aurangabad #ReadingMovement',
+    caption: 'Chapter 14 Sunday Morning Sanctuary under the trees of Aurangabad. Readers sat together in total silence with their favourite paperbacks. #ReadersOfAurangabad #ReadersOfMH20 #Aurangabad #ReadingMovement',
     mediaType: 'IMAGE',
     mediaUrl: '/images/enhanced/gallery/roa-009-2026-11-05.webp',
     thumbnailUrl: '/images/enhanced/thumbnails/roa-009-2026-11-05-thumb.webp',
@@ -49,12 +49,10 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     timestamp: '2026-10-25T08:30:00Z',
     category: 'Meetups',
     status: 'draft',
-    likesCount: 142,
-    commentsCount: 18
   },
   {
     id: 'ig-reel-102',
-    caption: 'A quiet morning chapter at Siddharth Garden. Join us next Sunday for paperbacks, conversation, and unhurried calm. #ReadersOfAurangabad #ReelsIndia #BookCommunity #Silence #SundayMorning',
+    caption: 'A quiet morning chapter at Siddharth Garden. Join us at our next gathering for paperbacks, conversation, and unhurried calm. #ReadersOfAurangabad #ReelsIndia #BookCommunity #Silence',
     mediaType: 'IMAGE',
     mediaUrl: '/images/enhanced/gallery/roa-060-2026-11-05.webp',
     thumbnailUrl: '/images/enhanced/thumbnails/roa-060-2026-11-05-thumb.webp',
@@ -62,8 +60,6 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     timestamp: '2026-10-20T10:15:00Z',
     category: 'Reels',
     status: 'published',
-    likesCount: 389,
-    commentsCount: 42
   },
   {
     id: 'ig-post-103',
@@ -75,8 +71,6 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     timestamp: '2026-10-15T11:00:00Z',
     category: 'Reading Sessions',
     status: 'published',
-    likesCount: 215,
-    commentsCount: 27
   },
   {
     id: 'ig-reel-104',
@@ -88,12 +82,10 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     timestamp: '2026-10-08T09:45:00Z',
     category: 'Community Moments',
     status: 'draft',
-    likesCount: 472,
-    commentsCount: 38
   },
   {
     id: 'ig-post-105',
-    caption: 'Chapter 12 Monsoon Book Exchange. Over 40 books donated and exchanged by generous readers across Aurangabad. #BookDonations #CommunityLibrary #ReadersOfAurangabad',
+    caption: 'Chapter 12 Monsoon Book Exchange. Books were donated and exchanged by generous readers across Aurangabad. #BookDonations #CommunityLibrary #ReadersOfAurangabad',
     mediaType: 'CAROUSEL_ALBUM',
     mediaUrl: '/images/enhanced/gallery/roa-019-2026-11-05.webp',
     thumbnailUrl: '/images/enhanced/thumbnails/roa-019-2026-11-05-thumb.webp',
@@ -101,7 +93,5 @@ export const SAMPLE_INSTAGRAM_POSTS: InstagramMediaItem[] = [
     timestamp: '2026-09-28T14:20:00Z',
     category: 'Event Highlights',
     status: 'published',
-    likesCount: 198,
-    commentsCount: 15
   }
 ];

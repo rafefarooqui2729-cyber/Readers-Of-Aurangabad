@@ -39,7 +39,7 @@ export const GetInvolvedPage: React.FC = () => {
   const [volunteerSkills, setVolunteerSkills] = useState('');
   const [bookDetails, setBookDetails] = useState('');
   const [collabOrg, setCollabOrg] = useState('');
-  const [collabType, setCollabType] = useState('CafÃ© / Venue Partner');
+  const [collabType, setCollabType] = useState('Café / Venue Partner');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -123,10 +123,10 @@ export const GetInvolvedPage: React.FC = () => {
 
   const callout =
     activeTab === 'volunteer'
-      ? 'Help with Sunday morning setup, photographing real meetup moments, or sharing announcements.'
+      ? 'Help with gathering setup, photographing real meetup moments, or sharing announcements.'
       : activeTab === 'book_donation'
       ? 'We accept good-condition fiction, non-fiction, poetry, and educational books across English, Marathi, Hindi, and Urdu.'
-      : 'Are you a local cafÃ©, independent bookstore, college literary club, or cultural institution in Aurangabad? Letâ€™s organize a joint gathering.';
+      : 'Are you a local café, independent bookstore, college literary club, or cultural institution in Aurangabad? Let’s organize a joint gathering.';
 
   return (
     <div className="paper-grain overflow-hidden pb-16">
@@ -144,18 +144,18 @@ export const GetInvolvedPage: React.FC = () => {
           <SectionHeading
             eyebrow="Start here"
             title="Two easy ways to join in"
-            description="Follow the announcements, or come and sit with us at the next Sunday chapter."
+            description="Follow the announcements, or come and sit with us at the next gathering."
           />
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
             <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
-              <span className="flex h-12 w-12 items-center justify-center border border-[#F4512C]/30 text-[#F4512C]">
+              <span className="flex h-12 w-12 items-center justify-center border border-[#F47B49]/30 text-[#F47B49]">
                 <InstagramIcon className="h-6 w-6" aria-hidden="true" />
               </span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
+              <h3 className="mt-5 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
                 Join the conversation online
               </h3>
-              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
-                Follow our Instagram for weekly Sunday announcements, venue updates, book excerpts,
+              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
+                Follow our Instagram for gathering announcements, venue updates, book excerpts,
                 and community spotlights.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -185,13 +185,13 @@ export const GetInvolvedPage: React.FC = () => {
             </PaperPanel>
 
             <PaperPanel className="flex h-full flex-col p-6 sm:p-8">
-              <span className="flex h-12 w-12 items-center justify-center border border-[#6E6960]/30 text-[#6E6960]">
+              <span className="flex h-12 w-12 items-center justify-center border border-[#5E5B55]/30 text-[#5E5B55]">
                 <BookOpen className="h-6 w-6" aria-hidden="true" />
               </span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
+              <h3 className="mt-5 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
                 Attend a gathering
               </h3>
-              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
+              <p className="mt-3 flex-1 font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
                 Gatherings are free and open to all. Join our WhatsApp group to hear about the next
                 chapter and confirm your plans.
               </p>
@@ -223,7 +223,7 @@ export const GetInvolvedPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentPage('gatherings')}
-                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#F4512C] underline underline-offset-4"
+                    className="inline-flex min-h-[44px] items-center gap-2 font-sans text-xs font-bold text-[#F47B49] underline underline-offset-4"
                   >
                     Check the gathering archive
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -266,7 +266,7 @@ export const GetInvolvedPage: React.FC = () => {
               </FilterButton>
             </div>
 
-            <p className="mt-6 border-l-4 border-[#D9F36A] bg-[#F4F0E8] px-4 py-3 font-sans text-xs leading-relaxed text-[#4F4A43] dark:bg-[#171717] dark:text-[#D6D0C6]">
+            <p className="mt-6 border-l-4 border-[#C7EFDE] bg-[#F7F3EB] px-4 py-3 font-sans text-xs leading-relaxed text-[#5E5B55] dark:bg-[#24262D] dark:text-[#D4CFC5]">
               {callout}
             </p>
 
@@ -339,7 +339,7 @@ export const GetInvolvedPage: React.FC = () => {
 
               {activeTab === 'collaboration' ? (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <FormField id="collab-org" label="Organization / cafÃ© name">
+                  <FormField id="collab-org" label="Organization / café name">
                     <input
                       id="collab-org"
                       type="text"
@@ -356,7 +356,7 @@ export const GetInvolvedPage: React.FC = () => {
                       onChange={(e) => setCollabType(e.target.value)}
                       className={fieldClasses}
                     >
-                      <option value="CafÃ© / Venue Partner">CafÃ© / Venue Partner</option>
+                      <option value="Café / Venue Partner">Café / Venue Partner</option>
                       <option value="Bookstore / Publisher">Bookstore / Publisher</option>
                       <option value="College / University Society">College / University Society</option>
                       <option value="Cultural / Literary NGO">Cultural / Literary NGO</option>
@@ -388,14 +388,14 @@ export const GetInvolvedPage: React.FC = () => {
                   onChange={(e) => setConsent(e.target.checked)}
                   aria-invalid={errorField === 'consent' || undefined}
                   aria-describedby={errorField === 'consent' ? 'involved-form-error' : undefined}
-                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#A8431F]"
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[#F47B49]"
                 />
                 <label
                   htmlFor="get-involved-consent"
-                  className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]"
+                  className="cursor-pointer select-none font-sans text-xs leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]"
                 >
                   {'I agree that Readers of Aurangabad may use the information I provide to respond to my enquiry.'}{' '}
-                  <span className="text-[#F4512C]">*</span>
+                  <span className="text-[#F47B49]">*</span>
                 </label>
               </div>
 
@@ -404,7 +404,7 @@ export const GetInvolvedPage: React.FC = () => {
                   id="involved-form-error"
                   role="alert"
                   aria-live="assertive"
-                  className="border border-[#F4512C]/40 bg-[#F4512C]/10 p-3 font-sans text-xs text-[#F4512C]"
+                  className="border border-[#F47B49]/40 bg-[#F47B49]/10 p-3 font-sans text-xs text-[#F47B49]"
                 >
                   {errorMessage}
                 </p>
@@ -414,7 +414,7 @@ export const GetInvolvedPage: React.FC = () => {
                 <div
                   role="status"
                   aria-live="polite"
-                  className="flex items-center gap-2 border border-[#6E6960]/40 bg-[#5E7A63]/10 p-3 font-sans text-xs text-[#6E6960] dark:text-[#B8B2A8]"
+                  className="flex items-center gap-2 border border-[#5E5B55]/40 bg-[#24262D]/10 p-3 font-sans text-xs text-[#5E5B55] dark:text-[#D4CFC5]"
                 >
                   <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>{successMessage}</span>
@@ -436,11 +436,11 @@ export const GetInvolvedPage: React.FC = () => {
         </section>
 
         <section className="mx-auto max-w-3xl px-5 pb-4 text-center sm:px-8">
-          <HandHeart className="mx-auto h-7 w-7 text-[#F4512C]" aria-hidden="true" />
-          <h3 className="mt-4 font-display text-2xl font-bold text-[#171717] dark:text-[#F4F0E8]">
+          <HandHeart className="mx-auto h-7 w-7 text-[#F47B49]" aria-hidden="true" />
+          <h3 className="mt-4 font-display text-2xl font-bold text-[#24262D] dark:text-[#F7F3EB]">
             A community reading sanctuary
           </h3>
-          <p className="mx-auto mt-3 max-w-xl font-sans text-sm leading-relaxed text-[#4F4A43] dark:text-[#D6D0C6]">
+          <p className="mx-auto mt-3 max-w-xl font-sans text-sm leading-relaxed text-[#5E5B55] dark:text-[#D4CFC5]">
             Readers of Aurangabad is free and community-sustained. Our hopes for the future include
             an open-access book shelf, shared reading badges, and literary walks across historic
             Aurangabad.

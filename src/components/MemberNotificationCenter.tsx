@@ -107,10 +107,11 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
         className="relative glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
         aria-label={isAuthenticated ? 'Open notifications' : 'Sign in for notifications'}
         aria-expanded={open}
+        aria-haspopup="dialog"
       >
-        <Bell className="w-4.5 h-4.5 text-[#455240]" />
+        <Bell className="h-5 w-5 text-[color:var(--text-muted)] dark:text-[#C7EFDE]" />
         {isAuthenticated && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#8D5B4C] text-white text-[10px] font-bold flex items-center justify-center border border-white">
+          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F47B49] text-white text-[10px] font-bold flex items-center justify-center border border-white">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -129,10 +130,10 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
             role="dialog"
             aria-label="Member notifications"
           >
-            <div className="p3-popover-header flex items-center justify-between px-4 py-3 border-b border-[#E8E2D5]/80 bg-white/70">
+            <div className="p3-popover-header flex items-center justify-between px-4 py-3 border-b border-[#D4CFC5]/80 bg-white/70">
               <div>
-                <h3 className="font-serif text-lg font-bold text-[#1C1B1A]">Notifications</h3>
-                <p className="text-[11px] text-[#777C60]">
+                <h3 className="font-serif text-lg font-bold text-[#24262D]">Notifications</h3>
+                <p className="text-[11px] text-[#5E5B55]">
                   {isMember ? 'Community updates for your member account' : 'Signed in'}
                 </p>
               </div>
@@ -141,7 +142,7 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
                   <button
                     type="button"
                     onClick={() => void onMarkAllRead()}
-                    className="p3-text-action px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#455240] hover:bg-[#F4EFEA] flex items-center gap-1.5 cursor-pointer"
+                    className="p3-text-action px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#24262D] hover:bg-[#F7F3EB] flex items-center gap-1.5 cursor-pointer"
                     title="Mark all as read"
                   >
                     <CheckCheck className="w-3.5 h-3.5" />
@@ -151,22 +152,22 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
                 <button
                   type="button"
                   onClick={() => dismiss()}
-                  className="p3-icon-button w-8 h-8 rounded-lg hover:bg-[#F4EFEA] flex items-center justify-center cursor-pointer"
+                  className="p3-icon-button w-8 h-8 rounded-lg hover:bg-[#F7F3EB] flex items-center justify-center cursor-pointer"
                   aria-label="Close notifications"
                 >
-                  <X className="w-4 h-4 text-[#595550]" />
+                  <X className="w-4 h-4 text-[#5E5B55]" />
                 </button>
               </div>
             </div>
 
-            <div className="p3-popover-body max-h-[70vh] overflow-y-auto p-2.5 bg-[#FAF8F5]/70">
+            <div className="p3-popover-body max-h-[70vh] overflow-y-auto p-2.5 bg-[#F7F3EB]/70">
               {loading ? (
-                <div className="px-4 py-10 text-center text-sm text-[#777C60]">Loading notifications…</div>
+                <div className="px-4 py-10 text-center text-sm text-[#5E5B55]">Loading notifications…</div>
               ) : sorted.length === 0 ? (
                 <div className="px-4 py-10 text-center">
-                  <Bell className="w-8 h-8 text-[#C7BDB0] mx-auto mb-2" />
-                  <p className="font-medium text-[#1C1B1A]">No notifications yet</p>
-                  <p className="text-xs text-[#777C60] mt-1">When new meetups or announcements are published, they&apos;ll appear here.</p>
+                  <Bell className="w-8 h-8 text-[#D4CFC5] mx-auto mb-2" />
+                  <p className="font-medium text-[#24262D]">No notifications yet</p>
+                  <p className="text-xs text-[#5E5B55] mt-1">When new meetups or announcements are published, they&apos;ll appear here.</p>
                 </div>
               ) : (
                 <ul className="space-y-2">
@@ -181,22 +182,22 @@ export const MemberNotificationCenter: React.FC<MemberNotificationCenterProps> =
                           onClick={() => void handleClick(n)}
                           className={`p3-notification-item w-full text-left rounded-xl border px-3.5 py-3 transition-colors cursor-pointer ${
                             unread
-                              ? 'bg-white border-[#D8D3C8] shadow-sm'
-                              : 'bg-white/60 border-transparent hover:border-[#E8E2D5]'
+                              ? 'bg-white border-[#D4CFC5] shadow-sm'
+                              : 'bg-white/60 border-transparent hover:border-[#D4CFC5]'
                           }`}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${unread ? 'bg-[#EBF0E9] text-[#455240]' : 'bg-[#F4EFEA] text-[#777C60]'}`}>
+                            <div className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${unread ? 'bg-[#C7EFDE] text-[#24262D]' : 'bg-[#F7F3EB] text-[#5E5B55]'}`}>
                               <Icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2 mb-0.5">
-                                <span className="text-[10px] uppercase tracking-wider font-semibold text-[#777C60]">{meta.label}</span>
-                                {unread && <span className="w-2 h-2 rounded-full bg-[#8D5B4C]" aria-label="Unread" />}
+                                <span className="text-[10px] uppercase tracking-wider font-semibold text-[#5E5B55]">{meta.label}</span>
+                                {unread && <span className="w-2 h-2 rounded-full bg-[#F47B49]" aria-label="Unread" />}
                               </div>
-                              <p className="font-semibold text-sm text-[#1C1B1A] leading-snug">{n.title}</p>
-                              <p className="text-xs text-[#595550] mt-1 leading-relaxed">{n.message}</p>
-                              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#8C857B]">
+                              <p className="font-semibold text-sm text-[#24262D] leading-snug">{n.title}</p>
+                              <p className="text-xs text-[#5E5B55] mt-1 leading-relaxed">{n.message}</p>
+                              <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#5E5B55]">
                                 <Clock className="w-3 h-3" />
                                 <time dateTime={n.createdAt}>
                                   {new Date(n.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}

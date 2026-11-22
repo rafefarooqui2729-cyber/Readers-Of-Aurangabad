@@ -11,6 +11,7 @@ import {
   Feather,
   ChevronRight,
   Sparkles,
+  BookOpen,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FeaturedAnnouncementReel } from '../components/FeaturedAnnouncementReel';
@@ -20,7 +21,9 @@ import { UpcomingEventSpotlight } from '../components/UpcomingEventSpotlight';
 import { JoinSection } from '../components/JoinSection';
 import { StatBlock } from '../components/ui/StatBlock';
 import { QuoteCard } from '../components/ui/QuoteCard';
-import { Eyebrow } from '../components/ui/Eyebrow';
+import { BentoCard, EditorialSectionHeading, Stamp } from '../components/ui';
+import { FeaturedBookCard } from '../components/FeaturedBookCard';
+import { readingList } from '../content/books';
 import { scrollToTop } from '../utils/scroll';
 import { useModalEscapeDismiss } from '../utils/modalAccessibility';
 import {
@@ -128,11 +131,6 @@ export const HomePage: React.FC = () => {
 
   const easeCurve = [0.16, 1, 0.3, 1] as const;
 
-  const revealVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeCurve } },
-  };
-
   const stagger = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: shouldReduceMotion ? 0 : 0.1 } },
@@ -144,163 +142,171 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="paper-grain overflow-hidden">
+    <div className="paper-grain overflow-hidden bg-[#F7F3EB] text-[#24262D]">
 
-      {/* 1. HERO â€” Authentic group photograph with title over image & unobstructed faces */}
-      <section
-        className="relative isolate min-h-[420px] sm:min-h-[500px] lg:min-h-[580px] overflow-hidden"
-        aria-label="Readers of Aurangabad community hero"
-      >
-        <picture className="absolute inset-0 block h-full w-full">          <source media="(max-width: 640px)" srcSet="/images/enhanced/mobile/roa-hero-mobile.webp" />
-          <source media="(min-width: 1441px)" srcSet="/images/enhanced/hero/roa-hero-4k-master.webp" />
-          <source media="(min-width: 641px)" srcSet="/images/enhanced/hero/roa-group-hero-clean.webp" />
-          <img
-            src="/images/enhanced/hero/roa-group-hero-clean.webp"
-            alt="Readers of Aurangabad community gathered outdoors"
-            className="w-full h-full object-cover object-[48%_50%] sm:object-[50%_50%] lg:object-[50%_48%]"
-            width={2560}
-            height={1260}
-            fetchPriority="high"
-            decoding="async"
-          />
-        </picture>
+      {/* 1. EDITORIAL HERO — real community photograph on a warm-paper spread */}
+      <section className="ed-section pb-8 pt-5 sm:pt-8" aria-label="Readers of Aurangabad community hero">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="visible"
+          className="ed-hero"
+        >
+          <motion.div variants={staggerItem}>
+            <BentoCard surface="paper" tape className="h-full">
+              <div className="flex min-h-full flex-col justify-between gap-10">
+                <div>
+                  <p className="ed-kicker">MH20 · Aurangabad</p>
+                  <h1 className="mt-4 font-display text-[clamp(2.6rem,6.2vw,5.1rem)] leading-[0.94] tracking-[-0.04em] text-[#24262D]">
+                    Readers of<br />
+                    <span className="text-[#F47B49]">Aurangabad</span>
+                  </h1>
+                  <p className="mt-5 max-w-xl font-serif text-lg italic leading-relaxed text-[#5E5B55] sm:text-xl">
+                    {t.hero.headline}
+                  </p>
+                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-[#5E5B55] sm:text-base">
+                    {t.hero.supporting}
+                  </p>
+                </div>
 
-        {/* Subtle, non-destructive gradient strictly on the lower foreground lawn for crisp text legibility without obscuring faces */}
-        <div className="absolute inset-x-0 bottom-0 h-[48%] bg-gradient-to-t from-black/90 via-black/35 to-transparent pointer-events-none" />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 w-full h-full min-h-[420px] sm:min-h-[500px] lg:min-h-[580px] flex flex-col justify-end pb-5 sm:pb-8 lg:pb-10">
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="visible"
-            className="max-w-2xl text-white"
-          >
-            <motion.div variants={staggerItem} className="mb-1.5 sm:mb-2.5 inline-flex items-center gap-2">
-              <span className="border-2 border-[#171717] bg-[#D9F36A] text-[#171717] font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-none text-[9px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#F4F0E8] bg-black/40 border-white/20 backdrop-blur-md">
-                <span className="w-1.5 h-1.5 rounded-none bg-[#D9F36A] inline-block mr-1.5" />
-                Aurangabad reading movement
-              </span>
-            </motion.div>
-
-            <motion.h1
-              variants={staggerItem}
-              className="font-display uppercase tracking-[-0.03em] leading-[0.9] text-3xl sm:text-5xl lg:text-6xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.7)]"
-            >
-              READERS OF<br />AURANGABAD
-            </motion.h1>
-
-            <motion.p
-              variants={staggerItem}
-              className="mt-1.5 sm:mt-2.5 font-serif italic text-xs sm:text-base lg:text-lg text-[#F4F0E8]/95 max-w-xl drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
-            >
-              Making reading a part of everyday life again.
-            </motion.p>
-
-            <motion.div variants={staggerItem} className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2.5 sm:gap-3">
-              <motion.button
-                type="button"
-                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
-                whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
-                className="bg-[#F2EBDD] hover:bg-white text-[#171717] px-4 py-2 sm:px-5 sm:py-2.5 rounded-none text-xs sm:text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-lg transition-colors"
-              >
-                <span>{t.hero.ctaPrimary}</span>
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </motion.button>
-              <motion.button
-                type="button"
-                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => { setCurrentPage('story'); scrollToTop(); }}
-                className="border-2 border-[#171717] bg-[#D9F36A] text-[#171717] font-bold text-[#F4F0E8] hover:text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-none text-xs sm:text-sm font-semibold border-white/25 cursor-pointer bg-black/25 backdrop-blur-md hover:bg-black/40 transition-colors"
-              >
-                {t.hero.ctaSecondary}
-              </motion.button>
-            </motion.div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <motion.button
+                    type="button"
+                    whileHover={shouldReduceMotion ? undefined : { x: 3 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                    onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
+                    className="inline-flex min-h-[46px] items-center gap-2 rounded bg-[#F47B49] px-5 py-2.5 font-sans text-sm font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638] cursor-pointer"
+                  >
+                    <span>{t.hero.ctaPrimary}</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    whileHover={shouldReduceMotion ? undefined : { x: 3 }}
+                    whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                    onClick={() => { setCurrentPage('story'); scrollToTop(); }}
+                    className="inline-flex min-h-[46px] items-center gap-2 rounded border border-[#24262D]/25 bg-[#FFFDF8] px-5 py-2.5 font-sans text-sm font-semibold text-[#24262D] transition-colors hover:border-[#F47B49] hover:bg-[#FFD8C1] cursor-pointer"
+                  >
+                    {t.hero.ctaSecondary}
+                  </motion.button>
+                  <span className="ml-auto hidden font-sans text-[11px] font-semibold uppercase tracking-[0.18em] text-[#5E5B55] sm:block">
+                    Est. {siteConfig.establishedYear}
+                  </span>
+                </div>
+              </div>
+            </BentoCard>
           </motion.div>
+
+          <motion.div variants={staggerItem} className="ed-hero__media">
+            <picture className="absolute inset-0 block h-full w-full">
+              <source media="(max-width: 640px)" srcSet="/images/enhanced/mobile/roa-hero-mobile.webp" />
+              <source media="(min-width: 1441px)" srcSet="/images/enhanced/hero/roa-hero-4k-master.webp" />
+              <source media="(min-width: 641px)" srcSet="/images/enhanced/hero/roa-group-hero-clean.webp" />
+              <img
+                src="/images/enhanced/hero/roa-group-hero-clean.webp"
+                alt="Readers of Aurangabad community gathered outdoors"
+                className="h-full w-full object-cover object-[48%_50%] sm:object-[50%_50%] lg:object-[50%_48%]"
+                width={2560}
+                height={1260}
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#24262D]/55 via-transparent to-transparent" aria-hidden="true" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
+              <div className="rounded bg-[#F7F3EB]/95 px-3 py-2 font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-[#24262D] shadow-[var(--mh20-shadow-sm)]">
+                Community album · MH20
+              </div>
+              <Stamp year={siteConfig.establishedYear} size="sm" className="hidden sm:inline-flex" />
+            </div>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 1b. PROOF STRIP — community figures kept exactly as recorded */}
+      <section className="ed-section pb-4" aria-label="Community statistics">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-40px' }}
+          className="ed-grid sm:grid-cols-2"
+        >
+          {communityStats.map((stat, index) => (
+            <motion.div key={stat.id} variants={staggerItem}>
+              <BentoCard surface={index === 0 ? 'mint' : 'peach'} label="From our records">
+                <StatBlock value={stat.value} suffix={stat.suffix} label={stat.label} />
+              </BentoCard>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* 2. EDITORIAL SPREAD — the movement in its own words */}
+      <section className="ed-section py-8 sm:py-10" aria-label="The Aurangabad Reading Movement">
+        <motion.div
+          initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px', amount: 0.2 }}
+          transition={{ duration: shouldReduceMotion ? 0.2 : 0.75, ease: easeCurve }}
+          className="ed-grid ed-grid--bento"
+        >
+          <BentoCard surface="paper" label="The Aurangabad Reading Movement" className="ed-span-3">
+            <h2 className="ed-title max-w-none">{t.intro.heading}</h2>
+            <p className="ed-lede mt-4">{t.intro.subheading}</p>
+            <span className="mt-6 block h-px w-full bg-[#24262D]/12" aria-hidden="true" />
+            <motion.blockquote
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: shouldReduceMotion ? 0.2 : 0.6, delay: shouldReduceMotion ? 0 : 0.1, ease: easeCurve }}
+              className="mt-6 font-serif text-lg italic leading-relaxed text-[#24262D] sm:text-xl"
+            >
+              “{t.intro.body}”
+            </motion.blockquote>
+          </BentoCard>
+
+          <div className="ed-span-3 overflow-hidden rounded-lg border border-[#24262D]/12 bg-[#CFE3FA] shadow-[var(--mh20-shadow-sm)]">
+            <img
+              src="/images/enhanced/community/community-banner-wide.webp"
+              alt="Readers of Aurangabad gathered together"
+              loading="lazy"
+              className="h-full min-h-[260px] w-full object-cover object-center"
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 2b. READING DESK — real recommendations already in the repository */}
+      <section className="ed-section py-8 sm:py-10" aria-label="From the reading desk">
+        <EditorialSectionHeading
+          eyebrow="From the reading desk"
+          title="Books moving through the circle."
+          description="Recommendations and reading notes shared by readers in Aurangabad."
+        />
+        <div className="ed-grid ed-grid--bento mt-8">
+          <FeaturedBookCard className="ed-span-4" />
+          <BentoCard surface="mint" label="Also on the reading list" className="ed-span-2">
+            <div className="space-y-4">
+              {readingList.map((book) => (
+                <div key={book.id} className="flex gap-3 border-b border-[#24262D]/12 pb-4 last:border-0 last:pb-0">
+                  <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-[#F47B49]" aria-hidden="true" />
+                  <div>
+                    <h3 className="font-display text-base font-semibold leading-snug text-[#24262D]">{book.title}</h3>
+                    <p className="mt-0.5 text-xs text-[#5E5B55]">{book.author}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </BentoCard>
         </div>
       </section>
 
-      {/* 1b. PROOF STRIP â€” Community statistics */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-40px' }}
-        className="bg-[#F4F0E8] dark:bg-[#171717] border-y border-[#171717]/15 dark:border-[#F4F0E8]/15 py-8 sm:py-10"
-        aria-label="Community statistics"
-      >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-10 justify-items-center sm:justify-items-start">
-          {communityStats.map((stat) => (
-            <StatBlock
-              key={stat.id}
-              value={stat.value}
-              suffix={stat.suffix}
-              label={stat.label}
-            />
-          ))}
-        </div>
-      </motion.section>
-
-      {/* 2. THE AURANGABAD READING MOVEMENT â€” Editorial Storytelling Section on Warm Paper */}
-      <motion.section
-        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-40px', amount: 0.2 }}
-        transition={{ duration: shouldReduceMotion ? 0.2 : 0.75, ease: easeCurve }}
-        className="relative bg-[#F4F0E8] px-5 sm:px-8 lg:px-12 py-8 sm:py-10"
-        aria-label="The Aurangabad Reading Movement"
-      >
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12 items-center">
-
-          {/* Left Column: Heading & Label (5 cols) */}
-          <div className="lg:col-span-5 space-y-2.5">
-            <div className="inline-flex items-center gap-2">
-              <span className="w-6 h-0.5 bg-[#D9F36A]" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6E6960]">
-                The Aurangabad Reading Movement
-              </span>
-            </div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: shouldReduceMotion ? 0.2 : 0.72, ease: easeCurve }}
-              className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#171717] tracking-tight leading-[1.08]"
-            >
-              {t.intro.heading}
-            </motion.h2>
-          </div>
-
-          {/* Right Column: Carefully typeset quotation with decorative mark (7 cols) */}
-          <div className="lg:col-span-7 relative pl-0 lg:pl-8 lg:border-l lg:border-[#171717]/15">
-            <span
-              className="font-serif text-5xl sm:text-6xl text-[#D9F36A]/40 leading-none select-none block -mb-4"
-              aria-hidden="true"
-            >
-              â€œ
-            </span>
-
-            <motion.blockquote
-              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: shouldReduceMotion ? 0.2 : 0.72, delay: shouldReduceMotion ? 0 : 0.12, ease: easeCurve }}
-              className="font-serif italic text-lg sm:text-xl lg:text-2xl text-[#171717]/90 leading-relaxed"
-            >
-              {t.intro.body}
-            </motion.blockquote>
-          </div>
-
-        </div>
-      </motion.section>
-
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* ---
           4. FEATURED ANNOUNCEMENT REEL
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+          --- */}
       {/* Upcoming event countdown + latest announcement */}
-      <section className="relative py-6 sm:py-8">
+      <section className="ed-section relative py-6 sm:py-8">
         <UpcomingEventSpotlight
           key={nearestUpcomingMeetup?.id ?? nearestUpcomingMeetup?.startsAt ?? 'no-upcoming-meetup'}
           meetup={nearestUpcomingMeetup}
@@ -316,122 +322,76 @@ export const HomePage: React.FC = () => {
         />
       </section>
 
-      <FeaturedAnnouncementReel />
+      <div className="ed-section pb-8">
+        <FeaturedAnnouncementReel />
+      </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* ---
           5. REEL COLLECTION
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <ReelCollectionSection />
+          --- */}
+      <div className="ed-section pb-8">
+        <ReelCollectionSection />
+      </div>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          6. OUR PHILOSOPHY â€” Editorial Offset Cards
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-      >
-        {/* Section Header */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8 border-b border-[#171717]/15">
-          <div className="lg:col-span-7 space-y-3">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F4512C] block">
-              02 â€” Why We Gather
-            </span>
-            <h2 className="font-serif font-bold text-[#171717] leading-tight"
-              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}
-            >
-              {t.philosophy.heading}
-            </h2>
-          </div>
-          <div className="lg:col-span-5">
-            <p className="text-sm sm:text-base text-[#4F4A43] leading-relaxed">
-              {t.philosophy.subheading}
+      {/* ---
+          6. OUR PHILOSOPHY — pastel bento notes
+          --- */}
+      <section className="ed-section py-10 sm:py-12" aria-label={t.philosophy.heading}>
+        <EditorialSectionHeading
+          eyebrow="Why we gather"
+          title={t.philosophy.heading}
+          description={t.philosophy.subheading}
+          action={
+            <p className="rounded border border-[#24262D]/15 bg-[#FFD8C1] px-4 py-2 font-serif text-sm italic text-[#24262D]">
+              No boundaries of RELIGION | LANGUAGES | AGES
             </p>
-            <p className="mt-2 font-serif text-lg text-[#171717] text-center">No boundaries of RELIGION | LANGUAGES | AGES</p>
-          </div>
-        </div>
+          }
+        />
 
-        {/* 2Ã—2 Editorial Offset Grid */}
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-40px' }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="ed-grid ed-grid--bento mt-8"
         >
           {[
-            { icon: <Users className="w-6 h-6" />, title: t.philosophy.p1Title, desc: t.philosophy.p1Desc, num: '01', label: 'Shared Experience', accent: '#777C60', offset: false },
-            { icon: <Compass className="w-6 h-6" />, title: t.philosophy.p2Title, desc: t.philosophy.p2Desc, num: '02', label: 'Open Intellect', accent: '#A65F46', offset: true },
-            { icon: <Feather className="w-6 h-6" />, title: t.philosophy.p3Title, desc: t.philosophy.p3Desc, num: '03', label: 'Empathy & Voice', accent: '#B89A65', offset: true },
-            { icon: <Coffee className="w-6 h-6" />, title: t.philosophy.p4Title, desc: t.philosophy.p4Desc, num: '04', label: 'Real Bonds', accent: '#777C60', offset: false },
+            { icon: <Users className="h-5 w-5" />, title: t.philosophy.p1Title, desc: t.philosophy.p1Desc, num: '01', label: 'Shared Experience', surface: 'lavender' as const },
+            { icon: <Compass className="h-5 w-5" />, title: t.philosophy.p2Title, desc: t.philosophy.p2Desc, num: '02', label: 'Open Intellect', surface: 'peach' as const },
+            { icon: <Feather className="h-5 w-5" />, title: t.philosophy.p3Title, desc: t.philosophy.p3Desc, num: '03', label: 'Empathy & Voice', surface: 'mint' as const },
+            { icon: <Coffee className="h-5 w-5" />, title: t.philosophy.p4Title, desc: t.philosophy.p4Desc, num: '04', label: 'Real Bonds', surface: 'blue' as const },
           ].map((card) => (
-            <motion.div
-              key={card.num}
-              variants={staggerItem}
-              className="border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 p-6 rounded-none flex flex-col justify-between group"
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div className="space-y-5">
-                <div className="flex items-start justify-between">
-                  <div
-                    className="w-11 h-11 rounded-none flex items-center justify-center transition-transform group-hover:scale-105"
-                    style={{ background: `${card.accent}18`, color: card.accent }}
-                  >
-                    {card.icon}
-                  </div>
-                  <span className="font-serif font-bold text-5xl leading-none select-none"
-                    style={{ color: `${card.accent}18` }}
-                  >{card.num}</span>
-                </div>
-
-                <h3 className="font-serif text-2xl font-bold text-[#171717] group-hover:text-[#6E6960] transition-colors">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-[#4F4A43] leading-relaxed">{card.desc}</p>
-              </div>
-
-              <div className="pt-6 mt-6 border-t border-[#171717]/15/60 flex items-center gap-2">
-                <div className="w-2 h-2 rounded-none" style={{ background: card.accent }} />
-                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: card.accent }}>
-                  {card.label}
+            <motion.div key={card.num} variants={staggerItem} className="ed-span-3">
+              <BentoCard surface={card.surface} label={`${card.num} · ${card.label}`}>
+                <span className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded border border-[#24262D]/20 bg-[#FFFDF8]/70 text-[#F47B49]">
+                  {card.icon}
                 </span>
-              </div>
+                <h3 className="ed-card__title">{card.title}</h3>
+                <p className="ed-card__body mt-3">{card.desc}</p>
+              </BentoCard>
             </motion.div>
           ))}
         </motion.div>
-      </motion.section>
+      </section>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* ---
           7. UPCOMING GATHERINGS
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#171717]/15 pb-6">
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F4512C] block mb-2">
-              03 â€” Events in Aurangabad
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#171717]">
-              {t.gatherings.upcomingHeading}
-            </h2>
-            <p className="text-sm text-[#4F4A43] mt-1">{t.gatherings.upcomingSub}</p>
-          </div>
-          <button
-            onClick={() => { setCurrentPage('gatherings'); scrollToTop(); }}
-            className="p4-touch-target inline-flex min-h-[24px] items-center text-xs font-semibold text-[#171717] hover:text-[#6E6960] gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
-          >
-            <span>{t.gatherings.viewAllGatherings}</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+          --- */}
+      <section className="ed-section py-10 sm:py-12" aria-label={t.gatherings.upcomingHeading}>
+        <EditorialSectionHeading
+          eyebrow="On the calendar"
+          title={t.gatherings.upcomingHeading}
+          description={t.gatherings.upcomingSub}
+          action={
+            <button
+              onClick={() => { setCurrentPage('gatherings'); scrollToTop(); }}
+              className="p4-touch-target inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
+            >
+              <span>{t.gatherings.viewAllGatherings}</span>
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          }
+        />
 
         {upcomingMeetups.length > 0 ? (
           <motion.div
@@ -439,392 +399,318 @@ export const HomePage: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-40px' }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="ed-grid ed-grid--bento mt-8"
           >
             {upcomingMeetups.slice(0, 3).map((meetup) => (
-              <motion.div
+              <motion.article
                 key={meetup.id}
                 variants={staggerItem}
-                whileHover={{ y: -4 }}
+                whileHover={shouldReduceMotion ? undefined : { y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 rounded-none overflow-hidden flex flex-col group"
+                className="ed-card ed-span-2 flex flex-col"
               >
-                {/* Cover */}
                 {meetup.featuredImage && (
-                  <div className="relative h-48 overflow-hidden bg-[#171717]">
+                  <div className="relative mb-5 h-44 overflow-hidden rounded bg-[#24262D]">
                     <img
                       src={meetup.featuredImage}
                       alt={meetup.title}
                       loading="lazy"
-                      className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 ease-out"
+                      className="h-full w-full object-cover object-[center_20%] transition-transform duration-500 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#20231F]/60 to-transparent" />
-                    <div className="absolute top-4 left-4">
-                      <span className="border-2 border-[#171717] bg-[#D9F36A] text-[#171717] font-bold px-2.5 py-1 rounded-none text-[10px] font-semibold text-[#F4F0E8] uppercase tracking-wider border-white/20">
-                        {meetup.edition || 'Meetup'}
-                      </span>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#24262D]/60 to-transparent" aria-hidden="true" />
+                    <span className="absolute left-3 top-3 rounded bg-[#D8CBFF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#24262D]">
+                      {meetup.edition || 'Meetup'}
+                    </span>
                   </div>
                 )}
 
-                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="font-serif text-xl font-bold text-[#171717] group-hover:text-[#6E6960] transition-colors leading-snug">
-                      {meetup.title}
-                    </h3>
-                    <div className="flex flex-col gap-1.5 text-xs text-[#4F4A43]">
-                      <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{meetup.date}</span>
-                      <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{meetup.time}</span>
-                      <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{meetup.venue}</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-[#171717]/15/60 flex items-center justify-between gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedMeetup(meetup)}
-                      className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#4F4A43] hover:text-[#171717] transition-colors cursor-pointer"
-                    >
-                      View Details
-                    </button>
-                    {meetup.registrationStatus === 'open' && getSafeRegistrationUrl(meetup) ? (
-                      <a
-                        href={getSafeRegistrationUrl(meetup)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center border-2 border-[#171717] bg-[#F4512C] text-white font-bold uppercase tracking-[0.04em] shadow-[4px_4px_0_#171717] px-5 py-2.5 rounded-none text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <span>RSVP Free</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </a>
-                    ) : (
-                      <a
-                        href={siteConfig.whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center border-2 border-[#171717] bg-[#F4512C] text-white font-bold uppercase tracking-[0.04em] shadow-[4px_4px_0_#171717] px-5 py-2.5 rounded-none text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <span>Ask on WhatsApp</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </a>
-                    )}
-                  </div>
+                <p className="ed-card__label">{meetup.date}</p>
+                <h3 className="ed-card__title">{meetup.title}</h3>
+                <div className="mt-4 flex flex-col gap-1.5 text-xs text-[#5E5B55]">
+                  <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{meetup.date}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{meetup.time}</span>
+                  <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{meetup.venue}</span>
                 </div>
-              </motion.div>
+
+                <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#24262D]/12 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMeetup(meetup)}
+                    className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[#5E5B55] transition-colors hover:text-[#F47B49] cursor-pointer"
+                  >
+                    View Details
+                  </button>
+                  {meetup.registrationStatus === 'open' && getSafeRegistrationUrl(meetup) ? (
+                    <a
+                      href={getSafeRegistrationUrl(meetup)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded bg-[#F47B49] px-4 py-2 text-xs font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
+                    >
+                      <span>RSVP Free</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </a>
+                  ) : (
+                    <a
+                      href={siteConfig.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-[44px] items-center gap-1.5 rounded bg-[#F47B49] px-4 py-2 text-xs font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
+                    >
+                      <span>Ask on WhatsApp</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </a>
+                  )}
+                </div>
+              </motion.article>
             ))}
           </motion.div>
         ) : (
-          <div className="border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 rounded-none p-12 text-center max-w-2xl mx-auto space-y-4">
-            <div className="w-12 h-12 rounded-none bg-white/80 border border-[#171717]/15 flex items-center justify-center text-[#F4512C] mx-auto">
-              <Sparkles className="w-5 h-5" />
+          <BentoCard surface="paper" label="Next chapter" className="mx-auto mt-8 max-w-2xl text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded border border-[#24262D]/15 bg-[#FFD8C1] text-[#F47B49]">
+              <Sparkles className="h-5 w-5" />
             </div>
-            <h3 className="font-serif text-2xl font-bold text-[#171717]">Next Chapter in the Making</h3>
-            <p className="text-base text-[#4F4A43] font-serif italic">"{t.gatherings.emptyUpcoming}"</p>
+            <h3 className="ed-card__title">Next Chapter in the Making</h3>
+            <p className="ed-card__body mt-3 font-serif italic">“{t.gatherings.emptyUpcoming}”</p>
             <a
               href={siteConfig.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-none inline-flex items-center justify-center border-2 border-[#171717] bg-[#F4512C] text-white font-bold uppercase tracking-[0.04em] shadow-[4px_4px_0_#171717] text-xs font-semibold mt-2"
+              className="mt-5 inline-flex min-h-[44px] items-center justify-center gap-2 rounded bg-[#F47B49] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.04em] text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638]"
             >
               <span>Follow {siteConfig.instagramHandle} for Announcements</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </a>
-          </div>
+          </BentoCard>
         )}
-      </motion.section>
+      </section>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          8. COMMUNITY GALLERY â€” Full Editorial Masonry
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8 border-b border-[#171717]/15">
-          <div className="lg:col-span-8 space-y-3">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F4512C] block">
-              04 â€” Real Photographs & Authentic Moments
-            </span>
-            <h2 className="font-serif font-bold text-[#171717] leading-tight"
-              style={{ fontSize: 'clamp(2rem, 4.5vw, 3.5rem)' }}
-            >
-              {t.community.galleryTitle}
-            </h2>
-            <p className="text-sm text-[#4F4A43] max-w-xl">
-  Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky.
-</p>
-          </div>
-          <div className="lg:col-span-4 lg:text-right">
+      {/* ---
+          8. COMMUNITY GALLERY — real photographs, editorial rhythm
+          --- */}
+      <section className="ed-section py-10 sm:py-12" aria-label={t.community.galleryTitle}>
+        <EditorialSectionHeading
+          eyebrow="Real photographs & authentic moments"
+          title={t.community.galleryTitle}
+          description="Glimpses of quiet contemplation and heartfelt conversations under the Deccan sky."
+          action={
             <button
               onClick={() => { setCurrentPage('community'); scrollToTop(); }}
-              className="inline-flex min-h-[24px] items-center gap-1.5 text-xs font-semibold text-[#171717] hover:text-[#6E6960] transition-colors cursor-pointer"
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
             >
               <span>Explore full archive</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="h-4 w-4" />
             </button>
-          </div>
+          }
+        />
+        <div className="mt-8">
+          <CommunityGallery compact={true} />
         </div>
+      </section>
 
-        <CommunityGallery compact={true} />
-      </motion.section>
-
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          8b. FOUNDER'S NOTE â€” A pull-quote from our published reflection
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* ---
+          8b. FOUNDER'S NOTE — a pull-quote from our published reflection
+          --- */}
       {memberVoices.length > 0 && (
-        <motion.section
-          variants={revealVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-          aria-label="A note from our founder"
-        >
-          <div className="pb-6 border-b border-[#171717]/15 dark:border-[#F4F0E8]/15">
-            <Eyebrow color="clay">From Our Founder</Eyebrow>
-            <h2 className="font-serif font-bold text-[#171717] dark:text-[#F4F0E8] mt-2 leading-tight section-h2">
-              Why we gather.
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-6 max-w-3xl">
-            {memberVoices.map((voice) => (
-              <QuoteCard
+        <section className="ed-section py-10 sm:py-12" aria-label="A note from our founder">
+          <EditorialSectionHeading eyebrow="From our founder" title="Why we gather." />
+          <div className="ed-grid ed-grid--bento mt-8">
+            {memberVoices.map((voice, index) => (
+              <BentoCard
                 key={voice.id}
-                quote={voice.quote}
-                memberName={voice.memberName}
-                joinYear={voice.joinYear}
-                location={voice.location}
-              />
+                surface={index === 0 ? 'peach' : 'lavender'}
+                label="From the journal"
+                className="ed-span-6"
+              >
+                <QuoteCard
+                  quote={voice.quote}
+                  memberName={voice.memberName}
+                  joinYear={voice.joinYear}
+                  location={voice.location}
+                />
+              </BentoCard>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          8c. THE TEAM â€” People behind Readers of Aurangabad
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* ---
+          8c. THE TEAM — people behind Readers of Aurangabad
+          --- */}
       {teamMembers.length > 0 && (
-        <motion.section
-          variants={revealVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-          aria-label="The team"
-        >
-          <div className="pb-6 border-b border-[#171717]/15 dark:border-[#F4F0E8]/15">
-            <Eyebrow color="neem">The Circle</Eyebrow>
-            <h2 className="font-serif font-bold text-[#171717] dark:text-[#F4F0E8] mt-2 leading-tight section-h2">
-              People who make it happen.
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {teamMembers.map((member) => (
+        <section className="ed-section py-10 sm:py-12" aria-label="The team">
+          <EditorialSectionHeading eyebrow="The circle" title="People who make it happen." />
+          <div className="ed-grid mt-8 sm:grid-cols-2 lg:grid-cols-4">
+            {teamMembers.map((member, index) => (
               <motion.div
                 key={member.id}
-                whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+                whileHover={shouldReduceMotion ? undefined : { y: -3 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col items-center text-center gap-3"
               >
-                {/* Photo or ink placeholder */}
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[6px] overflow-hidden bg-[#1B2A49] dark:bg-[#202020] shrink-0 border-2 border-[#171717]/15 dark:border-[#F4F0E8]/15">
-                  {member.photoUrl ? (
-                    <img
-                      src={member.photoUrl}
-                      alt={member.name}
-                      className="w-full h-full object-cover object-top"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Users className="w-8 h-8 text-[#F4ECDD]/40" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="font-serif font-bold text-sm text-[#171717] dark:text-[#F4F0E8] leading-snug">
-                    {member.name}
-                  </p>
-                  <p className="font-sans text-xs text-[#6E6960] dark:text-[#D6D0C6] mt-0.5">
-                    {member.role}
-                  </p>
-                </div>
+                <BentoCard
+                  surface={(['lavender', 'mint', 'blue', 'paper'] as const)[index % 4]}
+                  className="flex h-full flex-col items-center text-center"
+                >
+                  <div className="mb-4 h-20 w-20 shrink-0 overflow-hidden rounded border border-[#24262D]/20 bg-[#FFFDF8] sm:h-24 sm:w-24">
+                    {member.photoUrl ? (
+                      <img
+                        src={member.photoUrl}
+                        alt={member.name}
+                        className="h-full w-full object-cover object-top"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Users className="h-8 w-8 text-[#5E5B55]/40" />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="font-display text-base font-semibold leading-snug text-[#24262D]">{member.name}</h3>
+                  <p className="mt-1 font-sans text-xs text-[#5E5B55]">{member.role}</p>
+                </BentoCard>
               </motion.div>
             ))}
           </div>
-        </motion.section>
+        </section>
       )}
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          8d. JOIN SECTION â€” Warm community invitation with form
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      {/* ---
+          8d. JOIN SECTION — Warm community invitation with form
+          --- */}
       <JoinSection />
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* ---
           9. JOURNAL PREVIEW
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 sm:py-12 space-y-6"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#171717]/15 pb-6">
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#F4512C] block mb-2">
-              05 â€” Words & Reflections
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#171717]">
-              {t.journal.heading}
-            </h2>
-            <p className="text-sm text-[#4F4A43] mt-1">{t.journal.subheading}</p>
-          </div>
-          <button
-            onClick={() => { setCurrentPage('journal'); scrollToTop(); }}
-            className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#171717] hover:text-[#6E6960] gap-1.5 transition-colors cursor-pointer"
-          >
-            <span>Browse All Articles</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+          --- */}
+      <section className="ed-section py-10 sm:py-12" aria-label={t.journal.heading}>
+        <EditorialSectionHeading
+          eyebrow="Words & reflections"
+          title={t.journal.heading}
+          description={t.journal.subheading}
+          action={
+            <button
+              onClick={() => { setCurrentPage('journal'); scrollToTop(); }}
+              className="inline-flex min-h-[44px] items-center gap-1.5 text-xs font-semibold text-[#24262D] transition-colors hover:text-[#F47B49] cursor-pointer"
+            >
+              <span>Browse All Articles</span>
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          }
+        />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="ed-grid ed-grid--bento mt-8 items-start">
           {/* Featured article */}
           {featuredArticle && (
-            <motion.div
-              whileHover={{ y: -4 }}
+            <motion.article
+              whileHover={shouldReduceMotion ? undefined : { y: -4 }}
               transition={{ duration: 0.25 }}
               onClick={() => setSelectedArticle(featuredArticle)}
-              className="lg:col-span-7 border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 rounded-none overflow-hidden cursor-pointer group flex flex-col"
+              className="ed-card ed-span-4 cursor-pointer"
             >
-              <div className="relative h-64 sm:h-72 overflow-hidden bg-[#171717]">
+              <div className="relative mb-6 h-64 overflow-hidden rounded bg-[#24262D] sm:h-72">
                 <img
                   src={featuredArticle.coverImage}
                   alt={featuredArticle.title}
-                  className="w-full h-full object-cover object-[center_25%] group-hover:scale-105 transition-transform duration-500 ease-out"
+                  className="h-full w-full object-cover object-[center_25%] transition-transform duration-500 ease-out"
                 />
-                <div className="absolute top-4 left-4">
-                  <span className="border-2 border-[#171717] bg-[#D9F36A] text-[#171717] font-bold px-3 py-1 rounded-none text-xs font-semibold text-[#171717] border-white/60">
-                    Featured Reflection
-                  </span>
-                </div>
+                <span className="absolute left-4 top-4 rounded bg-[#D8CBFF] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-[#24262D]">
+                  Featured Reflection
+                </span>
               </div>
-
-              <div className="p-6 sm:p-8 space-y-4">
-                <div className="flex items-center gap-2 text-xs text-[#6E6960]">
-                  <span className="text-[#F4512C] font-semibold uppercase">{featuredArticle.category}</span>
-                  <span>Â·</span>
-                  <span>{featuredArticle.readingTime} {t.journal.readTime}</span>
-                </div>
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#171717] group-hover:text-[#6E6960] transition-colors leading-snug">
-                  {featuredArticle.title}
-                </h3>
-                <p className="text-sm sm:text-base text-[#4F4A43] leading-relaxed">{featuredArticle.excerpt}</p>
-                <div className="pt-3 border-t border-[#171717]/15/60 flex items-center justify-between text-xs text-[#6E6960]">
-                  <span>By {featuredArticle.author}</span>
-                  <span className="font-semibold text-[#171717] group-hover:text-[#6E6960] flex items-center gap-1">
-                    {t.journal.readArticle} <ArrowRight className="w-3.5 h-3.5" />
-                  </span>
-                </div>
+              <div className="flex items-center gap-2 text-xs text-[#5E5B55]">
+                <span className="font-semibold uppercase text-[#F47B49]">{featuredArticle.category}</span>
+                <span>·</span>
+                <span>{featuredArticle.readingTime} {t.journal.readTime}</span>
               </div>
-            </motion.div>
+              <h3 className="ed-card__title mt-3">{featuredArticle.title}</h3>
+              <p className="ed-card__body mt-4">{featuredArticle.excerpt}</p>
+              <div className="mt-6 flex items-center justify-between border-t border-[#24262D]/12 pt-4 text-xs text-[#5E5B55]">
+                <span>By {featuredArticle.author}</span>
+                <span className="flex items-center gap-1 font-semibold text-[#24262D]">
+                  {t.journal.readArticle} <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </div>
+            </motion.article>
           )}
 
-          {/* Side articles */}
-          <div className="lg:col-span-5 space-y-4">
+          {/* Secondary articles */}
+          <div className="ed-span-2 space-y-4">
             {recentArticles.filter(a => a.id !== featuredArticle?.id).map((article) => (
-              <motion.div
+              <motion.article
                 key={article.id}
-                whileHover={{ x: 4 }}
+                whileHover={shouldReduceMotion ? undefined : { x: 3 }}
                 transition={{ duration: 0.2 }}
                 onClick={() => setSelectedArticle(article)}
-                className="border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 p-5 rounded-none cursor-pointer group flex gap-4 items-start"
+                className="ed-card cursor-pointer"
               >
-                <div className="w-20 h-20 rounded-none overflow-hidden shrink-0 bg-[#171717]">
-                  <img
-                    src={article.coverImage}
-                    alt={article.title}
-                    className="w-full h-full object-cover object-[center_20%]"
-                  />
-                </div>
-                <div className="space-y-1.5 flex-1 min-w-0" dir={article.language === 'ur' ? 'rtl' : 'ltr'} lang={article.language}>
-                  <span className={`text-[10px] font-semibold text-[#F4512C] uppercase tracking-wider block ${article.language === 'ur' ? 'text-right' : ''}`}>
-                    {article.category} Â· {article.language.toUpperCase()}
-                  </span>
-                  <h4 className={`font-bold text-base text-[#171717] group-hover:text-[#6E6960] transition-colors line-clamp-2 ${
-                    article.language === 'ur'
-                      ? 'p4-urdu-card-heading font-urdu text-right text-lg leading-[2.3]'
-                      : article.language === 'hi' || article.language === 'mr'
-                      ? 'font-hindi leading-[1.6]'
-                      : 'font-serif leading-snug'
-                  }`}>
-                    {article.title}
-                  </h4>
-                  <div className={`flex items-center gap-2 text-[11px] text-[#6E6960] pt-1 ${article.language === 'ur' ? 'justify-end' : ''}`}>
-                    <span>{article.author}</span>
-                    <span>Â·</span>
-                    <span>{article.readingTime} min</span>
+                <div className="flex gap-4">
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded bg-[#24262D]">
+                    <img
+                      src={article.coverImage}
+                      alt={article.title}
+                      className="h-full w-full object-cover object-[center_20%]"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1.5" dir={article.language === 'ur' ? 'rtl' : 'ltr'} lang={article.language}>
+                    <span className={`block text-[10px] font-semibold uppercase tracking-[0.1em] text-[#F47B49] ${article.language === 'ur' ? 'text-right' : ''}`}>
+                      {article.category} · {article.language.toUpperCase()}
+                    </span>
+                    <h4 className={`line-clamp-2 font-display text-base font-semibold text-[#24262D] ${
+                      article.language === 'ur'
+                        ? 'p4-urdu-card-heading font-urdu text-right text-lg leading-[2.3]'
+                        : article.language === 'hi' || article.language === 'mr'
+                        ? 'font-hindi leading-[1.6]'
+                        : 'leading-snug'
+                    }`}>
+                      {article.title}
+                    </h4>
+                    <div className={`flex items-center gap-2 pt-1 text-[11px] text-[#5E5B55] ${article.language === 'ur' ? 'justify-end' : ''}`}>
+                      <span>{article.author}</span>
+                      <span>·</span>
+                      <span>{article.readingTime} min</span>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </motion.article>
             ))}
 
-            <div className="p-6 rounded-none border-2 border-[#171717] bg-[#FFFCF5] shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:border-[#F4F0E8]/25 space-y-2">
-              <h4 className="font-serif font-bold text-base text-[#171717]">Have a story or essay to submit?</h4>
-              <p className="text-xs text-[#4F4A43] leading-relaxed">
-  We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
-</p>
+            <BentoCard surface="blue" label="Submit to the journal" className="space-y-2">
+              <h4 className="font-display text-base font-semibold text-[#24262D]">Have a story or essay to submit?</h4>
+              <p className="text-xs leading-relaxed text-[#5E5B55]">
+                We accept reader memoirs, poems, and book critiques in English, Hindi, Urdu, and Marathi.
+              </p>
               <button
                 onClick={() => { setCurrentPage('contact'); scrollToTop(); }}
-                className="inline-flex min-h-[24px] items-center text-xs font-semibold text-[#6E6960] hover:text-[#171717] pt-1 gap-1 cursor-pointer"
+                className="inline-flex min-h-[44px] items-center gap-1 pt-1 text-xs font-semibold text-[#5E5B55] transition-colors hover:text-[#F47B49] cursor-pointer"
               >
                 <span>Submit to Journal</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="h-3.5 w-3.5" />
               </button>
-            </div>
+            </BentoCard>
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          10. COMMUNITY CTA BANNER
-          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <motion.section
-        variants={revealVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-60px' }}
-        className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-6 sm:py-10"
-      >
-        <div className="relative rounded-none bg-[#171717] text-[#F4F0E8] border-2 border-[#171717] p-10 sm:p-16 overflow-hidden shadow-2xl border-white/15">
-          <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-none bg-[#6E6960]/30 blur-3xl pointer-events-none" />
-          <div className="absolute -left-20 -top-20 w-80 h-80 rounded-none bg-[#F4512C]/20 blur-3xl pointer-events-none" />
-
-          <div className="relative max-w-2xl space-y-6">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#D9F36A] block">
-              Every Reader Deserves a Place
-            </span>
-
-            <h2 className="font-serif font-bold text-[#F4F0E8] leading-tight"
-              style={{ fontSize: 'clamp(1.8rem, 4vw, 3.2rem)' }}
-            >
-              Whether you read every day or are just beginning, there is a place for you here.
-            </h2>
-
-            <p className="text-base text-[#F4F0E8]/70 font-sans leading-relaxed">
-  No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
-</p>
-
-            <div className="pt-2 flex flex-wrap gap-4">
+      {/* ---
+          10. COMMUNITY CTA — a dark scrapbook endpaper
+          --- */}
+      <section className="ed-section py-8 sm:py-10" aria-label="Join Readers of Aurangabad">
+        <BentoCard surface="dark" label="Every reader deserves a place" tape className="ed-card--cta">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-8">
+              <h2 className="font-display text-[clamp(1.9rem,4.2vw,3.2rem)] leading-[1.1] tracking-[-0.03em] text-[#F7F3EB]">
+                Whether you read every day or are just beginning, there is a place for you here.
+              </h2>
+              <p className="mt-5 max-w-2xl font-sans text-sm leading-relaxed text-[#F7F3EB]/75 sm:text-base">
+                No registration fees. No judgment on what you read. Just good people, quiet sunlight, and the magic of physical books in Aurangabad.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:col-span-4 lg:justify-end">
               <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={shouldReduceMotion ? undefined : { scale: 1.03 }}
+                whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
                 onClick={() => { setCurrentPage('get-involved'); scrollToTop(); }}
-                className="bg-[#F2EBDD] hover:bg-white text-[#171717] px-7 py-3.5 rounded-none text-sm font-semibold tracking-wide transition-all shadow-md cursor-pointer"
+                className="inline-flex min-h-[46px] items-center rounded bg-[#F47B49] px-6 py-3 text-sm font-semibold text-white shadow-[var(--mh20-shadow-sm)] transition-colors hover:bg-[#DE6638] cursor-pointer"
               >
                 Become a Part of Us
               </motion.button>
@@ -832,19 +718,19 @@ export const HomePage: React.FC = () => {
                 href={siteConfig.instagramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border-2 border-[#171717] bg-[#D9F36A] text-[#171717] font-bold px-6 py-3.5 rounded-none text-sm font-semibold text-[#F4F0E8] border-white/20 hover:bg-white/10 transition-all inline-block"
+                className="inline-flex min-h-[46px] items-center rounded border border-[#F7F3EB]/30 bg-[#C7EFDE] px-6 py-3 text-sm font-semibold text-[#24262D] transition-colors hover:bg-[#F7F3EB]"
               >
                 {siteConfig.instagramHandle}
               </a>
             </div>
           </div>
-        </div>
-      </motion.section>
+        </BentoCard>
+      </section>
 
 
       {fullAnnouncement && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/65 backdrop-blur-md p-3 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#24262D]/80 p-3 backdrop-blur-md sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -856,7 +742,7 @@ export const HomePage: React.FC = () => {
             aria-modal="true"
             aria-labelledby="full-announcement-title"
             tabIndex={-1}
-            className="relative my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-none border border-white/60 bg-[#FAF8F5] p-6 shadow-2xl sm:p-9"
+            className="relative my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#24262D]/20 bg-[#F7F3EB] p-6 shadow-[var(--mh20-shadow-lg)] sm:p-9"
             initial={{ opacity: 0, y: 14, scale: 0.99 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10 }}
@@ -866,16 +752,14 @@ export const HomePage: React.FC = () => {
               type="button"
               onClick={dismissFullAnnouncement}
               aria-label="Close announcement"
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-none border border-[#171717]/15 text-2xl text-[#4F4A43] transition-colors hover:bg-white"
+              className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded border border-[#24262D]/15 text-2xl text-[#5E5B55] transition-colors hover:bg-[#FFD8C1]"
             >
-              <span aria-hidden="true">Ã—</span>
+              <span aria-hidden="true">×</span>
             </button>
 
             <div className="mb-6 pr-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6E6960]">
-                Latest Community Announcement
-              </p>
-              <p className="mt-2 text-sm text-[#6E6960]">
+              <p className="ed-kicker">Latest Community Announcement</p>
+              <p className="mt-2 text-sm text-[#5E5B55]">
                 Published {new Date(
                   fullAnnouncement.publishedAt || fullAnnouncement.createdAt
                 ).toLocaleDateString('en-IN', {
@@ -888,12 +772,12 @@ export const HomePage: React.FC = () => {
 
             <h2
               id="full-announcement-title"
-              className="mb-5 font-serif text-2xl font-bold leading-tight text-[#171717] sm:text-3xl"
+              className="mb-5 font-display text-2xl font-semibold leading-tight text-[#24262D] sm:text-3xl"
             >
               {fullAnnouncement.title}
             </h2>
 
-            <div className="whitespace-pre-wrap break-words text-base leading-8 text-[#4F4A43]">
+            <div className="whitespace-pre-wrap break-words text-base leading-8 text-[#5E5B55]">
               {fullAnnouncement.content}
             </div>
           </motion.div>

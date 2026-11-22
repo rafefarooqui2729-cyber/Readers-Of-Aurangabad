@@ -41,7 +41,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           url: window.location.href,
         });
       } catch {
-        // Share dismissed or unsupported at call time â€” nothing else to do.
+        // Share dismissed or unsupported at call time — nothing else to do.
       }
       return;
     }
@@ -71,7 +71,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         aria-modal="true"
         aria-label={article.title}
         tabIndex={-1}
-        className="p3-modal-surface p3-article-modal glass-modal rounded-none max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-[8px_8px_0_#171717] relative border-white/75"
+        className="p3-modal-surface p3-article-modal glass-modal rounded-none max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-[var(--mh20-shadow-lg)] relative border-white/75"
         initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16, scale: shouldReduceMotion ? 1 : 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: shouldReduceMotion ? 0 : 10, scale: shouldReduceMotion ? 1 : 0.985 }}
@@ -82,7 +82,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         <div className="p3-modal-header px-6 py-4 border-b border-white/40 glass-nav flex items-center justify-between sticky top-0 z-20">
           <button
             onClick={dismiss}
-            className="p3-text-action flex items-center gap-1.5 text-xs font-semibold text-[#4F4A43] hover:text-[#171717] transition-colors"
+            className="p3-text-action flex items-center gap-1.5 text-xs font-semibold text-[#5E5B55] hover:text-[#24262D] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Journal</span>
@@ -93,8 +93,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               onClick={() => setBookmarked(!bookmarked)}
               className={`p3-icon-button p-2 rounded-none border transition-colors ${
                 bookmarked
-                  ? 'bg-[#F4F0E8] text-[#171717] border-[#171717]/30'
-                  : 'text-[#4F4A43] border-[#171717] hover:bg-white'
+                  ? 'bg-[#F7F3EB] text-[#24262D] border-[#24262D]/30'
+                  : 'text-[#5E5B55] border-[#24262D] hover:bg-white'
               }`}
               title="Bookmark for later"
             >
@@ -103,7 +103,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
             <button
               onClick={handleShare}
-              className="p3-secondary-action flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#171717] text-xs font-medium text-[#4F4A43] hover:bg-white transition-colors"
+              className="p3-secondary-action flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#24262D] text-xs font-medium text-[#5E5B55] hover:bg-white transition-colors"
               title="Share piece"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -112,7 +112,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
             <button
               onClick={dismiss}
-              className="p3-icon-button p3-modal-close p-2 rounded-none text-[#4F4A43] hover:text-[#171717] hover:bg-white border border-transparent hover:border-[#171717] transition-colors"
+              className="p3-icon-button p3-modal-close p-2 rounded-none text-[#5E5B55] hover:text-[#24262D] hover:bg-white border border-transparent hover:border-[#24262D] transition-colors"
               aria-label="Close"
             >
               <X className="w-4 h-4" />
@@ -126,17 +126,17 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           dir={isUrdu ? 'rtl' : 'ltr'}
         >
           {/* Article Header Meta */}
-          <div className="space-y-4 mb-8 pb-8 border-b border-[#171717]">
+          <div className="space-y-4 mb-8 pb-8 border-b border-[#24262D]">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wider bg-[#FFFCF5] text-[#F4512C] border border-[#171717]">
+              <span className="px-3 py-1 rounded-none text-xs font-semibold uppercase tracking-wider bg-[#FFFDF8] text-[#F47B49] border border-[#24262D]">
                 {article.category}
               </span>
-              <span className="text-xs text-[#6E6960] uppercase tracking-wider">
+              <span className="text-xs text-[#5E5B55] uppercase tracking-wider">
                 Language: {article.language.toUpperCase()}
               </span>
             </div>
 
-            <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-[#171717] leading-[1.2] ${
+            <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-[#24262D] leading-[1.2] ${
               isUrdu
                 ? 'font-urdu leading-[2.1] text-right'
                 : isHindi
@@ -144,9 +144,9 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
                 : 'font-serif'
             }`}>
               {article.title}
-            </h1>
+            </h2>
 
-            <p className={`text-base sm:text-lg text-[#4F4A43] leading-relaxed ${
+            <p className={`text-base sm:text-lg text-[#5E5B55] leading-relaxed ${
               isUrdu
                 ? 'font-urdu text-right text-lg leading-[2.1]'
                 : isHindi
@@ -156,15 +156,15 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               "{article.excerpt}"
             </p>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#6E6960]">
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-[#5E5B55]">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-none bg-[#171717] flex items-center justify-center text-[#171717] font-serif font-bold text-sm">
+                <div className="w-10 h-10 rounded-none bg-[#24262D] flex items-center justify-center text-[#24262D] font-serif font-bold text-sm">
                   {article.author.charAt(0)}
                 </div>
                 <div>
-                  <span className="block font-medium text-sm text-[#171717]">{article.author}</span>
+                  <span className="block font-medium text-sm text-[#24262D]">{article.author}</span>
                   {article.authorRole && (
-                    <span className="block text-[11px] text-[#F4512C]">{article.authorRole}</span>
+                    <span className="block text-[11px] text-[#F47B49]">{article.authorRole}</span>
                   )}
                 </div>
               </div>
@@ -184,7 +184,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
           {/* Featured Image */}
           {article.coverImage && (
-            <div className="mb-8 rounded-none overflow-hidden border border-[#171717] shadow-[3px_3px_0_#171717]">
+            <div className="mb-8 rounded-none overflow-hidden border border-[#24262D] shadow-[var(--mh20-shadow-sm)]">
               <img
                 src={article.coverImage}
                 alt={article.title}
@@ -195,7 +195,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
           )}
 
           {/* Article Full Body Typography */}
-          <div className={`prose max-w-none text-[#2A2826] text-base sm:text-lg leading-[1.85] space-y-6 ${
+          <div className={`prose max-w-none text-[#24262D] text-base sm:text-lg leading-[1.85] space-y-6 ${
             isUrdu
               ? 'text-right font-urdu text-xl leading-[2.2]'
               : isHindi
@@ -211,11 +211,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
-            <div className="mt-10 pt-6 border-t border-[#171717] flex flex-wrap gap-2">
+            <div className="mt-10 pt-6 border-t border-[#24262D] flex flex-wrap gap-2">
               {article.tags.map((tag, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-[#4F4A43] border border-[#171717]"
+                  className="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-[#5E5B55] border border-[#24262D]"
                 >
                   #{tag}
                 </span>
@@ -225,8 +225,8 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
 
           {/* Related Articles in Journal */}
           {relatedArticles.length > 0 && (
-            <div className="mt-12 pt-8 border-t border-[#171717]">
-              <h3 className="font-serif text-xl font-bold text-[#171717] mb-4">
+            <div className="mt-12 pt-8 border-t border-[#24262D]">
+              <h3 className="font-serif text-xl font-bold text-[#24262D] mb-4">
                 More Reflections from the Journal
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -234,16 +234,16 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
                   <div
                     key={rel.id}
                     onClick={() => onSelectArticle(rel)}
-                    className="p-4 rounded-none bg-white border border-[#171717] hover:border-[#F4512C] transition-all cursor-pointer group"
+                    className="p-4 rounded-none bg-white border border-[#24262D] hover:border-[#F47B49] transition-all cursor-pointer group"
                   >
-                    <span className="text-[10px] font-semibold text-[#F4512C] uppercase tracking-wider block mb-1">
+                    <span className="text-[10px] font-semibold text-[#F47B49] uppercase tracking-wider block mb-1">
                       {rel.category}
                     </span>
-                    <h4 className="font-serif font-bold text-sm text-[#171717] group-hover:text-[#171717] transition-colors line-clamp-2">
+                    <h4 className="font-serif font-bold text-sm text-[#24262D] group-hover:text-[#24262D] transition-colors line-clamp-2">
                       {rel.title}
                     </h4>
-                    <p className="text-xs text-[#6E6960] mt-2">
-                      By {rel.author} â€¢ {rel.readingTime} min read
+                    <p className="text-xs text-[#5E5B55] mt-2">
+                      By {rel.author} · {rel.readingTime} min read
                     </p>
                   </div>
                 ))}
@@ -254,14 +254,14 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
         </div>
 
         {/* Sticky Reading Bar */}
-        <div className="p3-modal-actions p-3 bg-white border-t border-[#171717] text-center text-xs text-[#6E6960] flex items-center justify-between px-6">
+        <div className="p3-modal-actions p-3 bg-white border-t border-[#24262D] text-center text-xs text-[#5E5B55] flex items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#171717]" />
+            <BookOpen className="w-4 h-4 text-[#24262D]" />
             <span>Readers of Aurangabad Journal</span>
           </div>
           <button
             onClick={dismiss}
-            className="p3-text-action text-[#171717] font-semibold hover:underline"
+            className="p3-text-action text-[#24262D] font-semibold hover:underline"
           >
             Close Reader
           </button>

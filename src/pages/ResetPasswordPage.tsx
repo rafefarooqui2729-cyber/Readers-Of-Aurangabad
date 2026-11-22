@@ -136,35 +136,35 @@ export const ResetPasswordPage: React.FC = () => {
         {...cardMotion}
         className="p3-recovery-card glass-card max-w-md w-full p-8 sm:p-10 rounded-3xl relative overflow-hidden border-white/60 shadow-2xl"
       >
-        <div className="w-12 h-12 rounded-2xl bg-[#455240]/10 flex items-center justify-center mb-5">
-          <ShieldCheck className="w-6 h-6 text-[#455240]" />
+        <div className="w-12 h-12 rounded-2xl bg-[#24262D]/10 flex items-center justify-center mb-5">
+          <ShieldCheck className="w-6 h-6 text-[#24262D]" />
         </div>
 
         <h1
-          className="text-2xl sm:text-3xl font-bold text-[#1C1B1A]"
+          className="text-2xl sm:text-3xl font-bold text-[#24262D]"
           style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}
         >
           {stage === 'success' ? 'Password updated' : 'Set a new password'}
         </h1>
 
         {stage === 'verifying' && (
-          <p className="mt-3 text-sm text-[#595550]" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+          <p className="mt-3 text-sm text-[#5E5B55]" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
             Verifying your recovery link…
           </p>
         )}
 
         {stage === 'ready' && (
           <>
-            <p className="mt-2 text-sm text-[#595550]" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+            <p className="mt-2 text-sm text-[#5E5B55]" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
               Choose a password of at least {MIN_PASSWORD_LENGTH} characters. You will be signed out
               after the change so you can sign in with the new password.
             </p>
 
             <form onSubmit={handleSubmit} aria-busy={submitting} className="p3-form p3-recovery-form mt-6 space-y-4" noValidate>
               <label htmlFor="recovery-new-password" className="block">
-                <span className="text-xs font-semibold text-[#1C1B1A]">New password</span>
+                <span className="text-xs font-semibold text-[#24262D]">New password</span>
                 <div className="mt-1 relative">
-                  <Lock className="w-4 h-4 text-[#8C857B] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-[#5E5B55] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="recovery-new-password"
                     type={showPassword ? 'text' : 'password'}
@@ -182,18 +182,18 @@ export const ResetPasswordPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="p3-icon-button absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-[#F4EFEA] flex items-center justify-center cursor-pointer"
+                    className="p3-icon-button absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-[#F7F3EB] flex items-center justify-center cursor-pointer"
                     aria-label={showPassword ? 'Hide new password' : 'Show new password'}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4 text-[#595550]" /> : <Eye className="w-4 h-4 text-[#595550]" />}
+                    {showPassword ? <EyeOff className="w-4 h-4 text-[#5E5B55]" /> : <Eye className="w-4 h-4 text-[#5E5B55]" />}
                   </button>
                 </div>
               </label>
 
               <label htmlFor="recovery-confirm-password" className="block">
-                <span className="text-xs font-semibold text-[#1C1B1A]">Confirm new password</span>
+                <span className="text-xs font-semibold text-[#24262D]">Confirm new password</span>
                 <div className="mt-1 relative">
-                  <Lock className="w-4 h-4 text-[#8C857B] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-[#5E5B55] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="recovery-confirm-password"
                     type={showConfirmation ? 'text' : 'password'}
@@ -211,16 +211,16 @@ export const ResetPasswordPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmation((prev) => !prev)}
-                    className="p3-icon-button absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-[#F4EFEA] flex items-center justify-center cursor-pointer"
+                    className="p3-icon-button absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-[#F7F3EB] flex items-center justify-center cursor-pointer"
                     aria-label={showConfirmation ? 'Hide confirmation password' : 'Show confirmation password'}
                   >
-                    {showConfirmation ? <EyeOff className="w-4 h-4 text-[#595550]" /> : <Eye className="w-4 h-4 text-[#595550]" />}
+                    {showConfirmation ? <EyeOff className="w-4 h-4 text-[#5E5B55]" /> : <Eye className="w-4 h-4 text-[#5E5B55]" />}
                   </button>
                 </div>
               </label>
 
               {error && (
-                <p id="recovery-form-error" role="alert" aria-live="assertive" className="p3-form-error text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2 flex items-start gap-2">
+                <p id="recovery-form-error" role="alert" aria-live="assertive" className="p3-form-error text-xs text-red-700 bg-[#F47B49]/15 border border-[#F47B49]/45 rounded-xl px-3 py-2 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </p>
@@ -237,7 +237,7 @@ export const ResetPasswordPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleReturnToSignIn}
-                className="w-full text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5 py-1 cursor-pointer"
+                className="w-full text-xs text-[#5E5B55] hover:text-[#24262D] flex items-center justify-center gap-1.5 py-1 cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 Cancel and return to the site
@@ -264,16 +264,16 @@ export const ResetPasswordPage: React.FC = () => {
 
         {stage === 'invalid' && (
           <div className="mt-4">
-            <div className="p3-form-warning flex items-start gap-2 text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+            <div className="p3-form-warning flex items-start gap-2 text-sm text-[#24262D] bg-[#FFD8C1]/45 border border-[#FFD8C1] rounded-xl px-3 py-2">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>This password reset link is invalid or has expired. Request a new link below.</span>
             </div>
 
             <form onSubmit={handleRequestLink} aria-busy={requestState === 'sending'} className="p3-form p3-recovery-form mt-5 space-y-3" noValidate>
               <label htmlFor="recovery-request-email" className="block">
-                <span className="text-xs font-semibold text-[#1C1B1A]">Account email</span>
+                <span className="text-xs font-semibold text-[#24262D]">Account email</span>
                 <div className="mt-1 relative">
-                  <Mail className="w-4 h-4 text-[#8C857B] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-[#5E5B55] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="recovery-request-email"
                     type="email"
@@ -291,7 +291,7 @@ export const ResetPasswordPage: React.FC = () => {
               </label>
 
               {requestError && (
-                <p id="recovery-request-error" role="alert" aria-live="assertive" className="p3-form-error text-xs text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                <p id="recovery-request-error" role="alert" aria-live="assertive" className="p3-form-error text-xs text-red-700 bg-[#F47B49]/15 border border-[#F47B49]/45 rounded-xl px-3 py-2">
                   {requestError}
                 </p>
               )}
@@ -314,7 +314,7 @@ export const ResetPasswordPage: React.FC = () => {
             <button
               type="button"
               onClick={handleReturnToSignIn}
-              className="mt-4 w-full text-xs text-[#595550] hover:text-[#1C1B1A] flex items-center justify-center gap-1.5 py-1 cursor-pointer"
+              className="mt-4 w-full text-xs text-[#5E5B55] hover:text-[#24262D] flex items-center justify-center gap-1.5 py-1 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to the site

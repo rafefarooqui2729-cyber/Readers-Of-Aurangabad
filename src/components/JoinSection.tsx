@@ -67,15 +67,15 @@ export const JoinSection: React.FC = () => {
   };
 
   const inputClassName =
-    'w-full bg-[#171717] border-2 border-[#F4F0E8]/35 text-[#F4F0E8] placeholder-[#B8B2A8] rounded-none px-4 py-3 text-sm focus:outline-none focus:border-[#D9F36A] focus:shadow-[4px_4px_0_rgba(217,243,106,0.2)]';
+    'w-full bg-[#24262D] border-2 border-[#F7F3EB]/35 text-[#F7F3EB] placeholder-[#D4CFC5] rounded-none px-4 py-3 text-sm focus:outline-none focus:border-[#C7EFDE] focus:shadow-[4px_4px_0_rgba(199,239,222,0.45)]';
 
   return (
     <section
       id="join-community"
-      className="relative overflow-hidden border-y-[3px] border-[#171717] bg-[#171717] py-16 text-[#F4F0E8] sm:py-24 dark:border-[#D9F36A]"
+      className="relative overflow-hidden border-y-[3px] border-[#24262D] bg-[#24262D] py-16 text-[#F7F3EB] sm:py-24 dark:border-[#C7EFDE]"
       aria-label="Join Readers of Aurangabad"
     >
-      <div className="absolute left-0 top-0 h-2 w-full bg-[#F4512C]" aria-hidden="true" />
+      <div className="absolute left-0 top-0 h-2 w-full bg-[#F47B49]" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-6">
@@ -83,13 +83,13 @@ export const JoinSection: React.FC = () => {
               <Stamp year={siteConfig.establishedYear} size="md" className="!rotate-0" />
               <div>
                 <Eyebrow color="marigold">MH20 invitation</Eyebrow>
-                <h2 className="mt-2 font-display text-4xl uppercase leading-[0.92] tracking-[-0.03em] text-[#F4F0E8] sm:text-5xl">
+                <h2 className="mt-2 font-display text-4xl uppercase leading-[0.92] tracking-[-0.03em] text-[#F7F3EB] sm:text-5xl">
                   Pull up a chair. Bring a book.
                 </h2>
               </div>
             </div>
 
-            <p className="max-w-xl border-l-4 border-[#D9F36A] pl-4 font-serif text-lg italic leading-relaxed text-[#F4F0E8]/92">
+            <p className="max-w-xl border-l-4 border-[#C7EFDE] pl-4 font-serif text-lg italic leading-relaxed text-[#F7F3EB]/92">
               Readers of Aurangabad is free, volunteer-run, and open to anyone who loves physical
               books and real conversation. No gatekeeping, no compulsory reading list, no speed tests.
             </p>
@@ -99,37 +99,37 @@ export const JoinSection: React.FC = () => {
                 href={siteConfig.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-[48px] items-center gap-3 border-2 border-[#F4F0E8] bg-[#25D366] px-6 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.06em] text-white shadow-[4px_4px_0_#000] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#000]"
+                className="inline-flex min-h-[48px] items-center gap-3 border-2 border-[#F7F3EB] bg-[#25D366] px-6 py-3.5 font-sans text-sm font-bold uppercase tracking-[0.06em] text-white shadow-[var(--mh20-shadow-sm)] transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)]"
               >
                 <MessageCircle className="h-5 w-5" aria-hidden="true" />
                 <span>Join via WhatsApp</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
-              <span className="mt-3 block text-xs text-[#B8B2A8]">
-                Sunday meetup locations, timings, and community updates.
+              <span className="mt-3 block text-xs text-[#D4CFC5]">
+                Meetup locations, timings, and community updates.
               </span>
             </div>
           </div>
 
           <div className="lg:col-span-6">
-            <div className="border-2 border-[#F4F0E8]/30 bg-[#202020] p-6 shadow-[8px_8px_0_#000] sm:p-8">
-              <h3 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#F4F0E8]">
+            <div className="border-2 border-[#F7F3EB]/30 bg-[#24262D] p-6 shadow-[var(--mh20-shadow-lg)] sm:p-8">
+              <h3 className="font-display text-2xl uppercase tracking-[-0.02em] text-[#F7F3EB]">
                 Introduce yourself
               </h3>
-              <p className="mt-2 text-sm text-[#D6D0C6]">
+              <p className="mt-2 text-sm text-[#D4CFC5]">
                 Share a few details and we&apos;ll help you find the next chapter.
               </p>
 
               {submitted ? (
-                <div className="mt-6 border-2 border-[#D9F36A] bg-[#171717] p-6 text-center">
-                  <div className="mx-auto flex h-11 w-11 items-center justify-center border-2 border-[#171717] bg-[#D9F36A] text-[#171717]">
+                <div className="mt-6 border-2 border-[#C7EFDE] bg-[#24262D] p-6 text-center">
+                  <div className="mx-auto flex h-11 w-11 items-center justify-center border-2 border-[#24262D] bg-[#C7EFDE] text-[#24262D]">
                     <Check className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <h4 className="mt-4 font-display text-xl uppercase tracking-[-0.02em] text-[#F4F0E8]">
+                  <h4 className="mt-4 font-display text-xl uppercase tracking-[-0.02em] text-[#F7F3EB]">
                     Welcome to the circle
                   </h4>
-                  <p className="mt-2 text-sm text-[#D6D0C6]">
-                    We&apos;ve received your details. Watch for an invite to an upcoming Sunday chapter.
+                  <p className="mt-2 text-sm text-[#D4CFC5]">
+                    We&apos;ve received your details. Watch for an invite to an upcoming gathering.
                   </p>
                   <Button variant="primary" onClick={() => setSubmitted(false)} className="mt-4">
                     Send another message
@@ -151,8 +151,8 @@ export const JoinSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="join-name" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
-                      Your name <span className="text-[#F4512C]">*</span>
+                    <label htmlFor="join-name" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
+                      Your name <span className="text-[#F47B49]">*</span>
                     </label>
                     <input
                       id="join-name"
@@ -166,8 +166,8 @@ export const JoinSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="join-contact" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
-                      Phone or Instagram <span className="text-[#F4512C]">*</span>
+                    <label htmlFor="join-contact" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
+                      Phone or Instagram <span className="text-[#F47B49]">*</span>
                     </label>
                     <input
                       id="join-contact"
@@ -181,7 +181,7 @@ export const JoinSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="join-genres" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F4F0E8]">
+                    <label htmlFor="join-genres" className="mb-1 block text-xs font-bold uppercase tracking-[0.1em] text-[#F7F3EB]">
                       Favourite genres or current book (optional)
                     </label>
                     <input
@@ -200,16 +200,16 @@ export const JoinSection: React.FC = () => {
                       required
                       checked={consent}
                       onChange={(e) => setConsent(e.target.checked)}
-                      className="mt-1 h-4 w-4 shrink-0 accent-[#F4512C]"
+                      className="mt-1 h-4 w-4 shrink-0 accent-[#F47B49]"
                     />
-                    <span className="text-xs leading-relaxed text-[#D6D0C6]">
+                    <span className="text-xs leading-relaxed text-[#D4CFC5]">
                       I agree that Readers of Aurangabad may use my details to contact me about
                       upcoming reading meetups and community gatherings.
                     </span>
                   </label>
 
                   {error ? (
-                    <p className="border-2 border-[#F4512C] bg-[#171717] px-3 py-2 text-xs text-[#FFD5C8]">
+                    <p className="border-2 border-[#F47B49] bg-[#24262D] px-3 py-2 text-xs text-[#FFD8C1]">
                       {error}
                     </p>
                   ) : null}

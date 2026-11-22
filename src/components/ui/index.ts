@@ -1,5 +1,8 @@
+export { BentoCard } from './BentoCard';
+export type { BentoSurface } from './BentoCard';
 export { BookmarkCard } from './BookmarkCard';
 export { Button } from './Button';
+export { EditorialSectionHeading } from './EditorialSectionHeading';
 export { Eyebrow } from './Eyebrow';
 export { InstagramPostTemplate } from './InstagramPostTemplate';
 export { fieldClasses, FilterButton, FormField, PageHero, PaperPanel, SectionHeading } from './PageChrome';

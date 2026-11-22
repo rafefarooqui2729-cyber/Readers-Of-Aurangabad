@@ -6,7 +6,7 @@ import { useReducedMotion } from 'framer-motion';
  *
  * Visual Features:
  * - Open hardcover novel with visible spine, central binding, and layered page edges.
- * - Warm cream paper (#FAF8F5 / #FBF7EE) with authentic printed novel typography.
+ * - Warm editorial paper (#F7F3EB / #FFFDF8) with authentic printed novel typography.
  * - Smooth CSS 3D folding and curling page-turn animation.
  * - Coordinated specular highlight sweeps and under-page shadows for realistic depth.
  * - Elegant branding with Cormorant Garamond and Plus Jakarta Sans.
@@ -21,8 +21,8 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
   const shouldReduceMotion = useReducedMotion();
 
   const containerClasses = fullScreen
-    ? 'fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FAF8F5] text-[#1C1B1A]'
-    : 'min-h-[50vh] flex flex-col items-center justify-center text-[#1C1B1A] py-12';
+    ? 'fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F7F3EB] text-[#24262D]'
+    : 'min-h-[50vh] flex flex-col items-center justify-center text-[#24262D] py-12';
 
   return (
     <div
@@ -342,7 +342,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           font-size: 5.5px;
           font-weight: 600;
           letter-spacing: 0.12em;
-          color: #B88B4A;
+          color: #FFD8C1;
           text-transform: uppercase;
           border-bottom: 0.5px solid rgba(184, 139, 74, 0.3);
           padding-bottom: 3px;
@@ -360,7 +360,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           font-family: "Cormorant Garamond", Georgia, serif;
           font-size: 7.2px;
           line-height: 1.45;
-          color: #2D2721;
+          color: #24262D;
           margin-bottom: 4px;
           text-align: justify;
           letter-spacing: 0.01em;
@@ -372,7 +372,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           float: left;
           line-height: 0.9;
           margin-right: 2px;
-          color: #455240;
+          color: #24262D;
           font-family: "Cormorant Garamond", Georgia, serif;
         }
 
@@ -408,7 +408,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
             90deg,
             #3A2C1D 0%,
             #7A5E3A 25%,
-            #B88B4A 50%,
+            #FFD8C1 50%,
             #7A5E3A 75%,
             #3A2C1D 100%
           );
@@ -425,7 +425,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           left: calc(50% - 1.5px);
           width: 3px;
           height: 110%;
-          background: linear-gradient(180deg, #8D5B4C 0%, #455240 100%);
+          background: linear-gradient(180deg, #F47B49 0%, #24262D 100%);
           box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.3);
           border-radius: 1px;
           z-index: 31;
@@ -576,7 +576,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           font-size: 26px;
           font-weight: 600;
           letter-spacing: 0.04em;
-          color: #1C1B1A;
+          color: #24262D;
           margin: 0;
         }
 
@@ -586,7 +586,7 @@ export const BookLoader: React.FC<BookLoaderProps> = ({ fullScreen = false }) =>
           font-weight: 500;
           letter-spacing: 0.26em;
           text-transform: uppercase;
-          color: #77736D;
+          color: #5E5B55;
           margin: 0;
         }
 

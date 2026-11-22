@@ -5,7 +5,7 @@ import { InstagramIcon } from './Icons';
 import { siteConfig } from '../content/siteConfig';
 
 const VideoFallback = ({ compact = false }: { compact?: boolean }) => (
-  <div className={`h-full w-full flex flex-col items-center justify-center text-center bg-[#211F1C] text-[#E8E2D5] ${compact ? 'p-4' : 'p-8'}`}>
+  <div className={`h-full w-full flex flex-col items-center justify-center text-center bg-[#24262D] text-[#D4CFC5] ${compact ? 'p-4' : 'p-8'}`}>
     <AlertCircle className={`${compact ? 'w-5 h-5' : 'w-7 h-7'} mb-2`} />
     <p className={`${compact ? 'text-xs' : 'text-base'} font-semibold`}>Reel unavailable</p>
     {!compact && <p className="text-xs text-white/60 mt-1">The video file could not be loaded.</p>}
@@ -50,20 +50,20 @@ const AnnouncementFeature: React.FC = () => {
   return (
     <section className="grid items-center gap-7 md:grid-cols-[minmax(0,1fr)_minmax(280px,420px)] lg:grid-cols-[minmax(0,1fr)_360px]">
       <div className="space-y-4 md:pr-8">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#8D5B4C] shadow-sm backdrop-blur-xl">
-          <span className="w-2 h-2 rounded-full bg-[#455240]" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#F47B49] shadow-sm backdrop-blur-xl">
+          <span className="w-2 h-2 rounded-full bg-[#24262D]" />
           Announcement
         </div>
-        <h2 className="max-w-xl font-serif text-4xl font-bold leading-[1.05] text-[#1C1B1A] sm:text-5xl lg:text-6xl">
+        <h2 className="max-w-xl font-serif text-4xl font-bold leading-[1.05] text-[#24262D] sm:text-5xl lg:text-6xl">
           A note from the reading circle.
         </h2>
-        <p className="max-w-xl text-base leading-relaxed text-[#595550] sm:text-lg">
+        <p className="max-w-xl text-base leading-relaxed text-[#5E5B55] sm:text-lg">
           {announcementReel.caption}
         </p>
       </div>
 
       <div className="mx-auto w-full max-w-[360px]">
-        <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-white/60 bg-[#171615] shadow-[0_24px_70px_rgba(28,27,26,.18)]">
+        <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-white/60 bg-[#24262D] shadow-[0_24px_70px_rgba(28,27,26,.18)]">
           {failed ? <VideoFallback /> : (
             <video
               ref={videoRef}
@@ -84,10 +84,10 @@ const AnnouncementFeature: React.FC = () => {
             <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-full border border-white/25 bg-black/45 px-2 py-1.5 shadow-lg backdrop-blur-xl">
               <span className="ml-2 text-[10px] font-bold uppercase tracking-[0.14em] text-white">Announcement reel</span>
               <div className="flex gap-1.5">
-                <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause announcement' : 'Play announcement'} className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]">
+                <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause announcement' : 'Play announcement'} className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]">
                   {isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}
                 </button>
-                <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute announcement' : 'Mute announcement'} className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]">
+                <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute announcement' : 'Mute announcement'} className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]">
                   {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                 </button>
               </div>
@@ -191,7 +191,7 @@ const ReelPlaylist: React.FC<{ entries: ReelPlaylistEntry[] }> = ({ entries }) =
 
   return (
     <div className="mx-auto w-full max-w-[420px]">
-      <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-[#E8E2D5] bg-[#171615] shadow-[0_20px_60px_rgba(28,27,26,.14)]">
+      <div className="relative aspect-[9/16] overflow-hidden rounded-[22px] border border-[#D4CFC5] bg-[#24262D] shadow-[0_20px_60px_rgba(36,38,45,.14)]">
         <video
           ref={currentRef}
           key={current.filename}
@@ -227,10 +227,10 @@ const ReelPlaylist: React.FC<{ entries: ReelPlaylistEntry[] }> = ({ entries }) =
             <span className="block truncate text-xs font-semibold">{incoming?.title || current.title}</span>
           </div>
           <div className="flex shrink-0 gap-1">
-            <button type="button" onClick={() => moveTo(currentIndex - 1)} aria-label="Previous reel" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]"><ChevronLeft className="h-4 w-4" /></button>
-            <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reels' : 'Play reels'} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]">{isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}</button>
-            <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reels' : 'Mute reels'} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />} </button>
-            <button type="button" onClick={() => moveTo(currentIndex + 1)} aria-label="Next reel" className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1C1B1A]"><ChevronRight className="h-4 w-4" /></button>
+            <button type="button" onClick={() => moveTo(currentIndex - 1)} aria-label="Previous reel" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]"><ChevronLeft className="h-4 w-4" /></button>
+            <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reels' : 'Play reels'} className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]">{isPlaying ? <Pause className="h-4 w-4 fill-current" /> : <Play className="h-4 w-4 fill-current" />}</button>
+            <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reels' : 'Mute reels'} className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />} </button>
+            <button type="button" onClick={() => moveTo(currentIndex + 1)} aria-label="Next reel" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#24262D]"><ChevronRight className="h-4 w-4" /></button>
           </div>
         </div>
       </div>
@@ -241,18 +241,18 @@ const ReelPlaylist: React.FC<{ entries: ReelPlaylistEntry[] }> = ({ entries }) =
 export const InstagramFeedSection: React.FC = () => {
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-10 space-y-10">
-      <div className="border-b border-[#E8E2D5] pb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="border-b border-[#D4CFC5] pb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#8D5B4C]"><InstagramIcon className="h-4 w-4" />{siteConfig.instagramHandle}</div>
-          <h2 className="font-serif text-3xl font-bold text-[#1C1B1A] sm:text-4xl">Community Media</h2>
+          <div className="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#F47B49]"><InstagramIcon className="h-4 w-4" />{siteConfig.instagramHandle}</div>
+          <h2 className="font-serif text-3xl font-bold text-[#24262D] sm:text-4xl">Community Media</h2>
         </div>
       </div>
 
       <AnnouncementFeature />
       <div>
-        <div className="mb-5 flex items-end justify-between border-b border-[#E8E2D5] pb-3">
-          <div><span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8D5B4C]">Reel collection</span><h3 className="font-serif text-2xl font-bold text-[#1C1B1A]">Meetup moments</h3></div>
-          <span className="text-xs text-[#8C857B]">{reelPlaylist.length} reels</span>
+        <div className="mb-5 flex items-end justify-between border-b border-[#D4CFC5] pb-3">
+          <div><span className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#F47B49]">Reel collection</span><h3 className="font-serif text-2xl font-bold text-[#24262D]">Meetup moments</h3></div>
+          <span className="text-xs text-[#5E5B55]">{reelPlaylist.length} reels</span>
         </div>
         <ReelPlaylist entries={reelPlaylist} />
       </div>

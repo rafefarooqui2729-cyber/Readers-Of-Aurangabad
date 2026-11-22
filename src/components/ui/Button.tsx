@@ -12,15 +12,15 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   ({ variant = 'primary', asAnchor = false, href, children, className = '', ...props }, ref) => {
     const baseClasses =
-      'inline-flex items-center justify-center font-sans font-bold text-sm tracking-[0.04em] uppercase min-h-[48px] px-6 py-3 transition-transform duration-150 cursor-pointer rounded-none border-2 border-[#171717] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F4512C] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none';
+      'inline-flex items-center justify-center font-sans font-semibold text-sm tracking-[0.01em] min-h-[46px] px-6 py-3 transition-all duration-200 cursor-pointer rounded border border-[#F47B49] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#F47B49] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none';
 
     const variantClasses = {
       primary:
-        'bg-[#F4512C] text-white shadow-[4px_4px_0_#171717] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_#171717]',
+        'bg-[#F47B49] text-white shadow-[var(--mh20-shadow-sm)] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] active:translate-y-0 active:shadow-none',
       secondary:
-        'bg-[#FFFCF5] text-[#171717] shadow-[4px_4px_0_#171717] hover:bg-[#D9F36A] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717] dark:bg-[#202020] dark:text-[#F4F0E8] dark:border-[#F4F0E8]/35 dark:shadow-[4px_4px_0_#000] dark:hover:bg-[#D9F36A] dark:hover:text-[#171717]',
+        'bg-[#FFFDF8] text-[#24262D] border-[#24262D]/20 shadow-[var(--mh20-shadow-sm)] hover:bg-[#C7EFDE] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)] dark:bg-[#2B2E36] dark:text-[#F7F3EB] dark:border-[#F7F3EB]/25 dark:hover:bg-[#C7EFDE] dark:hover:text-[#24262D]',
       'outline-marigold':
-        'bg-[#D9F36A] text-[#171717] shadow-[4px_4px_0_#171717] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[6px_6px_0_#171717]',
+        'bg-[#C7EFDE] text-[#24262D] border-[#24262D]/15 shadow-[var(--mh20-shadow-sm)] hover:-translate-y-[1px] hover:shadow-[var(--mh20-shadow)]',
     };
 
     const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${className}`.trim();

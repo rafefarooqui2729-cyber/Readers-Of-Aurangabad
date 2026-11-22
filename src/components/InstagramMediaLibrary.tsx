@@ -149,29 +149,29 @@ export const InstagramMediaLibrary: React.FC = () => {
     <div className="space-y-6">
 
       {/* Top Banner: Connection Status & Global Actions */}
-      <div className="paper-card p-6 rounded-3xl bg-white border border-[#E8E2D5] flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-sm">
+      <div className="paper-card p-6 rounded-3xl bg-white border border-[#D4CFC5] flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-sm">
 
         {/* Left: Account Connection Badge */}
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#FAF8F5] border border-[#E8E2D5] flex items-center justify-center text-[#8D5B4C] shrink-0 p-2 shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-[#F7F3EB] border border-[#D4CFC5] flex items-center justify-center text-[#F47B49] shrink-0 p-2 shadow-xs">
             <InstagramIcon className="w-8 h-8" />
           </div>
 
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">
+              <h3 className="font-serif text-xl font-bold text-[#24262D]">
                 Instagram Media Library
               </h3>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F7F3EB] text-[#24262D] border border-gray-200">
                 Live sync unavailable
               </span>
             </div>
 
-            <p className="text-xs text-[#595550]">
-              Account: <strong className="text-[#1C1B1A]">@{instagramConfig.username}</strong> • Type: {instagramConfig.accountType}
+            <p className="text-xs text-[#5E5B55]">
+              Account: <strong className="text-[#24262D]">@{instagramConfig.username}</strong> • Type: {instagramConfig.accountType}
             </p>
 
-            <span className="text-[11px] text-[#8C857B] block">
+            <span className="text-[11px] text-[#5E5B55] block">
               Live Instagram sync requires a trusted server-side integration. Sample media and manual imports are available.
             </span>
           </div>
@@ -183,7 +183,7 @@ export const InstagramMediaLibrary: React.FC = () => {
           <button
             onClick={handleLoadSampleMedia}
             disabled={isSyncing}
-            className="inline-flex items-center gap-1.5 bg-[#1C1B1A] hover:bg-[#455240] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-[#24262D] hover:bg-[#24262D] text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-sm disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? 'Loading...' : 'Load Sample Media'}</span>
@@ -200,10 +200,10 @@ export const InstagramMediaLibrary: React.FC = () => {
           />
           <button
             onClick={() => manualFileInputRef.current?.click()}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#E8E2D5] text-xs font-medium text-[#595550] hover:text-[#1C1B1A] hover:bg-[#FAF8F5] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#D4CFC5] text-xs font-medium text-[#5E5B55] hover:text-[#24262D] hover:bg-[#F7F3EB] transition-colors"
             title="Upload local photographs or raw reel video files directly"
           >
-            <Upload className="w-3.5 h-3.5 text-[#455240]" />
+            <Upload className="w-3.5 h-3.5 text-[#24262D]" />
             <span>Upload Manually</span>
           </button>
 
@@ -216,7 +216,7 @@ export const InstagramMediaLibrary: React.FC = () => {
         <div className={`p-4 rounded-2xl text-xs flex items-center justify-between gap-3 ${
           statusMsg.type === 'success'
             ? 'bg-green-50 text-green-900 border border-green-200'
-            : 'bg-red-50 text-red-900 border border-red-200'
+            : 'bg-[#F47B49]/15 text-red-900 border border-[#F47B49]/45'
         }`}>
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 shrink-0" />
@@ -229,7 +229,7 @@ export const InstagramMediaLibrary: React.FC = () => {
       )}
 
       {/* Filter Toolbar & Category Tabs */}
-      <div className="space-y-3 bg-white p-4 rounded-2xl border border-[#E8E2D5]">
+      <div className="space-y-3 bg-white p-4 rounded-2xl border border-[#D4CFC5]">
 
         {/* Categories Carousel */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -237,8 +237,8 @@ export const InstagramMediaLibrary: React.FC = () => {
             onClick={() => setSelectedCategory('All')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all ${
               selectedCategory === 'All'
-                ? 'bg-[#1C1B1A] text-white shadow-xs'
-                : 'text-[#595550] hover:bg-[#FAF8F5]'
+                ? 'bg-[#24262D] text-white shadow-xs'
+                : 'text-[#5E5B55] hover:bg-[#F7F3EB]'
             }`}
           >
             All Categories ({instagramMedia.length})
@@ -251,8 +251,8 @@ export const InstagramMediaLibrary: React.FC = () => {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all ${
                   selectedCategory === cat
-                    ? 'bg-[#1C1B1A] text-white shadow-xs'
-                    : 'text-[#595550] hover:bg-[#FAF8F5]'
+                    ? 'bg-[#24262D] text-white shadow-xs'
+                    : 'text-[#5E5B55] hover:bg-[#F7F3EB]'
                 }`}
               >
                 {cat} {count > 0 && `(${count})`}
@@ -262,7 +262,7 @@ export const InstagramMediaLibrary: React.FC = () => {
         </div>
 
         {/* Second Filter Row: Media Type & Publication Status & Bulk Actions */}
-        <div className="pt-2 border-t border-[#F4EFEA] flex flex-wrap items-center justify-between gap-3 text-xs text-[#595550]">
+        <div className="pt-2 border-t border-[#F7F3EB] flex flex-wrap items-center justify-between gap-3 text-xs text-[#5E5B55]">
 
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
@@ -270,7 +270,7 @@ export const InstagramMediaLibrary: React.FC = () => {
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] border border-[#E8E2D5] font-medium text-[#1C1B1A]"
+                className="px-2.5 py-1 rounded-lg bg-[#F7F3EB] border border-[#D4CFC5] font-medium text-[#24262D]"
               >
                 <option value="All">All Types</option>
                 <option value="IMAGE">Photos Only</option>
@@ -284,7 +284,7 @@ export const InstagramMediaLibrary: React.FC = () => {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value as any)}
-                className="px-2.5 py-1 rounded-lg bg-[#FAF8F5] border border-[#E8E2D5] font-medium text-[#1C1B1A]"
+                className="px-2.5 py-1 rounded-lg bg-[#F7F3EB] border border-[#D4CFC5] font-medium text-[#24262D]"
               >
                 <option value="all">All (Drafts & Published)</option>
                 <option value="published">Published Only</option>
@@ -297,7 +297,7 @@ export const InstagramMediaLibrary: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleSelectAll}
-              className="px-3 py-1 rounded-lg border border-[#E8E2D5] hover:bg-[#FAF8F5] font-medium"
+              className="px-3 py-1 rounded-lg border border-[#D4CFC5] hover:bg-[#F7F3EB] font-medium"
             >
               {selectedItemIds.size === filteredMedia.length && filteredMedia.length > 0 ? 'Deselect All' : 'Select All'}
             </button>
@@ -306,13 +306,13 @@ export const InstagramMediaLibrary: React.FC = () => {
               <>
                 <button
                   onClick={publishSelected}
-                  className="px-3 py-1 rounded-lg bg-[#455240] text-white font-medium hover:bg-[#2E372B]"
+                  className="px-3 py-1 rounded-lg bg-[#24262D] text-white font-medium hover:bg-[#24262D]"
                 >
                   Publish ({selectedItemIds.size})
                 </button>
                 <button
                   onClick={deleteSelected}
-                  className="px-3 py-1 rounded-lg border border-red-200 text-red-600 font-medium hover:bg-red-50"
+                  className="px-3 py-1 rounded-lg border border-[#F47B49]/45 text-red-600 font-medium hover:bg-[#F47B49]/15"
                 >
                   Delete ({selectedItemIds.size})
                 </button>
@@ -335,12 +335,12 @@ export const InstagramMediaLibrary: React.FC = () => {
               <div
                 key={item.id}
                 className={`paper-card rounded-2xl overflow-hidden flex flex-col justify-between border transition-all ${
-                  isSelected ? 'ring-2 ring-[#455240] border-[#455240]' : 'border-[#E8E2D5]'
+                  isSelected ? 'ring-2 ring-[#24262D] border-[#24262D]' : 'border-[#D4CFC5]'
                 }`}
               >
                 <div>
                   {/* Media Visual Area */}
-                  <div className="relative h-60 bg-[#1C1B1A] overflow-hidden group">
+                  <div className="relative h-60 bg-[#24262D] overflow-hidden group">
                     <img
                       src={item.thumbnailUrl || item.mediaUrl}
                       alt={item.caption.slice(0, 50)}
@@ -357,7 +357,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                           setSelectedItemIds(next);
                         }}
                         className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors shadow-sm ${
-                          isSelected ? 'bg-[#455240] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
+                          isSelected ? 'bg-[#24262D] text-white' : 'bg-white/80 text-transparent hover:text-gray-400'
                         }`}
                       >
                         <Check className="w-4 h-4 stroke-[3]" />
@@ -373,7 +373,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         item.status === 'published'
                           ? 'bg-green-100 text-green-900 border border-green-200'
-                          : 'bg-amber-100 text-amber-900 border border-amber-200'
+                          : 'bg-[#FFD8C1] text-[#24262D] border border-[#FFD8C1]'
                       }`}>
                         {item.status.toUpperCase()}
                       </span>
@@ -384,9 +384,9 @@ export const InstagramMediaLibrary: React.FC = () => {
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => setActiveExtractorMedia(item)}
-                          className="inline-flex items-center gap-2 bg-[#FAF8F5] hover:bg-white text-[#1C1B1A] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg hover:scale-105 cursor-pointer"
+                          className="inline-flex items-center gap-2 bg-[#F7F3EB] hover:bg-white text-[#24262D] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-lg hover:scale-105 cursor-pointer"
                         >
-                          <Camera className="w-4 h-4 text-[#8D5B4C]" />
+                          <Camera className="w-4 h-4 text-[#F47B49]" />
                           <span>Extract Images from Video</span>
                         </button>
                       </div>
@@ -401,14 +401,14 @@ export const InstagramMediaLibrary: React.FC = () => {
                       <select
                         value={item.category}
                         onChange={(e) => updateInstagramMedia(item.id, { category: e.target.value as MediaCategory })}
-                        className="px-2 py-1 rounded-lg bg-[#FAF8F5] border border-[#E8E2D5] font-semibold text-[#8D5B4C] text-[11px]"
+                        className="px-2 py-1 rounded-lg bg-[#F7F3EB] border border-[#D4CFC5] font-semibold text-[#F47B49] text-[11px]"
                       >
                         {CATEGORIES.map(c => (
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </select>
 
-                      <span className="text-[10px] text-[#8C857B]">
+                      <span className="text-[10px] text-[#5E5B55]">
                         {new Date(item.timestamp).toLocaleDateString()}
                       </span>
                     </div>
@@ -419,12 +419,12 @@ export const InstagramMediaLibrary: React.FC = () => {
                       value={item.caption}
                       onChange={(e) => updateInstagramMedia(item.id, { caption: e.target.value })}
                       placeholder="Add or edit caption..."
-                      className="w-full text-xs text-[#2A2826] bg-[#FAF8F5] p-2.5 rounded-xl border border-[#E8E2D5] focus:outline-none focus:border-[#455240] leading-relaxed resize-none"
+                      className="w-full text-xs text-[#24262D] bg-[#F7F3EB] p-2.5 rounded-xl border border-[#D4CFC5] focus:outline-none focus:border-[#24262D] leading-relaxed resize-none"
                     />
 
                     {/* Stats if available */}
                     {(item.likesCount !== undefined || item.commentsCount !== undefined) && (
-                      <div className="text-[10px] text-[#8C857B] flex items-center gap-3">
+                      <div className="text-[10px] text-[#5E5B55] flex items-center gap-3">
                         {item.likesCount !== undefined && <span>❤️ {item.likesCount} likes</span>}
                         {item.commentsCount !== undefined && <span>💬 {item.commentsCount} comments</span>}
                       </div>
@@ -434,14 +434,14 @@ export const InstagramMediaLibrary: React.FC = () => {
                 </div>
 
                 {/* Footer Action Strip */}
-                <div className="p-4 bg-white border-t border-[#F4EFEA] flex items-center justify-between gap-2">
+                <div className="p-4 bg-white border-t border-[#F7F3EB] flex items-center justify-between gap-2">
 
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => togglePublishInstagramMedia(item.id)}
                       className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                         item.status === 'published'
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
+                          ? 'bg-[#FFD8C1]/45 text-[#24262D] border border-[#FFD8C1] hover:bg-[#FFD8C1]'
                           : 'bg-green-50 text-green-800 border border-green-200 hover:bg-green-100'
                       }`}
                     >
@@ -451,7 +451,7 @@ export const InstagramMediaLibrary: React.FC = () => {
 
                     <button
                       onClick={() => setShowAssignModal(item)}
-                      className="px-2.5 py-1.5 rounded-lg border border-[#E8E2D5] hover:bg-[#FAF8F5] text-[11px] font-semibold text-[#1C1B1A]"
+                      className="px-2.5 py-1.5 rounded-lg border border-[#D4CFC5] hover:bg-[#F7F3EB] text-[11px] font-semibold text-[#24262D]"
                       title="Use in Meetups, Journal Cover or Gallery"
                     >
                       Use on Site
@@ -464,7 +464,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                         href={safeExternalHref(item.permalink)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg border border-[#E8E2D5] text-[#595550] hover:text-[#1C1B1A]"
+                        className="p-1.5 rounded-lg border border-[#D4CFC5] text-[#5E5B55] hover:text-[#24262D]"
                         title="View original on Instagram"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -477,7 +477,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                           deleteInstagramMedia(item.id);
                         }
                       }}
-                      className="p-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
+                      className="p-1.5 rounded-lg border border-[#F47B49]/45 text-red-600 hover:bg-[#F47B49]/15"
                       title="Delete"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -491,10 +491,10 @@ export const InstagramMediaLibrary: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="bg-white border border-[#E8E2D5] rounded-3xl p-12 text-center space-y-3">
-          <InstagramIcon className="w-10 h-10 text-[#8C857B] mx-auto opacity-50" />
-          <h4 className="font-serif text-xl font-bold text-[#1C1B1A]">No media in this category</h4>
-          <p className="text-xs text-[#595550]">
+        <div className="bg-white border border-[#D4CFC5] rounded-3xl p-12 text-center space-y-3">
+          <InstagramIcon className="w-10 h-10 text-[#5E5B55] mx-auto opacity-50" />
+          <h4 className="font-serif text-xl font-bold text-[#24262D]">No media in this category</h4>
+          <p className="text-xs text-[#5E5B55]">
             Load bundled sample media or <strong>"Upload Manually"</strong> to add photographs or reels. Live Instagram sync is unavailable.
           </p>
         </div>
@@ -512,11 +512,11 @@ export const InstagramMediaLibrary: React.FC = () => {
       {/* Assign Media to Site Section Modal */}
       {showAssignModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="paper-card max-w-md w-full p-6 rounded-3xl bg-white border border-[#E8E2D5] space-y-4">
-            <h3 className="font-serif text-xl font-bold text-[#1C1B1A]">
+          <div className="paper-card max-w-md w-full p-6 rounded-3xl bg-white border border-[#D4CFC5] space-y-4">
+            <h3 className="font-serif text-xl font-bold text-[#24262D]">
               Use Media on Website
             </h3>
-            <p className="text-xs text-[#595550]">
+            <p className="text-xs text-[#5E5B55]">
               Where would you like to feature this Instagram media?
             </p>
 
@@ -527,18 +527,18 @@ export const InstagramMediaLibrary: React.FC = () => {
                   setShowAssignModal(null);
                   setStatusMsg({ text: 'Added to Community Moments Gallery!', type: 'success' });
                 }}
-                className="w-full text-left p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] hover:border-[#1C1B1A] flex items-center justify-between"
+                className="w-full text-left p-3 rounded-xl bg-[#F7F3EB] border border-[#D4CFC5] hover:border-[#24262D] flex items-center justify-between"
               >
                 <div>
-                  <strong className="block text-[#1C1B1A]">Community Gallery</strong>
-                  <span className="text-[#8C857B]">Feature in photo mosaic on Community page</span>
+                  <strong className="block text-[#24262D]">Community Gallery</strong>
+                  <span className="text-[#5E5B55]">Feature in photo mosaic on Community page</span>
                 </div>
-                <Plus className="w-4 h-4 text-[#455240]" />
+                <Plus className="w-4 h-4 text-[#24262D]" />
               </button>
 
               {meetups.length > 0 && (
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] space-y-2">
-                  <strong className="block text-[#1C1B1A]">Set as Meetup Cover Photo:</strong>
+                <div className="p-3 rounded-xl bg-[#F7F3EB] border border-[#D4CFC5] space-y-2">
+                  <strong className="block text-[#24262D]">Set as Meetup Cover Photo:</strong>
                   <div className="space-y-1 max-h-32 overflow-y-auto">
                     {meetups.map(m => (
                       <button
@@ -551,7 +551,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                         className="w-full text-left py-1 px-2 rounded hover:bg-white text-[11px] truncate flex items-center justify-between"
                       >
                         <span>{m.title}</span>
-                        <Check className="w-3 h-3 text-[#455240]" />
+                        <Check className="w-3 h-3 text-[#24262D]" />
                       </button>
                     ))}
                   </div>
@@ -559,8 +559,8 @@ export const InstagramMediaLibrary: React.FC = () => {
               )}
 
               {articles.length > 0 && (
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8E2D5] space-y-2">
-                  <strong className="block text-[#1C1B1A]">Set as Journal Article Cover:</strong>
+                <div className="p-3 rounded-xl bg-[#F7F3EB] border border-[#D4CFC5] space-y-2">
+                  <strong className="block text-[#24262D]">Set as Journal Article Cover:</strong>
                   <div className="space-y-1 max-h-32 overflow-y-auto">
                     {articles.map(a => (
                       <button
@@ -573,7 +573,7 @@ export const InstagramMediaLibrary: React.FC = () => {
                         className="w-full text-left py-1 px-2 rounded hover:bg-white text-[11px] truncate flex items-center justify-between"
                       >
                         <span>{a.title}</span>
-                        <Check className="w-3 h-3 text-[#455240]" />
+                        <Check className="w-3 h-3 text-[#24262D]" />
                       </button>
                     ))}
                   </div>
@@ -584,7 +584,7 @@ export const InstagramMediaLibrary: React.FC = () => {
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setShowAssignModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#595550]"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#5E5B55]"
               >
                 Cancel
               </button>

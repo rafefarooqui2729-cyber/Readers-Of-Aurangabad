@@ -51,10 +51,10 @@ export const StatBlock: React.FC<StatBlockProps> = ({
 
   return (
     <div className={`flex flex-col items-center sm:items-start text-center sm:text-left ${className}`}>
-      <span className="font-serif font-bold text-4xl sm:text-5xl lg:text-6xl text-[#1B2A49] dark:text-[#F4ECDD] tracking-tight leading-none">
+      <span className="font-serif font-bold text-4xl sm:text-5xl lg:text-6xl text-[#24262D] dark:text-[#F7F3EB] tracking-tight leading-none">
         {finalValueStr}
       </span>
-      <span className="font-sans text-xs sm:text-sm font-medium text-[#4B5A77] dark:text-[#D1C5B0] mt-2 max-w-[200px]">
+      <span className="font-sans text-xs sm:text-sm font-medium text-[#4B5A77] dark:text-[#D4CFC5] mt-2 max-w-[200px]">
         {label}
       </span>
     </div>

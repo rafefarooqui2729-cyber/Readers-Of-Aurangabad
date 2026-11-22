@@ -241,7 +241,7 @@ const toggleMute = () => {
   if (availableReels.length === 0) {
     return (
       <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="rounded-none border border-[#171717] bg-[#171717] px-5 py-8 text-center text-[#171717]">
+        <div className="rounded-none border border-[#24262D] bg-[#24262D] px-5 py-8 text-center text-[#24262D]">
           <AlertCircle className="mx-auto mb-2 h-6 w-6" />
           <p className="font-semibold">Reels unavailable</p>
           <p className="mt-1 text-sm text-white/70">The published video files could not be loaded.</p>
@@ -254,17 +254,17 @@ const toggleMute = () => {
   return (
     <section ref={sectionRef} className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="mb-7 text-center">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-none border border-[#171717]/20 bg-[#171717]/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#171717] backdrop-blur-xl">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-none border border-[#24262D]/20 bg-[#24262D]/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#24262D] backdrop-blur-xl">
           <Film className="h-3.5 w-3.5" /> Visual Chronicles
         </div>
-        <h2 className="font-serif text-3xl font-bold text-[#171717] sm:text-4xl">Reel collection</h2>
-        <p className="mt-1 font-serif text-xl italic text-[#171717]">Meetup moments.</p>
+        <h2 className="font-serif text-3xl font-bold text-[#24262D] sm:text-4xl">Reel collection</h2>
+        <p className="mt-1 font-serif text-xl italic text-[#24262D]">Meetup moments.</p>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass-panel rounded-none p-4 sm:p-7 lg:p-9">
         <div className="grid items-center gap-7 lg:grid-cols-[360px_minmax(0,1fr)]">
           <div className="mx-auto w-full max-w-[360px]">
-            <div className="relative aspect-[9/16] overflow-hidden rounded-none border border-white/20 bg-[#171717] shadow-[8px_8px_0_#171717]">
+            <div className="relative aspect-[9/16] overflow-hidden rounded-none border border-white/20 bg-[#24262D] shadow-[var(--mh20-shadow-lg)]">
               <video
                 ref={currentRef}
                 key={currentReel.id}
@@ -320,10 +320,10 @@ const toggleMute = () => {
                     <p className="text-[10px] text-white/70">{Math.floor(currentTime)}s / {Number.isFinite(duration) ? Math.floor(duration) : 0}s</p>
                   </div>
                   <div className="flex gap-1.5">
-                    <button type="button" onClick={() => beginTransition(safeCurrentIndex - 1)} aria-label="Previous reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white"><ChevronLeft className="h-4 w-4" /></button>
-                    <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reel' : 'Play reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white">{isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}</button>
-                    <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reel' : 'Mute reel'} className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}</button>
-                    <button type="button" onClick={() => beginTransition(safeCurrentIndex + 1)} aria-label="Next reel" className="glass-dark-control flex h-9 w-9 items-center justify-center rounded-none text-white"><ChevronRight className="h-4 w-4" /></button>
+                    <button type="button" onClick={() => beginTransition(safeCurrentIndex - 1)} aria-label="Previous reel" className="glass-dark-control flex h-11 w-11 items-center justify-center rounded-none text-white"><ChevronLeft className="h-4 w-4" /></button>
+                    <button type="button" onClick={togglePlayback} aria-label={isPlaying ? 'Pause reel' : 'Play reel'} className="glass-dark-control flex h-11 w-11 items-center justify-center rounded-none text-white">{isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}</button>
+                    <button type="button" onClick={toggleMute} aria-label={isMuted ? 'Unmute reel' : 'Mute reel'} className="glass-dark-control flex h-11 w-11 items-center justify-center rounded-none text-white">{isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}</button>
+                    <button type="button" onClick={() => beginTransition(safeCurrentIndex + 1)} aria-label="Next reel" className="glass-dark-control flex h-11 w-11 items-center justify-center rounded-none text-white"><ChevronRight className="h-4 w-4" /></button>
                   </div>
                 </div>
               </div>
@@ -331,9 +331,9 @@ const toggleMute = () => {
           </div>
 
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-none border border-[#171717]/20 bg-[#171717]/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#171717] backdrop-blur-xl"><Sparkles className="h-3.5 w-3.5" /> Community reel</div>
-            <h3 className="font-serif text-3xl font-bold text-[#171717] sm:text-4xl">{currentReel.title}</h3>
-            {currentReel.caption && <p className="max-w-xl text-base leading-relaxed text-[#4F4A43] sm:text-lg">{currentReel.caption}</p>}
+            <div className="inline-flex items-center gap-2 rounded-none border border-[#24262D]/20 bg-[#24262D]/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#24262D] backdrop-blur-xl"><Sparkles className="h-3.5 w-3.5" /> Community reel</div>
+            <h3 className="font-serif text-3xl font-bold text-[#24262D] sm:text-4xl">{currentReel.title}</h3>
+            {currentReel.caption && <p className="max-w-xl text-base leading-relaxed text-[#5E5B55] sm:text-lg">{currentReel.caption}</p>}
           </div>
         </div>
       </motion.div>
